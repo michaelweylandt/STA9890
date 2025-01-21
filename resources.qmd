@@ -1,0 +1,178 @@
+---
+title: "{{< var course.short >}} - Additional Resources and Course Policies"
+---
+
+## Course Resources
+
+There are no required textbooks for this course.
+Supplemental readings and practice problems will be
+assigned from the following freely-available resources: 
+
+- [*Mathematics for Machine Learning* by Diesenroth, Faisal, and Ong (DFO)](http://mml-book.github.io)
+- [*Introduction to Statistical Learning* by James, 
+  Witten, Hastie, and Tibshirani (ISL)](https://www.statlearning.com/)
+- [*Elements of Statistical Learning* by Hastie Tibshirani,
+  and Freedman (ESL)](https://hastie.su.domains/ElemStatLearn/)
+- [*Pattern Recognition and Machine Learning* by Bishop 
+  (PRML)](https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/)
+- [*Probabilistic Machine Learning: An Introduction* by Murphy (PML-1)](https://probml.github.io/pml-book/book1.html)
+- [*Probabilistic Machine Learning: Advanced Topics* by Murphy (PML-2)](https://probml.github.io/pml-book/book2.html)
+- [*Gaussian Processes for Machine Learning* by Rasmussen and Williams (GPML)](https://doi.org/10.7551/mitpress/3206.001.0001)
+- [*Reinforcement Learning* by Sutton and Hutto (RL)](http://www.incompleteideas.net/book/the-book-2nd.html)
+- [*Boosting: Foundations and Algorithms} by Schapire and Freund (SF)](https://doi.org/10.7551/mitpress/8291.001.0001)
+- [*Foundations of Machine Learning* by Mohri, Rostamizadeh, and Talwalkar (FML)](https://cs.nyu.edu/~mohri/mlbook/)
+- [*Understanding Machine Learning: From Theory to Algorithms* by Shalev-Shwartz and Ben-David (UML)](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/)
+
+### Course Discussion Board
+
+{{< var course.short >}} will use `Piazza` as the course discussion
+board. Students are encouraged to direct all questions about course
+topics or logistics to Piazza; use of a public anonymous discussion
+board allows students to benefit from the insights of their classmates
+and allows instructors to answer questions publicly to the benefit 
+of all students. 
+
+Students are encouraged to use Piazza's private question feature if
+they need to contact the instructor directly. Please only use private
+questions for personal inquiries: questions about the technical
+substance of the course can and should be asked (pseudonymously) in
+the public section of Piazza. 
+
+Piazza login information will be distributed through CUNY Brightspace.
+
+### External Resources Use Policy
+
+Students are encouraged to make use of any and all external resources, including
+generative AI tools, for at home study and for practice problems. 
+Students are strongly encouraged to collaborate on weekly practice problems. 
+You are ultimately  responsible for the correctness of any submitted materials
+- "the AI told me so" is not a valid defense.
+
+The instructor will provide a formula sheet for use during in-class exams. No alternative resources may be used during these activities.
+
+Students may use online resources, such as blog posts, discussion fora, *etc.* 
+for the Research Reports and Course Competition but Generative AI tools are 
+specifically **disallowed**. 
+
+> Exception: Coding Assistance Tools, *e.g.*, GitHub CoPilot, may be used for
+  the Research Reports and Course Competition. Their usage is limited to *coding*
+  your ideas. They may not be used as idea generation tools. 
+  
+The era of Generative AI is challenging and fast-paced. If you are unsure whether
+a tool is allowed in this course, please reseach out to the instructor before
+using it. In matters of Academic Integrity, it is far better to ask permission
+than forgiveness. 
+
+## Academic Integrity Policy
+
+I fully support CUNY’s [Policy on Academic Integrity](https://studentaffairs.baruch.cuny.edu/wp-content/uploads/sites/6/2024/08/CUNY-Academic-Integrity-Policy-2024.pdf), which states, in part:
+
+> Academic dishonesty is prohibited in The City University of New York. Penalties for academic dishonesty include academic sanctions, such as failing or otherwise reduced grades, and/or disciplinary sanctions, including suspension or expulsion.
+
+> Academic integrity is at the core of a college or university education. Faculty assign essays, exams, quizzes, projects, and so on both to extend the learning done in the classroom and as a means of assessing that learning. When students violate the academic integrity policy (i.e., "cheat"), they are committing an act of theft that can cause real harm to themselves and others including, but not limited to, their classmates, their faculty, and the caregivers who may be funding their education. Academic dishonesty confers an unfair advantage over others, which undermines educational equity and fairness. Students who cheat place their college’s accreditation and their own future prospects in jeopardy.
+
+In this course, expectations for academic integrity are straightforward: no use
+of unauthorized materials on weekly quizzes or mid-semester tests. Unless
+explicitly stated otherwise by the instructor *in writing*, the only authorized
+materials allowed during in class assessment are the instructor-provided formula
+sheets.
+
+Academic sanctions in this class will range from an **F on the Assignment** to
+an **F in this Course**. A report of suspected academic dishonesty will be sent
+to the Office of the Dean of Students. 
+
+Students are encouraged to contact the instructor with any questions or concerns
+related to matters of academic integrity.
+
+## Course Accomodations
+
+#### Disability Services
+
+It is [CUNY policy](https://www.cuny.edu/about/administration/offices/legal-affairs/policies-resources/reasonable-accommodations-and-academic-adjustments/v-accommodations/) to provide Accommodations and Academic Adjustments to students with disabilities. 
+
+Any student who has a disability who may need accommodations in this class should register as early as possible with [Student Disability Services](https://studentaffairs.baruch.cuny.edu/student-disability-services/) (SDS). Your registration with Student Disability Services is confidential, and is not recorded on your Baruch Academic Record. SDS can be reached by email at [disability.services@baruch.cuny.edu](mailto:disability.services@baruch.cuny.edu), by phone at [646-312-4590](tel:646-312-4590), or in person at NVC 2-272.
+
+Please note that the instructor cannot provide accommodations unless requested by SDS.
+
+#### Religious Accomodations
+
+It is [CUNY policy](https://www.cuny.edu/about/administration/offices/legal-affairs/policies-resources/reasonable-accommodations-and-academic-adjustments/vi-religious-accommodations/) to provide accommodations for students' sincerely held religious beliefs. If a religious accommodation is requested, please contact the instructor at least two weeks in advance.
+
+#### Unexcused Abscence Policy
+
+Attendance is not required, but lecture recordings will not be provided. Students are responsible for the content of all sessions missed.
+
+## Personal Resources[^2]
+
+Take care of yourself. Do your best to maintain a healthy lifestyle this semester by eating well, exercising, avoiding drugs and alcohol, getting enough sleep and taking some time to relax. This will help you achieve your goals and cope with stress. 
+
+All of us benefit from support during times of struggle. You are not alone. Asking for support sooner rather than later is often helpful. 
+
+#### Mental Health Resources
+
+If you or anyone you know experiences significant academic stress, difficult life events, or feelings like anxiety or depression, I strongly encourage you to seek support.
+
+The [Baruch Counselling Center](https://studentaffairs.baruch.cuny.edu/counseling/)
+is here to help. You can visit them in person at 137 E 25th St, 9th floor  or
+call them at [646-312-2155](tel:646-312-2155) during normal business hours;
+you can make an appointment online
+[here](https://baruch.az1.qualtrics.com/jfe/form/SV_a4NCaYrV2Sk1cyg). 
+For more immediate support, please call NYC WELL 
+([1-888-NYC-WELL](tel:646-312-2155) or [1-888-692-9355](tel:1-888-692-9355)).[^3] 
+
+Asking for help is often difficult: consider reaching out to a friend, family, or a member of the faculty you trust for help getting connected to support that can help. 
+
+If you are worried about a friend or classmate, consider reaching out to the
+[Baruch Campus Intervention
+Team](https://studentaffairs.baruch.cuny.edu/campus-intervention-team/).
+
+#### Physical Health
+
+[Healthy CUNY](https://www.healthycuny.org/) promotes well-being and a culture
+of health in order to foster the academic and life success of all CUNY students.
+They can connect you with a variety of 
+[campus-](https://www.healthycuny.org/cuny-health-centers) and
+[community](https://www.healthycuny.org/community-health-resources)-based
+healthcare providers. 
+
+[Baruch Health Services](https://studentaffairs.baruch.cuny.edu/health/) provides
+students with a full range of clinical health services. Call
+[646-312-2040](tel:646-312-2040) or email
+[StudentHealthCareCenter@baruch.cuny.edu](mailto:StudentHealthCareCenter@baruch.cuny.edu)
+to make an appointment.
+
+#### Food Security
+
+All CUNY students have access to [CUNY Food
+Pantries](https://www.cuny.edu/about/administration/offices/transformation/cuny-cares/food-pantry/) 
+located throughout the five boroughs, thanks to the [CUNY CARES](https://www.cuny.edu/about/administration/offices/transformation/cuny-cares/) 
+program. CUNY CARES is also able to help qualifying students with [SNAP 
+("Food Stamps") enrollment](https://www.cuny.edu/current-students/student-affairs/student-services/snap/).
+
+On campus, you can also access the [Bearcat Food
+Pantry](https://studentaffairs.baruch.cuny.edu/dean-of-students/bearcat-food-pantry/).
+
+#### Financial Security
+
+Baruch students experiencing heightened financial stress have access to
+[Student Emergency Grants](https://studentaffairs.baruch.cuny.edu/dean-of-students/emergencyfunds/)
+administered through the Office of the Dean of Students. 
+
+Note that funds are also available for students experiencing immigration-related
+financial stress.
+
+#### Immigration Status
+
+[CUNY Citizenship Now!](https://www.cuny.edu/about/administration/offices/communications-marketing/citizenship-now/) 
+provides confidential, high-quality immigration law services to all CUNY students. 
+
+Note that Citizenship Now!'s primary Manhattan office is located in the Heights, 
+not on the Baruch campus and that an appointment is strongly recommended. Call
+[646-664-9350](tel:646-664-9350) during business hours for more information.
+
+
+[^1]: Free to CUNY Students. Please contract instructor if having access issues
+
+[^2]: Language adapted from Professor Ryan Tibshirani (UC Berkeley).
+
+[^3]: Descriptions of Baruch and CUNY resources adapted from program websites.

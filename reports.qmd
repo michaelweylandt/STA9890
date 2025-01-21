@@ -1,0 +1,91 @@
+---
+title: "{{< var course.short >}} - Research Reports"
+format: 
+  html: 
+    code-copy: true
+---
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+DATES <- readr::read_csv("key_dates.csv") |>
+    rename(element = `Course Element`,
+           item    = `Item Number`) |>
+    mutate(dt = case_when(is.na(Time) ~ as.character(Date),
+                          TRUE ~ paste(Date, Time)))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(glue)
+library(rlang)
+library(yaml)
+get_rr_title <- function(N){
+    rr_file <- glue("reports/report0{N}.qmd")
+    rr_text <- readLines(rr_file, n=50)
+    
+    header_end <- which(grepl("---", rr_text))[2]
+    
+    header_info <- yaml.load(readLines(rr_file, n=header_end))
+    
+    header_info$rr_title %||% "TBD"
+}
+```
+
+In lieu of traditional homework, {{< var course.short >}} has three 
+"research reports" (one for each unit of the course). These research reports
+are intended to help you develop your skills in the *computational* and
+*methodological* aspects of Statistical Machine Learning. 
+
+
+Each Research Report must be submitted as a fully-typed PDF using the
+course Brightspace. (No handwritten work will be graded.) Each report
+must include all code used and should have several figures. Reports
+should be 6-8 pages, double spaced.
+
+### Research Reports
+
+#### Research Report #01: `r get_rr_title(01)`
+
+```{r echo=FALSE}
+rr <-  DATES |> filter(element == "Research Report", item == 1)
+```
+
+**Due Dates:**
+
+  - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+  - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
+  
+In [Research Report #01](./reports/report01.html), TBD.
+
+
+#### Research Report #02: `r get_rr_title(02)`
+
+```{r echo=FALSE}
+rr <-  DATES |> filter(element == "Research Report", item == 2)
+```
+
+**Due Dates:**
+
+  - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+  - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
+  
+In [Research Report #02](./reports/report02.html), TBD.
+
+
+#### Research Report #03: `r get_rr_title(03)`
+
+```{r echo=FALSE}
+rr <-  DATES |> filter(element == "Research Report", item == 3)
+```
+
+**Due Dates:**
+
+  - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+  - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
+  
+In [Research Report #03](./reports/report03.html), TBD.

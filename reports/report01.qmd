@@ -1,0 +1,39 @@
+---
+title: "{{< var course.short >}} Research Report #{{< meta rr_num >}}: {{< meta rr_title >}}"
+format:
+  html:
+    code-link: true
+rr_num: "01"
+rr_title: "TBD"
+---
+
+```{r echo=FALSE, message=FALSE}
+library(tidyverse)
+DATES <- readr::read_csv("../key_dates.csv") |>
+    rename(element=`Course Element`,
+           item=`Item Number`) |>
+    mutate(dt = case_when(is.na(Time) ~ as.character(Date),
+                          TRUE ~ paste(Date, Time)))
+```
+
+```{r echo=FALSE, warning=FALSE}
+library(glue)
+rr_id <- 1
+rr <-  DATES |> filter(element == "Research Report", 
+                       item == rr_id)
+```
+
+### Key Dates
+
+- Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+- **Initial Submission: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)` on Brightspace**
+
+*Estimated Time to Complete: 9 Hours*
+
+
+------------------------------------------------------------------------
+
+This work ©2025 by [Michael Weylandt](https://michael-weylandt.com) is licensed
+under a [Creative Commons BY-NC-SA 
+4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) license.
+![](http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png){width="10%"}

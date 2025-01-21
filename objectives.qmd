@@ -1,0 +1,159 @@
+---
+title: "{{< var course.short >}} - Course Learning Objectives"
+editor: 
+  markdown: 
+    wrap: 80
+filters:
+  - list-table
+---
+
+## Official Course Description - {{< var course.long >}}
+
+This course applies multiple regression techniques to the increasingly important
+study of very large data sets. Those techniques include linear and logistic
+model fitting, inference, and diagnostics. Methods with special applicability
+for Big Data will be emphasized, such as lasso and ridge regression. Issues of
+model complexity, the bias-variance tradeoff, and model validation will be
+studied in the context of large data sets. Methods that rely less on
+distributional assumptions are also introduced, including cross-validation,
+bootstrap resampling, and nonparametric methods. Students will learn dimension
+reduction methods, correlation analysis, and random forests.
+
+## Course Learning Objectives
+
+Students successfully completing {{< var course.short >}} will be able to:
+
+1.  Identify Key ML Tasks and Trade-Offs
+2.  Use Regression and Classification Tools to Develop Interpretable and
+    Accurate Predictive Models
+3.  Develop and Apply Ensemble Learning Strategies
+4.  Accurately Assess Model Performance Using CV, Hold-Out, Stability, and
+    Bootstrap Techniques
+5.  Use Unsupervised Methods to Find Meaningful Structure in Data
+6.  Apply Statistical Machine Learning Methods to Novel Data Structures and
+    Types
+7.  Generate and Communicate Insights via Statistical Machine Learning Methods
+
+The following course elements contribute to these goals:
+
+|   | Learning Goal 1 | Learning Goal 2 | Learning Goal 3 | Learning Goal 4 | Learning Goal 5 | Learning Goal 6 | Learning Goal 7 |
+|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
+| **Test #01** | **✓** | **✓** |  | **✓** |  |  |  |
+| **Research Report #01** | **✓** | **✓** |  | **✓** |  |  |  |
+| **Test #02** | **✓** | **✓** | **✓** | **✓** |  |  |  |
+| **Research Report #02** | **✓** | **✓** | **✓** | **✓** |  |  |  |
+| **Test #03** | **✓** |  | **✓** | **✓** | **✓** |  |  |
+| **Research Report #03** | **✓** |  | **✓** | **✓** | **✓** |  | **✓** |
+| **Course Competition** | **✓** | **✓** | **✓** | **✓** | **✓** | **✓** |  |
+| **In-Class Presentation** |  |  |  |  | **✓** | **✓** | **✓** |
+: Contribution of Course Elements to Learning Goals
+
+## Program Learning Goals
+
+This course contributes to the [program learning
+goals](https://zicklin.baruch.cuny.edu/faculty-research/faculty-staff/assurance-of-learning/)
+of several MS programs offered by the Zicklin School of Business.
+
+### MS in Business Analytics
+
+This course is intended to contribute to the following Program Learning Goals 
+for the MS in Business Analytics:
+
+::: {.list-table width="1,1,6" aligns="c,l,l" header-rows=1 .hover}
+
+  * - {{< var course.short >}} Learning Goal 
+    - MS BA Learning Goal
+    - Description
+  * - 
+    - Data Management
+    - Students will be able to apply methods, tools, and software for acquiring,
+      managing/storing, and accessing structured and unstructured data. Students
+      will also demonstrate knowledge of the strategic uses of data.
+  * - **✓**
+    - Foundational Statistical / Quantitative Skills 
+    - Students will be able to prepare data for statistical analysis, perform
+      basic exploratory and descriptive analysis as well as employ foundational
+      statistical techniques needed to analyze data.
+  * - **✓**
+    - Advanced Statistical/Quantitative Skills 
+    - Students will be able to build and interpret advanced predictive models.
+      Students will be able to combine business rules and mathematical models to
+      optimize business decisions from data.
+  * - **✓**
+    - Ethical Awareness
+    - Students will be able to articulate an understanding of ethical issues in
+      all phases of business analytics with particular emphasis on the new
+      possibilities afforded by the emergence of big data.
+  * - **✓**
+    - Professional Communication
+    - Students will be able to explain complex analytical models and their 
+      results orally and in writing to technical and non-technical/lay
+      audiences.
+  * - **✓**
+    - Knowledge Integration
+    - Students will be able to apply the three key types of analytics
+      (descriptive, predictive, and prescriptive) in a business domain to add
+      value to business decision-making.
+    
+:::
+
+
+### MS in Quantitative Methods & Modeling
+
+This course is intended to contribute to the following Program Learning Goals 
+for the MS in Quantitative Methods & Modeling:
+
+::: {.list-table width="1,1,6" aligns="c,l,l" header-rows=1 .hover}
+
+  * - {{< var course.short >}} Learning Goal 
+    - MS QMM Learning Goal
+    - Description
+  * - **✓**
+    - Operations Research & Mathematical Modeling
+    - Students will be able to effectively model, evaluate, and solve
+      quantitative (business) problems using quantitative modeling methods
+      (*e.g.*, deterministic and probabilistic operations research techniques).
+  * - **✓**
+    - Statistics 
+    - Students will be able to correctly apply appropriate statistical methods
+      when defining, solving, and analyzing problems.
+  * - **✓**
+    - Technology Competency 
+    - Students will be able to use current technological tools, including
+      spreadsheets and specialized software, when solving problems.
+  * - **✓**
+    - Professional Communication 
+    - Students will be able to effectively communicate their problem solving
+      methods and solutions to technical and non-technical audiences.
+
+:::
+
+
+### MS in Statistics
+
+This course is intended to contribute to the following Program Learning Goals for the MS in Statistics:
+
+
+::: {.list-table width="1,1,6" aligns="c,l,l" header-rows=1 .hover}
+
+  * - {{< var course.short >}} Learning Goal 
+    - MS Statistics Learning Goal
+    - Description
+  * - **✓**
+    - General Statistical Competence 
+    - Students will be able to apply appropriate probability models and
+      statistical techniques when analyzing problems form business and the other
+      fields.
+  * - **✓**
+    - Statistical Practice 
+    - Students will become familiar with the standard tools of statistical
+      practice for multiple regression, along with the tools of a subset of
+      specialized statistical areas such as multivariate analysis, applied
+      sampling, time series analysis, experimental design, data mining,
+      categorical analysis, and/or stochastic processes.
+  * - **✓**
+    - Technology Competency 
+    - Students will learn to use one or more of the benchmark statistical
+      software platforms, such as `SAS` or `R`.
+:::
+
