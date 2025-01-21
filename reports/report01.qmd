@@ -97,6 +97,12 @@ At a minimum, these should include the following elements:
     cross-validation to determine the optimal regularization level
   - Compare the MSE of RR and OLS in the non-linear setting
 
+Finally, note that because we are interested in bias, variance, and MSE -- 
+each of which is defined with respect to a (known) DGP -- we only use
+statistical simulation for this project. In [Report #02](./report02.html)
+and [Report #03](./report03.html), you will apply methods to real
+(non-simulated) data. 
+
 ### Additional Background
 
 *Gradient Descent* methods fit models by taking small steps in the
@@ -137,6 +143,50 @@ off a fraction of $\beta^{(k)}$ at each step, weight decay prevents
 the estimate from ever getting to be too big (hence the name). In
 the case of OLS, this can be shown to be equivalent to a form of 
 ridge regression.[^rr]
+
+The *MSE Existence Theorem* for Ridge Regression comes in two forms: 
+
+- Estimation Variant. Let 
+  $$\text{MSE}_i(\hat{\beta}) = \mathbb{E}_{\mathbf{X}, \mathbf{y}}[(\hat{\beta_i} - \beta_i^*)^2]$$ 
+  denote the mean squared estimation error in the $i^\text{th}$ component of
+  $\hat{\beta}$ as an estimator of the true regression coefficients $\beta^*$. 
+  Here the expectation is taken over random realizations of both the design
+  matrix $\mathbf{X}$ and the response vector $\mathbf{y}$, as well as the 
+  estimator $\hat{\beta}$ which is a function of $\mathbf{X}, \mathbf{y}$. 
+  
+  Then, there exists some positive value $\lambda > 0$ such that 
+  
+  $$\text{MSE}_i(\hat{\beta}_{\text{OLS}}) > \text{MSE}_i(\hat{\beta}_{\text{RR}, \lambda})$$
+  
+  where $\hat{\beta}_{\text{RR}, \lambda}$ is the ridge regression estimate
+  with regularization parameter $\lambda$. 
+
+- Prediction Variant. Let 
+  $$\text{MSE}(\hat{\beta}) = \mathbb{E}_{\mathbf{X}, \mathbf{y}, \mathbf{y}'}[\|\mathbf{X}\hat{\beta} - \mathbf{y}'\|_2^2$$ 
+  denote the mean squared prediction error associated with the estimator
+  $\hat{\beta}$. 
+  Here the expectation is taken over random realizations of both the design
+  matrix $\mathbf{X}$ and the response vector $\mathbf{y}$ used for training,
+  as well as the test data vector $\mathbf{y}'$ which must be drawn from the
+  same DGP. 
+  
+  Then, there exists some positive value $\lambda > 0$ such that 
+  
+  $$\text{MSE}_i(\hat{\beta}_{\text{OLS}}) > \text{MSE}_i(\hat{\beta}_{\text{RR}, \lambda})$$
+  
+  where $\hat{\beta}_{\text{RR}, \lambda}$ is the ridge regression estimate
+  with regularization parameter $\lambda$. 
+
+It is important to note that both of these are statements *in expectation*: 
+OLS may perform better than RR on a single realization, but in average - over 
+many realizations - suitably-tuned RR will perform better. 
+
+Also, we note that the MSE Existence Theorem does not give any practical
+advice on selecting $\lambda$; we have to fall back on our standard
+approaches, such as cross-validation, for doing so. 
+
+Finally, note that the prediction version of the MSE Existence Theorem only
+holds when we look at test (out-of-sample) prediction accuracy. OLS is the optimal linear method for in-sample MSE **always and forever.**
 
 [^rr]: A somewhat remarkable finding of much recent research is that
 _many_ 'new' regularization methods pioneered for fitting neural
