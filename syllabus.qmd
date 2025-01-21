@@ -8,15 +8,22 @@ filters:
 #| echo: false
 #| message: false
 library(tidyverse)
-class_date <- function(n){
-    read_csv("key_dates.csv") |>
+class_date <- function(n, details=FALSE){
+    c <- read_csv("key_dates.csv") |>
         filter(`Course Element` == "Class Session") |>
-        filter(`Item Number` == n) |>
-        pull(Date) |>
-        as.Date() |>
-        format("%Y-%m-%d")
+        filter(`Item Number` == n)
+    
+    if(details){
+        c |> pull(Details)
+    } else {
+        c |> pull(Date) |>
+             as.Date() |>
+             format("%Y-%m-%d")
+    }
 }
 ```
+
+
 
 ```{r}
 #| echo: false
@@ -78,6 +85,9 @@ report_date <- function(n, due=TRUE){
 }
 ```
 
+
+**`All syllabus and course schedule provisions subject to change with suitable advance notice.`**
+
 ### Instructor
 
 -   [Professor Michael Weylandt](https://michael-weylandt.com)
@@ -129,9 +139,9 @@ weighted as follows:
   - Test 2: `r test_date(02)` - `r test_date(02, details=TRUE)`
   - Test 3: `r test_date(03)` - `r test_date(03, details=TRUE)`
 - 33.3% Research Reports (Best two of three; 100 points each, 200 points total)
-  - Report 1: `r report_date(01)`
-  - Report 2: `r report_date(02)`
-  - Report 3: `r report_date(03)`
+  - Report 1: Due `r report_date(01)`
+  - Report 2: Due `r report_date(02)`
+  - Report 3: Due `r report_date(03)`
 - 33.3% Prediction Competition (200 points total)
 
 Final course grades will be curved in accordance with relevant program,
@@ -169,12 +179,12 @@ If you feel an assignment has been improperly graded, please contact the instruc
 
 #### Late Work Policy
 
-Students are given 4 **late days** that can be used at any time during the
+Students are given 4 **Late Days** that can be used at any time during the
 semester, without instructor pre-approval or permission, on any of the submitted
 elements of this course (competition final report, research reports). When late
 days are used, work is accepted without penalty; late work submitted beyond the
-four late days will not be accepted. Late days are used on a "first come, first
-serve" basis, so if 2 late days are used on the first two research reports, any
+four late days will not be accepted. Late Days are used on a "first come, first
+serve" basis, so if 2 Late Days are used on the first two research reports, any
 late submission on the final research report will not be accepted. 
 
 Outside of the use of Late Days, no late work will be accepted. Late Days cannot
@@ -183,6 +193,35 @@ be applied to in-class activities such as tests or presentations.
 Individual exceptions will be made i) with *prior written* approval of
 instructor; or ii) *ex post* with written note from the [Office of the
 Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
+
+#### Attendance Policy
+
+Attendance is not required for this course and absences do not need
+to be excused. Make-up opportunities for Quizzes and Tests missed while
+absent will not provided except with i) with *prior written* approval
+of instructor; or ii) *ex post* with written note from the [Office of
+the Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
+
+
+### Pre- and Post-Reading Suggestions
+
+Students learn material most effectively when exposed to it on multiple
+occasions, ideally using alternative presentations strategies and formats.[^2]
+To this end, suggested *pre-reading* and *post-reading* is provided for each
+week of the course. Students are encouraged to *pre-read* the recommended text,
+which typically presents that week's material in a less technical / more
+intuitive manner, before each week's course session. Similarly, students are
+encouraged to review the *post-reading* for each week after lecture to see
+additional examples of topics covered. 
+
+[^2]: Haoyu Chen and Jiongjiong Yang. "Multiple Exposures Enhance Both Item Memory and Contextual Memory over Time". *Frontiers in Psychology* **11**. November 2020. [DOI:10.3389/fpsyg.2020.565169](https://doi.org/10.3389/fpsyg.2020.565169)
+
+While lectures will focus primarily on 'big picture' and 'major themes', the
+recommended reading, especially the post-reading, provides additional coverage
+of relevant technical detail. Note that pre- and post-reading are *entirely
+optional* and will not be directly assessed. I have included (overlapping)
+presentations from various text books to encourage students to find the style
+and presentation that works best for them. 
 
 ### Tentative Course Schedule
 
@@ -193,32 +232,55 @@ Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
      - Topics
      - Pre-Reading
      - Post-Reading
+     - Research Reports
      - Additional Notes
-     - Due Dates
      
    * - 1
      - `r class_date (01)`
-     - Course Overview & Introduction to ML: 
+     - `r class_date (01, details=TRUE)`: 
        - Taxonomy of Learning
        - In-Sample and Out-of-Sample Accuracy
        - Complexity and Overfitting
        - Nearest Neighbor Methods
-     - 
+     - None
+     - ISL §2
+     
+       HR §1-4
        
+       UML §1-2, 5, 19
    * - 2
      - `r class_date (02)`
-     - Regression I:
+     - `r class_date (02, details=TRUE)`: 
        - Review of OLS
        - Linear Algebra Review
        - Introduction to Convex Optimization
+     - DFO §2.1-2.6, §3.1-3.4, §5.1-5.2, §5.8, §7.1, §7.3, §9.1-9.2
+     
+       ISL §3
+     - BV §2-4
+     
+       HR §5, 14
+       
+       UML §12, §14
+     - [Research Report #01](./reports/report01.html) released on `r report_date(01, due=FALSE)` - due on `r report_date(01, due=TRUE)`
        
    * - 3
      - `r class_date (03)`
-     - Regression II:
+     - `r class_date (03, details=TRUE)`: 
        - Regularization
        - Ridge Regression
        - Sparsity and the Lasso
        - Supervised Model Selection
+     - DFO §8.1-8.3
+     
+       ISL §6
+     - BV §6
+     
+       SLS §2, 4, 5
+       
+       PML-1 §11.1-11.4
+       
+       UML §11, 13, 25.1
 
    * - 
      - `r holiday_date(1)`
@@ -227,40 +289,71 @@ Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
        
    * - 4
      - `r class_date (04)`
-     - Regression III: 
+     - `r class_date (04, details=TRUE)`: 
        - Non-Linear Methods
        - Kernel Trick
        - Splines
+     - DFO §12.4
+       
+       ISL §7
+     - PML-1 §11.5-11.8, §17.1
+     
+       UML §16
        
    * - 5
      - `r class_date (05)`
      <td colspan="5" style="text-align:center"> **Mid-Term Test I: Regression** 
-       <br> Introduction to Classification </td> 
+       <br> `r class_date (05, details=TRUE)`  </td> 
 
    * - 6
      - `r class_date (06)`
-     - Classification I:
+     - `r class_date (06, details=TRUE)`: 
        - Basics of Classification
        - Mixture Methods & Generative Methods
+     - DFO §11.1-11.5
+     
+       ISL §4
+     - PML-1 §10, 12
+     
+       UML §9, 24
+     - [Research Report #01](./reports/report01.html) Due on **`r report_date(01, due=TRUE)`** (NB - Friday before class)
+     
+       [Research Report #02](./reports/report02.html) released on `r report_date(02, due=FALSE)` - due on `r report_date(02, due=TRUE)`
 
    * - 7
      - `r class_date (07)`
-     - Classification II:
+     - `r class_date (07, details=TRUE)`: 
        - Discriminative Methods
        - Multi-Class Classification
        - Fairness in Machine Learning
-
+     - DFO §12.1-12.6
+     
+       ISL §9
+     - SLS §3
+     
+       PML-1 §9
+       
+       UML §15
+       
    * - 8
      - `r class_date (08)`
-     - Ensemble Learning & Resampling Methods
+     - `r class_date (08, details=TRUE)`
+     - ISL §5
+     - SF §1-3, 5
+     
+       UML §10
      
    * - 9
      - `r class_date (09)`
-     - Tree-Based Methods
+     - `r class_date (09, details=TRUE)`
+     - ISL §8
+     - PML-1 §18
+     
+       UML §18
      
    * - 10
      - `r class_date (10)`
-      <td colspan="5" style="text-align:center"> **Mid-Term Test II: Classification, Ensemble Learning, Tree-Based Methods** <br> Introduction to Unsupervised Learning </td> 
+      <td colspan="5" style="text-align:center"> **Mid-Term Test II: Classification, Ensemble Learning, Tree-Based Methods** <br> `r class_date (10, details=TRUE)` </td> 
 
    * - 
      - `r holiday_date(2)`
@@ -268,31 +361,47 @@ Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
 
    * - 11
      - `r class_date (11)`
-     - Unsupervised Learning I: 
+     - `r class_date (11, details=TRUE)`
        - Dimension Reduction
        - Principal Components Analysis
        - Covariance Estimation
+     - DFO §3.5, §3.8, §4.2-4.6, §10.1-10.8
+     
+       ISL §12.1-12.3
+     - SLS §7-8
+     
+       PML-1 §20.1-20.2
+       
+       UML §23.1
+     - [Research Report #02](./reports/report02.html) Due on **`r report_date(02, due=TRUE)`** (NB - Friday before class)
+     
+       [Research Report #03](./reports/report03.html) released on `r report_date(03, due=FALSE)` - due on `r report_date(03, due=TRUE)`
      
 
    * - 12
      - `r class_date (12)`
-     - Unsupervised Learning II: 
+     - `r class_date (12, details=TRUE)`
        - Clustering
        - Density Estimation
        - Outlier Detection
        - Manifold Learning
        
+     - ISL §12.4-12.5
+     - PML-1 §20.3-21.6
+     
+       UML §22
+       
    * - 13
      - `r class_date (13)`
-     <td colspan="5" style="text-align:center"> **Mid-Term Test III: Unsupervised Learning**      <br> Introduction to Generative Models </td> 
+     <td colspan="5" style="text-align:center"> **Mid-Term Test III: Unsupervised Learning**      <br> `r class_date (13, details=TRUE)` </td> 
      
    * - 14
      - `r class_date(14)`
-     <td colspan="5" style="text-align:center"> **Course Project Presentations** <br> **Course Wrap-Up** </td>
+     <td colspan="4" style="text-align:center"> **Course Project Presentations** <br> **`r class_date (14, details=TRUE)`** </td>
+     - [Research Report #03](./reports/report01.html) Due on **`r report_date(03, due=TRUE)`** (NB - Friday before class)
 ::: 
 
 
-**`All syllabus and course schedule provisions subject to change with suitable advance notice.`**
 
 
 ### Workload Expectations
@@ -333,3 +442,6 @@ course with:
 [^gc]: The CUNY Graduate Center has a useful [summary of these
 expectations](https://gc.catalog.cuny.edu/general-information/credithourpolicy).
 Baruch courses follow the same standards. 
+
+
+**`All syllabus and course schedule provisions subject to change with suitable advance notice.`**

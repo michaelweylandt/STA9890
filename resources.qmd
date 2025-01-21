@@ -6,22 +6,26 @@ title: "{{< var course.short >}} - Additional Resources and Course Policies"
 
 There are no required textbooks for this course.
 Supplemental readings and practice problems will be
-assigned from the following freely-available resources: 
+assigned from the following readily-available resources: 
 
 - [*Mathematics for Machine Learning* by Diesenroth, Faisal, and Ong (DFO)](http://mml-book.github.io)
+- [*Convex Optimization* by Boyd and Vandenberghe (BV)](https://web.stanford.edu/~boyd/cvxbook/)
 - [*Introduction to Statistical Learning* by James, 
   Witten, Hastie, and Tibshirani (ISL)](https://www.statlearning.com/)
 - [*Elements of Statistical Learning* by Hastie Tibshirani,
   and Freedman (ESL)](https://hastie.su.domains/ElemStatLearn/)
+- [*Statistical Learning with Sparsity* by Hastie, Tibshirani, and
+   Wainwright (SLS)](https://hastie.su.domains/StatLearnSparsity/)
 - [*Pattern Recognition and Machine Learning* by Bishop 
   (PRML)](https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/)
 - [*Probabilistic Machine Learning: An Introduction* by Murphy (PML-1)](https://probml.github.io/pml-book/book1.html)
 - [*Probabilistic Machine Learning: Advanced Topics* by Murphy (PML-2)](https://probml.github.io/pml-book/book2.html)
 - [*Gaussian Processes for Machine Learning* by Rasmussen and Williams (GPML)](https://doi.org/10.7551/mitpress/3206.001.0001)
 - [*Reinforcement Learning* by Sutton and Hutto (RL)](http://www.incompleteideas.net/book/the-book-2nd.html)
-- [*Boosting: Foundations and Algorithms} by Schapire and Freund (SF)](https://doi.org/10.7551/mitpress/8291.001.0001)
+- [*Boosting: Foundations and Algorithms* by Schapire and Freund (SF)](https://doi.org/10.7551/mitpress/8291.001.0001)
 - [*Foundations of Machine Learning* by Mohri, Rostamizadeh, and Talwalkar (FML)](https://cs.nyu.edu/~mohri/mlbook/)
 - [*Understanding Machine Learning: From Theory to Algorithms* by Shalev-Shwartz and Ben-David (UML)](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/)
+- [*Patterns, Predictions, and Actions* by Hardt and Recht (HR)](https://mlstory.org)
 
 ### Course Discussion Board
 
@@ -169,9 +173,6 @@ provides confidential, high-quality immigration law services to all CUNY student
 Note that Citizenship Now!'s primary Manhattan office is located in the Heights, 
 not on the Baruch campus and that an appointment is strongly recommended. Call
 [646-664-9350](tel:646-664-9350) during business hours for more information.
-
-
-[^1]: Free to CUNY Students. Please contract instructor if having access issues
 
 [^2]: Language adapted from Professor Ryan Tibshirani (UC Berkeley).
 
