@@ -236,7 +236,9 @@ window.Quarto = {
 <li>Compare the MSE of RR and OLS in the non-linear setting</li>
 </ul>
 </li>
-</ul></section><section id="additional-background" class="level3"><h3 class="anchored" data-anchor-id="additional-background">Additional Background</h3>
+</ul>
+<p>Finally, note that because we are interested in bias, variance, and MSE – each of which is defined with respect to a (known) DGP – we only use statistical simulation for this project. In <a href="./report02.html">Report #02</a> and <a href="./report03.html">Report #03</a>, you will apply methods to real (non-simulated) data.</p>
+</section><section id="additional-background" class="level3"><h3 class="anchored" data-anchor-id="additional-background">Additional Background</h3>
 <p><em>Gradient Descent</em> methods fit models by taking small steps in the direction opposite the gradient of the loss function. (Recall the gradient points in the direction of steepest increase, so moving in the opposite direction leads to a decrease in error.)</p>
 <p>Abstractly, given a differentiable loss function, <span class="math inline">\(\mathcal{L}(\beta)\)</span>, gradient descent proceeds as follows:</p>
 <ol type="i">
@@ -272,6 +274,24 @@ We will almost never get <em>exact</em> equality, so you need to pick a norm and
 <p>The method of <em>weight-decay</em> modifies the gradient update as follows:</p>
 <p><span class="math display">\[\beta^{(k+1)} = \beta^{(k)} - c \nabla\mathcal{L}|_{\beta = \beta^{(k)}} - \omega \beta^{(k)}\]</span></p>
 <p>Here <span class="math inline">\(\omega\)</span> is another small constant scalar value. By subtracting off a fraction of <span class="math inline">\(\beta^{(k)}\)</span> at each step, weight decay prevents the estimate from ever getting to be too big (hence the name). In the case of OLS, this can be shown to be equivalent to a form of ridge regression.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>The <em>MSE Existence Theorem</em> for Ridge Regression comes in two forms:</p>
+<ul>
+<li>
+<p>Estimation Variant. Let <span class="math display">\[\text{MSE}_i(\hat{\beta}) = \mathbb{E}_{\mathbf{X}, \mathbf{y}}[(\hat{\beta_i} - \beta_i^*)^2]\]</span> denote the mean squared estimation error in the <span class="math inline">\(i^\text{th}\)</span> component of <span class="math inline">\(\hat{\beta}\)</span> as an estimator of the true regression coefficients <span class="math inline">\(\beta^*\)</span>. Here the expectation is taken over random realizations of both the design matrix <span class="math inline">\(\mathbf{X}\)</span> and the response vector <span class="math inline">\(\mathbf{y}\)</span>, as well as the estimator <span class="math inline">\(\hat{\beta}\)</span> which is a function of <span class="math inline">\(\mathbf{X}, \mathbf{y}\)</span>.</p>
+<p>Then, there exists some positive value <span class="math inline">\(\lambda &gt; 0\)</span> such that</p>
+<p><span class="math display">\[\text{MSE}_i(\hat{\beta}_{\text{OLS}}) &gt; \text{MSE}_i(\hat{\beta}_{\text{RR}, \lambda})\]</span></p>
+<p>where <span class="math inline">\(\hat{\beta}_{\text{RR}, \lambda}\)</span> is the ridge regression estimate with regularization parameter <span class="math inline">\(\lambda\)</span>.</p>
+</li>
+<li>
+<p>Prediction Variant. Let <span class="math display">\[\text{MSE}(\hat{\beta}) = \mathbb{E}_{\mathbf{X}, \mathbf{y}, \mathbf{y}'}[\|\mathbf{X}\hat{\beta} - \mathbf{y}'\|_2^2\]</span> denote the mean squared prediction error associated with the estimator <span class="math inline">\(\hat{\beta}\)</span>. Here the expectation is taken over random realizations of both the design matrix <span class="math inline">\(\mathbf{X}\)</span> and the response vector <span class="math inline">\(\mathbf{y}\)</span> used for training, as well as the test data vector <span class="math inline">\(\mathbf{y}'\)</span> which must be drawn from the same DGP.</p>
+<p>Then, there exists some positive value <span class="math inline">\(\lambda &gt; 0\)</span> such that</p>
+<p><span class="math display">\[\text{MSE}_i(\hat{\beta}_{\text{OLS}}) &gt; \text{MSE}_i(\hat{\beta}_{\text{RR}, \lambda})\]</span></p>
+<p>where <span class="math inline">\(\hat{\beta}_{\text{RR}, \lambda}\)</span> is the ridge regression estimate with regularization parameter <span class="math inline">\(\lambda\)</span>.</p>
+</li>
+</ul>
+<p>It is important to note that both of these are statements <em>in expectation</em>: OLS may perform better than RR on a single realization, but in average - over many realizations - suitably-tuned RR will perform better.</p>
+<p>Also, we note that the MSE Existence Theorem does not give any practical advice on selecting <span class="math inline">\(\lambda\)</span>; we have to fall back on our standard approaches, such as cross-validation, for doing so.</p>
+<p>Finally, note that the prediction version of the MSE Existence Theorem only holds when we look at test (out-of-sample) prediction accuracy. OLS is the optimal linear method for in-sample MSE <strong>always and forever.</strong></p>
 </section><section id="possible-topics-for-additional-research" class="level3"><h3 class="anchored" data-anchor-id="possible-topics-for-additional-research">Possible Topic(s) for Additional Research</h3>
 <p>Recent ML research has focused on the case of <em>overparameterized</em> models: that is, models with more parameters than data points used for training. We have already seen ridge regression as one way to deal with this problem. Another approach is to simply use an iterative method, such as gradient descent, and stop it when the training error reaches zero. (This is a non-unique global minimum for the convex OLS problem.) How does this procedure compare? Does it complicate our understanding of the bias-variance trade-off?</p>
 <p>Another recent line of research generalizes the “BLUE” property, showing that OLS is in an appropriate sense “BUE” - it is still optimal even if we allow for (certain types of) non-linear estimators as well. Can you show this?</p>
