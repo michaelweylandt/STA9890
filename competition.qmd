@@ -1,0 +1,7 @@
+---
+title: "{{< var course.short >}} - Course Prediction Competition"
+---
+
+In lieu of a final exam, {{< var course.short >}} has a prediction competition
+worth approximately one-third of your final grade. Details about this 
+prediction competition will be posted here. 

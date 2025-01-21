@@ -1,0 +1,35 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "STA 9890"
+  description:
+    Statistical Learning for Data Mining
+  site-url: "https://michael-weylandt.com/STA9890/"
+  repo-url: https://github.com/michaelweylandt/STA9890
+  repo-actions: [edit, source, issue]
+  navbar:
+    background: primary
+    search: false
+    right:
+      - text: "Syllabus"
+        href: "./syllabus.html"
+      - text: "Handouts and Additional Notes"
+        href: "./notes.html"
+      - text: "Research Reports"
+        href: "/reports.html"
+      - text: "Course Competition"
+        href: "./competition.html"
+      - text: "Additional Resources"
+        href: "./resources.html"
+      - text: "Learning Objectives"
+        href: "./objectives.html"
+
+format:
+  html:
+    theme: sandstone
+    margin-left: 0em
+    toc: true
+    code-copy: true
+    toc_depth: 5

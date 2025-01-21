@@ -1,0 +1,29 @@
+Course Element,Item Number,Action,Responsible Party,Date,Time,Details
+Class Session,1,,Instructor,2025-01-28,6:05pm ET,Course Overview & Introduction to ML
+Class Session,2,,Instructor,2025-02-04,6:05pm ET,Regression I
+Class Session,3,,Instructor,2025-02-11,6:05pm ET,Regression II
+Class Session,4,,Instructor,2025-02-25,6:05pm ET,Regression III
+Class Session,5,,Instructor,2025-03-04,6:05pm ET,Introduction to Classification
+Class Session,6,,Instructor,2025-03-11,6:05pm ET,Classification I
+Class Session,7,,Instructor,2025-03-18,6:05pm ET,Classification II
+Class Session,8,,Instructor,2025-03-25,6:05pm ET,Ensemble Learning & Resampling Methods
+Class Session,9,,Instructor,2025-04-01,6:05pm ET,Tree-Based Methods
+Class Session,10,,Instructor,2025-04-08,6:05pm ET,Introduction to Unsupervised Learning
+Class Session,11,,Instructor,2025-04-22,6:05pm ET,Unsupervised Learning I
+Class Session,12,,Instructor,2025-04-29,6:05pm ET,Unsupervised Learning II
+Class Session,13,,Instructor,2025-05-06,6:05pm ET,Introduction to Generative Models
+Class Session,14,,Instructor,2025-05-13,6:05pm ET,Course Wrap-Up
+Holiday,1,,,2025-02-18,,No class: Baruch on Monday Schedule (President's Day Make-Up)
+Holiday,2,,,2025-04-15,,No class: Baruch Spring Recess
+Test,1,,Students,2025-03-04,6:05pm ET,Theory of Supervised Learning; Regression 
+Test,2,,Students,2025-04-08,6:05pm ET,Classification; Ensemble Learning; Tree-Based Methods
+Test,3,,Students,2025-05-06,6:05pm ET,Unsupervised Learning
+Research Report,1,,Instructor,2025-02-04,,Research Report I Released
+Research Report,1,,Students,2025-03-07,11:45pm ET,Research Report I Due
+Research Report,2,,Instructor,2025-03-11,,Research Report II Released
+Research Report,2,,Students,2025-04-11,11:45pm ET,Research Report II Due
+Research Report,3,,Instructor,2025-04-22,,Research Report III Released
+Research Report,3,,Students,2025-05-09,11:45pm ET,Research Report III Due
+Prediction Competition,,,Instructor,TBD,,Prediction Competition Opened
+Prediction Competition,,,Students,2025-05-13,6:05pm ET,In-Class Presentations
+Prediction Competition,,,Students,2025-05-20,11:45pm ET,Final Report

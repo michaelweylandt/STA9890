@@ -1,0 +1,135 @@
+[
+  {
+    "objectID": "competition.html",
+    "href": "competition.html",
+    "title": "STA 9890 - Course Prediction Competition",
+    "section": "",
+    "text": "In lieu of a final exam, STA 9890 has a prediction competition worth approximately one-third of your final grade. Details about this prediction competition will be posted here."
+  },
+  {
+    "objectID": "reports/report02.html",
+    "href": "reports/report02.html",
+    "title": "STA 9890 Research Report #02: TBD",
+    "section": "",
+    "text": "Key Dates\n\nReleased to Students: 2025-03-11\nInitial Submission: 2025-04-11 11:45pm ET on Brightspace\n\nEstimated Time to Complete: 9 Hours\n\nThis work ©2025 by Michael Weylandt is licensed under a Creative Commons BY-NC-SA 4.0 license."
+  },
+  {
+    "objectID": "resources.html",
+    "href": "resources.html",
+    "title": "STA 9890 - Additional Resources and Course Policies",
+    "section": "",
+    "text": "There are no required textbooks for this course. Supplemental readings and practice problems will be assigned from the following freely-available resources:\n\nMathematics for Machine Learning by Diesenroth, Faisal, and Ong (DFO)\nIntroduction to Statistical Learning by James, Witten, Hastie, and Tibshirani (ISL)\nElements of Statistical Learning by Hastie Tibshirani, and Freedman (ESL)\nPattern Recognition and Machine Learning by Bishop (PRML)\nProbabilistic Machine Learning: An Introduction by Murphy (PML-1)\nProbabilistic Machine Learning: Advanced Topics by Murphy (PML-2)\nGaussian Processes for Machine Learning by Rasmussen and Williams (GPML)\nReinforcement Learning by Sutton and Hutto (RL)\n*Boosting: Foundations and Algorithms} by Schapire and Freund (SF)\nFoundations of Machine Learning by Mohri, Rostamizadeh, and Talwalkar (FML)\nUnderstanding Machine Learning: From Theory to Algorithms by Shalev-Shwartz and Ben-David (UML)\n\n\n\nSTA 9890 will use Piazza as the course discussion board. Students are encouraged to direct all questions about course topics or logistics to Piazza; use of a public anonymous discussion board allows students to benefit from the insights of their classmates and allows instructors to answer questions publicly to the benefit of all students.\nStudents are encouraged to use Piazza’s private question feature if they need to contact the instructor directly. Please only use private questions for personal inquiries: questions about the technical substance of the course can and should be asked (pseudonymously) in the public section of Piazza.\nPiazza login information will be distributed through CUNY Brightspace.\n\n\n\nStudents are encouraged to make use of any and all external resources, including generative AI tools, for at home study and for practice problems. Students are strongly encouraged to collaborate on weekly practice problems. You are ultimately responsible for the correctness of any submitted materials - “the AI told me so” is not a valid defense.\nThe instructor will provide a formula sheet for use during in-class exams. No alternative resources may be used during these activities.\nStudents may use online resources, such as blog posts, discussion fora, etc. for the Research Reports and Course Competition but Generative AI tools are specifically disallowed.\n\nException: Coding Assistance Tools, e.g., GitHub CoPilot, may be used for the Research Reports and Course Competition. Their usage is limited to coding your ideas. They may not be used as idea generation tools.\n\nThe era of Generative AI is challenging and fast-paced. If you are unsure whether a tool is allowed in this course, please reseach out to the instructor before using it. In matters of Academic Integrity, it is far better to ask permission than forgiveness."
+  },
+  {
+    "objectID": "resources.html#course-resources",
+    "href": "resources.html#course-resources",
+    "title": "STA 9890 - Additional Resources and Course Policies",
+    "section": "",
+    "text": "There are no required textbooks for this course. Supplemental readings and practice problems will be assigned from the following freely-available resources:\n\nMathematics for Machine Learning by Diesenroth, Faisal, and Ong (DFO)\nIntroduction to Statistical Learning by James, Witten, Hastie, and Tibshirani (ISL)\nElements of Statistical Learning by Hastie Tibshirani, and Freedman (ESL)\nPattern Recognition and Machine Learning by Bishop (PRML)\nProbabilistic Machine Learning: An Introduction by Murphy (PML-1)\nProbabilistic Machine Learning: Advanced Topics by Murphy (PML-2)\nGaussian Processes for Machine Learning by Rasmussen and Williams (GPML)\nReinforcement Learning by Sutton and Hutto (RL)\n*Boosting: Foundations and Algorithms} by Schapire and Freund (SF)\nFoundations of Machine Learning by Mohri, Rostamizadeh, and Talwalkar (FML)\nUnderstanding Machine Learning: From Theory to Algorithms by Shalev-Shwartz and Ben-David (UML)\n\n\n\nSTA 9890 will use Piazza as the course discussion board. Students are encouraged to direct all questions about course topics or logistics to Piazza; use of a public anonymous discussion board allows students to benefit from the insights of their classmates and allows instructors to answer questions publicly to the benefit of all students.\nStudents are encouraged to use Piazza’s private question feature if they need to contact the instructor directly. Please only use private questions for personal inquiries: questions about the technical substance of the course can and should be asked (pseudonymously) in the public section of Piazza.\nPiazza login information will be distributed through CUNY Brightspace.\n\n\n\nStudents are encouraged to make use of any and all external resources, including generative AI tools, for at home study and for practice problems. Students are strongly encouraged to collaborate on weekly practice problems. You are ultimately responsible for the correctness of any submitted materials - “the AI told me so” is not a valid defense.\nThe instructor will provide a formula sheet for use during in-class exams. No alternative resources may be used during these activities.\nStudents may use online resources, such as blog posts, discussion fora, etc. for the Research Reports and Course Competition but Generative AI tools are specifically disallowed.\n\nException: Coding Assistance Tools, e.g., GitHub CoPilot, may be used for the Research Reports and Course Competition. Their usage is limited to coding your ideas. They may not be used as idea generation tools.\n\nThe era of Generative AI is challenging and fast-paced. If you are unsure whether a tool is allowed in this course, please reseach out to the instructor before using it. In matters of Academic Integrity, it is far better to ask permission than forgiveness."
+  },
+  {
+    "objectID": "resources.html#academic-integrity-policy",
+    "href": "resources.html#academic-integrity-policy",
+    "title": "STA 9890 - Additional Resources and Course Policies",
+    "section": "Academic Integrity Policy",
+    "text": "Academic Integrity Policy\nI fully support CUNY’s Policy on Academic Integrity, which states, in part:\n\nAcademic dishonesty is prohibited in The City University of New York. Penalties for academic dishonesty include academic sanctions, such as failing or otherwise reduced grades, and/or disciplinary sanctions, including suspension or expulsion.\n\n\nAcademic integrity is at the core of a college or university education. Faculty assign essays, exams, quizzes, projects, and so on both to extend the learning done in the classroom and as a means of assessing that learning. When students violate the academic integrity policy (i.e., “cheat”), they are committing an act of theft that can cause real harm to themselves and others including, but not limited to, their classmates, their faculty, and the caregivers who may be funding their education. Academic dishonesty confers an unfair advantage over others, which undermines educational equity and fairness. Students who cheat place their college’s accreditation and their own future prospects in jeopardy.\n\nIn this course, expectations for academic integrity are straightforward: no use of unauthorized materials on weekly quizzes or mid-semester tests. Unless explicitly stated otherwise by the instructor in writing, the only authorized materials allowed during in class assessment are the instructor-provided formula sheets.\nAcademic sanctions in this class will range from an F on the Assignment to an F in this Course. A report of suspected academic dishonesty will be sent to the Office of the Dean of Students.\nStudents are encouraged to contact the instructor with any questions or concerns related to matters of academic integrity."
+  },
+  {
+    "objectID": "resources.html#course-accomodations",
+    "href": "resources.html#course-accomodations",
+    "title": "STA 9890 - Additional Resources and Course Policies",
+    "section": "Course Accomodations",
+    "text": "Course Accomodations\n\nDisability Services\nIt is CUNY policy to provide Accommodations and Academic Adjustments to students with disabilities.\nAny student who has a disability who may need accommodations in this class should register as early as possible with Student Disability Services (SDS). Your registration with Student Disability Services is confidential, and is not recorded on your Baruch Academic Record. SDS can be reached by email at disability.services@baruch.cuny.edu, by phone at 646-312-4590, or in person at NVC 2-272.\nPlease note that the instructor cannot provide accommodations unless requested by SDS.\n\n\nReligious Accomodations\nIt is CUNY policy to provide accommodations for students’ sincerely held religious beliefs. If a religious accommodation is requested, please contact the instructor at least two weeks in advance.\n\n\nUnexcused Abscence Policy\nAttendance is not required, but lecture recordings will not be provided. Students are responsible for the content of all sessions missed."
+  },
+  {
+    "objectID": "resources.html#personal-resources2",
+    "href": "resources.html#personal-resources2",
+    "title": "STA 9890 - Additional Resources and Course Policies",
+    "section": "Personal Resources1",
+    "text": "Personal Resources1\nTake care of yourself. Do your best to maintain a healthy lifestyle this semester by eating well, exercising, avoiding drugs and alcohol, getting enough sleep and taking some time to relax. This will help you achieve your goals and cope with stress.\nAll of us benefit from support during times of struggle. You are not alone. Asking for support sooner rather than later is often helpful.\n\nMental Health Resources\nIf you or anyone you know experiences significant academic stress, difficult life events, or feelings like anxiety or depression, I strongly encourage you to seek support.\nThe Baruch Counselling Center is here to help. You can visit them in person at 137 E 25th St, 9th floor or call them at 646-312-2155 during normal business hours; you can make an appointment online here. For more immediate support, please call NYC WELL (1-888-NYC-WELL or 1-888-692-9355).2\nAsking for help is often difficult: consider reaching out to a friend, family, or a member of the faculty you trust for help getting connected to support that can help.\nIf you are worried about a friend or classmate, consider reaching out to the Baruch Campus Intervention Team.\n\n\nPhysical Health\nHealthy CUNY promotes well-being and a culture of health in order to foster the academic and life success of all CUNY students. They can connect you with a variety of campus- and community-based healthcare providers.\nBaruch Health Services provides students with a full range of clinical health services. Call 646-312-2040 or email StudentHealthCareCenter@baruch.cuny.edu to make an appointment.\n\n\nFood Security\nAll CUNY students have access to CUNY Food Pantries located throughout the five boroughs, thanks to the CUNY CARES program. CUNY CARES is also able to help qualifying students with SNAP (“Food Stamps”) enrollment.\nOn campus, you can also access the Bearcat Food Pantry.\n\n\nFinancial Security\nBaruch students experiencing heightened financial stress have access to Student Emergency Grants administered through the Office of the Dean of Students.\nNote that funds are also available for students experiencing immigration-related financial stress.\n\n\nImmigration Status\nCUNY Citizenship Now! provides confidential, high-quality immigration law services to all CUNY students.\nNote that Citizenship Now!’s primary Manhattan office is located in the Heights, not on the Baruch campus and that an appointment is strongly recommended. Call 646-664-9350 during business hours for more information."
+  },
+  {
+    "objectID": "resources.html#footnotes",
+    "href": "resources.html#footnotes",
+    "title": "STA 9890 - Additional Resources and Course Policies",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nLanguage adapted from Professor Ryan Tibshirani (UC Berkeley).↩︎\nDescriptions of Baruch and CUNY resources adapted from program websites.↩︎"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "STA 9890 - Statistical Learning for Data Mining",
+    "section": "",
+    "text": "Welcome to the course website for STA 9890 - Statistical Learning for Data Mining (Spring 2025)!\nSTA 9890 is a survey of Statistical Machine Learning targeted at students in the MS in Business Analytics, MS in Statistics, and MS in Quantitative Methods programs.\nThis site hosts the unofficial Course Syllabus, Course Policies, and Course Learning Objectives. Official copies of these documents can be found on CUNY Brightspace.\nThis site also hosts descriptions of the Course Competition and Research Reports (Homework), as well as selected Handouts and Additional Notes that will be useful.\nThere are quite a few moving parts to this course, so this key dates file or the list of upcoming course activities below may be useful:\n\n\n\n\n\n\n\nA CSV file suitable for import into Google Calendar with all assignment deadlines can be found here.\nInstructor: Michael Weylandt"
+  },
+  {
+    "objectID": "reports.html",
+    "href": "reports.html",
+    "title": "STA 9890 - Research Reports",
+    "section": "",
+    "text": "In lieu of traditional homework, STA 9890 has three “research reports” (one for each unit of the course). These research reports are intended to help you develop your skills in the computational and methodological aspects of Statistical Machine Learning.\nEach Research Report must be submitted as a fully-typed PDF using the course Brightspace. (No handwritten work will be graded.) Each report must include all code used and should have several figures. Reports should be 6-8 pages, double spaced.\n\nResearch Reports\n\nResearch Report #01: TBD\nDue Dates:\n\nReleased to Students: 2025-02-04\nSubmission Deadline: 2025-03-07 11:45pm ET\n\nIn Research Report #01, TBD.\n\n\nResearch Report #02: TBD\nDue Dates:\n\nReleased to Students: 2025-03-11\nSubmission Deadline: 2025-04-11 11:45pm ET\n\nIn Research Report #02, TBD.\n\n\nResearch Report #03: TBD\nDue Dates:\n\nReleased to Students: 2025-04-22\nSubmission Deadline: 2025-05-09 11:45pm ET\n\nIn Research Report #03, TBD."
+  },
+  {
+    "objectID": "notes.html",
+    "href": "notes.html",
+    "title": "STA 9890 - Handouts and Additional Notes",
+    "section": "",
+    "text": "Supplemental course notes and links to useful external resources will be posted here.\n\nSupplemental Lecture Notes\n\nWeek 1 - Course Overview & Introduction to ML (2025-01-28)\n\n\nWeek 2 - Regression I (2025-02-04)\n\n\nWeek 3 - Regression II (2025-02-11)\n\n\nWeek 4 - Regression III (2025-02-25)\n\n\nWeek 5 - Introduction to Classification (2025-03-04)\n\n\nWeek 6 - Classification I (2025-03-11)\n\n\nWeek 7 - Classification II (2025-03-18)\n\n\nWeek 8 - Ensemble Learning & Resampling Methods (2025-03-25)\n\n\nWeek 9 - Tree-Based Methods (2025-04-01)\n\n\nWeek 10 - Introduction to Unsupervised Learning (2025-04-08)\n\n\nWeek 11 - Unsupervised Learning I (2025-04-22)\n\n\nWeek 12 - Unsupervised Learning II (2025-04-29)\n\n\nWeek 13 - Introduction to Generative Models (2025-05-06)"
+  },
+  {
+    "objectID": "objectives.html",
+    "href": "objectives.html",
+    "title": "STA 9890 - Course Learning Objectives",
+    "section": "",
+    "text": "This course applies multiple regression techniques to the increasingly important study of very large data sets. Those techniques include linear and logistic model fitting, inference, and diagnostics. Methods with special applicability for Big Data will be emphasized, such as lasso and ridge regression. Issues of model complexity, the bias-variance tradeoff, and model validation will be studied in the context of large data sets. Methods that rely less on distributional assumptions are also introduced, including cross-validation, bootstrap resampling, and nonparametric methods. Students will learn dimension reduction methods, correlation analysis, and random forests."
+  },
+  {
+    "objectID": "objectives.html#official-course-description--",
+    "href": "objectives.html#official-course-description--",
+    "title": "STA 9890 - Course Learning Objectives",
+    "section": "",
+    "text": "This course applies multiple regression techniques to the increasingly important study of very large data sets. Those techniques include linear and logistic model fitting, inference, and diagnostics. Methods with special applicability for Big Data will be emphasized, such as lasso and ridge regression. Issues of model complexity, the bias-variance tradeoff, and model validation will be studied in the context of large data sets. Methods that rely less on distributional assumptions are also introduced, including cross-validation, bootstrap resampling, and nonparametric methods. Students will learn dimension reduction methods, correlation analysis, and random forests."
+  },
+  {
+    "objectID": "objectives.html#course-learning-objectives",
+    "href": "objectives.html#course-learning-objectives",
+    "title": "STA 9890 - Course Learning Objectives",
+    "section": "Course Learning Objectives",
+    "text": "Course Learning Objectives\nStudents successfully completing STA 9890 will be able to:\n\nIdentify Key ML Tasks and Trade-Offs\nUse Regression and Classification Tools to Develop Interpretable and Accurate Predictive Models\nDevelop and Apply Ensemble Learning Strategies\nAccurately Assess Model Performance Using CV, Hold-Out, Stability, and Bootstrap Techniques\nUse Unsupervised Methods to Find Meaningful Structure in Data\nApply Statistical Machine Learning Methods to Novel Data Structures and Types\nGenerate and Communicate Insights via Statistical Machine Learning Methods\n\nThe following course elements contribute to these goals:\n\nContribution of Course Elements to Learning Goals\n\n\n\n\n\n\n\n\n\n\n\n\n\nLearning Goal 1\nLearning Goal 2\nLearning Goal 3\nLearning Goal 4\nLearning Goal 5\nLearning Goal 6\nLearning Goal 7\n\n\n\n\nTest #01\n✓\n✓\n\n✓\n\n\n\n\n\nResearch Report #01\n✓\n✓\n\n✓\n\n\n\n\n\nTest #02\n✓\n✓\n✓\n✓\n\n\n\n\n\nResearch Report #02\n✓\n✓\n✓\n✓\n\n\n\n\n\nTest #03\n✓\n\n✓\n✓\n✓\n\n\n\n\nResearch Report #03\n✓\n\n✓\n✓\n✓\n\n✓\n\n\nCourse Competition\n✓\n✓\n✓\n✓\n✓\n✓\n\n\n\nIn-Class Presentation\n\n\n\n\n✓\n✓\n✓"
+  },
+  {
+    "objectID": "objectives.html#program-learning-goals",
+    "href": "objectives.html#program-learning-goals",
+    "title": "STA 9890 - Course Learning Objectives",
+    "section": "Program Learning Goals",
+    "text": "Program Learning Goals\nThis course contributes to the program learning goals of several MS programs offered by the Zicklin School of Business.\n\nMS in Business Analytics\nThis course is intended to contribute to the following Program Learning Goals for the MS in Business Analytics:\n\n\n\n Learning Goal\nMS BA Learning Goal\nDescription\n\n\n\n\n\nData Management\nStudents will be able to apply methods, tools, and software for acquiring, managing/storing, and accessing structured and unstructured data. Students will also demonstrate knowledge of the strategic uses of data.\n\n\n✓\nFoundational Statistical / Quantitative Skills\nStudents will be able to prepare data for statistical analysis, perform basic exploratory and descriptive analysis as well as employ foundational statistical techniques needed to analyze data.\n\n\n✓\nAdvanced Statistical/Quantitative Skills\nStudents will be able to build and interpret advanced predictive models. Students will be able to combine business rules and mathematical models to optimize business decisions from data.\n\n\n✓\nEthical Awareness\nStudents will be able to articulate an understanding of ethical issues in all phases of business analytics with particular emphasis on the new possibilities afforded by the emergence of big data.\n\n\n✓\nProfessional Communication\nStudents will be able to explain complex analytical models and their results orally and in writing to technical and non-technical/lay audiences.\n\n\n✓\nKnowledge Integration\nStudents will be able to apply the three key types of analytics (descriptive, predictive, and prescriptive) in a business domain to add value to business decision-making.\n\n\n\n\n\nMS in Quantitative Methods & Modeling\nThis course is intended to contribute to the following Program Learning Goals for the MS in Quantitative Methods & Modeling:\n\n\n\n Learning Goal\nMS QMM Learning Goal\nDescription\n\n\n\n\n✓\nOperations Research & Mathematical Modeling\nStudents will be able to effectively model, evaluate, and solve quantitative (business) problems using quantitative modeling methods (e.g., deterministic and probabilistic operations research techniques).\n\n\n✓\nStatistics\nStudents will be able to correctly apply appropriate statistical methods when defining, solving, and analyzing problems.\n\n\n✓\nTechnology Competency\nStudents will be able to use current technological tools, including spreadsheets and specialized software, when solving problems.\n\n\n✓\nProfessional Communication\nStudents will be able to effectively communicate their problem solving methods and solutions to technical and non-technical audiences.\n\n\n\n\n\nMS in Statistics\nThis course is intended to contribute to the following Program Learning Goals for the MS in Statistics:\n\n\n\n Learning Goal\nMS Statistics Learning Goal\nDescription\n\n\n\n\n✓\nGeneral Statistical Competence\nStudents will be able to apply appropriate probability models and statistical techniques when analyzing problems form business and the other fields.\n\n\n✓\nStatistical Practice\nStudents will become familiar with the standard tools of statistical practice for multiple regression, along with the tools of a subset of specialized statistical areas such as multivariate analysis, applied sampling, time series analysis, experimental design, data mining, categorical analysis, and/or stochastic processes.\n\n\n✓\nTechnology Competency\nStudents will learn to use one or more of the benchmark statistical software platforms, such as SAS or R."
+  },
+  {
+    "objectID": "syllabus.html",
+    "href": "syllabus.html",
+    "title": "STA 9890 - Course Syllabus",
+    "section": "",
+    "text": "Professor Michael Weylandt\nDepartment of Information Systems & Statistics\nZicklin School of Business\nBaruch College, CUNY"
+  },
+  {
+    "objectID": "syllabus.html#footnotes",
+    "href": "syllabus.html#footnotes",
+    "title": "STA 9890 - Course Syllabus",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nTheoretically, this may result in scores equivalent to an A in an un-curved course receiving a lower grade in this course. In practice, the instructor will design course assessments to induce a range of scores and does not anticipate “down-curving” happening.↩︎\nFor this course, an average student is a student who enters the course with:\n\nFluency with statistical and numerical software at the level of (at least) STA 9750\nFluency with univariate and multivariate regression at the level of (at least) STA 9700\nFamiliarity with probability and linear algebra\n\nand is earning a B-range grade. If you have less background or are aiming for a higher grade, you should expect to commit proportionally more time to this course.↩︎\nThe CUNY Graduate Center has a useful summary of these expectations. Baruch courses follow the same standards.↩︎"
+  },
+  {
+    "objectID": "reports/report03.html",
+    "href": "reports/report03.html",
+    "title": "STA 9890 Research Report #03: TBD",
+    "section": "",
+    "text": "Key Dates\n\nReleased to Students: 2025-04-22\nInitial Submission: 2025-05-09 11:45pm ET on Brightspace\n\nEstimated Time to Complete: 9 Hours\n\nThis work ©2025 by Michael Weylandt is licensed under a Creative Commons BY-NC-SA 4.0 license."
+  },
+  {
+    "objectID": "reports/report01.html",
+    "href": "reports/report01.html",
+    "title": "STA 9890 Research Report #01: TBD",
+    "section": "",
+    "text": "Key Dates\n\nReleased to Students: 2025-02-04\nInitial Submission: 2025-03-07 11:45pm ET on Brightspace\n\nEstimated Time to Complete: 9 Hours\n\nThis work ©2025 by Michael Weylandt is licensed under a Creative Commons BY-NC-SA 4.0 license."
+  }
+]

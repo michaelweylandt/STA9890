@@ -1,0 +1,49 @@
+---
+title: "{{< var course.short >}} - Handouts and Additional Notes"
+---
+
+Supplemental course notes and links to useful external resources will be
+posted here.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(glue)
+class_details <- function(n){
+    d <- read_csv("key_dates.csv") |>
+        filter(`Course Element` == "Class Session") |>
+        filter(`Item Number` == n) 
+    
+    with(d, glue("Week {`Item Number`} - {`Details`} ({`Date`})"))
+}
+```
+
+### Supplemental Lecture Notes
+
+#### `r class_details(01)` {#week01}
+
+#### `r class_details(02)` {#week02}
+
+#### `r class_details(03)` {#week03}
+
+#### `r class_details(04)` {#week04}
+
+#### `r class_details(05)` {#week05}
+
+#### `r class_details(06)` {#week06}
+
+#### `r class_details(07)` {#week07}
+
+#### `r class_details(08)` {#week08}
+
+#### `r class_details(09)` {#week09}
+
+#### `r class_details(10)` {#week10}
+
+#### `r class_details(11)` {#week11}
+
+#### `r class_details(12)` {#week12}
+
+#### `r class_details(13)` {#week13}

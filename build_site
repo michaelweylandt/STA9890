@@ -1,0 +1,107 @@
+#!/usr/bin/env Rscript
+library(tidyverse)
+
+## Auto-generate key dates file
+system("soffice --convert-to csv key_dates.ods")
+
+## Generate Google Calendar Formatted CSV for Student Events
+DATES <- read_csv("key_dates.csv")
+
+library(yaml)
+location <- read_yaml("_variables.yml")$course$location
+course   <- read_yaml("_variables.yml")$course$short
+
+`%rep_na%` <- function(x, y) ifelse(is.na(x), y, x)
+
+### i) First get lectures
+LECTURES <- DATES |>
+    filter(`Course Element` == "Class Session") |>
+    mutate(Subject=paste(course, "Lecture", `Item Number`, "-", Details),
+           `Start Date` = Date,
+           `Start Time` = "6:05 PM",
+           `End Date` = Date,
+           `End Time` = "9:00 PM",
+           `All Day Event` = "False",
+           `Location` = location) |>
+    select(-`Course Element`,
+           -`Item Number`,
+           -`Action`,
+           -`Responsible Party`,
+           -`Date`,
+           -`Time`,
+           -`Details`)
+
+
+### ii) Next Get Tests
+TESTS <- DATES |>
+    filter(`Course Element` == "Test") |>
+    mutate(Subject=paste(course, "Test", `Item Number`, "-", `Details`),
+           `Start Date` = Date,
+           `Start Time` = "6:05 PM",
+           `End Date` = Date,
+           `End Time` = "7:15 PM",
+           `All Day Event` = "False",
+           `Location` = location) |>
+    select(-`Course Element`,
+           -`Item Number`,
+           -`Action`,
+           -`Responsible Party`,
+           -`Date`,
+           -`Time`,
+           -`Details`)
+
+### iii) Next Get Research Reports
+REPORTS <- DATES |>
+    filter(`Course Element` == "Research Report",
+           `Responsible Party` == "Students") |>
+    mutate(Subject=paste(course, "Research Report", `Item Number`, "Due"),
+           `Start Date` = Date,
+           `Start Time` = "11:15 PM",
+           `End Date` = Date,
+           `End Time` = "11:45 PM",
+           `All Day Event` = "False",
+           `Location` = "Brightspace") |>
+    select(-`Course Element`,
+           -`Item Number`,
+           -`Action`,
+           -`Responsible Party`,
+           -`Date`,
+           -`Time`,
+           -`Details`)
+
+### iv) Course Competition Elements
+COMPETITION <- DATES |>
+    filter(`Course Element` == "Prediction Competition",
+           `Responsible Party` == "Students") |>
+    mutate(Subject=paste(course, "Competition -", `Details`),
+           `Start Date`= Date,
+           `Start Time`= if_else(str_detect(Details, "In Class"), "6:05pm", "11:15pm"),
+           `End Date`= Date,
+           `End Time`= if_else(str_detect(Details, "In Class"), "9:00pm", "11:45pm"),
+           `All Day Event` = "False",
+           `Location` = if_else(str_detect(Details, "In Class"), location, "Brightspace"),) |>
+    select(-`Course Element`,
+           -`Item Number`,
+           -`Action`,
+           -`Responsible Party`,
+           -`Date`,
+           -`Time`,
+           -`Details`)
+
+bind_rows(LECTURES, TESTS, REPORTS, COMPETITION) |>
+    arrange(`Start Date`) |>
+    write_csv("key_dates_students_gcal.csv")
+
+## Build site
+
+if(!require("quarto")){
+    install.packages("quarto")
+}
+library(quarto)
+if(!quarto::quarto_binary_sitrep()){
+    stop("Something is wrong with your quarto installation.")
+}
+quarto::quarto_render(".")
+system("git add docs/*")
+
+if(!any(grepl("rstudio", search()))){q("no")}
