@@ -60,7 +60,23 @@ rr <-  DATES |> filter(element == "Research Report", item == 1)
   - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
   - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
   
-In [Research Report #01](./reports/report01.html), TBD.
+In [Research Report #01](./reports/report01.html), you will dig into
+the oft-cited claim that Ordinary Least Squares is a *Best Linear
+Unbiased Estimator* (BLUE). In classical statistics, the BLUE property is often
+used as an argument of optimality, implying that we can't beat OLS, so we
+shouldn't even try. As you will see, this optimality of OLS is quite overstated:
+OLS can be beaten quite easily whenever its assumptions are violated, whenever
+non-linear estimators are allowed, or whenever bias is permitted (taking "Best"
+to mean "minimum MSE" instead of "minimum variance"). 
+
+These findings may seem a bit abstract, but they get at the heart of almost
+every method and principle we will cover in this course. In this project,
+in addition to getting a better understanding of what BLUE does and does not 
+mean, you will learn to: 
+
+i)   implement gradient descent methods
+ii)  design *Monte Carlo* simulations to assess bias and variance
+iii) find optimal values of tuning parameters using cross-validation
 
 
 #### Research Report #02: `r get_rr_title(02)`
