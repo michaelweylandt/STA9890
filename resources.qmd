@@ -26,6 +26,7 @@ assigned from the following readily-available resources:
 - [*Foundations of Machine Learning* by Mohri, Rostamizadeh, and Talwalkar (FML)](https://cs.nyu.edu/~mohri/mlbook/)
 - [*Understanding Machine Learning: From Theory to Algorithms* by Shalev-Shwartz and Ben-David (UML)](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/)
 - [*Patterns, Predictions, and Actions* by Hardt and Recht (HR)](https://mlstory.org)
+- [*Fairness and Machine Learning* by Barocas, Hardt, and Narayanan (BHN)](https://fairmlbook.org/)
 
 ### Course Discussion Board
 

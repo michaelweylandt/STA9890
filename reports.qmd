@@ -90,7 +90,19 @@ rr <-  DATES |> filter(element == "Research Report", item == 2)
   - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
   - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
   
-In [Research Report #02](./reports/report02.html), TBD.
+In [Research Report #02](./reports/report02.html), you will apply some of
+the tools we have developed to the problem of **fairness in machine learning** 
+(FairML). While not a core topic for this course, this exercise is useful to 
+see how the core idea of this course--regularization, optimization, *etc.*--can
+be applied to interesting and novel questions. In this project, you will also
+engage critically with a newly proposed ML method and investigate i) whether
+it truly does what it claims to; ii) whether it can be efficiently and reliably
+implemented; and iii) the degree to which (if any!) it solves *your* problem
+of interest. As working Data Scientists and Business Analysts, you may not 
+think of yourselves as *researchers*, but knowing how to read and critically 
+evaluate cutting-edge work will let you maintain and enhance your skills
+throughout your career. 
+
 
 
 #### Research Report #03: `r get_rr_title(03)`
