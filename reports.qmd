@@ -103,8 +103,6 @@ think of yourselves as *researchers*, but knowing how to read and critically
 evaluate cutting-edge work will let you maintain and enhance your skills
 throughout your career. 
 
-
-
 #### Research Report #03: `r get_rr_title(03)`
 
 ```{r echo=FALSE}
@@ -116,4 +114,10 @@ rr <-  DATES |> filter(element == "Research Report", item == 3)
   - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
   - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
   
-In [Research Report #03](./reports/report03.html), TBD.
+In [Research Report #03](./reports/report03.html), you will explore sparse PCA
+and apply it to a data set of interest. As you do so, you will see how a modern
+machine learning principle (sparsity) can be used to improve a classical
+statistical technique like PCA to get 'the best of both worlds.' Because our
+focus here is on an unsupervised method, this report should be careful to consider
+*interpretation* and *validation* of the resulting PCs, as standard validation
+techniques for supervised methods cannot be applied.

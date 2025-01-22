@@ -68,7 +68,7 @@ a tool is allowed in this course, please reseach out to the instructor before
 using it. In matters of Academic Integrity, it is far better to ask permission
 than forgiveness. 
 
-## Academic Integrity Policy
+## Academic Integrity Policy {#aipolicy}
 
 I fully support CUNY’s [Policy on Academic Integrity](https://studentaffairs.baruch.cuny.edu/wp-content/uploads/sites/6/2024/08/CUNY-Academic-Integrity-Policy-2024.pdf), which states, in part:
 
@@ -76,11 +76,20 @@ I fully support CUNY’s [Policy on Academic Integrity](https://studentaffairs.b
 
 > Academic integrity is at the core of a college or university education. Faculty assign essays, exams, quizzes, projects, and so on both to extend the learning done in the classroom and as a means of assessing that learning. When students violate the academic integrity policy (i.e., "cheat"), they are committing an act of theft that can cause real harm to themselves and others including, but not limited to, their classmates, their faculty, and the caregivers who may be funding their education. Academic dishonesty confers an unfair advantage over others, which undermines educational equity and fairness. Students who cheat place their college’s accreditation and their own future prospects in jeopardy.
 
-In this course, expectations for academic integrity are straightforward: no use
-of unauthorized materials on weekly quizzes or mid-semester tests. Unless
-explicitly stated otherwise by the instructor *in writing*, the only authorized
-materials allowed during in class assessment are the instructor-provided formula
-sheets.
+In this course, expectations for academic integrity for in-class graded activities
+are straightforward: no use of unauthorized materials on weekly quizzes or
+mid-semester tests. Unless explicitly stated otherwise by the instructor
+*in writing*, the only authorized materials allowed during in class assessment
+are the instructor-provided formula sheets.
+
+The Research Reports are "open peers", "open book", "open internet" but you may
+not use **paid** services or **generative AI** services. You must cite all sources
+used and include an acknowledgement section listing all peers with whom you
+collaborated. You do not need to acknowledge the instructor or any Piazza
+discussions, but you must acknowledge other faculty members or other Baruch
+students who help you complete your reports, even if they are not enrolled in
+this course.
+
 
 Academic sanctions in this class will range from an **F on the Assignment** to
 an **F in this Course**. A report of suspected academic dishonesty will be sent

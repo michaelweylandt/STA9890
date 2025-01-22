@@ -424,7 +424,8 @@ time should be roughly allocated as:
   - Ongoing Submissions (20 hours - approximately 2 per week)
   - Final Presentation Preparation (1 hour)
   
-Note that, for the course prediction competition, you will need to make regular progress throughout the semester. If you attempt to "back-load" your work, you will do poorly. 
+Note that, for the course prediction competition, you will need to make regular progress throughout the semester. If you attempt to "back-load" your work, 
+you will do poorly. 
 
 [^avg]: For this course, an _average_ student is a student who enters the
 course with: 
