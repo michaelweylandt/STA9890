@@ -45,7 +45,7 @@ the public section of Piazza.
 
 Piazza login information will be distributed through CUNY Brightspace.
 
-### External Resources Use Policy
+### External Resources Use Policy {#externalresources}
 
 Students are encouraged to make use of any and all external resources, including
 generative AI tools, for at home study and for practice problems. 
