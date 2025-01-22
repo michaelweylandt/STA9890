@@ -424,8 +424,9 @@ time should be roughly allocated as:
   - Ongoing Submissions (20 hours - approximately 2 per week)
   - Final Presentation Preparation (1 hour)
   
-Note that, for the course prediction competition, you will need to make regular progress throughout the semester. If you attempt to "back-load" your work, 
-you will do poorly. 
+Note that, for the course prediction competition, you will need to make
+regular progress throughout the semester. If you attempt to "back-load" your
+work, you will do poorly. 
 
 [^avg]: For this course, an _average_ student is a student who enters the
 course with: 
@@ -443,6 +444,31 @@ course with:
 [^gc]: The CUNY Graduate Center has a useful [summary of these
 expectations](https://gc.catalog.cuny.edu/general-information/credithourpolicy).
 Baruch courses follow the same standards. 
+
+### Coding Requirements
+
+{{< var course.short >}} is, at its heart, a **machine learning** course and as
+such use of a machine, *i.e.* **coding**, is required, even though there is no
+formal coding prerequisite for this course. Per the [External Resources 
+Policy](./resources.html#externalresources), you are allowed (and encouraged) to
+use freely available coding assistance technologies, including generative tools
+like GitHub CoPilot.[^copilot] 
+
+You may use whatever programming language you prefer to complete the course
+assignments, subject to instructor approval: `R`, `python`, `julia`, and `matlab`
+are pre-approved for all students by default. (I will approve most other
+languages as well, provided they are not *too* obscure.) 
+
+Tools like [`quarto`](https://quarto.org/) or [`Jupyter 
+Notebooks`](https://jupyter.org/) will be useful for completing the [Research
+Reports](./reports.html) required for this course. If you have not used these
+previously, many useful free resources can be found online, including my 
+[`STA9750`](https://michael-weylandt.com/STA9750/) course materials.
+
+[^copilot]: As a student, you have free access to [GitHub
+CoPilot](https://github.com/features/copilot) once you create a student GitHub
+account and register for the [Student Developer
+Pack](https://education.github.com/pack). 
 
 
 **`All syllabus and course schedule provisions subject to change with suitable advance notice.`**
