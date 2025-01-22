@@ -238,7 +238,9 @@ are encouraged to work together with your peers to understand methods, design
 simulations, review relevant literature, *etc.* I strongly recommend having a
 classmate ["red-team"](https://en.wikipedia.org/wiki/Red_team) your report
 before submission to find unclear writing, sub-standard figures and tables, 
-unconvincing simulations, incorrect  code, *etc.* 
+unconvincing simulations, incorrect  code, *etc.* Per the course's [Academic
+Integrity Policy](../resources.html#aipolicy), you must explicitly acknowledge
+all collaborators in your submission.
 
 [^pdf]: If you wish to use an alternate submission format to allow
 interactive and/or animated elements, please seek pre-approval from
