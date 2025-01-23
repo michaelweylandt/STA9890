@@ -173,7 +173,7 @@ window.addEventListener("load", function(){
   var filter_date = new Date();
   filter_date.setDate(filter_date.getDate() - 1);
   var filter_string = filter_date.toISOString().split('T')[0]
-  $("table").DataTable().rows((idx, data) => data[5] < filter_string).remove().draw();
+  $("table").DataTable().rows((idx, data) => data[4] < filter_string).remove().draw();
 });
 </script>
 <p>A CSV file suitable for import into Google Calendar with all assignment deadlines can be found <a href="./key_dates_students_gcal.csv">here</a>.</p>
