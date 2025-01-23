@@ -25,7 +25,6 @@ LECTURES <- DATES |>
            `Location` = location) |>
     select(-`Course Element`,
            -`Item Number`,
-           -`Action`,
            -`Responsible Party`,
            -`Date`,
            -`Time`,
@@ -44,7 +43,6 @@ TESTS <- DATES |>
            `Location` = location) |>
     select(-`Course Element`,
            -`Item Number`,
-           -`Action`,
            -`Responsible Party`,
            -`Date`,
            -`Time`,
@@ -63,7 +61,6 @@ REPORTS <- DATES |>
            `Location` = "Brightspace") |>
     select(-`Course Element`,
            -`Item Number`,
-           -`Action`,
            -`Responsible Party`,
            -`Date`,
            -`Time`,
@@ -82,7 +79,6 @@ COMPETITION <- DATES |>
            `Location` = if_else(str_detect(Details, "In Class"), location, "Brightspace"),) |>
     select(-`Course Element`,
            -`Item Number`,
-           -`Action`,
            -`Responsible Party`,
            -`Date`,
            -`Time`,
