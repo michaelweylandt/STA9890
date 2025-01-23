@@ -465,10 +465,37 @@ Reports](./reports.html) required for this course. If you have not used these
 previously, many useful free resources can be found online, including my 
 [`STA9750`](https://michael-weylandt.com/STA9750/) course materials.
 
+#### `PyTorch`, `TensorFlow`, and Similar
+
+An exciting aspect of modern ML is the widespread availability of flexible
+and powerful model fitting frameworks like [`TensorFlow`](https://www.tensorflow.org/)
+and [`PyTorch`](https://pytorch.org/). Use of these frameworks is not required 
+for this course, though students interested in ML focused careers would benefit
+from familiarizing themselves with them. 
+
+For the [Research Reports](./reports.html), you **may not** use these frameworks
+in lieu of the required coding aspects of each assignment. For example, if a 
+Report requires implementing a gradient descent method, you must do so "by hand:"
+computing gradients analytically, selecting step sizes, performing updates, 
+checking convergence, *etc.*[^impl] In Reports where an optimization library
+like `CVX` is used, you may use these frameworks instead, though doing so will
+require a bit more work. Each Report allows (and encourages!) you to go beyond
+the standard instructor-provided skeleton; comparing your implementation with
+an implementation using one of these frameworks would be an interesting
+contribution. 
+
+For the [Prediction Competition](./competition.html), you may use these
+frameworks or indeed any freely available (F/OSS) statistical or ML software;
+instructor pre-approval is not required. 
+
 [^copilot]: As a student, you have free access to [GitHub
 CoPilot](https://github.com/features/copilot) once you create a student GitHub
 account and register for the [Student Developer
 Pack](https://education.github.com/pack). 
 
-
+[^impl]: In theory, you can work with these frameworks at this sort of
+"low-level", but they are likely to be far more cumbersome than using base `R`
+or standard `numpy` for these tasks. If you are interested in working with
+these frameworks in this manner in order to better familiarize yourself with the
+core computational abstractions, you may request instructor permission to do so.
 **`All syllabus and course schedule provisions subject to change with suitable advance notice.`**
