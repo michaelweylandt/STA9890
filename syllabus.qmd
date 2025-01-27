@@ -214,17 +214,27 @@ serve" basis, so if 2 Late Days are used on each of the first two research
 reports, any late submission on the final research report will not be accepted
 and will receive an zero. 
 
-Outside of the use of Late Days, no late work will be accepted. Late Days cannot
-be applied to in-class activities such as tests or presentations. 
+Additionally, note that: 
+
+- Outside of the use of Late Days, no late work will be accepted. You can use
+  Late Days however you see fit. I recommend saving them to the end of 
+  the semester for personal emergencies. Even if not needed for personal
+  emergencies, you will appreciate having them available to you to help navigate
+  the end-of-semester "crunch" period. 
+- Late Days cannot be applied to in-class activities such as tests or
+  presentations.
+- Late days will not be applied fractionally: 1 minute late is 1 day late; 
+  24 hours and 1 minute late is 2 days late; *etc.* Brightspace will be used to
+  determine time of submission.
+- Work **must be submitted on Brightspace** unless *specifically* otherwise
+  stated in the written course description or approved *in writing* by the
+  instructor *at least 48 hours* before the deadline. (If we discuss alterations
+  in office hours or after class, you **must** follow up by email and get my 
+  pre-approval in writing.) Email submissions are not allowed.[^email]
 
 Individual exceptions will be made i) with *prior written* approval of
 instructor; or ii) *ex post* with written note from the [Office of the
 Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
-
-Please note that work **must be submitted on Brightspace** unless *specifically*
-otherwise stated in the written course description or approved *in writing*
-by the instructor at least 48 hours before the deadline. Email submissions are
-not allowed.[^email]
 
 [^email]: Though ubiquitous, email is a remarkably 'flaky' service, providing
 the sender no way to guarantee their message arrives untampered and providing
@@ -466,8 +476,8 @@ time should be roughly allocated as:
 - Test Preparation (15 hours total - 5 hours per test)
 - Research Reports (27 hours total - 9 hours each)
 - Prediction Competition (21 hours total)
-  - Ongoing Submissions (20 hours - approximately 2 per week)
-  - Final Presentation Preparation (1 hour)
+  - Ongoing Submissions (18 hours - approximately 2 hours per week for 9 weeks)
+  - Final Presentation and Report Preparation (3 hour)
   
 Note that, for the course prediction competition, you will need to make
 regular progress throughout the semester. If you attempt to "back-load" your
