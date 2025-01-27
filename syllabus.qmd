@@ -231,6 +231,13 @@ Additionally, note that:
   instructor *at least 48 hours* before the deadline. (If we discuss alterations
   in office hours or after class, you **must** follow up by email and get my 
   pre-approval in writing.) Email submissions are not allowed.[^email]
+- Technology issues are not an approved excuse for late submissions; in 
+  particular, Brightspace issues are not an approved excuse for late submission
+  of the [Research Reports](./reports.html). Brightspace support is provided by
+  [BCTC](https://bctc.baruch.cuny.edu/students/) and the [BCTC Help 
+  Desk](https://bctc.baruch.cuny.edu/instructional-technology/services/service-now/). 
+  The Help Desk is not staffed 24 hours per day, so you are encouraged to submit
+  early and submit often to avoid issues. 
 
 Individual exceptions will be made i) with *prior written* approval of
 instructor; or ii) *ex post* with written note from the [Office of the
