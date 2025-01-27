@@ -211,7 +211,8 @@ elements of this course (competition final report, research reports). When late
 days are used, work is accepted without penalty; late work submitted beyond the
 four late days will not be accepted. Late Days are used on a "first come, first
 serve" basis, so if 2 Late Days are used on each of the first two research
-reports, any late submission on the final research report will not be accepted. 
+reports, any late submission on the final research report will not be accepted
+and will receive an zero. 
 
 Outside of the use of Late Days, no late work will be accepted. Late Days cannot
 be applied to in-class activities such as tests or presentations. 
@@ -219,6 +220,22 @@ be applied to in-class activities such as tests or presentations.
 Individual exceptions will be made i) with *prior written* approval of
 instructor; or ii) *ex post* with written note from the [Office of the
 Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
+
+Please note that work **must be submitted on Brightspace** unless *specifically*
+otherwise stated in the written course description or approved *in writing*
+by the instructor at least 48 hours before the deadline. Email submissions are
+not allowed.[^email]
+
+[^email]: Though ubiquitous, email is a remarkably 'flaky' service, providing
+the sender no way to guarantee their message arrives untampered and providing
+the recipient no way to guarantee the providence of a message received.
+(This is not quite true: there are [tools for more secure 
+email](https://gnupg.org) but they are somewhat more difficult to use and
+are not supported at CUNY.)
+Brightspace is integrated with CUNY's Identity Verification Services and
+allows students to guarantee correct submission. Note that Brightspace does
+not, by default, send students an email confirming submission, but I believe
+this is an option that can be enabled on the student's end. 
 
 #### Attendance Policy
 
@@ -460,18 +477,19 @@ work, you will do poorly.
 course with: 
 
     i) Fluency with statistical and numerical software at the level of
-       (at least) STA 9750
+       (at least) STA 9750; 
     ii) Fluency with univariate and multivariate regression at the level of
-        (at least) STA 9700
-    iii) Familiarity with probability and linear algebra
+        (at least) STA 9700; and
+    iii) Familiarity with probability and linear algebra; 
 
-    and is earning a B-range grade. If you have less background or are 
+    <br>and is earning a B-range grade. If you have less background or are 
     aiming for a higher grade, you should expect to commit proportionally
     more time to this course. 
 
 [^gc]: The CUNY Graduate Center has a useful [summary of these
 expectations](https://gc.catalog.cuny.edu/general-information/credithourpolicy).
-Baruch courses follow the same standards. 
+Baruch courses follow the same standards. See also [CUNY Central
+Policy](https://www.cuny.edu/wp-content/uploads/sites/4/page-assets/about/administration/offices/registrar/resources/State-and-Federal-Credit-Hour-Definitions-08022019-2-1.pdf).
 
 ### Coding Requirements
 
@@ -510,7 +528,8 @@ like `CVX` is used, you may use these frameworks instead, though doing so will
 require a bit more work. Each Report allows (and encourages!) you to go beyond
 the standard instructor-provided skeleton; comparing your implementation with
 an implementation using one of these frameworks would be an interesting
-contribution. 
+contribution, so you are welcome to do so *in addition* to the "by hand" 
+implementation. 
 
 For the [Prediction Competition](./competition.html), you may use these
 frameworks or indeed any freely available (F/OSS) statistical or ML software;
@@ -526,4 +545,5 @@ Pack](https://education.github.com/pack).
 or standard `numpy` for these tasks. If you are interested in working with
 these frameworks in this manner in order to better familiarize yourself with the
 core computational abstractions, you may request instructor permission to do so.
+
 **`All syllabus and course schedule provisions subject to change with suitable advance notice.`**
