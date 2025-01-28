@@ -30,6 +30,34 @@ class_details <- function(n){
 
 - [Instructor Notes](./notes/notes02.html)
 
+
+The YouTube channel "3Blue1Brown" makes excellent videos explaining
+mathematical concepts. A recent entry discusses gradient descent
+in the context of Neural Networks. At this point in the course, 
+our focus is still on simpler (convex) methods, so not all of this
+will be directly applicable, but it is still a useful summary and
+gives helpful background on how gradient methods remain at the heart
+of all modern ML. 
+
+{{< video https://www.youtube.com/watch?v=IHZwWFHWa-w >}}
+
+You may also find value in 3Blue1Brown videos on [Linear
+Algebra](https://www.3blue1brown.com/topics/linear-algebra) and
+on [Probability](https://www.3blue1brown.com/topics/probability). 
+
+Of these, the following are likely to be particularly useful in
+this course: 
+
+- [Vectors](https://youtu.be/fNk_zzaMoSs?si=-OYsIsbfRXXYsujw)
+- [Linear Transformations](https://www.youtube.com/watch?v=kYB8IZa5AuE)
+- [Matrix Multiplication](https://youtu.be/XkY2DOUCWMU?si=j71QI26FqjweNPEA)
+- [Inverses, Rank, and Null Space](https://www.youtube.com/watch?v=uQhTuRlWMxw)
+- [Dot Products and Duality](https://youtu.be/LyGKycYT2v0?si=xcWoQiDnvrfem319)
+- [Eigenvectors and Eigenvalues](https://youtu.be/PFDu9oVAE-g?si=A2vubgawyYC0HA5D)
+- [Bayes' Theorem](https://youtu.be/HZGCoVF3YvM?si=NmWr1IWjyq6gypnU)
+
+though you don't need to watch all of these *immediately*. 
+
 #### `r class_details(03)` {#week03}
 
 - [Instructor Notes](./notes/notes03.html)

@@ -39,8 +39,13 @@ get_rr_title <- function(N){
 In lieu of traditional homework, {{< var course.short >}} has three 
 "research reports" (one for each unit of the course). These research reports
 are intended to help you develop your skills in the *computational* and
-*methodological* aspects of Statistical Machine Learning. 
-
+*methodological* aspects of Statistical Machine Learning. Specifically, these
+reports are designed to help you learn to deal with novel machine learning 
+developments published as academic research papers, to assess whether so-called
+developments are actually able to do what they claim, to determine whether a 
+proposed method can actually solve the problem you care about and, if 
+appropriate, to call shenanigans on the 'puffery' that is pervasive in the ML
+literature. 
 
 Each Research Report must be submitted as a fully-typed PDF using the
 course Brightspace. (No handwritten work will be graded.) Each report
