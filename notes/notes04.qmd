@@ -1,0 +1,4 @@
+---
+title: "{{< var course.short >}} - Non-Linear Regression"
+---
+

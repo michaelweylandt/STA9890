@@ -24,26 +24,54 @@ class_details <- function(n){
 
 #### `r class_details(01)` {#week01}
 
+- [Instructor Notes](./notes/notes01.html)
+
 #### `r class_details(02)` {#week02}
+
+- [Instructor Notes](./notes/notes02.html)
 
 #### `r class_details(03)` {#week03}
 
+- [Instructor Notes](./notes/notes03.html)
+
 #### `r class_details(04)` {#week04}
+
+- [Instructor Notes](./notes/notes04.html)
 
 #### `r class_details(05)` {#week05}
 
+- [Instructor Notes](./notes/notes05.html)
+
 #### `r class_details(06)` {#week06}
+
+- [Instructor Notes](./notes/notes06.html)
 
 #### `r class_details(07)` {#week07}
 
+- [Instructor Notes](./notes/notes07.html)
+
 #### `r class_details(08)` {#week08}
+
+- [Instructor Notes](./notes/notes08.html)
 
 #### `r class_details(09)` {#week09}
 
+- [Instructor Notes](./notes/notes09.html)
+
 #### `r class_details(10)` {#week10}
+
+- [Instructor Notes](./notes/notes10.html)
 
 #### `r class_details(11)` {#week11}
 
+- [Instructor Notes](./notes/notes11.html)
+
 #### `r class_details(12)` {#week12}
 
+- [Instructor Notes](./notes/notes12.html)
+
 #### `r class_details(13)` {#week13}
+
+- [Instructor Notes](./notes/notes13.html)
+
+

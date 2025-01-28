@@ -1,0 +1,4 @@
+---
+title: "{{< var course.short >}} - Introduction to Classification"
+---
+
