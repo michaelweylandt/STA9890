@@ -43,7 +43,7 @@ definitions vary.[^culture]
 [^culture]: There are some cultural differences that come from ML's
 CS history vs Statistics' "Science-Support" history: notably, ML
 folks think of (binary) classification while statisticians think of
-regression as the first task to teach.)
+regression as the first task to teach.
 
 In this course we will use the following taxonomy borrowed from the
 ML literature: 
@@ -188,7 +188,103 @@ made the problem much easier: now we are just comparing the means of two error
 distributions - classic $t$-test stuff - as opposed to comparing two (potentially
 complex) models.
 
-## Model Complexity
+
+## Generalization and Model Complexity 
+
+So far, we have two useful concepts:
+
+- Training Error
+- Test Error
+
+with a third we can set up a trivial, but surprisingly useful, inequality: 
+
+$$\text{Test Error} = \text{Training Error} + \text{Generalization Gap}$$
+
+Here, the "Generalization Gap" is defined as the difference between the training
+error and the test error.[^testerror] Essentially, the Generalization Gap measures
+the "optimism" bias obtained by measuring accuracy on the original training data.
+If the Generalization Gap is large, the model will look much better on the 
+training data then when we actually go to put it into practice. Conversely, if
+the Generalization Gap is small, the performance we estimate from the training
+data will continue when we deploy our model. 
+
+This is a all a bit circular, but it lets us break our overarching goal 
+(small test error) into two parts: 
+
+- We want a model with small training error; and
+- We want a model with small generalization gap. 
+
+We can only be confident that we'll have a small test error when these *both* 
+of these are true. Again - and just to be clear - having a small training error
+*is important*, but it is only *necessary* and not *sufficient* to have a small
+test error. 
+
+We can simply observe training error, so much of our theoretical analysis
+focuses on understanding the generalization gap. For now, let's think about
+the generalization gap of plain linear regression (OLS). It is not hard to show
+(and we might show in class next week) that, if the OLS model is true, the
+expected training MSE is: 
+
+$$\mathbb{E}[\text{Training MSE}] = \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n(y_i - \sum_{j=1}^p x_{ij}\hat{\beta}_j)^2\right] = \frac{\sigma^2(n-p)}{n} = \sigma^2\left(1-\frac{p}{n}\right)$$
+
+Here $\sigma^2$ is the 'noise variance' of the OLS model. (We will review the OLS
+model in much more detail next week.) 
+
+This is somewhat remarkable: if we knew the exact true model $\beta_*$, our MSE
+would be $\sigma^2$, but our training MSE is less than that. How can we do better
+than the optimal and exactly correct model? **Overfitting** - our OLS fits our
+training data a bit 'too well' and it manages to capture the true signal *and* 
+the noise. Whatever noise is in the data doesn't carry into the test set, so
+we get a bit of overfitting. 
+
+Even a simple model like OLS is vulnerable to a bit of overfitting. It isn't too
+big in this context and our formula above actually lets us see how it behaves: 
+
+- As $n\to\infty$, the amount of overfitting goes down. This is of course the
+  behavior we want: as we get more data, we should stop fitting noise and only
+  fit signal.
+- As $p \to n$, the amount of overfitting goes up. That is, as we add more 
+  features (covariates) to our regression, we expect more over fitting. When
+  we supply OLS with more 'degrees of freedom', some of those wind up fitting
+  noise. 
+  
+The $n\to\infty$ behavior shouldn't surprise you: the theme of "more data yields
+better estimation and smaller error" is ubiquitous in statistics. The behavior
+as $p$ increases may not be something you have seen before. Later in this course,
+we will actually ask what happens if $p > n$. Clearly, our formula from above 
+can't hold as it predicts _negative_ MSE! But we'll get to that later...
+
+As $p$ gets larger, OLS is more prone to overfitting. It turns out that this is
+not a special property of OLS - basically all methods will have this property
+to one degree or another. While there are many ways to justify this, perhaps
+the simplest is a story about "complexity": with more features, and hence more
+coefficients, OLS becomes a more complex model and more able to fit both the 
+signal and the noise in the training data. Clearly, complexity is not necessarily
+bad - we want to be able to capture all of the signal in our data - but it is
+dangerous. 
+
+This _complexity_ story is one we will follow through the rest of this course. 
+A more _complex_ model is one which is able to fit its training data easily. 
+Mathematically, we actually measure complexity by seeing how well a model fits
+pure noise: if it doesn't fit it well at all (because there is no signal!), 
+we can usually assume it won't overfit on signal + noise. But if it fits
+pure noise perfectly, it has _by definition_ overfit the training data. 
+
+I like to think of complexity as "superstitious" or "gullibility": the model
+will believe (fit to) anything we tell it (training data), whether it is true
+(signal) or not (noise). 
+
+We don't want a model that is too complex, but we also don't want a model that
+is too simple. If it can't fit signal, it is essentially useless. In our metaphor,
+an overly simple (low complexity) model is like a person who simply doesn't believe
+anything at all: they are never tricked, but they also can't really understand
+the world. 
+
+Let us now take a quick detour into a flexible _family_ of models and see how
+performance relates to the complexity story. 
+
+[^testerror]: I'm being a bit sloppy here. This is more precisely the 
+*population test error*, not the *test set test error*. 
 
 
 ## Nearest Neighbor Methods
@@ -301,7 +397,7 @@ knn(TRAINING_DATA$samples,
     test=data.frame(X1=0, X2=0), k=3)
 ```
 
-::: {.callout-tip title="Pause to Reflect" collapse="true"}
+::: {.callout-note title="Pause to Reflect" collapse="true"}
 
 Does this match what you expect from the plot above? Why or why not?
 The following image might help: 
@@ -365,7 +461,7 @@ we get very boring boundaries indeed:
 visualize_knn_boundaries(TRAINING_DATA, k=NROW(TRAINING_DATA$samples)-1)
 ```
 
-::: {.callout-tip title="Pause to Reflect" collapse="true"}
+::: {.callout-note title="Pause to Reflect" collapse="true"}
 
 What does this tell us about the _complexity_ of KNN as a function of $K$?
 
@@ -437,7 +533,7 @@ inner_join(TRAINING_ERRORS, TESTING_ERRORS, by="k") |>
     geom_line()
 ```
 
-::: {.callout-tip title="Pause to Reflect" collapse="true"}
+::: {.callout-note title="Pause to Reflect" collapse="true"}
 
 Consider the following questions:
 
@@ -448,3 +544,146 @@ Consider the following questions:
 - How might that change if we increase the number of test samples? 
 
 :::
+
+## Model Complexity (Redux)
+
+Let us understand this using the tools of complexity we discussed above. 
+
+- For small $K$, the model became quite simple, barely fit the training data, but
+  did just as well on the training data as the test data (poorly on both). This
+  is indicative of a *small generalization gap* and a *low complexity* model. 
+- For large $K$, the model became rather complex, fit the training data well, 
+  but didn't perform as well as we would like on the test data. This is indicative
+  of a *large generalization gap* and a *high complexity* model. 
+  
+In this case, we could see the complexity visually by looking at the decision
+boundaries (the lines separating predictions of class "A" from class "B"). This
+isn't universally true[^olscmplx], but the intuition of "high complexity = more
+wiggles" is usually pretty good.
+
+The classical story of ML and complexity is given by something like this:[^fig]
+
+![](https://mlstory.org/assets/gen-ushaped.svg)
+
+For now, you can interpret "risk" as "test error" and
+"empirical risk" as "training error". 
+
+::: {.callout-caution title="A more complex story of complexity" collapse="true"}
+
+Recent research has suggested that the story is not
+quite so simple. Some methods exhibit a "single descent"
+curve
+
+![](https://mlstory.org/assets/gen-single.svg)
+
+and some even have a "double descent" curve:
+
+![](https://mlstory.org/assets/gen-double.svg)
+
+The story of these curves is still an active topic
+of research, but it's pretty clear that _very large_ 
+and _very deep_ neural networks exhibit something
+like a double descent curve. My own guess is that we're
+not quite measuring 'complexity' correctly for these
+incredibly complex models and that the classical story 
+holds if we go measure complexity in the right way, but
+this is far from a universally held belief. 
+
+:::
+
+So how do we measure complexity? For OLS, it seems
+to be proportional to $p$, while for KNN it seems to
+be inverse to $K$. In this class, we won't really 
+focus too much on the actual measurements. For most of
+the methods we study, it is usually pretty clear what
+drives complexity up or down, even if we can't quite
+put a number on it. 
+
+### Stability and Generalization
+
+It turns out there is a deep connection between
+generalization and a suitable notion of "stability". 
+A model is said to be relatively stable if changes
+to an input point do not change the output predictions
+significantly.[^be]
+
+At an intuitive level, this makes sense: if the model
+is super sensitive to individual inputs, it must be
+very flexible and hence quite complex. (A very simple
+model cannot be sensitive to all of its inputs.) 
+
+We can apply this idea to understand some rules-of-thumb
+and informal practices you might have seen in previous
+statistics courses: 
+
+- Regression leverage: [Leverage](https://en.wikipedia.org/wiki/Leverage_(statistics))
+  measures how much a single data point can change 
+  regression coefficients. This is stability!
+  
+- Removing outliers: we often define outliers as
+  observations which have a major (and assumed
+  corrupting) influence on our inferences. By removing
+  outliers, we guarantee that the resulting inference
+  is not too sensitive to any of the remaining data
+  points. Here, the 'pre-step' of outlier removal
+  increases stability (by changing sensitivity of those
+  observations to zero) and hopefully makes our
+  inferences more accurate (better generalization)
+  
+- Use of robust statistics, *e.g.* medians instead of
+  means. These explicitly control the stability of
+  our process.
+
+Perhaps most importantly: this justifies why the 
+large $n$ (big sample) limit seems to avoid overfitting.
+If our model is fit to many distinct data points, it
+can't be too sensitive to any of them. At least, that's
+the hope...
+
+The sort of statistical models you have seen to date --
+so-called *parametric* models -- have a 'stabilizing' 
+effect. By reducing lots of data to only a few
+parameters, those parameters (and hence the model
+output) can't depend too much on any individual
+input point.[^thirty_rule] This 'bottleneck' in the
+parameter space seems to improve performance. 
+
+Other methods, like $1$-Nearest-Neighbor, become
+increasingly more complex as we get more data and do
+not benefit from this sort of 'bottleneck' effect. 
+
+At this point, you might think that stability and
+variance are closely related concepts - you are not 
+wrong and we will explore the connection in more 
+detail next week. 
+
+[^be]: For details, see [O. Bousquet and A. Elisseeff, 
+*Stability and Generalization* in **Journal of Machine
+Learning Research 2**,
+pp.499-526.](https://jmlr.org/papers/volume2/bousquet02a/bousquet02a.pdf)
+
+[^thirty_rule]: Some regression textbooks advocate a
+rule that you have 30 data points for every variable
+in your model. This is essentially guaranteeing that
+the $p/n$ ratio that controls the generalization of OLS
+(see above!) stays quite small.
+
+
+## Key Terms and Concepts
+
+- Supervised vs Unsupervised
+- Regression vs Classification
+- Training Error
+- Test Error
+- Generalization Gap
+- Complexity
+- Overfitting
+- Stability
+- $K$-Nearest Neighbors
+- Decision Boundaries
+
+[^fig]: Figures from HR Chapter 6, *Generalization*.
+
+[^olscmplx]: In OLS, the complexity doesn't make the model 'wigglier' in a normal
+sense - it's still linear after all - but you can think of it as the additional
+complexity of a 3D 'map' (*i.e.*, a to-scale model) vs a standard 2D map. 

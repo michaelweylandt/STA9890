@@ -192,8 +192,13 @@ window.Quarto = {
   <ul>
   <li><a href="#a-taxonomy-of-machine-learning" id="toc-a-taxonomy-of-machine-learning" class="nav-link active" data-scroll-target="#a-taxonomy-of-machine-learning">A Taxonomy of Machine Learning</a></li>
   <li><a href="#test-and-training-error" id="toc-test-and-training-error" class="nav-link" data-scroll-target="#test-and-training-error">Test and Training Error</a></li>
-  <li><a href="#model-complexity" id="toc-model-complexity" class="nav-link" data-scroll-target="#model-complexity">Model Complexity</a></li>
+  <li><a href="#generalization-and-model-complexity" id="toc-generalization-and-model-complexity" class="nav-link" data-scroll-target="#generalization-and-model-complexity">Generalization and Model Complexity</a></li>
   <li><a href="#nearest-neighbor-methods" id="toc-nearest-neighbor-methods" class="nav-link" data-scroll-target="#nearest-neighbor-methods">Nearest Neighbor Methods</a></li>
+  <li><a href="#model-complexity-redux" id="toc-model-complexity-redux" class="nav-link" data-scroll-target="#model-complexity-redux">Model Complexity (Redux)</a>
+  <ul class="collapse">
+  <li><a href="#stability-and-generalization" id="toc-stability-and-generalization" class="nav-link" data-scroll-target="#stability-and-generalization">Stability and Generalization</a></li>
+  </ul></li>
+  <li><a href="#key-terms-and-concepts" id="toc-key-terms-and-concepts" class="nav-link" data-scroll-target="#key-terms-and-concepts">Key Terms and Concepts</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes01.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -284,12 +289,41 @@ Advice
 <li>What types of models have small “test-training” gap, <em>i.e.</em> do about as well on the test and training sets, and what models have a large gap?</li>
 </ul>
 </section>
-<section id="model-complexity" class="level2">
-<h2 class="anchored" data-anchor-id="model-complexity">Model Complexity</h2>
+<section id="generalization-and-model-complexity" class="level2">
+<h2 class="anchored" data-anchor-id="generalization-and-model-complexity">Generalization and Model Complexity</h2>
+<p>So far, we have two useful concepts:</p>
+<ul>
+<li>Training Error</li>
+<li>Test Error</li>
+</ul>
+<p>with a third we can set up a trivial, but surprisingly useful, inequality:</p>
+<p><span class="math display">\[\text{Test Error} = \text{Training Error} + \text{Generalization Gap}\]</span></p>
+<p>Here, the “Generalization Gap” is defined as the difference between the training error and the test error.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Essentially, the Generalization Gap measures the “optimism” bias obtained by measuring accuracy on the original training data. If the Generalization Gap is large, the model will look much better on the training data then when we actually go to put it into practice. Conversely, if the Generalization Gap is small, the performance we estimate from the training data will continue when we deploy our model.</p>
+<p>This is a all a bit circular, but it lets us break our overarching goal (small test error) into two parts:</p>
+<ul>
+<li>We want a model with small training error; and</li>
+<li>We want a model with small generalization gap.</li>
+</ul>
+<p>We can only be confident that we’ll have a small test error when these <em>both</em> of these are true. Again - and just to be clear - having a small training error <em>is important</em>, but it is only <em>necessary</em> and not <em>sufficient</em> to have a small test error.</p>
+<p>We can simply observe training error, so much of our theoretical analysis focuses on understanding the generalization gap. For now, let’s think about the generalization gap of plain linear regression (OLS). It is not hard to show (and we might show in class next week) that, if the OLS model is true, the expected training MSE is:</p>
+<p><span class="math display">\[\mathbb{E}[\text{Training MSE}] = \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n(y_i - \sum_{j=1}^p x_{ij}\hat{\beta}_j)^2\right] = \frac{\sigma^2(n-p)}{n} = \sigma^2\left(1-\frac{p}{n}\right)\]</span></p>
+<p>Here <span class="math inline">\(\sigma^2\)</span> is the ‘noise variance’ of the OLS model. (We will review the OLS model in much more detail next week.)</p>
+<p>This is somewhat remarkable: if we knew the exact true model <span class="math inline">\(\beta_*\)</span>, our MSE would be <span class="math inline">\(\sigma^2\)</span>, but our training MSE is less than that. How can we do better than the optimal and exactly correct model? <strong>Overfitting</strong> - our OLS fits our training data a bit ‘too well’ and it manages to capture the true signal <em>and</em> the noise. Whatever noise is in the data doesn’t carry into the test set, so we get a bit of overfitting.</p>
+<p>Even a simple model like OLS is vulnerable to a bit of overfitting. It isn’t too big in this context and our formula above actually lets us see how it behaves:</p>
+<ul>
+<li>As <span class="math inline">\(n\to\infty\)</span>, the amount of overfitting goes down. This is of course the behavior we want: as we get more data, we should stop fitting noise and only fit signal.</li>
+<li>As <span class="math inline">\(p \to n\)</span>, the amount of overfitting goes up. That is, as we add more features (covariates) to our regression, we expect more over fitting. When we supply OLS with more ‘degrees of freedom’, some of those wind up fitting noise.</li>
+</ul>
+<p>The <span class="math inline">\(n\to\infty\)</span> behavior shouldn’t surprise you: the theme of “more data yields better estimation and smaller error” is ubiquitous in statistics. The behavior as <span class="math inline">\(p\)</span> increases may not be something you have seen before. Later in this course, we will actually ask what happens if <span class="math inline">\(p &gt; n\)</span>. Clearly, our formula from above can’t hold as it predicts <em>negative</em> MSE! But we’ll get to that later…</p>
+<p>As <span class="math inline">\(p\)</span> gets larger, OLS is more prone to overfitting. It turns out that this is not a special property of OLS - basically all methods will have this property to one degree or another. While there are many ways to justify this, perhaps the simplest is a story about “complexity”: with more features, and hence more coefficients, OLS becomes a more complex model and more able to fit both the signal and the noise in the training data. Clearly, complexity is not necessarily bad - we want to be able to capture all of the signal in our data - but it is dangerous.</p>
+<p>This <em>complexity</em> story is one we will follow through the rest of this course. A more <em>complex</em> model is one which is able to fit its training data easily. Mathematically, we actually measure complexity by seeing how well a model fits pure noise: if it doesn’t fit it well at all (because there is no signal!), we can usually assume it won’t overfit on signal + noise. But if it fits pure noise perfectly, it has <em>by definition</em> overfit the training data.</p>
+<p>I like to think of complexity as “superstitious” or “gullibility”: the model will believe (fit to) anything we tell it (training data), whether it is true (signal) or not (noise).</p>
+<p>We don’t want a model that is too complex, but we also don’t want a model that is too simple. If it can’t fit signal, it is essentially useless. In our metaphor, an overly simple (low complexity) model is like a person who simply doesn’t believe anything at all: they are never tricked, but they also can’t really understand the world.</p>
+<p>Let us now take a quick detour into a flexible <em>family</em> of models and see how performance relates to the complexity story.</p>
 </section>
 <section id="nearest-neighbor-methods" class="level2">
 <h2 class="anchored" data-anchor-id="nearest-neighbor-methods">Nearest Neighbor Methods</h2>
-<p>Let’s now see how complexity plays out for a very simple classifier, <span class="math inline">\(K\)</span>-Nearest Neighbors (KNN). KNN formalizes the intuition of “similar inputs -&gt; similar outputs.” KNN looks at the <span class="math inline">\(K\)</span> most similar points in its training data (“nearest neighbors” if you were to plot the data) and takes the average label to make its prediction.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<p>Let’s now see how complexity plays out for a very simple classifier, <span class="math inline">\(K\)</span>-Nearest Neighbors (KNN). KNN formalizes the intuition of “similar inputs -&gt; similar outputs.” KNN looks at the <span class="math inline">\(K\)</span> most similar points in its training data (“nearest neighbors” if you were to plot the data) and takes the average label to make its prediction.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(class) <span class="co"># Provides a KNN function for classification</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">args</span>(knn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -298,7 +332,7 @@ Advice
 NULL</code></pre>
 </div>
 </div>
-<p>You can see here that KNN requires access to the full training set at prediction time: this is different than something like OLS where we reduce our data to a set of regression coefficients (parameters).<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>You can see here that KNN requires access to the full training set at prediction time: this is different than something like OLS where we reduce our data to a set of regression coefficients (parameters).<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 <p>We’ll also need some data to play with. For now, we’ll use synthetic data:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Make two interleaving half-circles</span></span>
@@ -388,7 +422,7 @@ NULL</code></pre>
 Levels: A B</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled" title="Pause to Reflect">
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -479,7 +513,7 @@ Pause to Reflect
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled" title="Pause to Reflect">
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -620,7 +654,7 @@ At k = 20, the test (out-of-sample) error of KNN is 6%</code></pre>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled" title="Pause to Reflect">
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -643,6 +677,69 @@ Pause to Reflect
 </div>
 </div>
 </div>
+</section>
+<section id="model-complexity-redux" class="level2">
+<h2 class="anchored" data-anchor-id="model-complexity-redux">Model Complexity (Redux)</h2>
+<p>Let us understand this using the tools of complexity we discussed above.</p>
+<ul>
+<li>For small <span class="math inline">\(K\)</span>, the model became quite simple, barely fit the training data, but did just as well on the training data as the test data (poorly on both). This is indicative of a <em>small generalization gap</em> and a <em>low complexity</em> model.</li>
+<li>For large <span class="math inline">\(K\)</span>, the model became rather complex, fit the training data well, but didn’t perform as well as we would like on the test data. This is indicative of a <em>large generalization gap</em> and a <em>high complexity</em> model.</li>
+</ul>
+<p>In this case, we could see the complexity visually by looking at the decision boundaries (the lines separating predictions of class “A” from class “B”). This isn’t universally true<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, but the intuition of “high complexity = more wiggles” is usually pretty good.</p>
+<p>The classical story of ML and complexity is given by something like this:<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
+<p><img src="https://mlstory.org/assets/gen-ushaped.svg" class="img-fluid"></p>
+<p>For now, you can interpret “risk” as “test error” and “empirical risk” as “training error”.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="A more complex story of complexity">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+A more complex story of complexity
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Recent research has suggested that the story is not quite so simple. Some methods exhibit a “single descent” curve</p>
+<p><img src="https://mlstory.org/assets/gen-single.svg" class="img-fluid"></p>
+<p>and some even have a “double descent” curve:</p>
+<p><img src="https://mlstory.org/assets/gen-double.svg" class="img-fluid"></p>
+<p>The story of these curves is still an active topic of research, but it’s pretty clear that <em>very large</em> and <em>very deep</em> neural networks exhibit something like a double descent curve. My own guess is that we’re not quite measuring ‘complexity’ correctly for these incredibly complex models and that the classical story holds if we go measure complexity in the right way, but this is far from a universally held belief.</p>
+</div>
+</div>
+</div>
+<p>So how do we measure complexity? For OLS, it seems to be proportional to <span class="math inline">\(p\)</span>, while for KNN it seems to be inverse to <span class="math inline">\(K\)</span>. In this class, we won’t really focus too much on the actual measurements. For most of the methods we study, it is usually pretty clear what drives complexity up or down, even if we can’t quite put a number on it.</p>
+<section id="stability-and-generalization" class="level3">
+<h3 class="anchored" data-anchor-id="stability-and-generalization">Stability and Generalization</h3>
+<p>It turns out there is a deep connection between generalization and a suitable notion of “stability”. A model is said to be relatively stable if changes to an input point do not change the output predictions significantly.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
+<p>At an intuitive level, this makes sense: if the model is super sensitive to individual inputs, it must be very flexible and hence quite complex. (A very simple model cannot be sensitive to all of its inputs.)</p>
+<p>We can apply this idea to understand some rules-of-thumb and informal practices you might have seen in previous statistics courses:</p>
+<ul>
+<li><p>Regression leverage: <a href="https://en.wikipedia.org/wiki/Leverage_(statistics)">Leverage</a> measures how much a single data point can change regression coefficients. This is stability!</p></li>
+<li><p>Removing outliers: we often define outliers as observations which have a major (and assumed corrupting) influence on our inferences. By removing outliers, we guarantee that the resulting inference is not too sensitive to any of the remaining data points. Here, the ‘pre-step’ of outlier removal increases stability (by changing sensitivity of those observations to zero) and hopefully makes our inferences more accurate (better generalization)</p></li>
+<li><p>Use of robust statistics, <em>e.g.</em> medians instead of means. These explicitly control the stability of our process.</p></li>
+</ul>
+<p>Perhaps most importantly: this justifies why the large <span class="math inline">\(n\)</span> (big sample) limit seems to avoid overfitting. If our model is fit to many distinct data points, it can’t be too sensitive to any of them. At least, that’s the hope…</p>
+<p>The sort of statistical models you have seen to date – so-called <em>parametric</em> models – have a ‘stabilizing’ effect. By reducing lots of data to only a few parameters, those parameters (and hence the model output) can’t depend too much on any individual input point.<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> This ‘bottleneck’ in the parameter space seems to improve performance.</p>
+<p>Other methods, like <span class="math inline">\(1\)</span>-Nearest-Neighbor, become increasingly more complex as we get more data and do not benefit from this sort of ‘bottleneck’ effect.</p>
+<p>At this point, you might think that stability and variance are closely related concepts - you are not wrong and we will explore the connection in more detail next week.</p>
+</section>
+</section>
+<section id="key-terms-and-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="key-terms-and-concepts">Key Terms and Concepts</h2>
+<ul>
+<li>Supervised vs Unsupervised</li>
+<li>Regression vs Classification</li>
+<li>Training Error</li>
+<li>Test Error</li>
+<li>Generalization Gap</li>
+<li>Complexity</li>
+<li>Overfitting</li>
+<li>Stability</li>
+<li><span class="math inline">\(K\)</span>-Nearest Neighbors</li>
+<li>Decision Boundaries</li>
+</ul>
 
 
 </section>
@@ -651,12 +748,17 @@ Pause to Reflect
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>There are some cultural differences that come from ML’s CS history vs Statistics’ “Science-Support” history: notably, ML folks think of (binary) classification while statisticians think of regression as the first task to teach.)<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>There are some cultural differences that come from ML’s CS history vs Statistics’ “Science-Support” history: notably, ML folks think of (binary) classification while statisticians think of regression as the first task to teach.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>You may recall the famous quip about the US and the UK: “Two countries, separated by a common language.”<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>You might still worry about the randomness of this comparison process: if we had a slightly different sample of our new data, would the better model still look better? You aren’t wrong to worry about this, but we have at a minimum made the problem much easier: now we are just comparing the means of two error distributions - classic <span class="math inline">\(t\)</span>-test stuff - as opposed to comparing two (potentially complex) models.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Anecdotally, a Google Data Scientist once mentioned to me that they rarely bother doing <span class="math inline">\(p\)</span>-value or significance calculations. At the scale of Google’s A/B testing on hundreds of billions of ad impressions, <em>everything</em> is statistically significant.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>There are details here about how we measure similarity, but for now we will restrict our attention to simple Euclidean distance.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>KNN is a <em>non-parameteric</em> method, but not all <em>non-parametric</em> methods require access to the training data at test time. We’ll cover some of those later in the course.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>I’m being a bit sloppy here. This is more precisely the <em>population test error</em>, not the <em>test set test error</em>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>There are details here about how we measure similarity, but for now we will restrict our attention to simple Euclidean distance.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>KNN is a <em>non-parameteric</em> method, but not all <em>non-parametric</em> methods require access to the training data at test time. We’ll cover some of those later in the course.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>In OLS, the complexity doesn’t make the model ‘wigglier’ in a normal sense - it’s still linear after all - but you can think of it as the additional complexity of a 3D ‘map’ (<em>i.e.</em>, a to-scale model) vs a standard 2D map.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Figures from HR Chapter 6, <em>Generalization</em>.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>For details, see <a href="https://jmlr.org/papers/volume2/bousquet02a/bousquet02a.pdf">O. Bousquet and A. Elisseeff, <em>Stability and Generalization</em> in <strong>Journal of Machine Learning Research 2</strong>, pp.499-526.</a><a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>Some regression textbooks advocate a rule that you have 30 data points for every variable in your model. This is essentially guaranteeing that the <span class="math inline">\(p/n\)</span> ratio that controls the generalization of OLS (see above!) stays quite small.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

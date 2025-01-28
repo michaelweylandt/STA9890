@@ -30,7 +30,6 @@ class_details <- function(n){
 
 - [Instructor Notes](./notes/notes02.html)
 
-
 The YouTube channel "3Blue1Brown" makes excellent videos explaining
 mathematical concepts. A recent entry discusses gradient descent
 in the context of Neural Networks. At this point in the course, 
