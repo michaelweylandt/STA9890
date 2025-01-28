@@ -2,3 +2,449 @@
 title: "{{< var course.short >}} - Introduction to Machine Learning"
 ---
 
+```{r}
+#| echo: false
+set.seed(100)
+```
+
+## A Taxonomy of Machine Learning
+
+Where classical statistics focuses on learning information about a
+population from a (representative) sample,  Machine Learning 
+focuses on out-of-sample prediction accuracy. 
+
+For example, given a large set of medical records, the natural
+instinct of a statistician is to find the indicators of cancer in
+order assess them via some sort of follow-on genetic study, while a
+ML practitioner will typically start by building a predictive
+algorithm to predict who will be diagnosed with cancer. The
+statistician will perform calculations with $p$-values, test
+statistics, and the like to make sure that any discovered
+relationship is accurate, while the ML practitioner will verify
+the performance by finding a new (hopefully similar) set of medical
+records to test algorithm performance. 
+
+Clearly, this difference is more one of style than substance: the
+statistician might see what features are important in the ML model to
+decide what to investigate, while the ML modeler will use statistical
+tools to make sure the model is finding something real and not just
+fitting to noise. In this course, the distinction may be even
+blurrier as our focus is *statistical machine learning* - that little
+niche right on the boundary between the two fields. 
+
+In brief, "statistics vs ML" is a bit of a meaningless distinction as
+both fields draw heavily from each other. I tend to say one is *doing
+statistics* whenever the end-goal is to *better understand* something
+about the real world (*ie.*, the end product is *knowledge*), while
+one is *doing ML* whenever one is building a system to be used in an
+automated fashion (*ie.*, the end product is *software*), but
+definitions vary.[^culture]
+
+[^culture]: There are some cultural differences that come from ML's
+CS history vs Statistics' "Science-Support" history: notably, ML
+folks think of (binary) classification while statisticians think of
+regression as the first task to teach.)
+
+In this course we will use the following taxonomy borrowed from the
+ML literature: 
+
+- Supervised Learning: Tasks with a well-defined target variable (output)
+that we aim to predict
+
+  Examples: 
+  - Given an image of a car running a red-light, read its license plate.
+  - Given attendance records, predict which students will not pass a course.
+  - Given a cancer patient's medical records, predict whether a certain drug
+    will have a beneficial impact on their health outcomes. 
+  
+- Unsupervised Learning: Given a whole set of variables, none of which is
+  considered an output, learn useful underling structure. 
+
+  Examples: 
+  - Given a set of climate simulations, identify the general trends of a 
+    climate intervention.
+  - Given a set of students' class schedules, group them into sets. (You might
+    imagine these sets correspond to majors, but without that sort of "label" 
+    (output variable) this is only speculative, so we're unsupervised)
+  - Given a social network, identify the most influential users.
+
+There are other types of learning tasks: *e.g.* semi-supervised, online,
+reinforcement, but the Supervised/Unsupervised distinction is the main one
+we will use in this course. 
+
+Within Supervised Learning, we can further subdivide into two major categories:
+
+- Regression Problems: problems where the response (label) is a
+  real-valued number
+- Classification Problems: problems where the response (label) is a
+  category label.
+  
+  - Binary classification: there are only two categories
+  - Multi-way or Multinomial classification: multiple categories
+  
+Linear Regression, which we will study more below, is the canonical
+example of a *regression* tool for *supervised* learning.
+
+At this point, you can already foresee one of the (many) terminology
+inconsistencies will will encounter in this course: _logistic regression_
+is a tool for _classification_, not regression. As modern ML is the intersection
+of many distinct intellectual traditions, the terminology is rarely 
+consistent.[^uk]
+
+[^uk]: You may recall the famous quip about the US and the UK: "Two countries,
+separated by a common language."
+
+## Test and Training Error
+
+As we think about measuring a model's predictive performance, it becomes
+increasingly important to distinguish between _in-sample_ and _out-of-sample_
+performance, also called training (in-sample) and testing (out-of-sample)
+performance. 
+
+In previous courses, you likely have assessed model fit by seeing how well
+your model fits the data it was trained on: statistics like $R^2$, SSE, SSR in
+regression or $F$-tests for model comparison do just this. As you have used them,
+they are primarily useful for comparison of _similar_ models, *e.g.*, OLS with
+different numbers of predictor variables. But it's worth reflecting on this
+process a bit more: didn't the model with more predictors always fit the data
+better? If so, why don't we always just include all of our predictors? 
+
+Of course you know, the answer is that we want to avoid overfitting. Just
+because a model fit the data a bit better doesn't mean it is actually better. 
+If you need 1,000 variables to get a 0.1% reduction in MSE, do you really
+believe those features are doing much? No! 
+
+You likely have a sense that a feature needs to "earn its keep" to be worth
+including in a model. Statisticians have formalized this idea very well
+in some contexts: quantities like _degrees of freedom_ or _adjusted_ $R^2$
+attemps to measure whether a variable provides a _statistically significant_
+improvement in performance. These calculations typically rely on subtle
+calculations involving nice properties of the multivariate normal distribution
+and ordinary least squares, or things that can be (asymptotically) considered
+essentially equivalent. 
+
+In this class, we don't want to make those sorts of strong distributional and
+modeling assumptions. So what can we do instead? Well, if we want to see if 
+Model A predicts more accurately than Model B on new data, why don't we just
+do that? Let's get some new data and compare the MSEs of Model A and Model B:
+whichever one does better is the one that does better.[^sig]
+
+This is a pretty obvious idea, so it's worth asking why it's not the baseline
+and why statisticians bothered with all the degrees of freedom business to start
+with. As always, you have to know your history: statistics comes from a lineage
+of scientific experimentation where data is limited and often quite expensive to
+get. If you are running a medical trial, you can't just toss a few hundred extra
+participants in - this costs money! If you are doing an agricultural experiment,
+it may take several years to see whether a new seed type actually has higher
+yield than the previous version. It's also not clear how one should separate
+data into training and test sets: if you are studying, *e.g.*, friendship
+dynamics on Facebook, you don't have an (obvious) "second Facebook" that you can
+use to assess model accuracy. 
+
+By contrast, CS-tradition Machine Learning comes from a world of "internet-scale"
+where data is plentiful, cheap, and is continuously being collected.[^anec] Not
+all problems fall in this regime but, as we will see, enough do that it's worth 
+thinking about what we should do in this scenario. Excitingly, if we don't
+demand a full and exhaustive mathematical characterization of a method before we
+actually apply it, we can begin to explore much more complex and interesting
+models.
+
+::: {.callout-tip title="Advice"}
+
+A good rule of thumb for applied statistical and data science work: begin by
+asking yourself what you would do if you had access to the whole population
+(or an infinitely large sample) and then adapt that answer to the limited data
+you actually have. You always want to make sure you are asking the right 
+question, even if you are only able to give an approximate finite-data answer,
+rather than giving an 'optimal' answer to a question you don't actually care
+about.
+
+:::
+
+So, for the first two units of this course, we will put this idea front and
+center: we will fit our models to a _training set_ and then see how well they
+perform on a _test set_. Our goal is to not to find find models which perform
+well on the test set *per se*: we really want to find models that perform well
+on the all future data, not just one test set. But this training/test split will
+certainly get us going in the right direction. 
+
+Looking ahead, let's note some of the key questions we will come back to again
+and again: 
+
+- If we don't have an explicit test set, where can we get one? Can we 'fake it
+  to make it'? 
+- What types of models have small "test-training" gap, *i.e.* do about as well
+  on the test and training sets, and what models have a large gap? 
+
+[^anec]: Anecdotally, a Google Data Scientist once mentioned to me that they
+rarely bother doing $p$-value or significance calculations. At the scale of
+Google's A/B testing on hundreds of billions of ad impressions, _everything_
+is statistically significant. 
+
+[^sig]: You might still worry about the randomness of this comparison process:
+if we had a slightly different sample of our new data, would the better model
+still look better? You aren't wrong to worry about this, but we have at a minimum
+made the problem much easier: now we are just comparing the means of two error
+distributions - classic $t$-test stuff - as opposed to comparing two (potentially
+complex) models.
+
+## Model Complexity
+
+
+## Nearest Neighbor Methods
+
+Let's now see how complexity plays out for a very simple classifier, 
+$K$-Nearest Neighbors (KNN). KNN formalizes the intuition of 
+"similar inputs -> similar outputs." KNN looks at the $K$ most similar points
+in its training data  ("nearest neighbors" if you were to plot the data) and
+takes the average label to make its prediction.[^details]
+
+[^details]: There are details here about how we measure similarity, but for
+now we will restrict our attention to simple Euclidean distance. 
+
+```{r}
+library(class) # Provides a KNN function for classification
+args(knn)
+```
+
+You can see here that KNN requires access to the full training set at
+prediction time: this is different than something like OLS where we reduce our
+data to a set of regression coefficients (parameters).[^np]
+
+[^np]: KNN is a *non-parameteric* method, but not all *non-parametric* methods
+require access to the training data at test time. We'll cover some of those
+later in the course.
+
+We'll also need some data to play with. For now, we'll use synthetic data:
+
+```{r}
+#' Make two interleaving half-circles
+#'
+#' @param n_samples Number of points (will be divided equally among the circles)
+#' @param shuffle Whether to randomize the sequence
+#' @param noise Standard deviation of Gaussian noise applied to point positions
+#'
+#' @description Imitation of the Python \code{sklearn.datasets.make_moons} function.
+#' @return a \code{list} containining \code{samples}, a matrix of points, and \code{labels}, which identifies the circle from which each point came.
+#' @export
+make_moons <- function(n_samples=100, shuffle=TRUE, noise=0.25) {
+  n_samples_out = trunc(n_samples / 2)
+  n_samples_in = n_samples - n_samples_out
+  
+  points <- matrix( c(
+    cos(seq(from=0, to=pi, length.out=n_samples_out)),  # Outer circle x
+    1 - cos(seq(from=0, to=pi, length.out=n_samples_in)), # Inner circle x
+    sin(seq(from=0, to=pi, length.out=n_samples_out)), # Outer circle y
+    1 - sin(seq(from=0, to=pi, length.out=n_samples_in)) - 0.5 # Inner circle y 
+  ), ncol=2) 
+  
+  if (!is.na(noise)) points <- points + rnorm(length(points), sd=noise)
+  
+  labels <- c(rep(1, n_samples_out), rep(2, n_samples_in))
+  
+  if (!shuffle) {
+    list(
+      samples=points, 
+      labels=labels
+    )
+  } else {
+    order <- sample(x = n_samples, size = n_samples, replace = F)
+    list(
+      samples=points[order,],
+      labels=as.factor(ifelse(labels[order] == 1, "A", "B"))
+    )
+  }
+}
+```
+
+This function comes from the `clusteringdatasets` R package, but 
+the underlying idea comes from a function in `sklearn`, a popular Python ML 
+library.
+
+Let's take a look at this sort of data:
+
+```{r}
+TRAINING_DATA <- make_moons()
+```
+
+```{r}
+#| message: false
+library(ggplot2)
+library(tidyverse)
+data.frame(TRAINING_DATA$samples, 
+           labels=TRAINING_DATA$labels) |>
+  ggplot(aes(x=X1, y=X2, color=labels)) + 
+  geom_point(size=3)
+```
+
+We can make this a bit more attractive:
+
+```{r}
+MY_THEME <- theme_bw(base_size=20) + theme(legend.position="bottom")
+theme_set(MY_THEME)
+```
+
+```{r}
+data.frame(TRAINING_DATA$samples, labels=TRAINING_DATA$labels) %>%
+  ggplot(aes(x=X1, y=X2, color=labels)) + 
+  geom_point(size=2) + 
+  ggtitle("Sample Realization of the Moons Dataset")
+```
+
+Much better!
+
+Let's try making a simple prediction at the point (0, 0):
+
+```{r}
+knn(TRAINING_DATA$samples, 
+    cl=TRAINING_DATA$labels, 
+    test=data.frame(X1=0, X2=0), k=3)
+```
+
+::: {.callout-tip title="Pause to Reflect" collapse="true"}
+
+Does this match what you expect from the plot above? Why or why not?
+The following image might help: 
+
+```{r}
+library(ggforce)
+data.frame(TRAINING_DATA$samples, labels=TRAINING_DATA$labels) %>%
+  ggplot(aes(x=X1, y=X2, color=labels)) + 
+  geom_point() + 
+  ggtitle("Sample Realization of the Moons Dataset") + 
+  geom_circle(aes(x0=0, y0=0, r=0.2), linetype=2, color="red4")
+```
+
+Why is `R` returning a `factor` response here? What does that tell us about
+the type of ML we are doing? 
+
+:::
+
+We can also visualize the output of KNN at every point in space:
+
+```{r}
+visualize_knn_boundaries <- function(training_data, k=NULL){
+    xrng <- c(min(training_data$samples[,1]), max(training_data$samples[,1]))
+    yrng <- c(min(training_data$samples[,2]), max(training_data$samples[,2]))
+    
+    xtest <- seq(xrng[1], xrng[2], length.out=101)
+    ytest <- seq(yrng[1], yrng[2], length.out=101)
+    
+    test_grid <- expand.grid(xtest, ytest)
+    colnames(test_grid) <- c("X1", "X2")
+    
+    pred_labels = knn(training_data$samples, 
+                      cl=training_data$labels, 
+                      test_grid, 
+                      k=k)
+    
+  ggplot() + 
+  geom_point(data=data.frame(TRAINING_DATA$samples, 
+                             labels=TRAINING_DATA$labels), 
+             aes(x=X1, y=X2, color=labels), 
+             size=3) + 
+  geom_point(data=data.frame(test_grid, pred_labels=pred_labels), 
+             aes(x=X1, y=X2, color=pred_labels), 
+             size=0.5) + 
+  ggtitle(paste0("KNN Prediction Boundaries with K=", k))
+}
+
+visualize_knn_boundaries(TRAINING_DATA, k=1)
+```
+
+If we raise $K$, we get smoother boundaries: 
+
+```{r}
+visualize_knn_boundaries(TRAINING_DATA, k=5)
+```
+
+And if we go all the way to $K$ near to the size of the training data, 
+we get very boring boundaries indeed:
+
+```{r}
+visualize_knn_boundaries(TRAINING_DATA, k=NROW(TRAINING_DATA$samples)-1)
+```
+
+::: {.callout-tip title="Pause to Reflect" collapse="true"}
+
+What does this tell us about the _complexity_ of KNN as a function of $K$?
+
+:::
+
+In the terminology we introduced above, we see that increasing $K$ 
+decreases model complexity (wiggliness). 
+
+Let's now see how training error differs as we change $K$: 
+
+```{r}
+TEST_DATA <- make_moons()
+
+TRAINING_ERRORS <- data.frame()
+for(k in seq(1, 20)){
+    pred_labels_train <- knn(TRAINING_DATA$samples, cl=TRAINING_DATA$labels, TRAINING_DATA$samples, k=k)
+    true_labels_train <- TRAINING_DATA$labels
+    err <- mean(pred_labels_train != true_labels_train)
+    cat(paste0("At k = ", k, ", the training (in-sample) error of KNN is ", round(100 * err, 2), "%\n"))
+    TRAINING_ERRORS <- rbind(TRAINING_ERRORS, data.frame(k=k, training_error=err))
+}
+
+ggplot(TRAINING_ERRORS, aes(x=k, y=training_error)) + 
+    geom_point() + 
+    ggtitle("Training (In-Sample) Error of KNN")
+```
+
+Compare this to the test error: 
+
+```{r}
+TESTING_ERRORS <- data.frame()
+for(k in seq(1, 20)){
+    pred_labels_train <- knn(TRAINING_DATA$samples, cl=TRAINING_DATA$labels, TEST_DATA$samples, k=k)
+    true_labels_train <- TEST_DATA$labels
+    err <- mean(pred_labels_train != true_labels_train)
+    cat(paste0("At k = ", k, ", the test (out-of-sample) error of KNN is ", round(100 * err, 2), "%\n"))
+    TESTING_ERRORS <- rbind(TESTING_ERRORS, data.frame(k=k, test_error=err))
+}
+
+ggplot(TESTING_ERRORS, aes(x=k, y=test_error)) + 
+    geom_point() + 
+    ggtitle("Test (Out-of-Sample) Error of KNN")
+```
+
+The difference between the two is clearer if we put them on the same figure:
+
+```{r}
+ERRS <- inner_join(TRAINING_ERRORS, TESTING_ERRORS, by="k") |>
+        pivot_longer(-k) |>
+        rename(Error=value, Type=name)
+ggplot(ERRS, aes(x=k, y=Error, color=Type)) + 
+  geom_point() + geom_line()
+```
+
+We notice a few things here: 
+
+1) Training Error decreases in $K$, with 0 training error at $K=1$ (Why?)
+2) Test Error is basically always higher than test error
+3) The best training error does not have the best test error
+
+We can also look at the gap between training and test error: this is called
+`generalization error` or `optimism`: 
+
+```{r}
+inner_join(TRAINING_ERRORS, TESTING_ERRORS, by="k") |>
+    mutate(optimism=test_error - training_error) |>
+    ggplot(aes(x=k, y=optimism)) + 
+    geom_point() + 
+    geom_line()
+```
+
+::: {.callout-tip title="Pause to Reflect" collapse="true"}
+
+Consider the following questions:
+
+- What is the relationship between optimism and model complexity
+- What is the best value of $K$ for this data set?
+- How should we pick the best value of $K$?
+- How might that change if we increase the number of training samples?
+- How might that change if we increase the number of test samples? 
+
+:::
