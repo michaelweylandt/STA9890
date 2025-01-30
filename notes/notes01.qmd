@@ -549,10 +549,10 @@ Consider the following questions:
 
 Let us understand this using the tools of complexity we discussed above. 
 
-- For small $K$, the model became quite simple, barely fit the training data, but
+- For large $K$, the model became quite simple, barely fit the training data, but
   did just as well on the training data as the test data (poorly on both). This
   is indicative of a *small generalization gap* and a *low complexity* model. 
-- For large $K$, the model became rather complex, fit the training data well, 
+- For python $K$, the model became rather complex, fit the training data well, 
   but didn't perform as well as we would like on the test data. This is indicative
   of a *large generalization gap* and a *high complexity* model. 
   
