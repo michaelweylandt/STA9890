@@ -7,6 +7,7 @@ filters:
 ```{r}
 #| echo: false
 #| message: false
+#| warning: false
 library(tidyverse)
 class_date <- function(n, details=FALSE){
     c <- read_csv("key_dates.csv") |>
@@ -138,13 +139,16 @@ and to critically engage with modern machine learning literature. The grading
 in this course reflects this diversity of objectives.
 
 Specifically, the grading in this course draws on three separate modes of
-assessment: i) in-class 'midterms' which assess students' fluency with the 
-theoretical and mathematical aspects of machine learning; ii) three 'research
-reports' designed to build students' skills in the computational and 
-methodological aspects of machine learning; and iii) a course prediction
-competition, designed to build students' skills in applications of machine
-learning to important scientific problems. All three elements are equally 
-weighted as follows: 
+assessment: 
+
+  i) in-class 'midterms' which assess students' fluency with the 
+     theoretical and mathematical aspects of machine learning; 
+  ii) three 'research reports' designed to build students' skills in the
+      computational and methodological aspects of machine learning; and 
+  iii) a course prediction competition, designed to build students' skills in
+       applications of machine learning to important scientific problems. 
+       
+All three elements are equally weighted as follows: 
 
 - 33.3% Mid-Semester Tests (Best two of three; 100 points each, 200 points total)
   - Test 1: `r test_date(01)` - `r test_date(01, details=TRUE)`
@@ -166,12 +170,12 @@ not anticipate "down-curving" happening.
 
 #### Weekly Quizzes
 
-In lieu of homework, I will provide a short list of *practice problems* and
-**suggested readings** following each lecture. At the start of the following
-lecture, a short three question ($\approx$ 15 minute) quiz will be administered.
-The quiz questions will not be **verbatim** from the practice problems, but if
-you can answer the practice problems quickly and fluently, the quiz should pose
-little difficulty.
+In lieu of homework, I will provide a set of **suggested readings** following
+each lecture. At the start of the following lecture, a short three question
+($\approx$ 15 minute) quiz will be administered. The quiz questions will not be
+**verbatim** from the reading, but if you can answer the textbook questions in
+the suggested sections quickly and fluently, the quiz should pose little
+difficulty.
 
 These in-class weekly quizzes will generate *extra credit* applied to your
 *final aggregate score*. Each quiz will receive a score out of 3 added

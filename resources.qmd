@@ -5,7 +5,7 @@ title: "{{< var course.short >}} - Additional Resources and Course Policies"
 ## Course Resources
 
 There are no required textbooks for this course.
-Supplemental readings and practice problems will be
+Supplemental readings and suggested practice will be
 assigned from the following readily-available resources: 
 
 - [*Mathematics for Machine Learning* by Diesenroth, Faisal, and Ong (DFO)](http://mml-book.github.io)
@@ -64,7 +64,7 @@ specifically **disallowed**.
   your ideas. They may not be used as idea generation tools. 
   
 The era of Generative AI is challenging and fast-paced. If you are unsure whether
-a tool is allowed in this course, please reseach out to the instructor before
+a tool is allowed in this course, please reach out to the instructor before
 using it. In matters of Academic Integrity, it is far better to ask permission
 than forgiveness. 
 
@@ -89,7 +89,6 @@ collaborated. You do not need to acknowledge the instructor or any Piazza
 discussions, but you must acknowledge other faculty members or other Baruch
 students who help you complete your reports, even if they are not enrolled in
 this course.
-
 
 Academic sanctions in this class will range from an **F on the Assignment** to
 an **F in this Course**. A report of suspected academic dishonesty will be sent
