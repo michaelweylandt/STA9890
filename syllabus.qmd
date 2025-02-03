@@ -150,7 +150,7 @@ assessment:
        
 All three elements are equally weighted as follows: 
 
-- 33.3% Mid-Semester Tests (Best two of three; 100 points each, 200 points total)
+- 33.3% One-Hour Mid-Semester Tests (Best two of three; 100 points each, 200 points total)
   - Test 1: `r test_date(01)` - `r test_date(01, details=TRUE)`
   - Test 2: `r test_date(02)` - `r test_date(02, details=TRUE)`
   - Test 3: `r test_date(03)` - `r test_date(03, details=TRUE)`
