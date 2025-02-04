@@ -1,8 +1,215 @@
 ---
 title: "{{< var course.short >}} - Review of OLS, Linear Algebra, and Convex Optimization"
+freeze: "auto"
 ---
 
-$$\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}}$$
+$$\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}}$$
+```{r}
+#| include: false
+set.seed(9890)
+```
+
+## Linear Algebra Review
+
+In mathematics, a _vector_ - random or otherwise - is a fixed-length
+_ordered_ collection of numbers. When we want to be precise about the
+size of a vector, we often call it a "tuple", *e.g.*, a length-three vector
+is a "triple", a length-four vector is a "4-tuple", a length-five vector
+is a "5-tuple" *etc.*. 
+
+So, these are all vectors: 
+
+- $(3, 4)$
+- $(1, 1, 1)$
+- $(1, 5, 6, 10)$
+
+When we want to talk about the set of vectors of a given size, we use
+the _Cartesian product_ of sets. For two sets, $A, B$, the product set
+$A \times B$ is the set of all pairs, with the first element from $A$ and
+the second from $B$. In mathematical notation, 
+
+$$A \times B = \left\{(a, b): a \in A, b \in B\right\} $$
+
+This _set-builder_ notation is read as follows: "The Cartesian Product of $A$
+and $B$ is the set of all pairs $(a, b)$ such that $a$ is in $A$ and $b$
+is in $B$." 
+
+If $A$ and $B$ are the same set, we define a Cartesian _power_ as follows:
+
+$$A^2 = A \times A = \left\{(a_1, a_2): a_1 \in A, a_2 \in A\right\}$$
+
+Note that even though the sets $A$ and $A$ in this product are the same, 
+the elements in each pair may vary. For example, if $A = \{1, 2, 3\}$, we have
+
+$$A^2 = \left\{(1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1), (3,2), (3, 3)\right\}$$
+
+Note that vectors are _ordered_ pairs so $(2, 1) \neq (1, 2)$. From here, it
+should be pretty easy to convince yourself that set sizes play nicely with
+Cartesian products: 
+
+- $|A \times B| = |A| |B|$
+- $|A^k| = |A|^k$
+
+The most common set of vectors we use are those where each element is an
+arbitrary real number. The set of vectors of length $n$ ($n$-tuples) is thus
+$\R^n$. We rarely mix vectors of different lengths, so we don't really have
+a name or notation for the "combo pack" $\R^2 \cup \R^3 \cup \R^4$. 
+
+Conventionally, vectors are written in bold (if on a computer) or with a
+little arrow on top (hand written): so a vector called "x" would be
+denoted $\mathbf{x}$ or $\vec{x}$. The elements of $\bx$ are denoted by 
+subscripts $\bx = (x_1, x_2, \dots, x_n)$. 
+
+### Vector Arithmetic
+
+We have three arithmetic operations we can perform on general vectors. 
+The simplest is _scalar multiplication_. A _scalar_ is a non-vector number, 
+*i.e.*, a 'regular' number. Scalar multiplication consists of applying the
+scalar independently to each element of a vector. 
+
+$$\alpha \bx = \alpha(x_1, x_2, \dots, x_n) = (\alpha x_1, \alpha x_2, \dots, \alpha x_n)$$
+
+For example, if $\bx = (3, 4)$ and $\alpha = 2$, we have
+$$\alpha \bx = (6, 8)$$
+
+Note that the output of scalar multiplication is always a vector of the
+same length as the input. 
+
+We also have the ability to add vectors. This again is performed element-wise.
+
+$$\bx + \by = (x_1, \dots, x_n) + (y_1, \dots, y_n) = (x_1 + y_1, \dots, x_n + y_n) $$
+
+Note that we can't add vectors of different lengths (recall our "no mixing"
+rule) and the output length is always the same as the input lengths. 
+
+Finally, we have the vector _inner product_, defined as: 
+
+$$\langle \bx, \by \rangle = x_1y_1 + x_2y_2 + \dots + x_ny_n $$
+
+You might have seen this previously as the "dot" product. The inner product
+takes two length-$n$ vectors and gives back a scalar. This structure might
+seem a bit funny, but as we'll see below, it's actually quite useful. 
+
+You might ask if there's a "vector-out" product: there is one, with the
+fancy name "Hadamard product", but it doesn't play nicely with other tools, 
+so we don't use it very much. 
+
+These tools play nicely together: 
+
+- $\alpha(\bx + \by) = \alpha \bx + \alpha \by$ (Distributive)
+- $\langle \alpha \bx, \by \rangle = \alpha \langle \bx, \by \rangle$ (Associative)
+- $\langle \bx, \by \rangle = \langle \by, \bx \rangle$ (Commutative)
+
+### Vector Length and Angle
+
+We sometimes want to think about the "size" of a vector, analogous to
+the absolute value of a scalar. In scalar-world, we say "drop the sign"
+but there's not an obvious analogue to a sign for a vector. For instance, 
+if $\bx = (3, -4)$ is $\bx$ "positive", "negative" or somewhere in beetween? 
+
+We note a trick from scalar-land: $|x| = \sqrt{x^2}$. We can use the same idea
+for vectors: 
+
+$$ \|\bx\| = \sqrt{\langle \bx, \bx\rangle} = \sqrt{\sum_{i=1}^n x_i^2}$$
+
+This quantity, $\|\bx\|$, is called the _norm_ or _length_ of a vector.
+We use the double bars to distinguish it from the absolute value of
+a scalar, but it's fundamentally the same idea. 
+
+In $\R^2$, we recognize this formula for length as the Pythagorean theorem: 
+
+$$ \|(3, 4)\| = \sqrt{3^2 + 4^2} = \sqrt{25} = 5 $$
+
+We also sometimes want to define the _angle_ between two vectors. We can
+define this as: 
+
+$$ \cos \angle(\bx, \by) = \frac{\langle \bx, \by\rangle}{\|\bx\|\|\by\|} \Leftrightarrow \angle(\bx, \by) = \cos^{-1}\left(\frac{\langle \bx, \by\rangle}{\|\bx\|\|\by\|}\right)$$ 
+
+We won't use this formula too often for implementation, but it's good to have
+it for intuition. In particular, we note that angle is a proxy for sample
+correlation, justifying the common vernacular of "orthogonal", meaning "at right
+angles", for "uncorrelated" or "unrelated."
+
+### Matrices
+
+An $n$-by-$p$ array of numbers is called a _matrix_; here the first dimension
+is the number of rows while the second is the number of columns. So 
+$$\bA = \begin{pmatrix} 1 & 2 \\ 3 & 4 \\ 5 & 6 \end{pmatrix}$$
+is a 3-by-2 matrix. We denote the set of matrices of a given size as 
+$\R^{n \times p}$, extending slightly the notation we use for vectors. 
+
+In this course, we will use matrices for two closely-related reasons: 
+
+1) To organize our data
+2) To specify and manipulate linear models
+
+Specifically, if we have $n$ training samples, each of $p$ covariates
+(predictors), we will arrange them in a matrix traditionally called 
+$\bX \in \R^{n \times p}$. Here, each _row_ of $\bX$ corresponds to an 
+observation. Statisticians tend to call this matrix a _design_ matrix because
+(historically) it was something designed as part of an experiment; the name 
+got carried forward into the observational (un-designed) setting. You may also
+hear it called the 'data matrix'. 
+
+Suppose we have a design matrix $\bX \in \R^{n \times p}$ and a vector of 
+regression coefficients $\mathbf{\beta} \in \R^p$. We can use _matrix_
+multiplication to make predictions about all observations simultaneously. 
+
+Specifically, recall that the standard (multivariate) linear model looks like: 
+
+$$\hat{y} = \sum_{i=1}^p x_i\beta_i$$
+
+For a single observation, this can be written in vector notation as
+
+$$\hat{y} = \bx^{\top}\bbeta$$ 
+
+If we have $n$ observations, we can stack them in a vector as: 
+
+$$\begin{pmatrix} \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_n \end{pmatrix} = 
+\begin{pmatrix} \bx_1^{\top}\bbeta \\ \bx_2^{\top}\bbeta \\ \vdots \\ \\bx_n^{\top}\bbeta \end{pmatrix}$$
+
+We can connect this with our design matrix $\bX$ by using the above as a 
+definition of matrix-vector multiplication: 
+
+$$\hat{\by} = \bX\bbeta =  
+\begin{pmatrix} \bx_1^{\top}\bbeta \\ \bx_2^{\top}\bbeta \\ \vdots \\ \\bx_n^{\top}\bbeta \end{pmatrix}$$
+
+Here, matrix multiplication proceeds by taking the inner product of each _row_
+with the (column) vector $\bbeta$. This may feel a bit unnatural at first, but
+with a bit of practice, it will become second nature. Note that we don't need
+a transpose on $\bX$: the multiplication 'auto-transposes' in some sense. 
+
+It is always helpful to keep track of dimensions when doing matrix
+multiplication: checking that matrices and vectors have the right size is a
+useful way to make sure you haven't done anything _too wrong_. In general, 
+we can only multiply a $m$-by-$n$ matrix with a $n$-by-$p$ matrix and the result
+is a $m$-by-$p$ matrix (the $n$-dimension gets reduced to a scalar by the inner
+product). Formally, we have something like
+
+$$ \R^{m \times n} \times \R^{n \times p} \to \R^{m \times p}$$
+
+For purposes of this, you can always think of an $n$-vector as a $n$-by-1 
+"column" matrix, giving us: 
+
+$$\underbrace{\bX}_{\R^{n \times p}} \underbrace{\bbeta}_{\R^p} = \underbrace{\hat{\by}}_{\R^{n \times 1}}$$
+
+### Spectral Properties of Symmetric Matrices
+
+An important class of matrices we will consider are _symmetric_ matrices, which
+are just what the name sounds like. These come up in several key places in
+statistics, none more important than the _covariance_ matrix, typically denoted
+$\Sigma$. Recall that the covariance operator $\mathbb{C}$ is symmetric
+($\mathbb{C}[X, Y] = \mathbb{C}[Y, X]$) so the covariance matrix of a random
+vector turns out to be symmetric as well. 
+
+Another common source of symmetric matrices is when a matrix is multiplied by
+its transpose: you should convince yourself that 
+$\bX^{\top}\bX \in \R^{p \times p}$ is a symmetric matrix. 
+
+
+
+
+
 
 ## Ordinary Least Squares
 
@@ -19,9 +226,18 @@ Squares* suggests, OLS uses (mean) squared error as its target.
 Why is MSE the right choice here? It turns out that MSE is very nice
 computationally, but the reason is actually more fundamental: given a
 random variable $Z$, suppose we want to minimize the $(Z - \mu)$ for 
-some $\mu$: it can be shown (Q: reflection exercise!) that
+some $\mu$: it can be shown that
 
 $$ \E[Z] = \text{argmin}_{\mu \in \R} \E[(Z - \mu)^2]$$
+
+
+::: {.callout-note title="Pause to Reflect" collapse="true"}
+
+Prove this for yourself. 
+
+*Hint*: Differentiate with respect to $\mu$. 
+
+:::
 
 That is, the quantity that minimizes the MSE is the mean. So when we
 fit a line to some data by OLS, we are implicitly trying to fit to
@@ -62,32 +278,137 @@ defines an estimator by **M**inimization of a measure of 'fit'.
 Whatever you call it, it's a very useful 'meta-method' for coming
 up with ML methods. 
 
-Q: How does this compare with *Maximum Likelihood Estimation*? 
 
-Q: We set up this ERM method using *mean squared error* - what happens with other errors? 
-- *mean absolute error*
-- *mean percent error*
+::: {.callout-note title="Pause to Reflect" collapse="true"}
+
+
+1. How does this compare with *Maximum Likelihood Estimation*? 
+
+2. We set up this ERM method using *mean squared error* - what happens 
+   with other errors? Specifically, formulate this ERM for 
+
+   - *mean absolute error*
+   - *mean percent error*
+   
+   and compare to OLS. 
+   
+:::
 
 So far we've set up OLS as 
 $$ \hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2$$
 
 We can clean this up to make additional analysis easier: 
-- Let $$\by = \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{pmatrix}$$ be the (vertically stacked) vector of responses. 
+
+- Let $$\by = \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{pmatrix}$$ 
+  be the (vertically stacked) vector of responses. 
 - Next look at our predictions: 
   $$\hat{\by} = \begin{pmatrix} \bx_1^{\top}\bbeta \\ \bx_2^{\top}\bbeta \\ \vdots \\ \bx_n^{\top}\bbeta \end{pmatrix} = \begin{pmatrix} \bx_1^{\top} \\ \bx_2^{\top} \\ \vdots \\ \bx_n^{\top} \end{pmatrix}\bbeta = \bX\bbeta$$
   
 Hence, OLS is just $$\hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2$$ Here $\|\cdot\|_2^2$ is the (squared Euclidean or $L_2$) norm of a vector: defined by $\|\bz\|_2^2 = \sum z_i^2$
 
-Q: Do we actually need the $1/n$ part? 
 
-Q: Why is this called linear?
+::: {.callout-note title="Pause to Reflect" collapse="true"}
+
+
+1. Do we actually need the $1/n$ part? 
+
+2. Why is this called linear?
+
+:::
 
 We've formulated OLS as 
 $$\hat{\beta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2.$$ 
 In order to solve this, it will be useful to modify it slightly to
 $$\hat{\beta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{2} \|\by - \bX\bbeta\|_2^2$$ 
 
-Q: Why is this ok to do?
+::: {.callout-note title="Pause to Reflect" collapse="true"}
+
+Why is this ok to do?
+
+:::
+
+You will show in [Report #01](../reports/repot01.html) that the solution is
+given by 
+
+$$\hat{\beta} = (\bX^{\top}\bX)^{-1}\bX^{\top}\by$$
+
+::: {.callout-note title="Pause to Reflect" collapse="true"}
+
+Prove this for yourself. What conditions are required on $\bX$ for the
+inverse in the above expression to exist?
+
+:::
+
+With this estimate, our in-sample predictions are given by: 
+
+$$\hat{\by} = \bX\hat{\bbeta} = \bX(\bX^{\top}\bX)^{-1}\bX^{\top}\by $$
+
+This says that our predictions are, in some sense, just a linear function of
+the original data $\by$. The matrix
+
+$$\bX(\bX^{\top}\bX)^{-1}\bX^{\top} = \bH$$
+
+is sometimes called the 'hat' matrix because it puts a hat on $\by$
+($\hat{\by}=\bH\by$). 
+
+$\bH$ can be shown to be a special type of matrix called a _projector_, meaning
+that it has eigenvalues all 0 or 1. For the hat matrix specifically, we can show 
+that eigenvalues of $\bH$ are $p$ zeros and $n - p$ ones. 
+
+This in turn implies that it is _idempotent_, meaning $\bH^2 = \bH\bH = \bH$. 
+(To show this, simply express $\bH$ in terms of its eigendecomposition.)
+We can use this property to finally justify the in-sample MSE of OLS we have
+cited several times. 
+
+The in-sample MSE is given by: 
+
+$$\begin{align*}
+\text{MSE} &= \frac{1}{n}\|\by - \hat{\by}\|_2^2 \\
+           &= \frac{1}{n}\left\|\by - \bH\by\right\|_2^2 \\
+           &= \frac{1}{n}(\by - \bH\by)^{\top}(\by - \bH\by) \\
+           &= \frac{1}{n}(\by^{\top} - \by^{\top}\bH)(\by - \bH\by) \\
+           &= \frac{\by^{\top}\by - \by^{\top}\bH\by - \by^{\top}\bH\by + \by^{\top}\bH\bH\by}{n} \\
+           &= \frac{\by^{\top}\by - \by^{\top}\bH\by}{n} \\
+           &= \frac{\by^{\top}(\bI - \bH)\by}{n} \\
+\implies \E[\text{MSE}] &= \E\left[\frac{\by^{\top}(\bI - \bH)\by}{n}\right] \\
+&= \frac{1}{n}\E\left[\by^{\top}(\bI - \bH)\by\right]
+\end{align*}$$
+
+To finish this, we need to know that the [expectation of a symmetric quadratic 
+form](https://en.wikipedia.org/wiki/Quadratic_form_(statistics)) satisfies 
+
+$$\bx \sim (\mu, \Sigma) \implies \E[\bx^{\top}\bA\bx] = \text{Tr}(\bA\Sigma) + \mu^{\top}\bA\mu$$
+
+for any random vector $\bx$ with mean $\mu$ and covariance matrix $\Sigma$. 
+
+To apply this above, we note $\by \sim (\bX\beta_*, \sigma^2 \bI)$, so we get
+
+$$\begin{align*}
+\E\left[\by^{\top}(\bI - \bH)\by\right] &= \text{Tr}((\bI - \bH) \sigma^2 \bI) + (\bX\bbeta_*)^{\top}(\bI - \bH)(\bX\bbeta_*) \\
+&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}\bX^{\top}(\bI - \bH)\bX\bbeta_* \\
+&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bH\bX)\bbeta_* \\ 
+&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX(\bX^{\top}\bX)^{-1}\bX^{\top}\bX)\bbeta_* \\ 
+&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX)\bbeta_* \\ 
+&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top} \mathbf{0}\bbeta_* \\
+&= \sigma^2 \text{Tr}(\bI - \bH) \\
+&= \sigma^2 (\text{Tr}(\bI) - \text{Tr}(\bH))
+\end{align*}$$
+
+Recall that the trace is simply the sum of the eigenvalues, so this last term
+becomes $\sigma^2(n - p)$, finally giving us: 
+
+$$\E[\text{MSE}] = \frac{\sigma^2(n-p)}{n}  = \sigma^2\left(1 - \frac{p}{n}\right)$$
+
+Whew! That was a lot of work! But can you imagine how much more work this would
+have been without all of these matrix tools? 
+
+::: {.callout-note title="Pause to Reflect" collapse="true"}
+
+Make sure you can justify every step in the derivation above. This is a
+particularly long computation, but we will use the individual steps many more
+times in this course.
+
+:::
 
 ## Bias-Variance Decomposition
 
@@ -456,8 +777,6 @@ as we might expect for $N=25$ samples.
 How do the relative magnitudes of these terms change as you 
 adjust the parameters of the simulation?
 
-## Linear Algebra Review
-
 ## Introduction to Convex Optimization
 
 In this course, we will frequently want to find the minimizer of
@@ -667,12 +986,4 @@ systems to do two things automatically that we did 'by hand' in this example:
 
 - Compute gradients via a process known as 'back-propogation' or 'autodiff'
 - Implement (fancy) gradient descent
-
-
-
-
-
-
-
-
 
