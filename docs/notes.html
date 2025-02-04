@@ -67,6 +67,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -181,6 +210,7 @@ ul.task-list li input[type="checkbox"] {
 <li><a href="https://youtu.be/HZGCoVF3YvM?si=NmWr1IWjyq6gypnU">Bayes’ Theorem</a></li>
 </ul>
 <p>though you don’t need to watch all of these <em>immediately</em>.</p>
+<p>In this course, we will apply calculus techniques (mainly differentiation) to functions <span class="math inline">\(\R^{p} \to \R\)</span>. The website <a href="https://www.matrixcalculus.org/">matrixcalculus.org/</a> is helpful for this work.</p>
 </section>
 <section id="week03" class="level4">
 <h4 class="anchored" data-anchor-id="week03">Week 3 - Regression II (2025-02-11)</h4>
