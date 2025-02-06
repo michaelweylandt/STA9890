@@ -984,6 +984,6 @@ in this 'quadratic' style. Can you see why?
 [^tools]: Modern ML toolkits like `pytorch` or `TensorFlow` are (at heart) fancy
 systems to do two things automatically that we did 'by hand' in this example: 
 
-- Compute gradients via a process known as 'back-propogation' or 'autodiff'
-- Implement (fancy) gradient descent
+    - Compute gradients via a process known as 'back-propogation' or 'autodiff'
+    - Implement (fancy) gradient descent
 
