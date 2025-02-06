@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-7a426326b279d3ba9cc0818763c3c226.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -144,7 +144,6 @@ window.Quarto = {
     <span class="navbar-title">STA 9890</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -962,10 +961,6 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 </div>
 <p>We don’t get the <em>exact</em> minimizer, but we certainly get something ‘close enough’ for our purposes. In <a href="../reports/repot01.html">Report #01</a>, you will use gradient descent and some variants to study the least squares problem.</p>
 <p>Often, we will want to see how the value of <span class="math inline">\(f(\bx_k)\)</span> changes over the course of the optimization. We expect that it will go down monotonically, but it may not be worth continuing the optimization if we have reached a point of ‘diminishing returns.’ You can do this by hand (evaluating <span class="math inline">\(f\)</span> after each update and storing the results), but many optimizers will often track this automatically for you: <em>e.g.</em> <a href="https://www.tensorflow.org/tensorboard">TensorBoard</a>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
-<ul>
-<li>Compute gradients via a process known as ‘back-propogation’ or ‘autodiff’</li>
-<li>Implement (fancy) gradient descent</li>
-</ul>
 
 
 </section>
@@ -978,7 +973,12 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <li id="fn2"><p>Note that we can only minimize this quadratic in the case where <span class="math inline">\(a\)</span> is strictly positive so the parabola is upward facing. This is the scalar equivalent of the strict positive-definiteness condition we put on <span class="math inline">\(\bA\)</span>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>OLS and some basic variants (ridge regression) can be written in this ‘quadratic’ style. Can you see why?<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>For instance, of the <a href="https://pytorch.org/docs/stable/optim.html#algorithms">14 optimization algorithms</a> included in base <code>pytorch</code>, all but one are advanced versions of gradient descent. The exception is <code>LBFGS</code> which attempts to (approximately) use both the gradient and the Hessian (second derivative); computing the Hessian is normally quite expensive, so <code>LBFGS</code> uses some clever tricks to <em>approximate</em> the Hessian.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>Modern ML toolkits like <code>pytorch</code> or <code>TensorFlow</code> are (at heart) fancy systems to do two things automatically that we did ‘by hand’ in this example:<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Modern ML toolkits like <code>pytorch</code> or <code>TensorFlow</code> are (at heart) fancy systems to do two things automatically that we did ‘by hand’ in this example:</p>
+<ul>
+<li>Compute gradients via a process known as ‘back-propogation’ or ‘autodiff’</li>
+<li>Implement (fancy) gradient descent</li>
+</ul>
+<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1063,8 +1063,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1175,7 +1173,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

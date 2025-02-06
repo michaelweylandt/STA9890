@@ -58,7 +58,7 @@ this course:
 though you don't need to watch all of these *immediately*. 
 
 In this course, we will apply calculus techniques (mainly
-differentiation) to functions $\R^{p} \to \R$. The website
+differentiation) to functions $\mathbb{R}^{p} \to \mathbb{R}$. The website
 [matrixcalculus.org/](https://www.matrixcalculus.org/) is helpful for
 this work. 
 
