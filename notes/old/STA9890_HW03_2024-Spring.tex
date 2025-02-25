@@ -1,0 +1,259 @@
+\documentclass[10pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{multicol}
+\usepackage{lettrine}
+\usepackage{calligra}
+\usepackage{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+
+\newcommand{\R}{\mathbb{R}}
+
+\usepackage{bm}
+\newcommand{\bzero}{\bm{0}}
+\newcommand{\bx}{\bm{x}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\bX}{\bm{X}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bSigma}{\bm{\Sigma}}
+\newcommand{\bv}{\bm{v}}
+\newcommand{\bu}{\bm{u}}
+\newcommand{\bU}{\bm{U}}
+\newcommand{\bV}{\bm{V}}
+\newcommand{\bD}{\bm{D}}
+\newcommand{\bY}{\bm{Y}}
+\newcommand{\bbeta}{\bm{\beta}}
+
+\usepackage{algorithm}
+\DeclareMathOperator{\argmin}{arg\,min}
+
+\newcommand{\E}{\mathbb{E}}
+
+\usepackage{enumitem,amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+
+\usepackage{soul}
+\newcommand{\cmark}{\ding{52}}
+
+\usepackage{rotating}
+
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+\begin{center}
+    {\Large \bf Assignment \#3: Classification \& PCA \\ STA9890 \\ Statistical Learning for Data Mining}
+\end{center}
+
+{\bf Assignment Parameters:} \\
+\phantom{abc}Date Assigned: 2024-03-26\\
+\phantom{abc}Date Due: 2024-04-09 @ 5:45pm \\
+~\\
+\phantom{abc}Submission Mechanism(s):
+\begin{itemize}
+    \item Blackboard (strongly preferred)
+    \item Email to instructor: \href{mailto:michael.weylandt@baruch.cuny.edu}{michael.weylandt@baruch.cuny.edu} \\ 
+    {\small Email submissions must be titled \emph{exactly} as \texttt{STA9890-S2024-HW2-LASTNAME,FIRSTNAME.pdf}}
+\end{itemize}
+
+\section*{Question 1: Building a Spam Detector (30 points)}
+
+For this problem, you will use the spam data set provided as part of this assignment. 
+\begin{enumerate}[label={(\alph*)}]
+\item Write a function to perform $K$-fold cross-validation to select
+  the tuning parameter for ridge logistic regression. You must code this up
+  yourself and cannot use built-in functions (using a built-in
+  function for the base classifier is fine).
+\item Select the optimal tuning parameter using
+  \begin{enumerate}[label={(\arabic*)}]
+  \item the minimum CV error rule; and
+  \item the one SE rule
+  \end{enumerate}
+  for $K=5$-fold CV. Are the models selected different? Interpret
+  these results and reflect on this.
+\item Perform both $K=5$ and $K=10$ fold CV. Does this change the
+  results? Is one of these preferable for this problem?
+\item When reporting the CV error, try out different loss functions:
+  \begin{enumerate}[label={(\arabic*)}]
+  \item misclassification error;
+  \item binomial deviance error; and
+  \item hinge loss error.
+  \end{enumerate} Which error function is best for CV and model
+  selection? Why?
+\item Reflect on your results. What have you learned about CV? Which
+  approach to model selection do you think is best for this spam
+  classification example? Why?
+\item Use a model selection procedure to select tuning parameters for
+  each of the following classifiers: Linear SVM, Gaussian Kernel SVM,
+  and Polynomial Kernel SVM.
+\item Report the accuracy (model assessment) of each classifier for
+  this spam data set. Which one is best? Why? Interpret and reflect on
+  your results.
+\item Discuss why your model selection and assessment procedures are
+  correct and justify any decisions you made.
+
+  \emph{Note: For parts (f-h), you may use any built-in functions. The
+  question is purposefully vague as it is up to you to design and
+  implement a correct model selection and model assessment scheme to
+  decide which type of SVM classifier is best for building a spam
+  filter.}
+\end{enumerate}
+
+\section*{Question 2: Exploratory  Analysis \& Unsupervised Learning (20 points)}
+
+Use PCA, NMF, and ICA to find patterns, reduce the dimension, and
+visualize the data. Please download the \emph{Digits Data} from the ESL
+webpage (you used this data in HW1).
+\begin{enumerate}[label={(\alph*)}]
+\item Visualize results from the 3 methods. How would you visualize
+patterns among the samples? Among the features? Show these
+graphics, explain them, and interpret the results. What do these
+reveal? Do you find anything interesting?
+\item How much variance is explained by each PC? What would be a good
+number of PC factors to retain for this data? Explain.
+\item How do the results of ICA and NMF change when you take $r=10, 20,
+   50, 250$ factors? Is there a way that you could decide how many
+factors to retain in a data-driven manner? Explain.
+\item Is there a quantitative and objective way to that you can determine
+which is the best pattern recognition technique for this data set?
+How? Explain and implement your procedure.
+\end{enumerate}
+
+\section*{Question 3: Properties and Applications of the SVD (20 points)}
+\begin{itemize}
+    \item Prove: If $\bX$ is a matrix, the left singular vectors of $\bX$ are the eigenvectors of $\bX\bX^{\top}$ and the right singular vectors are the eigenvectors of $\bX^{\top}\bX$ (5 points)
+    \item Compute the ridge regression solution in terms of the SVD of $\bX = \bU \bD \bV^{\top}$. Describe how the entire set of ridge solutions can be computed efficiently once the SVD of $\bX$ is pre-computed. (5 points)
+    \item \emph{Principal Components Regression} (PCR) refers to the process of:
+\begin{enumerate}
+    \item First, projecting the data matrix $\bX \in \R^{n \times p}$ onto a small number of principal components to get a reduced data matrix $\tilde{\bX} \in \R^{n \times k}$
+    \item Fitting a linear model (\emph{e.g.} OLS) on $(\tilde{\bX}, \by)$. 
+\end{enumerate}
+This method typically has better performance than a pure linear model, with the PCA pre-processing essentially acting as a form of regularization.  
+
+Implement PCR on the gene marker data set from the previous homework and compare its predictive performance to OLS, ridge, and lasso. Use $K$-fold CV to select the optimal tuning parameters for each method. (5 points)
+\item Using the SVD of $\bX$, derive a closed-form solution for $\hat{\bbeta}_{\text{PCR}}$: compare and contrast this with your SVD-ridge solution. (5 points)
+\end{itemize}
+
+\section*{Question 4: Supervised Dimension Reduction Methods (10 points)}
+
+PCA is an \emph{unsupervised} dimension reduction method, but supervised analogues exist. The most famous of these are methods like \emph{Canonical Correlation Analysis}\footnote{CCA is very closely related to another method called \emph{Partial Least Squares} (PLS)l here we'll treat the two interchangeably.} Unlike our typical ``decompose $\bX$'' story, CCA/PLS finds a paired decomposition of two matrices $\bX, \bY$ where the rows correspond to the same observational unit. Unlike supervised learning, here $\bY$ is a \emph{matrix} and we don't have a single all-important scalar response. We can fit these methods by finding the SVD of $\bX^{\top}\bY$: the resulting singular vector (pairs) capture the elements of $\bX$ that best predict a combination of elements of $\bY$. In this question, you will fit PLS/CCA on the \texttt{palmerpenguins} data. 
+
+\begin{itemize}
+    \item Create $\bX, \bY$ as follows:
+    \begin{verbatim}
+library(palmerpenguins)
+Y <- model.matrix(~0+ species, data=na.omit(penguins))
+X <- as.matrix(na.omit(penguins)[,c(3, 4, 5, 6)])
+    \end{verbatim}
+    \item Compute the first and second pair of singular vectors of the cross product matrix $\bX^{\top}\bY$.
+    \item Based on the first left singular vector, what is the most important variable to predict species?
+    \item Based on the second pair of singular vectors, what body feature is most useful for predicting which species? 
+    \item How do your results compare to a PCA analysis of this data? \url{https://allisonhorst.github.io/palmerpenguins/articles/pca.html}
+\end{itemize}
+You should not expect classifiers built using CCA/PLS output to do \emph{as well as} pure classifiers, but they can add useful insights. 
+
+\section*{Question 5: (Regularized) Power Methods for PCA (20 points)}
+
+In class, we discussed how the \emph{singular value decomposition} (SVD) can be used to perform PCA. In this question, we will explore a classical method for computing the SVD and explore how it can be adapted to non-classical PCA variants. 
+
+Our starting point is the \emph{power method} for computing the leading eigenvector of a positive definite matrix: 
+\begin{algorithm}
+\textbf{Inputs:} $\bSigma \in \R^{p \times p}_{\succ 0}$\\
+\textbf{Initialize:} $\bv^{(0)}$ to be a random unit vector. 
+\begin{itemize}
+    \item Sample $p$ standard normal random variables to create $\tilde{\bv}^{(0)}$
+    \item Normalize $\bv^{(0)} = \tilde{\bv}^{(0)} / \|\tilde{\bv}^{(0)}\|_2$
+\end{itemize}
+\textbf{Repeat Until Convergence:}
+\begin{itemize}
+    \item $\tilde{\bv}^{(k+1)} = \bSigma \bv^{(k)}$
+    \item $\bv^{(k+1)} = \tilde{\bv}^{(k+1)} / \|\tilde{\bv}^{(k+1)}\|_2$
+    \item Set $k = k + 1$
+\end{itemize}
+\textbf{Return:}
+\begin{itemize}
+    \item Estimated Eigenvector: $\bv^{(k)}$
+    \item Estimated Eigenvalue: $\hat{\lambda} = \|\bSigma \bv^{(k)}\|_2 / \|\bv^{(k)}\|_2$
+\end{itemize}
+    \caption{Power Method for Matrix Eigenvectors}
+    \label{alg:pm}
+\end{algorithm}
+
+\begin{itemize}
+    \item Using the spam data from the previous problem, compute the first principal component ``by hand:''  (5 points)
+    \begin{itemize}
+        \item Center the data matrix
+        \item Compute the covariance matrix using the centered data matrix (you \emph{may not} use the built-in \texttt{cov} function here). 
+        \item Implement Algorithm \ref{alg:pm} to compute the first principal component. $\bSigma$ should be your estimated covariance.
+    \end{itemize}
+    Compare your result to what you could obtain using \texttt{prcomp}. If it differs, explain why.
+    \item The eigenvector power matrix can be modified to compute the singular vectors instead:
+   \begin{algorithm}
+\textbf{Inputs:} $\bX \in \R^{n \times p}$\\
+\textbf{Initialize:} $\bu^{(0)}, \bv^{(0)}$ to be  random unit vectors of length $n, p$ respectively.\\\phantom{initialize: a} (You can use the same normalized random Gaussian approach as Algorithm \ref{alg:pm}.)\\
+\textbf{Repeat Until Convergence:}
+\begin{itemize}
+    \item $\tilde{\bv}^{(k+1)} = \bX^{\top} \bu^{(k)}$
+    \item $\bv^{(k+1)} = \tilde{\bv}^{(k+1)} / \|\tilde{\bv}^{(k+1)}\|_2$
+    \item $\tilde{\bu}^{(k+1)} = \bX \bv^{(k+1)}$
+    \item $\bu^{(k+1)} = \tilde{\bu}^{(k+1)} / \|\tilde{\bu}^{(k+1)}\|_2$
+    \item Set $k = k + 1$
+\end{itemize}
+\textbf{Return:}
+\begin{itemize}
+    \item Estimated Left Singular Vector: $\bu^{(k)}$
+    \item Estimated Right Singular Vector: $\bv^{(k)}$
+    \item Estimated Singular Value: $\hat{d} = (\bu^{(k)})^{\top}\bX\bv^{(k)}$
+\end{itemize}
+    \caption{Power Method for Matrix Singular Vectors}
+    \label{alg:pm_svd}
+\end{algorithm} 
+Implement Algorithm \ref{alg:pm_svd} and apply it to the spam data. Compare your results to the output of calling \texttt{svd} directly. (5 points)
+\item We can modify the classical power method to introduce regularization ideas like sparsity into PCA. Specifically, if we want $k$-sparse PCA, we can use something like the Algorthm \ref{alg:pm_svd_sparse}. Here, we modify the power method to add a truncation step under which all but the top $K$ largest elements of a vector a set to zero. 
+
+Implement Algorithm \ref{alg:pm_svd_sparse} and apply it to the spam data set. Which features does sparse PCA select as the most important? Is this consistent for different values of $K$? (10 points)
+\begin{algorithm}
+\textbf{Inputs:} $\bX \in \R^{n \times p}$\\
+\textbf{Initialize:} $\bu^{(0)}, \bv^{(0)}$ to be  random unit vectors of length $n, p$ respectively.\\\phantom{initialize: a} (You can use the same normalized random Gaussian approach as Algorithm \ref{alg:pm}.)\\
+\textbf{Repeat Until Convergence:}
+\begin{itemize}
+    \item $\tilde{\bv}^{(k+1)} = \bX^{\top} \bu^{(k)}$
+    \item $\hat{\bv}^{(k+1)} = \textsf{TopK}(\tilde{\bv}^{(k+1)}, K)$
+    \item $\bv^{(k+1)} = \tilde{\bv}^{(k+1)} / \|\tilde{\bv}^{(k+1)}\|_2$
+    \item $\tilde{\bu}^{(k+1)} = \bX \bv^{(k+1)}$
+    \item $\bu^{(k+1)} = \tilde{\bu}^{(k+1)} / \|\tilde{\bu}^{(k+1)}\|_2$
+    \item Set $k = k + 1$
+\end{itemize}
+\textbf{Return:}
+\begin{itemize}
+    \item Estimated Left Singular Vector: $\bu^{(k)}$
+    \item Estimated Right Singular Vector: $\bv^{(k)}$
+    \item Estimated Singular Value: $\hat{d} = (\bu^{(k)})^{\top}\bX\bv^{(k)}$
+\end{itemize}
+    \caption{Power Method for $K$-Sparse Matrix Singular Vectors}
+    \label{alg:pm_svd_sparse}
+\end{algorithm} 
+\end{itemize}
+
+\end{document}
+
+\item The power method has been (re-)discovered many times over, most famously as the \textsc{PageRank} algorithm powering the original version of the Google search engine. The derivation of the algorithm is beyond the scope of this course, but essentially, the \textsc{PageRank} vector is the first eigenvector of a particular matrix representation of a network. Elements with high \textsc{PageRank} vector values are \emph{important} (good search results) and low values are \emph{unimportant}. Here, we'll implement \textsc{PageRank} to identify the most important nodes of a graph: we will use the power method to compute the \textsc{PageRank} vector on a data set too large for normal SVD algorithms to be used. 
+(10 points)
+
+Run the following code to create the \textsc{PageRank} matrix: 
+\begin{verbatim}
+if(!file.exists("email-Enron.txt.gz")){
+    download.file("https://snap.stanford.edu/data/email-Enron.txt.gz", 
+        destfile="email-Enron.txt.gz")
+}
+ENRON <- as_tbl_graph(read.table("email-Enron.txt.gz"))
+LENRON <- laplacian_matrix(as_tbl_graph(read.table("email-Enron.txt.gz")))
+\end{verbatim}
+
+    

@@ -107,3 +107,26 @@ this work.
 - [Instructor Notes](./notes/notes13.html)
 
 
+### Additional Materials
+
+The following homework problems and exams were used for the 
+Spring 2024 offering of this course. You may find them useful
+as you study for the three in-class tests. Note, however, that
+these were 3-hour take-home cumulative exams, rather than the
+1-hour in-class non-cumulative exams used this semester, so
+the questions are not exactly what you should expect. In 
+particular, note that the exam boundaries do not exactly line
+up with our schedule this semester. 
+
+Solutions will not be provided, but I am happy to discuss
+individual problems in office hours or on the course discussion
+board. 
+
+- Homeworks
+  - [Homework #01](./notes/old/STA9890_HW01_2024-Spring.pdf)
+  - [Homework #02](./notes/old/STA9890_HW02_2024-Spring.pdf)
+  - [Homework #03](./notes/old/STA9890_HW03_2024-Spring.pdf)
+  - [Homework #04](./notes/old/STA9890_HW04_2024-Spring.pdf)
+- Exams
+  - [Midterm Exam](./notes/old/STA9890_midterm_2024-Spring.pdf)
+  - [Final Exam](./notes/old/STA9890_final_2024-Spring.pdf)

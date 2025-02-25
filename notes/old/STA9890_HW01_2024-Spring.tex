@@ -1,0 +1,143 @@
+\documentclass[10pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{multicol}
+\usepackage{lettrine}
+\usepackage{calligra}
+\usepackage{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+
+\newcommand{\R}{\mathbb{R}}
+
+\usepackage{bm}
+\newcommand{\bzero}{\bm{0}}
+\newcommand{\bx}{\bm{x}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\bX}{\bm{X}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bbeta}{\bm{\beta}}
+
+\newcommand{\E}{\mathbb{E}}
+
+\usepackage{enumitem,amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+
+\usepackage{soul}
+\newcommand{\cmark}{\ding{52}}
+
+\usepackage{rotating}
+
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+\begin{center}
+    {\Large \bf Assignment \#1: Model Complexity, KNN, \& Properties of Least Squares \\ STA9890 \\ Statistical Learning for Data Mining}
+\end{center}
+
+{\bf Assignment Parameters:} \\
+\phantom{abc}Date Assigned: 2024-02-05\\
+\phantom{abc}Date Due: 2024-02-20 @ \st{5:45} 10:00pm \\
+~\\
+\phantom{abc}Submission Mechanism(s):
+\begin{itemize}
+    \item Blackboard (strongly preferred)
+    \item Email to instructor: \href{mailto:michael.weylandt@baruch.cuny.edu}{michael.weylandt@baruch.cuny.edu} \\ 
+    {\small Email submissions must be titled \emph{exactly} as \texttt{STA9890-S2024-HW1-LASTNAME,FIRSTNAME.pdf}}
+\end{itemize}
+
+\section*{Question 0: Formatting and Presentation (15 points)}
+Upload your submission to this assignment as a single \texttt{PDF} file on Blackboard. Ten points will be assigned based on formatting and presentation of your submission. For the best presentation, I recommend the use of \LaTeX\ or similar software (\emph{e.g.} Markdown + MathJax), but other software is allowed. 
+
+All code used to produce figures in your submission should be included at the end of the PDF document.
+
+\section*{Question 1: Properties of OLS (12 points)}
+Prove the following properties of OLS: 
+\begin{enumerate}[label={(\alph*)}]
+\item Suppose data is generated as $y = \bbeta_*^{\top}\bx + \epsilon$ for some mean-zero $\epsilon$ noise. Show $\hat{\bbeta}$ is unbiased, \emph{i.e.}, $\E[\hat{\bbeta}] = \bbeta_*$. (3 points)
+\item Suppose data is generated as $y = \alpha +  \bbeta_*^{\top}\bx + \epsilon$ for some mean-zero $\epsilon$ noise and $\bx$ that is mean zero. Show that $\alpha$ is equal to the average value of $y$. (3 points)
+\item Given training data of the form $\{(\bx_i, y_i)\}_{i=1}^n$, show that the OLS in-sample prediction error (residuals) are given by $\hat{\by} - \by = \bX(\bX^{\top}\bX)^{-1}\bX^{\top}\by - \by = (\bI - \bX(\bX^{\top}\bX)^{-1}\bX^{\top})\by$. (3 points)
+\item Suppose we fit OLS with an intercept term. Show that the mean (unsquared) error (residual) must be zero. (3 points)
+\item Prove that $\bX^{\top}\bX$ is strictly positive-definite if the data matrix $\bX \in \R^{n \times p}$ has rank $n$ ($n \geq p$). (3 points)
+\item Given $n$ observations and $p$ features, when  does OLS achieve 0 training error? (You may assume the data matrix $\bX \in \R^{n \times p}$ is full-rank) (3 points)
+\end{enumerate}
+
+\section*{Question 2:  $K$-Nearest Neighbors (33 points)}
+\begin{enumerate}[label={(\alph*)}]
+\item Write a $K$-nearest neighbor classifier (15 points) from scratch. 
+
+Your function should perform the following
+\begin{enumerate}
+    \item Given a test point $\tilde{\bx}$, compute the distances to each row of the training data matrix $\bX$ using Euclidean ($L_2$ distance)
+    \item Identify the $K$-nearest neighbors of $\tilde{\bx}$
+    \item Take the majority vote of the nearest neighbors
+\end{enumerate}
+\item Download the \texttt{zip} code data from the data page at \url{https://hastie.su.domains/ElemStatLearn/}. Extract the training and test data for the \texttt{3}s and \texttt{8}s. 
+\item Apply your $K$-NN classifier with $K=5$ to the training data and use it compute test error on the test data (misclassfication rate). (3 points)
+\item Repeat this process for multiple values of $K$ and find which one minimizes i) training error; and ii) test error. Interpret your results (8 points)
+\item Standardize your data so that each column of $\bX$ has the same variance (\emph{e.g.}, using the \texttt{scale} function in \texttt{R}) and repeat the above process. Do your results change?  (7 points)
+\end{enumerate}
+
+
+\section*{Question 3: The Bias-Variance Trade-Off in OLS (20 points)}
+
+In this problem, you will examine the bias-viarance trade-off of OLS (least squares) regression. 
+
+\begin{enumerate}[label={(\alph*)}]
+    \item In class, we briefly derived the Bias-Variance-Irreducible decomposition of mean squared error. Give a formal proof of the following result
+    \[\E[\text{MSE}] = \text{Bias}^2 + \text{Variance} + \text{Irreducible Noise}\]
+    including definitions of all four terms. (4 points)
+    \item Generate $n=25$ training samples from the following linear model: \[y = 3x_1 - 2x_2 + \epsilon\]
+    where $x_1, x_2$ are independently $\mathcal{N}(0, 5^2)$ and $\epsilon$ is drawn from a standard normal distribution. Calculate and report the following error measures: (2 points)
+    \begin{itemize}
+        \item In-sample (training) MSE
+        \item In-sample Bayes MSE (or the irreducible error): \emph{i.e.}, the prediction error you would get from the \emph{true} solution
+        \item Out-of-sample (test) MSE on 25 new test points
+        \item Out-of-sample Bayes MSE on the same 25 test points.
+    \end{itemize}
+    \item Repeat the above process a large number of times to get the expected values of the four errors. What are they for this problem and how do they change as you vary $n$? (3 points)
+    \item Repeat this process a large number of times and show that OLS is indeed unbiased for this linear model (2 points)
+    \item Using the MSE decomposition above and the fact that OLS is unbiased for linear models, what is the variance and what is the irreducible noise for this problem? (2 points)
+    \item Repeat the above analysis for the non-linear function: 
+    \[y = \text{sign}(x_1) * x_1^2 + \cos(x_2) + \epsilon \]
+    What is the bias, variance, and irreducible noise for this problem? How do they change with $n$? (4 points)
+    \item Repeat the analysis again but now with $x_1, x_2 \buildrel{\textsc{iid}}\over\sim \mathcal{N}(25, 5^2)$: how do the bias, variance, and irreducible noise change? Why? (3 points)
+\end{enumerate}
+
+\section*{Question 4: Fitting Least Squares Models (20 points)}
+
+In class, we derived the closed form expression for OLS coefficients: $\hat{\bbeta} = \bX^{\dagger}\by = (\bX^{\top}\bX)^{-1}\bX^{\top}\by$. In this question, we will explore alternate approaches to fitting linear models. 
+
+\begin{enumerate}[label={(\alph*)}]
+    \item Generate 100 samples from the following data generating process (2 points): 
+    \begin{align*}
+        \bx &\sim \mathcal{N}(\bzero_5, \bI_{5 \times 5}) \\
+        y &\sim \mathcal{N}\left(x_1 + \sqrt{x_2^2 + 5} + 0.1x^3_3 + \cos|x_4| + \frac{1}{|x_5| + 3}, 0.25\right)
+    \end{align*}
+    \item Fit a linear model to this data using the closed-form solution (not the built-in \texttt{lm} function!) and plot $\hat{y}$ against $y$. (3 points)
+    \item \emph{Gradient Descent} methods fit models by taking small steps in the direction of the gradient of the loss function. For classic OLS, this gradient is given by: 
+    \begin{align*}
+        \mathcal{L}(\bbeta) &= \frac{1}{2}\|\by - \bX\bbeta\|_2^2 \\
+        \frac{\partial \mathcal{L}}{\partial \bbeta} &= -\bX^{\top}(\by - \bX\bbeta)
+    \end{align*}
+    and the gradient update is given by: 
+    \[\bbeta^{(k+1)} \leftarrow \bbeta^{(k)} - c * \left.\frac{\partial \mathcal{L}}{\partial \bbeta}\right|_{\bbeta = \bbeta^{(k)}}\]
+    That is, at step-$k$, use your current estimate of $\bbeta$, $\bbeta^{(k)}$ to compute the gradient, multiply it by a small constant $c$,\footnote{For this problem, $c < 1/200$ should suffice.} and subtract it to get your new estimate $\bbeta^{(k+1)}$. Repeat this process until $\bbeta^{(k+1)}$ stops changing ($\|\bbeta^{(k)} - \bbeta^{(k+1)}\| < 1\times 10^{-6}$). 
+
+    Implement gradient descent for OLS and show that you get nearly the same value as the closed form solution. (5 points)
+    \item Generate 100 new test data points. Repeat gradient descent, but now using the original (training) and new (test) data points to compute the training and test loss at each step. Plot the evolution of these quantities over GD iterates. Does it make sense to run GD all the way to (numerical) convergence? (5 points)
+    \item Modern machine learning methods are often fit with \emph{weight decay}. Weight decay updates the gradient descent update to: 
+        \[\bbeta^{(k+1)} \leftarrow \bbeta^{(k)} - c * \left.\frac{\partial \mathcal{L}}{\partial \bbeta}\right|_{\bbeta = \bbeta^{(k)}} - \omega \bbeta^{(k)}\]
+    \emph{i.e.}, we subtract off a little bit extra in each update step.
+
+    Implement OLS with weight decay and show that it corresponds to the equivalent ridge regression solution, $(\bX^{\top}\bX + \omega \bI)^{-1}\bX^{\top}\by$. (2 points)
+    \item Use 5-fold cross validation to identify the optimal value of the weight decay parameter. (3 points)
+\end{enumerate}
+
+\end{document}

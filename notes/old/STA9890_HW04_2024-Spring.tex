@@ -1,0 +1,130 @@
+\documentclass[10pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{multicol}
+\usepackage{lettrine}
+\usepackage{calligra}
+\usepackage{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+
+\newcommand{\R}{\mathbb{R}}
+
+\usepackage{bm}
+\newcommand{\bzero}{\bm{0}}
+\newcommand{\bx}{\bm{x}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\bX}{\bm{X}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bSigma}{\bm{\Sigma}}
+\newcommand{\bv}{\bm{v}}
+\newcommand{\bu}{\bm{u}}
+\newcommand{\bU}{\bm{U}}
+\newcommand{\bV}{\bm{V}}
+\newcommand{\bD}{\bm{D}}
+\newcommand{\bY}{\bm{Y}}
+\newcommand{\bbeta}{\bm{\beta}}
+
+\usepackage{algorithm}
+\DeclareMathOperator{\argmin}{arg\,min}
+
+\newcommand{\E}{\mathbb{E}}
+
+\usepackage{enumitem,amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+
+\usepackage{soul}
+\newcommand{\cmark}{\ding{52}}
+
+\usepackage{rotating}
+
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+\begin{center}
+    {\Large \bf Assignment \#4: Clustering \& Ensemble Learning \\ STA9890 \\ Statistical Learning for Data Mining}
+\end{center}
+
+{\bf Assignment Parameters:} \\
+\phantom{abc}Date Assigned: 2024-04-15\\
+\phantom{abc}Date Due: 2024-05-07 @ 5:45pm \\
+~\\
+\phantom{abc}Submission Mechanism(s):
+\begin{itemize}
+    \item Blackboard (strongly preferred)
+    \item Email to instructor: \href{mailto:michael.weylandt@baruch.cuny.edu}{michael.weylandt@baruch.cuny.edu} \\ 
+    {\small Email submissions must be titled \emph{exactly} as \texttt{STA9890-S2024-HW4-LASTNAME,FIRSTNAME.pdf}}
+\end{itemize}
+
+This extended HW4 is worth 200 points, though the `technical content' is not quite double that of a typical homework assignment. 
+
+\section*{Question 1: Review (25 points)}
+Answer the following questions - you may refer back to earlier homeworks. 
+
+\begin{enumerate}
+    \item Compute the bias and variance of OLS. (5 points)
+    \item Compute the bias and variance of ridge regression.  (5 points)
+    \item Implement a coordinate descent method for \emph{non-negative lasso regression}. Compare your results to those of CVX on the same problem. (To implement non-negative lasso, think about how the updates for NN-Lasso will compare to those of regular Lasso. It's only a minor change) (10 points)
+    \item Implement \emph{regularized linear discriminant analysis}\footnote{Recall, regularized LDA replaces $\hat{\Sigma}$ with $\lambda \hat{\Sigma} + (1-\lambda)\sigma^2 \mathbf{I}$.} and compare the accuracy of LDA and RLDA on the \textsf{authors} data. (5 points) 
+\end{enumerate}
+\section*{Question 2: Clustering (50 points)}
+
+For this problem use the combined training AND testing splits of the \textsf{authors} dataset. Your goal is to use the word counts to cluster the data (without the author labels) and see if your groups coincide with the true author attribution.
+
+\begin{enumerate}[label={(\alph*)}]
+\item Visualize the data. (You may choose to use one or more methods to visually summarize the data and use for exploratory analysis).
+\item Compare and contrast the following clustering methods:
+\begin{enumerate}[label={\roman*.}]
+\item $K$-means
+\item Hierarchical Clustering (Try at least 4 linkages and at least 3
+distances. Which ones did you choose? Why?)
+\item Biclustering. (You may try your choice(s) of biclustering
+method(s). Hint: Try the NMF and the cluster heatmap.)
+\end{enumerate}
+\end{enumerate}
+Reflect upon your results. Which is the best method to visualize the data? Which distance metric is best? Which clustering method yielded groups that closely coincide with true authorship? Why? Are there any words that are more important for clustering? Which ones?
+
+\section*{Question 3: Ensemble Learning (50 points)}
+
+For this problem use the provided training and testing splits of the \textsf{authors} data. Compare and contrast the following methods for predicting authorship:
+\begin{enumerate}
+\item Classification Trees. (Which error measure did you use? Why?)
+\item Bagging.
+\item Boosting. (Which boosting method did you use? Why?)
+\item Random Forests. (Which parameter settings did you use? Why?)
+\end{enumerate}
+Reflect upon your results. Which method yields the best error rate? Which method yields the most interpretable results? Which words are most important for authorship attribution?
+
+\section*{Question 4: Optimized Random Forests (50 points)}
+
+As discussed in class, Random Forests are generally constructed as (unweighted) ensembles of decision trees. In this section, we will explore the concept of an \emph{optimized random forest}: that is, we will use \emph{stacking} to learn an optimal combination of tree weights and compare the performance of the optimized RF to the classical RF. For this problem, you may use your favorite decision tree software and \texttt{CVXR} - you may not use software that implements this method `out of the box.'
+
+\begin{enumerate}
+    \item Pick two authors from the \textsf{authors} data to reduce this to a binary classification problem. 
+    \item Split the training data further into a `true training' and an `ensembling' set. 
+    \item Using an existing software package, generate 100 random forest trees on the `true training' set.
+    \item Generate predictions from each tree on the `ensembling' set to form a data matrix. 
+    \item Using \texttt{CVXR}, implement \emph{non-negative ridge-regularized logistic regression} to create a optimized random forest ensemble.
+    \item Compare the performance of the optimized RF with a standard RF trained on the entire training set. 
+    \item Repeat this process several times over (with new training/ensembling/test data and new author pairs) to compare the predictive accuracy of ORF with classical RF. 
+    \item Suppose we want to use a \emph{sparse} ORF to improve computational performance. Modify your existing pipeline to implement \emph{non-negative lasso-regularized logistic regression} in the stacking step and compare the performance with that of both ORF and classical RF.
+\end{enumerate}
+
+\section*{Question R: Reflection (25 points)}
+
+Reflect on the course and answer the following questions:
+\begin{itemize}
+    \item What have you learned in this course that you did not anticipate learning? 
+    \item What skills that you learned in this course do you anticipate will be the most helpful in future classes? In your future career? 
+    \item What skills or techniques do you want to learn more about? 
+    \item If one topic could be added to this course, what would it be? 
+    \item How could you demonstrate mastery of the skills learned in this course during an interview? 
+\end{itemize}
+
+\end{document}
