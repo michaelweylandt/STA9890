@@ -1,0 +1,348 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{multicol}
+\usepackage{lettrine}
+\usepackage{calligra}
+\usepackage{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{amsmath}
+
+\DeclareMathOperator{\argmin}{arg\,min}
+
+\newcommand{\R}{\mathbb{R}}
+
+\usepackage{bm}
+\newcommand{\bzero}{\bm{0}}
+\newcommand{\bx}{\bm{x}}
+\newcommand{\bX}{\bm{X}}
+\newcommand{\bu}{\bm{u}}
+\newcommand{\bv}{\bm{v}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bbeta}{\bm{\beta}}
+\newcommand{\bmu}{\bm{\mu}}
+\newcommand{\bSigma}{\bm{\Sigma}}
+\newcommand{\bD}{\bm{D}}
+
+\newcommand{\E}{\mathbb{E}}
+
+\usepackage{enumitem,amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+
+\usepackage{soul}
+\newcommand{\cmark}{\ding{52}}
+
+\usepackage{rotating}
+
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+\begin{center}
+    {\Large \bf Final Exam \\ STA9890 \\ Statistical Learning for Data Mining}
+\end{center}
+
+{\bf Assignment Parameters:} \\
+\phantom{abc}Date Assigned: 2024-05-17\\
+\phantom{abc}Date Due: 2024-05-22 @ 11:55pm \\
+
+\begin{center}
+    \bf \large This is a closed-note, closed-book exam.\\You may not use any external resources.
+\end{center}
+
+\section*{Instructions}
+This exam will be graded out of \textbf{200 points}. 
+
+You will have 3 hours (180 minutes) to complete this exam. 
+
+You will have 190 minutes from the time you download this exam on Blackboard to upload your solutions: 
+that is, you have 180 minutes to complete the exam and 10 minutes to scan and upload any written answers. 
+\emph{You are responsible for uploading your exam in time, so plan accordingly.}
+
+\begin{center} \large \textbf{Late exams will not be accepted.} \end{center}
+
+
+
+This exam is divided into five parts: 
+\begin{itemize}
+    \item Multiple Choice (50 points)
+    \item Short Answer (50 points)
+    \item Issue Spotter (25 points)
+    \item Design of ML Pipeline (25 points)
+    \item Mathematics of Machine Learning (50 points)
+\end{itemize}
+
+\emph{Not all sections are worth the same amount of points nor are they equally difficult. Individual questions within a section also vary in difficulty. You need to use your time wisely. Skip questions that are not easy to answer quickly and return to them later.}
+
+For the multiple choice and short answer questions, please answer only in the space provided on the exam sheet. I have provided some space for the issue spotter, pipeline design, and mathematical questions. If you need more space for these three sections, use the additional pages at the end of the PDF.
+
+\emph{Mark your answers clearly: if I cannot easily identify your intended answer, you may not get credit for it.}
+
+I \emph{will not} answer questions during the exam period. If a question is ambiguous, do your best to answer it. If you need to make additional assumptions to answer a question, please state them in full.
+
+\begin{center}
+    \bf This is a closed-note, closed-book exam. You may not use any external resources.
+\end{center}
+
+\clearpage
+
+\section*{Generalized Multiple Choice (50 points; 2 points each)}
+
+For each question, select zero or more answers, per question instructions. 
+
+\begin{enumerate}[label={\bf MC\arabic*.)}]
+\item $\square$ True or $\square$ False (Select 1): After using cross-validation to select a model, the cross-validation error provides an unbiased estimate of predictive accuracy
+\item $\square$ True or $\square$ False (Select 1): In classification a \emph{false positive} refers to an observation which is a member of the positive class but which is falsely labeled as negative by a classifier
+\item $\square$ True or $\square$ False (Select 1): When fitting the lasso, the optimal value of the penalty parameter $\lambda$ is higher for variable selection than it is for predictive accuracy
+\item $\square$ True or $\square$ False (Select 1): The singular value decomposition of a symmetric matrix is equal to its eigendecomposition.
+\item $\square$ True or $\square$ False (Select 1): Boosting is the practice of building an ensemble by sub-sampling observations. 
+\item $\square$ True or $\square$ False (Select 1): The $K$-Means algorithm converges to a local - but not necessarily global - optimum. 
+\item $\square$ True or $\square$ False (Select 1): $\ell_p$ norms define convex loss functions and penalties for $p > 0$.
+\item $\square$ True or $\square$ False (Select 1): Under a suitable generative model (i.e., $y \sim \text{Bern}(\textsf{Logit}^{-1}(\bx^{\top}\bbeta_*)))$, logistic regression is BLUE. 
+\item $\square$ True or $\square$ False (Select 1): A sufficiently deep neural network can approximate any (continous) function arbitrarily well.
+\item $\square$ True or $\square$ False (Select 1): Poisson - or log-linear - regression is suitable for data with a positive continuous response, like insurance loss claims.
+\item $\square$ True or $\square$ False (Select 1): The decision boundaries of a $K$-nearest neighbor classifier become more jagged with larger $K$.
+\item $\square$ True or $\square$ False (Select 1): Suppose data follows the regression model $Y = f(X) + \epsilon$ for some mean-zero noise term $\epsilon$. The \emph{regression function} $f(X) = E[Y | X]$ minimizes test error. 
+\item $\square$ True or $\square$ False (Select 1): A linear model with $p$ features will always have worse training error than a linear model with $p + 2$ features fit to the same data.
+\item $\square$ True or $\square$ False (Select 1): The sample covariance matrix is always strictly positive definite.
+\item $\square$ True or $\square$ False (Select 1): Best subsets provides smaller training error than the lasso.
+\item Suppose $Y = \beta_1 X_1 + \beta_2 X_2 + \epsilon$ for some mean-zero $\epsilon$. If a misspecified linear model is fit with the features $(X_1, X_2, X_3)$ -- note the extra $X_3$ -- the resulting model will have $\square$ higher or $\square$ lower bias than the correctly specified model and $\square$ higher or $\square$ lower variance than the correctly specified model. (Select 2 boxes)
+\item Which choice of linkage produces the most compact clusters in hierarchical clustering: $\square$ single; $\square$ complete; $\square$ average; $\square$ Ward's. 
+\item PCA guarantees which of the following properties: $\square$ orthogonal loading vectors; $\square$ orthogonal singular values; $\square$ orthogonal score vectors; $\square$ mean zero loading vectors. 
+\item Which of the following kernels correspond to a finite-dimensional feature expansion: $\square$ linear; $\square$ polynomial; $\square$ exponential; $\square$ radial basis
+\item Which of the following are properties of support vector classifiers: $\square$ use of hinge-loss; $\square$ automatic identification of kernel points; $\square$ lack of tuning parameter; $\square$ probabilistic output.
+\item Which of the following conditions are \emph{necessary} for boosting to improve predictive performance: $\square$ non-zero predictive ability of base learning method; $\square$ independence of base learning method; $\square$ convexity of base learning method. 
+\item Which of the following conditions are \emph{necessary} for stacking to improve predictive performance: $\square$ non-zero predictive ability of base learning methods; $\square$ independence of base learning methods; $\square$ convexity of base learning method. 
+\item MAD regression estimates the conditional $\square$ mean; $\square$ median; $\square$ mode; $\square$ variance of the data distribution.
+\item Small decision trees (stumps) are immune to overfitting because: $\square$ they only use randomly chosen features; $\square$ they optimize Gini impurity; $\square$ they use only a single split. 
+\item Which principle(s) can be used to design pipelines to provide reproducible intepretations and discoveries: $\square$ randomization principle; $\square$ convexity principle; $\square$ stability principle; $\square$ cross-validation; $\square$ robutness principle.
+\end{enumerate}
+
+\clearpage
+
+\section*{Short Answer (50 points; 5 points each)}
+
+\begin{enumerate}[label={SA\arabic*.}]
+\item Suppose a data analyst provides you with the results of clustering on a training data set. Give one method that could be used to \emph{validate} this clustering on a new data set. ~ \\ \vspace{2in}
+\item Compare and contrast \emph{best subsets} regression and the \emph{lasso}  ~ \\ \vspace{2in}
+\item Describe how single-linkage clustering can be used to identify outliers in data.  ~ \\ \vspace{2in}
+\item Given a binary classifier, how might we extend it to multi-class classification? (\emph{Hint: ``One-vs-rest'' approaches may be easier to describe.}) ~ \\ \vspace{2in}
+\item Consider the bias, variance, training error, and test error of ridge regression as a function of $\lambda$. Sketch curves depicting the effect of $\lambda$ on each of these parameters. Label each curve clearly.  ~ \\ \vspace{2in}
+\item Recall that the SVD version of PCA can be implemented using the following algorithm: 
+\begin{algorithm}
+    \begin{enumerate}
+        \item Initialize $\bu \in \mathbb{R}^n$ and $\bv \in \mathbb{R}^p$ randomly.
+        \item Repeat until convergence:
+        \begin{itemize}
+            \item $\bu \leftarrow \bX\bv / \|\bX\bv\|$
+            \item $\bv \leftarrow \bX^{\top}\bu / \|\bX^{\top}\bu\|$
+        \end{itemize}
+    \end{enumerate}
+\end{algorithm}
+~~
+\\
+Modify this code to add a non-negativity constraint on $\bu$.
+
+(For full credit, remember that the sign of $\bu$ is not uniquely defined.)
+\item Compare and contrast \emph{bagging} and \emph{boosting}. ~ \\ \vspace{2in}
+\item Write out pseudo-code for $K$-means clustering (the Lloyd algirithm we discussed in class). ~ \\ \vspace{2in}
+\item Compare and contrast \emph{additive (spline) models} and \emph{kernel regression}. ~ \\ \vspace{2in}
+\item Under what general conditions should linear methods be preferred to non-linear statistical machine learning methods and why?
+\end{enumerate}
+
+\clearpage
+
+\section*{Issue Spotter (25 points)}
+
+This is an \emph{issue spotter} question. Below, I describe (in words) a hypothetical application of the ML techniques we have discussed in this class. Your task is to find \textbf{5 mistakes} in the ML pipeline and to:
+\begin{enumerate}[label={\roman*)}]
+\item describe the problem (2 points each); and 
+\item say how that step could have been performed more effectively / accurately. (3 points)
+\end{enumerate}
+~
+\hrule 
+~
+
+Geneticists have collected \emph{high-throughput} genetic data on a variety of kidney tissue 
+    samples, half of which are cancerous and half of which are not. For each of $p = 10,000$ genes, 
+    they have recorded the level of gene expression (how `turned on' that gene is) in the tissue sample; 
+    their data set is equally balanced with 200 healthy samples and 200 cancerous samples. The goal of the
+    study is to identify which genes are associated with higher probabilities of renal cancer. 
+
+    Because $p \gg n$ for this problem, the scientists first perform PCA to reduce the dimensionality of the data. 
+    After doing so, they retain the top 20 principal components and perform $K$-means clustering in this reduced space with $K = 2$.
+    They examine the results of the clusters and find that Cluster 1 is almost entirely cancerous samples and that 
+    PC3 separates the two clusters well. They scientists identify the 5 genes with the highest loadings in PC3 and report 
+    them as important candidates for future study. 
+
+    After performing this analysis, they scientists speak to a data scientist who recommends they approach this problem instead
+    as a supervised learning problem. The data scientist creates a response vector $\by$ where $y_i = 1$ if the cell is cancerous and $y_i = 0$
+    otherwise. The data scientist then fits a support vector classifier (no kernel) to the 400 samples. 
+
+    In order to tune the SVC, the data scientist picks the value of the tuning parameter that minimizes the false positive rate, recognizing that
+    it is important not to falsely tell patients they have cancer.
+    The data scientist then picks the genes with the most positive values of the coefficients to identify the most important genes for cancer 
+    prediction. Because the SVC is over 95\% accurate, the data scientist informs the scientists that the selected variables are statistically
+    significant at 95\% confidence ($p < 0.05$).
+    \clearpage 
+
+\textbf{Mistake \#1: }
+
+\vfill 
+
+\textbf{Fix \#1: }
+
+\vfill 
+\hrule 
+
+
+\textbf{Mistake \#2: }
+
+\vfill 
+
+\textbf{Fix \#2: }
+
+\vfill 
+
+\hrule 
+
+\textbf{Mistake \#3: }
+
+\vfill 
+
+\textbf{Fix \#3: }
+
+\vfill 
+
+\hrule
+
+
+\textbf{Mistake \#4: }
+
+\vfill 
+
+\textbf{Fix \#4: }
+
+\vfill 
+
+\hrule 
+
+\textbf{Mistake \#5: }
+
+\vfill 
+
+\textbf{Fix \#5: }
+
+\vfill 
+
+\clearpage
+
+
+
+\section*{Design of ML Pipeline (25 points)}
+Below, I describe a hypothetical data analytic challenge. Describe how you would approach this problem, taking care to describe practical considerations like data splitting, selection of tuning parameters, estimation of predictive power, model validation \emph{etc.} as appropriate. 
+
+\begin{quote}
+    You are a data analyst working on the advertising team of a presidential campaign. Your team's goal is to identify target demographics who can be persuaded to vote for your candidate and to design ads that highlight your candidate's appeal to that demographic. 
+
+    Your data team has provided you with a detailed \emph{voter data file} containing the following information for all voting age adults in the US: 
+    \begin{itemize}
+        \item Age
+        \item Ethnicity
+        \item Gender
+        \item Estimated Household Income
+        \item Level of Education
+        \item State of Residence
+        \item Current voter registration status (is this person already registered to vote in the upcoming election?)
+        \item Did this person vote in the previous election?
+        \item Did this person vote in both of the previous elections?
+        \item Did this person vote in the past three previous elections?
+        \item Is this person a registered member of your party?
+        \item What issue (of a provided list) is most important to this person?
+        \item What issue (of a provided list) is second most important to this person?
+    \end{itemize}
+    (Note that not all of these fields are necessarily accurate, but the data team has \emph{imputed} this data so there are no missing values.)
+
+    Your polling team reports that the race is particularly tight in North Carolina and campaign leadership has asked you to identify the target demographic for a new advertising campaign. You have been given the budget to create 3 possible ads and to convene focus groups on them before beginning the full-scale advertising campaign. 
+
+    {\bf How would you approach this problem?}
+\end{quote}
+\emph{(Note that this question does not have a single right answer. Grading will be based on creativity and suitability of approach, adherence to ML best practices, justification of decisions, etc.)}
+\clearpage
+
+~ 
+\clearpage 
+
+~ 
+\clearpage 
+\section*{Mathematics of ML (50 points total; 25 points each)}
+
+\begin{enumerate}[label={\bf MA\arabic*.)}]
+\item \textbf{Properties of Linear Regression Under Orthogonal Design.}
+
+Suppose $\bX$ is an $n \times n$ \emph{orthogonal} matrix satisfying $\bX^{\top}\bX = \bX\bX^{\top} = \bI$. 
+Suppose further that the response is generated as $y = \bx^{\top}\bbeta_* + \epsilon$ where $\bbeta_*$ is a fixed (unknown)
+vector and $\epsilon$ is a (scalar) Gaussian random variable with mean 0 and standard deviation $\sigma$. ($\bx_i, \epsilon_j$ are mutually \textsc{iid}.)
+
+\begin{enumerate}[label={\bf MA1.\alph*)}]
+    \item What is the solution to the following \emph{ridge regression} problem? \[\argmin_{\bbeta} \frac{1}{2} \|\by - \bX\bbeta\|_2^2 + \frac{\lambda}{2}\|\bbeta\|_2^2\] \vspace{2in}
+    \item What is the bias of ridge regression in this scenario? What is the bias of OLS? ~ \\ \vspace{2in}
+    \item What is the variance of ridge regression in this scenario? What is the bias of OLS? \\ ~ \vspace{2in}
+    \item What is the \emph{prediction MSE} of ridge regression in this scenario? \\ ~  \vspace{2in}
+    \item Is it possible to \emph{correct for} the bias of ridge regression in this scearnio? If so, provide a formula for bias-corrected ridge regression and give its MSE. Does it improve upon (biased) ridge regression?
+\end{enumerate}
+
+\clearpage 
+\item \textbf{Derivation of a Generative Classifier}. 
+
+Suppose you have data points generated from a two class mixture as: 
+\[\bX_i \sim \begin{cases} \mathcal{N}(\bmu_1, \bSigma) & \text{ if $i$ is in class 1} \\\mathcal{N}(\bmu_2, \bSigma) & \text{ if $i$ is in class 2} \end{cases}\]
+Here, the mean vectors $\bmu_1, \bmu_2$ but the common covariance $\bSigma$ is known. State and derive the decision boundary of an appropriate \emph{generate} classifier for this problem: show your work.
+
+You may choose to use the following steps, but it is not necessary. 
+\begin{enumerate}
+    \item State the \emph{conditional} PDF for $\bX_i$.
+    \item State Bayes' rule  for estimating the class membership of a test data point.
+    \item Manipulate Bayes' rule to get a linear expression for the decision boundary (the points where the probabilites of the two classes are equal).
+    \item Simplify all expressions.
+\end{enumerate}
+\clearpage 
+%\item \textbf{Properties of Principal Components Analysis}
+%\clearpage 
+%\item \textbf{}
+\end{enumerate}
+\clearpage
+\begin{center} (Extra page for longer answers) \end{center}
+
+\clearpage
+\begin{center} (Extra page for longer answers) \end{center}
+
+
+\clearpage
+\begin{center} (Extra page for longer answers) \end{center}
+
+\clearpage
+\begin{center} (Extra page for longer answers) \end{center}
+
+\clearpage
+\begin{center} (Blank page for scratch work - not graded) \end{center}
+
+\clearpage
+\begin{center} (Blank page for scratch work - not graded) \end{center}
+
+\clearpage
+\begin{center} (Blank page for scratch work - not graded) \end{center}
+
+
+\clearpage
+\begin{center} (Blank page for scratch work - not graded) \end{center}
+
+
+\clearpage 
+\end{document}

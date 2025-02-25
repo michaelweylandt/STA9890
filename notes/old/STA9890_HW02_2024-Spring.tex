@@ -1,0 +1,204 @@
+\documentclass[10pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{multicol}
+\usepackage{lettrine}
+\usepackage{calligra}
+\usepackage{hyperref}
+\usepackage[parfill]{parskip}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+
+\newcommand{\R}{\mathbb{R}}
+
+\usepackage{bm}
+\newcommand{\bzero}{\bm{0}}
+\newcommand{\bx}{\bm{x}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\bX}{\bm{X}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bbeta}{\bm{\beta}}
+
+\usepackage{algorithm}
+\DeclareMathOperator{\argmin}{arg\,min}
+
+\newcommand{\E}{\mathbb{E}}
+
+\usepackage{enumitem,amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+
+\usepackage{soul}
+\newcommand{\cmark}{\ding{52}}
+
+\usepackage{rotating}
+
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+\begin{center}
+    {\Large \bf Assignment \#2: Penalized Regression Methods \\ STA9890 \\ Statistical Learning for Data Mining}
+\end{center}
+
+{\bf Assignment Parameters:} \\
+\phantom{abc}Date Assigned: 2024-02-20\\
+\phantom{abc}Date Due: 2024-03-05 @ 5:45pm \\
+~\\
+\phantom{abc}Submission Mechanism(s):
+\begin{itemize}
+    \item Blackboard (strongly preferred)
+    \item Email to instructor: \href{mailto:michael.weylandt@baruch.cuny.edu}{michael.weylandt@baruch.cuny.edu} \\ 
+    {\small Email submissions must be titled \emph{exactly} as \texttt{STA9890-S2024-HW2-LASTNAME,FIRSTNAME.pdf}}
+\end{itemize}
+
+\section*{Question 0: Recommended Reading (Ungraded)}
+Recommended Reading:
+\begin{itemize}
+    \item ISLR: Chapters 3 and 6
+    \item ESL: Section 3 - 3.4
+\end{itemize}
+Please contact me if you need additional background reading recommendations. 
+
+\section*{Question 1: Data Analysis Pipeline (15 points)}
+
+This is an \emph{issue spotter} question. Below, I describe (in words) a hypothetical application of the ML techniques we have discussed in this class. Your task is to find \emph{at least} 3 mistakes in the pipeline and to i) describe the problem (2 points each) and ii) say how that stage should have been performed (3 points).  
+
+This problem comes with two opportunities for extra credit: 
+\begin{itemize}
+    \item Additional issues: for any additional issues beyond the three you are required identify, extra credit will be given (up to 5 points per issue). 
+
+    Please mark the three mistakes you are most sure about as your `main answers' so I can distinguish them from your EC attempts.
+
+    To dissuade random guessing, extra credit will only be given if all guesses are at least partially correct. (\emph{I.e.}, if you guess 25 things, 20 of which are completely wrong, you can still get full credit, but you won't get extra credit.)
+    \item Simulations to demonstrate the effect of mistakes in the ML pipeline. 
+
+    For each of your three `main answers', you can provide a simulation that demonstrates the effect of that mistake on the conclusions of the ML pipeline. Each simulation is worth up to 5 points depending on how well it is implemented.
+\end{itemize}
+
+Scenario:
+\begin{quote}
+    Bernard wants to use a ML pipeline to improve the credit lending business of his bank; his goal is to use his experience lending to businesses and high-net-worth clients as the basis for new retail division. The bank staff has gone back through the bank's records and
+    collected the following information from previous loans:
+    \begin{itemize}
+        \item Applicant's Annual Income at Application
+        \item Applicant's Credit Score at Application
+        \item Purpose of Loan:
+        \begin{itemize}
+            \item 1: Home Purchase Mortgage
+            \item 2: Mortgage Refinance
+            \item 3: Unsecured Personal Loan
+            \item 4: Loan to Start and/or Expand a Small Business
+        \end{itemize}
+        \item Amount of Loan
+        \item Duration of Loan
+        \item Was the Loan Successfully Paid Off? (Response)
+    \end{itemize}
+    Bernard arranges this data into a 5 column $\bX$ matrix and uses the `Was the Loan Successfully Paid Off?' feature as the response variable $\by$. He fits an ordinary least squares (OLS) model to this data. To see how well his business would have performed, he computes his profit as if he had made loans to any client with $\hat{y}_i > 0.5$, which turns out to be about 20\% of the total number of applications: based on his historical estimates, Bernard predicts that he would make an average of $\$100,000$ in profit for each loan given. 
+
+    After working with his business development office, Bernard estimates that he will receive 10,000 loans in the first year of his retail business. At 20\% approval rate, he expects to make 2,000 loans over the next year, for a forecast profit of two hundred million dollars. Because the retail business is expected to cost one hundred million dollars to start up (new employees, IT investments, advertising, and a new group in the legal and compliance divisions), Bernard predicts 100\% ROI in one year to his board; the board ultimately approves the new venture.
+
+    
+\end{quote}
+
+\section*{Question 2: Non-Negative Least Squares (15 points)}
+In class, we have considered \emph{penalized} regression methods, which combine the MSE loss with a suitable penalty function. We can also add regularization using \emph{constraints}, the most famous form of which is \emph{non-negative least squares}: 
+\[\argmin_{\bbeta} \frac{1}{2} \|\by - \bX\bbeta\|_2^2 \text{ such that } \beta_i \geq 0 \text{ for all } i=1, \dots p\]
+In this question, you will explore the properties of NNLS and compare it to OLS, Ridge Regression, and Lasso. 
+
+\begin{enumerate}[label=Q2(\alph*).]
+    \item Implement NNLS using \texttt{CVXR} or similar software (3 points)
+    \item Find conditions on $\hat{\bbeta}_{\text{OLS}}$ such that $\hat{\bbeta}_{\text{OLS}} = \hat{\bbeta}_{\text{NNLS}}$ (2 points)
+    \item When can NNLS give a \emph{sparse} solution? (2 points)
+    \item Suppose $\bX$ is a matrix of IID Standard Gaussian elements. Use a simulation to estimate the bias of NNLS when: 
+    (5 points)
+    \begin{itemize}
+      \item All elements of $\bbeta_*$ are drawn $\beta^*_i \buildrel{\textsc{iid}}\over\sim\mathcal{U}([-3, -1])$
+      \item  All elements of $\bbeta_*$ are drawn $\beta^*_i \buildrel{\textsc{iid}}\over\sim\mathcal{U}([-0.25, 0.25])$
+      \item  All elements of $\bbeta_*$ are drawn $\beta^*_i \buildrel{\textsc{iid}}\over\sim\mathcal{U}([1, 3])$
+    \end{itemize}
+    \item Compare the variance of OLS and NNLS in these three scenarios. Which one achieves the lower total MSE? (3 points)
+\end{enumerate}
+
+\section*{Question 3: Variable Selection \& Linear Models (20 points)}
+
+Download the SRBCT microarray data from the course website. This is a gene expression data set from a childhood cancer study with $n= 83$ patients and $p= 2308$ genes. Your response (outcome) is the gene expression profile of the gene p53, a major oncogene that acts as a tumor suppressor. 
+
+Your goal is to select other genes whose expression profiles are associated with p53 so as to find other possible genes to target in drug therapies.
+\begin{enumerate}
+    \item Visualize regularization paths for the following methods:
+    \begin{enumerate}
+        \item Elastic net
+        \item Lasso
+        \item SCAD
+        \item MC+
+    \end{enumerate}
+    If you're using \texttt{R}, the first two methods are implemented in the \texttt{glmnet} package and the second two in the \texttt{ncvreg} package. 
+    \item Reflection. Interpret the results. What are the top genes selected by each method? Are they different? If so, why? Which regularization paths look most variable? Why is this the case? If you had to report to a scientist the top 10 genes associated with p53, which ones would you report? Why?
+\end{enumerate}
+\section*{Question 4: Predictive Improvements in Ridge Regression (20 points)}
+
+In class, we discussed the \emph{Ridge MSE Existence Theorem}, which roughly states that: 
+
+\textbf{Theorem.} Suppose $\bX \in \R^{n \times p}$ is a fixed matrix and $\by$ is generated as $\by \sim \mathcal{N}(\bX\bbeta_*, \sigma^2 \bI_{n \times n})$ for some (unknown) $\bbeta_* \in \R^p$, $\sigma^2 \in \R_{> 0}$. There exists a $\lambda > 0$ such that 
+\[\E[\|\bbeta_* - \hat{\bbeta}_{\text{Ridge}}\|_2^2] < \E[\|\bbeta_* - \hat{\bbeta}_{\text{OLS}}\|_2^2]\]
+where the expectation is taken over the randomness in $\by$ and hence $\hat{\bbeta}_{\text{OLS}}, \hat{\bbeta}_{\text{Ridge}}$. 
+
+In this problem, you will demonstrate this theorem in \emph{one of two} ways (your choice):
+\begin{itemize}
+    \item Simulation: Design a simulation to demonstrate the MSE Existence Theorem.
+
+    \emph{Hint: This will be easier if the columns of $\bX$ are strongly correlated.}
+    
+    \item Theory: Prove the theorem above. Add any additional assumptions necessary to the statement of the theorem.
+
+    \emph{Hints:} The RHS of the inequality can be computed in closed form. For the LHS, compute the (squared) bias and the variance separately and add them together. Express $\bX$ in terms of its SVD and many terms will cancel. You may find it useful to differentiate that quantity with respect to $\lambda$.
+\end{itemize}
+
+\section*{Question 5: Coordinate Descent Methods for the Lasso (30 points)}
+
+In the previous homework, you used a \emph{gradient descent} method to fit OLS and Ridge Regression. Gradient Descent proceeds by taking incremental steps in the direction away from the gradient of the objective function.\footnote{Gradient \emph{ascent} (\emph{i.e.}, following the gradient) maximizes a function, but in our ``loss + penalty'' framework, we seek to minimize our objectives.} This works well when our objective function is differentiable, but what can we do for non-differentiable objective functions, \emph{e.g.} Lasso regression? Enter \emph{coordinate descent}!
+
+Coordinate Descent (CD) is similar to gradient descent, but it only updates one coordinate (element of $\bbeta$) at a time. By looping through all the coordinates many times over, CD eventually converges to the optimal solution. CD methods are often easier to implement than GD because the one-dimensional update problems can be solved in closed form. 
+
+Formally, CD methods look something like this: 
+\begin{algorithm}
+\begin{itemize}
+\item \textbf{Initialize}: $\bbeta^{(0)} = \bzero_p$, $k = 0$
+\item \textbf{Repeat Until Convergence: ($\|\bbeta^{(k)} - \bbeta^{(0)}\| \leq \epsilon)$}
+\begin{itemize}
+    \item Copy $\tilde{\bbeta} = \bbeta^{(k)}$
+    \item For $i = 1, \dots p$:
+    \begin{itemize}
+        \item $\tilde{\beta}_i = \argmin_{\beta_i} \textsf{Objective}(\beta_i)$
+    \end{itemize}
+    \item Set $\bbeta^{(k+1)} = \tilde{\bbeta}$
+    \item Set $k := k + 1$
+\end{itemize}
+\end{itemize}
+    \caption{Skeleton of a CD Method}
+\end{algorithm}
+
+Note that the changes in each element of $\bbeta$ happen ``immediately'' so that the new values of $\tilde{\bbeta}$ are present in the next coordinat update.
+In this problem, you will implement CD for the lasso regression problem: 
+\[\argmin_{\bbeta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2 + \lambda \|\bbeta\|_1\]
+
+\begin{enumerate}[label=Q5(\alph*).]
+\item Suppose that our current working estimate of $\bbeta$ is $\bbeta^{(k)}$. Find the value of $\beta_i$ that minimizes the objective function, \emph{i.e.}, solve
+\[\argmin_{\beta_i} \frac{1}{2}\left\|\by - \bX\bbeta\right\|_2^2 + \lambda \|\bbeta\|_1 = \frac{1}{2}\left\|\left(\by - \sum_{j \neq i} \bx_j^{\top}\beta_j\right) - \bx_i^{\top}\beta_i  \right\|_2^2 + \lambda \|\bbeta\|_1\]
+\emph{Hint: Recall the Soft Threshold function we discussed in class} (5 points)
+\item Using your solution to the previous section, implement a basic CD algorithm for the lasso. Demonstrate it on simulated data with a sparse $\bbeta_*$. (10 points) 
+\item Basic CD can be slow, but there are two easy ways to speed it up. Implement these both to give a CD function that computes the lasso solution for a grid of $\lambda$ values: (10 points) 
+\begin{itemize}
+    \item ``Active Set'': Most of the time, the variables selected by Lasso do not change (or, if they do change, only one or two new variables are selected). CD can proceed by updating only the selected (non-zero) elements of $\tilde{\bbeta}$ and then performing a `full loop' (over all elements $\bbeta$) when you seem to have converged. 
+    \item ``Warm Starts'': We typically want to solve the lasso problem for many $\lambda$ values all at once. Because the lasso solution $\hat{\bbeta}_{\text{Lasso}}(\lambda)$ varies slowly with $\lambda$, you can speed CD up by starting at the value of $\bbeta$ from the previous $\lambda$ instead of starting at $\bzero$. Use this warm-start technique to solve the lasso problem at a grid of 100 values: you can use the following code to generate a suitable default grid: 
+    \[\texttt{LAMBDA\_MAX <- max(abs(crossprod(X, y)))}\]\[\texttt{LAMBDA\_GRID <- seq(0.001 * LAMBDA\_MAX, LAMBDA\_MAX, length.out=100)}\]
+\end{itemize}
+Compare how long it takes your efficient CD to compute the lasso path as compared to basic CD. (It should be faster!)
+\item Compare the CD results to \texttt{CVXR} on the data from Q3 and show that your results are (nearly) equal (5 points)
+\end{enumerate}
+
+\end{document}
