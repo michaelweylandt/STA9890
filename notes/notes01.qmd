@@ -518,9 +518,14 @@ ggplot(ERRS, aes(x=k, y=Error, color=Type)) +
 
 We notice a few things here: 
 
-1) Training Error decreases in $K$, with 0 training error at $K=1$ (Why?)
+1) Training Error increases in $K$[^rev], with 0 training error 
+   at $K=1$. (Why?)
 2) Test Error is basically always higher than test error
 3) The best training error does not have the best test error
+
+[^rev]: It is easier to understand this 'in reverse': as 
+$K \downarrow 1$, training error decreases to 0, so as 
+$K \uparrow n$, training error increases. 
 
 We can also look at the gap between training and test error: this is called
 `generalization error` or `optimism`: 
