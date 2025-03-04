@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-7a426326b279d3ba9cc0818763c3c226.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -144,7 +144,6 @@ window.Quarto = {
     <span class="navbar-title">STA 9890</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -635,7 +634,7 @@ At k = 20, the test (out-of-sample) error of KNN is 6%</code></pre>
 </div>
 <p>We notice a few things here:</p>
 <ol type="1">
-<li>Training Error decreases in <span class="math inline">\(K\)</span>, with 0 training error at <span class="math inline">\(K=1\)</span> (Why?)</li>
+<li>Training Error increases in <span class="math inline">\(K\)</span><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, with 0 training error at <span class="math inline">\(K=1\)</span>. (Why?)</li>
 <li>Test Error is basically always higher than test error</li>
 <li>The best training error does not have the best test error</li>
 </ol>
@@ -685,8 +684,8 @@ Pause to Reflect
 <li>For large <span class="math inline">\(K\)</span>, the model became quite simple, barely fit the training data, but did just as well on the training data as the test data (poorly on both). This is indicative of a <em>small generalization gap</em> and a <em>low complexity</em> model.</li>
 <li>For python <span class="math inline">\(K\)</span>, the model became rather complex, fit the training data well, but didn’t perform as well as we would like on the test data. This is indicative of a <em>large generalization gap</em> and a <em>high complexity</em> model.</li>
 </ul>
-<p>In this case, we could see the complexity visually by looking at the decision boundaries (the lines separating predictions of class “A” from class “B”). This isn’t universally true<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, but the intuition of “high complexity = more wiggles” is usually pretty good.</p>
-<p>The classical story of ML and complexity is given by something like this:<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
+<p>In this case, we could see the complexity visually by looking at the decision boundaries (the lines separating predictions of class “A” from class “B”). This isn’t universally true<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>, but the intuition of “high complexity = more wiggles” is usually pretty good.</p>
+<p>The classical story of ML and complexity is given by something like this:<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
 <p><img src="https://mlstory.org/assets/gen-ushaped.svg" class="img-fluid"></p>
 <p>For now, you can interpret “risk” as “test error” and “empirical risk” as “training error”.</p>
 <div class="callout callout-style-default callout-caution callout-titled" title="A more complex story of complexity">
@@ -712,7 +711,7 @@ A more complex story of complexity
 <p>So how do we measure complexity? For OLS, it seems to be proportional to <span class="math inline">\(p\)</span>, while for KNN it seems to be inverse to <span class="math inline">\(K\)</span>. In this class, we won’t really focus too much on the actual measurements. For most of the methods we study, it is usually pretty clear what drives complexity up or down, even if we can’t quite put a number on it.</p>
 <section id="stability-and-generalization" class="level3">
 <h3 class="anchored" data-anchor-id="stability-and-generalization">Stability and Generalization</h3>
-<p>It turns out there is a deep connection between generalization and a suitable notion of “stability”. A model is said to be relatively stable if changes to an input point do not change the output predictions significantly.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
+<p>It turns out there is a deep connection between generalization and a suitable notion of “stability”. A model is said to be relatively stable if changes to an input point do not change the output predictions significantly.<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a></p>
 <p>At an intuitive level, this makes sense: if the model is super sensitive to individual inputs, it must be very flexible and hence quite complex. (A very simple model cannot be sensitive to all of its inputs.)</p>
 <p>We can apply this idea to understand some rules-of-thumb and informal practices you might have seen in previous statistics courses:</p>
 <ul>
@@ -721,7 +720,7 @@ A more complex story of complexity
 <li><p>Use of robust statistics, <em>e.g.</em> medians instead of means. These explicitly control the stability of our process.</p></li>
 </ul>
 <p>Perhaps most importantly: this justifies why the large <span class="math inline">\(n\)</span> (big sample) limit seems to avoid overfitting. If our model is fit to many distinct data points, it can’t be too sensitive to any of them. At least, that’s the hope…</p>
-<p>The sort of statistical models you have seen to date – so-called <em>parametric</em> models – have a ‘stabilizing’ effect. By reducing lots of data to only a few parameters, those parameters (and hence the model output) can’t depend too much on any individual input point.<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> This ‘bottleneck’ in the parameter space seems to improve performance.</p>
+<p>The sort of statistical models you have seen to date – so-called <em>parametric</em> models – have a ‘stabilizing’ effect. By reducing lots of data to only a few parameters, those parameters (and hence the model output) can’t depend too much on any individual input point.<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> This ‘bottleneck’ in the parameter space seems to improve performance.</p>
 <p>Other methods, like <span class="math inline">\(1\)</span>-Nearest-Neighbor, become increasingly more complex as we get more data and do not benefit from this sort of ‘bottleneck’ effect.</p>
 <p>At this point, you might think that stability and variance are closely related concepts - you are not wrong and we will explore the connection in more detail next week.</p>
 </section>
@@ -755,10 +754,11 @@ A more complex story of complexity
 <li id="fn5"><p>I’m being a bit sloppy here. This is more precisely the <em>population test error</em>, not the <em>test set test error</em>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>There are details here about how we measure similarity, but for now we will restrict our attention to simple Euclidean distance.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7"><p>KNN is a <em>non-parameteric</em> method, but not all <em>non-parametric</em> methods require access to the training data at test time. We’ll cover some of those later in the course.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>In OLS, the complexity doesn’t make the model ‘wigglier’ in a normal sense - it’s still linear after all - but you can think of it as the additional complexity of a 3D ‘map’ (<em>i.e.</em>, a to-scale model) vs a standard 2D map.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>Figures from HR Chapter 6, <em>Generalization</em>.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>For details, see <a href="https://jmlr.org/papers/volume2/bousquet02a/bousquet02a.pdf">O. Bousquet and A. Elisseeff, <em>Stability and Generalization</em> in <strong>Journal of Machine Learning Research 2</strong>, pp.499-526.</a><a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11"><p>Some regression textbooks advocate a rule that you have 30 data points for every variable in your model. This is essentially guaranteeing that the <span class="math inline">\(p/n\)</span> ratio that controls the generalization of OLS (see above!) stays quite small.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>It is easier to understand this ‘in reverse’: as <span class="math inline">\(K \downarrow 1\)</span>, training error decreases to 0, so as <span class="math inline">\(K \uparrow n\)</span>, training error increases.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>In OLS, the complexity doesn’t make the model ‘wigglier’ in a normal sense - it’s still linear after all - but you can think of it as the additional complexity of a 3D ‘map’ (<em>i.e.</em>, a to-scale model) vs a standard 2D map.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Figures from HR Chapter 6, <em>Generalization</em>.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>For details, see <a href="https://jmlr.org/papers/volume2/bousquet02a/bousquet02a.pdf">O. Bousquet and A. Elisseeff, <em>Stability and Generalization</em> in <strong>Journal of Machine Learning Research 2</strong>, pp.499-526.</a><a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Some regression textbooks advocate a rule that you have 30 data points for every variable in your model. This is essentially guaranteeing that the <span class="math inline">\(p/n\)</span> ratio that controls the generalization of OLS (see above!) stays quite small.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -843,8 +843,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -955,7 +953,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
