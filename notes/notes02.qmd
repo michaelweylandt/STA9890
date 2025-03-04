@@ -667,7 +667,7 @@ $$\begin{align*}
 \E[\text{MSE}] &= \text{Bias}^2 + \text{Variance} + \text{Irreducible Error} \\
 \text{ where } \text{Bias}^2 &= \E\left[\left(\E[\hat{y}] - \E[y]\right)^2\right] \\
 &= \left(\E[\hat{y}] - \E[y]\right)^2 \text{ (Why can I drop the outer expectation?)} \\
-\text{Variance} &= \E\left[\left(\hat{y} - \E[y]\right)^2\right] \\
+\text{Variance} &= \E\left[\left(\hat{y} - \E[\hat{y}]\right)^2\right] \\
 \text{Irreducible Error} &= \E\left[\left(y - \E[y]\right)^2\right]
 \end{align*}$$
 
