@@ -200,6 +200,10 @@ but mandatory, Brightspace quiz. This quiz covers the contents of this syllabus.
 Students who do not successfully complete this quiz by the required date 
 (`r voe_date()`) may be involuntarily disenrolled from this course. 
 
+You must complete the VoE Syllabus Quiz with a perfect score before you will
+be able to submit any assignments on Brightspace. The Quiz is set up to allow
+unlimited attempts. 
+
 #### Regrading Policy
 
 If you feel an assignment has been improperly graded, please contact the
