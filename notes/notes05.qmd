@@ -168,15 +168,16 @@ let $\hat{y}_i$ be our prediction and $y^*_i$ be the actual outcome, we can
 construct a similar table: 
 
 +----------------+-----------------+--------------------------+
-|                | **Truth**                                  |
+|                | **Truth** (Second index)                   |
 +================+:===============:+:========================:+
 | **Prediction** | $y_i^* = 0$     | $y_i^* = 1$              |
+| (First Index)  |                 |                          |
 +================+=================+==========================+
 | $\hat{y}_i=0$  | $n_{00}$ True   | $n_{01}$ False Negative  |
 |                | Negatives       | (Type II Errors)         |
 +----------------+-----------------+--------------------------+
 | $\hat{y}_i=1$  | $n_{10}$ False  | $n_{11}$ True Positives  |
-| **Null**       | Positives       |                          |
+|                | Positives       |                          |
 |                | (Type I Errors) |                          |
 +----------------+-----------------+--------------------------+
 
@@ -202,14 +203,18 @@ From this structure, we get several useful ideas:
 From this simple count table, we can create _many_ different ratios. I find the
 statistical terminology a bit more intuitive than the ML terminology: 
 
-- True Positive Rate: Of the predicted positives ($\hat{y}=1$), what fraction are
-  _true_ positives ($y^* = 1$)? $\text{TPR} = n_{11}/(n_{01} + n_{11})$
-- False Positive Rate: Of the predicted positives ($\hat{y}=1$), what fraction are
-  _false_ positives ($y^* = 0$)? $\text{FPR} = n_{10}/(n_{10} + n_{11})$
-- True Negative Rate: Of the predicted positives ($\hat{y}=0$), what fraction are
-  _true_ negatives ($y^* = 0$)? $\text{FNR} = n_{00}/(n_{00} + n_{01})$
-- False Negative Rate: Of the predicted positives ($\hat{y}=0$), what fraction are
-  _false_ negatives ($y^* = 1$)? $\text{FNR} = n_{01}/(n_{00} + n_{01})$
+- True Positive Rate: Of the actual positives ($y^*=1$), what fraction are
+  predicted correctly (truly) positives ($\hat{y} = 1$)? 
+  $\text{TPR} = n_{11}/(n_{01} + n_{11})$
+- False Negative Rate: Of the actual positives ($y^*=1$), what fraction are
+  predicted incorrectly (falsely) as negatives ($\hat{y} = 0$)? 
+  $\text{FNR} = n_{01}/(n_{01} + n_{11})$
+- True Negative Rate: Of the actual negatives ($y^*=0$), what fraction are
+  predicted correctly (truly) as negatives ($\hat{y} = 0$)?  
+  $\text{FNR} = n_{00}/(n_{00} + n_{10})$
+- False Positive Rate: Of the actual negatives ($y^*=0$), what fraction are
+  predicted incorrectly (falsely) as positives ($\hat{y} = 1$)? 
+  $\text{FPR} = n_{10} / (n_{00} + n_{10})$
   
 These clearly satisfy some useful relationships: 
 
@@ -221,16 +226,35 @@ $$\text{FPR} = 1 - \text{TNR} \Leftrightarrow \text{TNR} = 1 - \text{FPR}$$
 
 In this scenario, we recognize the *false positive rate* as the *size* (or 
 *level*) associated with a statistical test (5% for a 95% confidence test) and
-the true positive rate as the *power*. 
+the true positive rate as the *power*. Again, the statistical definitions can
+help us navigate the confusing terminology here: the confidence of a test,
+and therefore its false positive rate, are defined _assuming the null_ (*i.e.*,
+in a "true" negative scenario). 
 
-The "other direction" of rates -- where we condition on the truth instead of
-the prediction -- are less common, except for the *false discovery rate*: 
+The "other direction" of rates -- where we condition on the prediction 
+instead of the truth -- are less common, except for the *false discovery rate*: 
 
 $$\text{FDR} = \frac{n_{10}}{n_{10} + n_{11}}$$
 
 The FDR is commonly used in scientific settings and it answers this question: 
 if a scientist makes $K$ discoveries, what fraction _of those claimed 
 discoveries_ are correct? 
+
+::: {.callout-warning} 
+
+Note that the convention used to define *rates* can be quite confusing
+and is perhaps opposite the convention used to define *counts*. 
+
+To compute the number of *true positives*, we look at predicted 
+positives and count the number of "truths", while to compute
+the *true positive rate*, our denominator is the number of 
+_actual_ positives and we count the fraction of correct predictions. 
+
+To me, the FDR is actually the most clearly named rate; I try to remember
+the definition of FDR and 'work backwards' to FPR since it must be something
+different than FDR.
+
+:::
 
 In ML context, you will commonly hear reference to *precision* and *recall*. 
 With our definitions above, we have

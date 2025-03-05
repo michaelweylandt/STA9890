@@ -318,12 +318,12 @@ window.Quarto = {
 <thead>
 <tr class="header">
 <th></th>
-<th colspan="2" style="text-align: center;"><strong>Truth</strong></th>
+<th colspan="2" style="text-align: center;"><strong>Truth</strong> (Second index)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Prediction</strong></td>
+<td><strong>Prediction</strong> (First Index)</td>
 <td style="text-align: center;"><span class="math inline">\(y_i^* = 0\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(y_i^* = 1\)</span></td>
 </tr>
@@ -333,7 +333,7 @@ window.Quarto = {
 <td style="text-align: center;"><span class="math inline">\(n_{01}\)</span> False Negative (Type II Errors)</td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(\hat{y}_i=1\)</span> <strong>Null</strong></td>
+<td><span class="math inline">\(\hat{y}_i=1\)</span></td>
 <td style="text-align: center;"><span class="math inline">\(n_{10}\)</span> False Positives (Type I Errors)</td>
 <td style="text-align: center;"><span class="math inline">\(n_{11}\)</span> True Positives</td>
 </tr>
@@ -351,19 +351,35 @@ window.Quarto = {
 </ul>
 <p>From this simple count table, we can create <em>many</em> different ratios. I find the statistical terminology a bit more intuitive than the ML terminology:</p>
 <ul>
-<li>True Positive Rate: Of the predicted positives (<span class="math inline">\(\hat{y}=1\)</span>), what fraction are <em>true</em> positives (<span class="math inline">\(y^* = 1\)</span>)? <span class="math inline">\(\text{TPR} = n_{11}/(n_{01} + n_{11})\)</span></li>
-<li>False Positive Rate: Of the predicted positives (<span class="math inline">\(\hat{y}=1\)</span>), what fraction are <em>false</em> positives (<span class="math inline">\(y^* = 0\)</span>)? <span class="math inline">\(\text{FPR} = n_{10}/(n_{10} + n_{11})\)</span></li>
-<li>True Negative Rate: Of the predicted positives (<span class="math inline">\(\hat{y}=0\)</span>), what fraction are <em>true</em> negatives (<span class="math inline">\(y^* = 0\)</span>)? <span class="math inline">\(\text{FNR} = n_{00}/(n_{00} + n_{01})\)</span></li>
-<li>False Negative Rate: Of the predicted positives (<span class="math inline">\(\hat{y}=0\)</span>), what fraction are <em>false</em> negatives (<span class="math inline">\(y^* = 1\)</span>)? <span class="math inline">\(\text{FNR} = n_{01}/(n_{00} + n_{01})\)</span></li>
+<li>True Positive Rate: Of the actual positives (<span class="math inline">\(y^*=1\)</span>), what fraction are predicted correctly (truly) positives (<span class="math inline">\(\hat{y} = 1\)</span>)? <span class="math inline">\(\text{TPR} = n_{11}/(n_{01} + n_{11})\)</span></li>
+<li>False Negative Rate: Of the actual positives (<span class="math inline">\(y^*=1\)</span>), what fraction are predicted incorrectly (falsely) as negatives (<span class="math inline">\(\hat{y} = 0\)</span>)? <span class="math inline">\(\text{FNR} = n_{01}/(n_{01} + n_{11})\)</span></li>
+<li>True Negative Rate: Of the actual negatives (<span class="math inline">\(y^*=0\)</span>), what fraction are predicted correctly (truly) as negatives (<span class="math inline">\(\hat{y} = 0\)</span>)?<br>
+<span class="math inline">\(\text{FNR} = n_{00}/(n_{00} + n_{10})\)</span></li>
+<li>False Positive Rate: Of the actual negatives (<span class="math inline">\(y^*=0\)</span>), what fraction are predicted incorrectly (falsely) as positives (<span class="math inline">\(\hat{y} = 1\)</span>)? <span class="math inline">\(\text{FPR} = n_{10} / (n_{00} + n_{10})\)</span></li>
 </ul>
 <p>These clearly satisfy some useful relationships:</p>
 <p><span class="math display">\[\text{TPR} = 1 - \text{FNR} \Leftrightarrow \text{FNR} = 1 - \text{TPR}\]</span></p>
 <p>and</p>
 <p><span class="math display">\[\text{FPR} = 1 - \text{TNR} \Leftrightarrow \text{TNR} = 1 - \text{FPR}\]</span></p>
-<p>In this scenario, we recognize the <em>false positive rate</em> as the <em>size</em> (or <em>level</em>) associated with a statistical test (5% for a 95% confidence test) and the true positive rate as the <em>power</em>.</p>
-<p>The “other direction” of rates – where we condition on the truth instead of the prediction – are less common, except for the <em>false discovery rate</em>:</p>
+<p>In this scenario, we recognize the <em>false positive rate</em> as the <em>size</em> (or <em>level</em>) associated with a statistical test (5% for a 95% confidence test) and the true positive rate as the <em>power</em>. Again, the statistical definitions can help us navigate the confusing terminology here: the confidence of a test, and therefore its false positive rate, are defined <em>assuming the null</em> (<em>i.e.</em>, in a “true” negative scenario).</p>
+<p>The “other direction” of rates – where we condition on the prediction instead of the truth – are less common, except for the <em>false discovery rate</em>:</p>
 <p><span class="math display">\[\text{FDR} = \frac{n_{10}}{n_{10} + n_{11}}\]</span></p>
 <p>The FDR is commonly used in scientific settings and it answers this question: if a scientist makes <span class="math inline">\(K\)</span> discoveries, what fraction <em>of those claimed discoveries</em> are correct?</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that the convention used to define <em>rates</em> can be quite confusing and is perhaps opposite the convention used to define <em>counts</em>.</p>
+<p>To compute the number of <em>true positives</em>, we look at predicted positives and count the number of “truths”, while to compute the <em>true positive rate</em>, our denominator is the number of <em>actual</em> positives and we count the fraction of correct predictions.</p>
+<p>To me, the FDR is actually the most clearly named rate; I try to remember the definition of FDR and ‘work backwards’ to FPR since it must be something different than FDR.</p>
+</div>
+</div>
 <p>In ML context, you will commonly hear reference to <em>precision</em> and <em>recall</em>. With our definitions above, we have</p>
 <ul>
 <li>Precision = <span class="math inline">\(1 - \text{FDR}\)</span></li>
