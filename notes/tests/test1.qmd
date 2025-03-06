@@ -1,0 +1,424 @@
+---
+title: "STA 9890 - Spring 2025 </br> Test 1: Regression"
+---
+
+The original test booklet can be found [here](./sta9890_spring2025_test1.pdf). 
+$$\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}}$$ 
+
+## True or False (30 points - 10 questions at 3 points each)
+
+1. Linear regression is a supervised learning method because it has a matrix of 
+   features $\bX \in \R^{n \times p}$ and a vector of responses $\by \in \R^{n}$ 
+   which we attempt to predict using $\bX$.
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **True**. Linear regression methods are *supervised* learning methods because
+   they attempt to predict (continuous) responses $y$ using a set of covariates
+   $\bx$.
+   
+   :::
+
+2. Models with higher training error always have higher test error.  
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   False. If this were true, we could solve all of life's problems by minimizing
+   training error with no regard for overfitting. 
+   
+   *Aside*: This story is made somewhat more difficult by recent studies in ML
+   practice where we have learned to fit rather complex models in a way that keeps
+   both training and test error small. We will return to this later in this course, 
+   but it is still by no means an *always* relationship.
+   
+   :::
+   
+3. For the same level of sparsity, best subsets provides smaller training error
+   than the lasso. 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **True**. Because best subsets does not apply shrinkage, it achieves smaller
+   *training* error than the lasso. But this is not necessarily a good thing: 
+   see, *e.g.*, T. Hastie, R. Tibshirani, R. Tibshirani. "Best Subset, Forward
+   Stepwise or Lasso? Analysis and Recommendations Based on Extensive 
+   Comparisons. *Statistical Science* **35(4)**, p.579-592. 2020. 
+   DOI:[10.1214/19-STS733](https://dx.doi.org/10.1214/19-STS733).
+   
+   :::
+   
+4. Because kernel methods are more flexible than pure linear models, they always
+   provide in-sample (training) error improvements. 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **True**. Linear functions are contained in (essentially?) all kernel spaces,
+   so the kernel finds the best training fit over linear and non-linear functions,
+   allowing improvements over pure linear fits. 
+   
+   :::
+   
+5. OLS finds the linear model with the lowest test MSE. 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False**. OLS identifes the linear model with the lowest *training* MSE
+   but it does not guarantee optimal test MSE (no method can do that). In fact,
+   we know that suitably-tuned ridge regression will always achieve lower test 
+   MSE than OLS (in expectation). 
+   
+   :::
+   
+6. When cross-validation is used to select the optimal value of $\lambda$ in 
+   lasso regression, the CV estimate of the out-of-sample (test) error of the 
+   selected model is unbiased because the cross-validation error is computed on 
+   an unseen 'hold-out' set and not on the training data.
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False**. Whenever we use an error estimate to select a parameter or a 
+   hyperparameter, that error is no longer an unbiased answer for the 
+   eventual test error. There is no difference between optimizing $\hat{\beta}$
+   and optimizing $\lambda$ in this regard. 
+   
+   :::
+   
+7. Ordinary least squares is BLUE when applied to a VAR[^var] model if the
+   underlying data generating process is truly linear, the errors are mean zero
+   and have constant variance (no `heteroscedasticity').
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False**. BLUE-ness of OLS presumes independent errors, which is not stated
+   in the above question and is generally not true for time series models.
+   
+   :::
+   
+8. Reducing variance always increases bias. 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False**. While this is *often* true, it is not always so. Ensemble methods,
+   which we discuss later in this course, reduce variance without increasing
+   bias. More prosaically, increasing sample size reduces variance but does not
+   increase bias. 
+   
+   :::
+   
+9. $K$-Nearest Neighbors can be used for regression and classification.
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **True**. We give examples of both in the course notes. 
+   
+   :::
+   
+10. Linear models are preferred in high-dimensional scenarios because they have
+    a low bias. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. Linear models are preferred in high-dimensional scenarios because
+    they have lower _variance_ than non-linear models. 
+   
+    :::
+
+[^var]: VAR, or Vector Autoregressive, is a simple linear model for multivariate
+time series. 
+
+## Short Answer (50 points - 10 questions at 5 points each)
+
+01. Give an example that demonstrates why the $\ell_0$-"norm" is not convex.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Recall that a convex function satisfies the inequality
+    
+    $$f(\lambda \bx + (1-\lambda)\by) \leq \lambda f(\bx) + (1-\lambda) f(\by)$$
+    
+    for all $\bx, \by$ and all $\lambda \in [0, 1]$. 
+    
+    Let us take 
+    
+    $$\bx = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \by = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$$
+    
+    with $\lambda = 0.5$ so 
+    
+    $$\lambda \bx + (1-\lambda) \bx = \begin{pmatrix} 0.5 \\ 0.5 \end{pmatrix}.$$
+    
+    This then gives us 
+    
+    $$\|\bx\|_0 = 1, \|\by\|_0 = 1 \text{ but } \|\lambda \bx + (1-\lambda)\by\|_0 = 2$$
+    
+    which violates our inequality. 
+    
+    :::
+    
+02. List three reasons we may choose to use a *sparse* model. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Possible answers include: 
+    
+    1) Interpretability
+    
+    2) Better Estimation / Improved Test Performance / Shrinkage
+    
+    3) Fewer Features to Collect on Test Points
+    
+    4) Faster Predictions / Computational Efficiency
+    
+    5) Faster Fitting
+    
+    This list is not comprehensive and alternate correct answers will also 
+    receive credit. 
+    
+    :::
+    
+03. Compare and contrast spline and kernel models. Give at least 2 key 
+    similarities ("compare") and 2 key differences ("contrast").
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Potential answers include the following similarities:
+    
+    - Both perform non-linear supervised learning
+    - Both fit smooth non-linear functions
+    
+    and differences:
+    
+    - Kernel methods fit combinations (interactions) of features while
+      standard spline models are fit to a single feature at a time
+    - Splines are fit locally while kernels are fit globally
+    - Because they are univariate, splines are easy to interpret and can be
+      used in sparse models
+    
+    This list is not comprehensive and alternate correct answers will also 
+    receive credit. 
+    
+    :::
+    
+    
+04. The *elastic net* is a combination of ridge and lasso regression: 
+    $$\argmin_{\bbeta} \frac{1}{2}\left\|\by - \bX\bbeta\right\|_2^2 + \lambda_1 \|\bbeta\|_1 + \frac{\lambda_2}{2} \|\bbeta\|_2^2.$$
+    In the case where $\bX$ is the identity matrix, what is $\hat{\bbeta}$ in 
+    terms of $\by, \lambda_1, \lambda_2$? 
+
+    *Hint: Note that the solution is the composition of the ridge and lasso 
+    shrinkage operators, applied in any order. That is, if the ridge and lasso 
+    shrinkage operators are $S_1(\cdot), S_2(\cdot)$, the solution will be of 
+    the form $S_1(S_2(\cdot)) = S_2(S_1(\cdot))$*. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Recall that the lasso and ridge shrinkage operators are given by 
+    
+    $$S_{\lambda, \ell_1}(x) = \begin{cases} x - \lambda & x > \lambda \\ 0 & |x| < \lambda \\ x + \lambda & x < -\lambda\end{cases}$$
+    
+    and 
+    
+    $$S_{\lambda, \ell_2^2}(x) = \frac{x}{1+\lambda}$$
+    
+    so their composition is given by: 
+    
+    $$S(x) = \begin{cases}\frac{x - \lambda_1}{1+\lambda_2} & x > \lambda_1 \\ 0 & |x| < \lambda_1 \\ \frac{x + \lambda_1}{1+\lambda_2} & x < -\lambda_1\end{cases} = \frac{1}{1+\lambda_2}\mathcal{S}_{\lambda_1}(x) $$
+    
+    where $\mathcal{S}_{\lambda}(\cdot)$ is the soft-threshold operator. 
+    Hence the solution is $$\hat{\bbeta} = \frac{1}{1+\lambda_2}\mathcal{S}_{\lambda_1}(\by)$$
+    
+    See [Y. Yu "On Decomposing the Proximal Map" in *NeurIPS 2013: Advances in 
+    Neural Information Processing Systems 26*](https://papers.nips.cc/paper_files/paper/2013/hash/98dce83da57b0395e163467c9dae521b-Abstract.html). 
+    
+    This operation: 
+    
+    $$f(\bz) = \argmin_{\bx} f(\bx) + \frac{1}{2}\|\bx - \bz\|_2^2$$
+    
+    is known as the *proximal operator* of the function $f$ and it has 
+    applications throughout machine learning and statistics. See 
+    N.G. Polson, J.G. Scott, and B.T. Willard. "Proximal Algorithms in Statistics
+    and Machine Learning." *Statistical Science* **30(4)**, pp.559-581. 2015.
+    DOI:[10.1214/15-STS530](https://dx.doi.org/10.1214/15-STS530) and 
+    N. Parikh and S. Boyd "Proximal Algorithms." *Foundations and Trends in 
+    Optimization* **1(3)**, p.123-231. 2013
+    DOI:[10.1561/2400000003](https://dx.doi.org/10.1561/2400000003) for more.
+    
+    
+    :::
+    
+05. Name three advantages of *convexity* in formulating machine learning approaches.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Possible answers include: 
+    
+    1) Efficient optimization algorithms
+    
+    2) Guarantees of global optimality
+    
+    3) Statistical stability - the minima of convex functions are less sensitive
+       to noise
+    
+    4) Theoretical simplicity - convex functions are easier to analyze than
+       non-convex functions
+    
+    :::
+    
+06. In your own words, explain why use of a holdout set (or similar techniques) 
+    is important for choosing hyperparameters in machine learning. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Your answer should discuss how the use of a holdout set (distinct from
+    a training set) can be used to get unbiased estimates of the test error
+    which we can then use to select the hyperparameter. If we don't use a holdout
+    set, we are more likely to overfit the training data since we never test
+    a model's out-of-sample predictive capability.
+    
+    :::
+    
+07. Give two reasons why is the lasso preferred over best subsets for 
+    fitting linear models.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    1) Computational tractability. Best subsets is *hard*. 
+    
+    2) Shrinkage and improved out of sample performance
+    
+    :::
+    
+08. Rank the following models in terms of (statistical) complexity with 
+    1 being the lowest complexity and 5 being the highest: OLS, 
+    1-Nearest Neighbor Regression, Cubic Spline Regression, Cubic Polynomial
+    Regression, Ridge Regression
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    - Ridge Regression is simpler than
+    - OLS is simpler than
+    - Cubic Spline Regression is simpler than
+    - Cubic Polynomial Regression is simpler than 
+    - $1$-Nearest Neighbor Regression
+    
+    I will accept answers that switch the order of cubic splines and cubic
+    polynomials as a cubic spline with many knots can have more complexity
+    (effective degrees of freedom) than a single cubic polynomial fit. This
+    question should have said *piecewise cubic polynomial regression*. 
+    
+    :::
+    
+09. On the first plot, draw a curve of typical training and test errors for 
+    a $K$-nearest neighbor regressor. On the second plot, draw a curve of the
+    typical bias and variance for $K$-NN regression. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Your plots should: 
+    
+    - Have the training error of $K$-NN start at 0 for $K$=1
+    - Have the training error of $K$-NN increase in $K$
+    - Have a "U" shape for the test error of $K$-NN
+    - Have the bias of $K$-NN start at 0 and increase in $K$
+    - Have the variance of $K$-NN start high and decrease in $K$
+    - The test error should remain above the training error
+    
+    :::
+    
+10. On the first plot, draw a curve of typical training and test errors for 
+    ridge regression. On the second plot, draw a curve of the typical bias 
+    and variance for ridge regression. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Your plots should:
+    
+    - Increase Bias as $\lambda$ increases
+    - Decrease Variance as $\lambda$ increases
+    - Have monotonically increasing training error
+    - Have a $U$-shape for test error
+    
+    :::
+
+## Mathematics of Machine Learning (20 points total)
+
+In this section, you will analyze so-called *generalized* ridge and lasso 
+penalties. These methods apply the ridge or lasso penalties to something other
+than the vector of estimated coefficients ($\hat{\bbeta}$):
+
+$$\begin{align*}
+    \argmin_{\bbeta} &\frac{1}{2}\left\|\by - \bX\bbeta\right\|_2^2 +\frac{\lambda}{2} \|\bD\bbeta\|_2^2\tag{Generalized Ridge} \\
+    \argmin_{\bbeta} &\frac{1}{2}\left\|\by - \bX\bbeta\right\|_2^2 +\lambda \|\bD\bbeta\|_1\tag{Generalized Lasso}
+\end{align*}$$
+
+Most commonly, $\bD$ is taken to be some sort of first-or-second order 
+difference matrix so that 
+$$\|\bD_1\bbeta\|^2_2 = \sum_{i=1}^{p-1} (\beta_{i+1}-\beta_i)^2 \text{ and } \|\bD_1\bbeta\|_1 = \sum_{i=1}^{p-1} |\beta_{i+1}-\beta_i| \tag{First order difference}$$
+and 
+$$\|\bD_2\bbeta\|^2_2 = \sum_{i=1}^{p-2} (\beta_{i+2} - 2\beta_{i+1}+\beta_i)^2 \text{ and } \|\bD_2\bbeta\|_1 = \sum_{i=1}^{p-2} |\beta_{i+2} - 2\beta_{i+1}+\beta_i|\tag{2nd order difference}$$
+but other choices are also popular. 
+
+1. By analyzing the stationarity (zero gradient) condition, derive the 
+   closed-form solution for generalized ridge regression (arbitrary $\bD$). 
+   Box your answer so that it is clearly identifiable. You may assume all 
+   relevant matrices are full-rank and/or invertible. (8 points)
+   
+   *Hint: Note that $\partial \|\bD\bbeta\|_2^2 / \partial \bbeta = 2\bD^{\top}\bD\bbeta$.*
+   
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   We simply take the gradient of the generalized ridge loss and set it equal to
+   zero: 
+   
+   $$\begin{align*}
+   \frac{\partial}{\partial \bbeta}\left(\frac{1}{2}\|\by - \bX\bbeta\|_2^2 + \frac{\lambda}{2}\|\bD\bbeta\|_2^2\right) &= -\bX^{\top}(\by - \bX\bbeta) + \lambda\bD^{\top}\bD\bbeta \\
+   \bzero &= (\bX^{\top}\bX + \lambda \bD^{\top}\bD)\bbeta - \bX^{\top}{\by}\\ 
+   \implies \hat{\bbeta} &= (\bX^{\top}\bX + \lambda \bD^{\top}\bD)^{-1}\bX^{\top}\by
+   \end{align*}$$
+   :::
+   
+2. In order to build intuition, let us consider the case where $\bX = \bI$ and 
+   consider what happens when we change $\lambda$ in the generalized lasso 
+   problem. On the following plot, I have drawn the vector of observation $\by$
+   (dots) as well as the $\bD_1$-generalized lasso solution for $\lambda=0$ 
+   (small dashes) and $\lambda=\infty$ (large dashes). 
+
+   On the blank set of axes, draw the estimated $\hat{\bbeta}$ vectors from 
+   the $\bD_1$-generalized lasso at a both 'small-ish' and 'large-ish' value 
+   of $\lambda$. Label each solution carefully. (4 points)
+   
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   You plots should be piecewise constant, with fewer jumps for moderate 
+   $\lambda$ than for small $\lambda$. 
+   
+   :::
+   
+3. What is the relationship between $\bD_2$-generalized ridge regression and
+   spline methods? 
+   
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   The $\bD_2$ matrix is a second-difference matrix and it plays the same role
+   as the second derivative on a finite grid. As such, $\bD_2$-generalized ridge 
+   regression will find a curve that fits the data while controlling the 
+   sum of squared second differences. Spline regression will find a curve that
+   fits the data while controlling the integral of squared second derivative. For
+   simple equispaced settings, these approaches essentially coincide. 
+   
+   Key points to mention: 
+   
+   - Both can be used fit smooth curves
+   - Both capture "second derivative" type information
+   - Both induce a roughness penalty regularizer which must be tuned
+   
+   :::
+   
+4. Describe a situation in which generalized ridge or generalized lasso 
+   regression would be appropriate. What value of $\bD$ would you choose for
+   your application?
+   
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   There are many possible answers for this part. 
+   
+   :::

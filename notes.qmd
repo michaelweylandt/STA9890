@@ -107,6 +107,12 @@ this work.
 - [Instructor Notes](./notes/notes13.html)
 
 
+### Tests and Solutions
+
+- Test 1: Regression
+  - [Exam Booklet](./notes/tests/sta9890_spring2025_test1.pdf)
+  - [Solutions](./notes/tests/test1.html)
+
 ### Additional Materials
 
 The following homework problems and exams were used for the 
