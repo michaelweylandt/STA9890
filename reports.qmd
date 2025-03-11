@@ -50,7 +50,10 @@ literature.
 Each Research Report must be submitted as a fully-typed PDF using the
 course Brightspace. (No handwritten work will be graded.) Each report
 must include all code used and should have several figures. Reports
-should be 6-8 pages, double spaced in a legible 10 to 12 point font. 
+should be 6-8 pages, ~~double~~ double or single spaced in a 
+legible 10 to 12 point font. You may include appendices for things like
+code or longer proofs, but the ``main body'' of your submission must
+cover the expected material.
 
 ### Research Reports
 
