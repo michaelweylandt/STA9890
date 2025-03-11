@@ -217,7 +217,7 @@ Solution
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>False. If this were true, we could solve all of life’s problems by minimizing training error with no regard for overfitting.</p>
+<p><strong>False.</strong> If this were true, we could solve all of life’s problems by minimizing training error with no regard for overfitting.</p>
 <p><em>Aside</em>: This story is made somewhat more difficult by recent studies in ML practice where we have learned to fit rather complex models in a way that keeps both training and test error small. We will return to this later in this course, but it is still by no means an <em>always</em> relationship.</p>
 </div>
 </div>
@@ -253,6 +253,8 @@ Solution
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><strong>True</strong>. Linear functions are contained in (essentially?) all kernel spaces, so the kernel finds the best training fit over linear and non-linear functions, allowing improvements over pure linear fits.</p>
+<p>This question was a bit ambiguous about the function space used and whether any regularization was applied (as it almost always is in kernel methods), so I will also accept <strong>False</strong> here. (But you should understand that the answer is <em>essentially</em> always <strong>True</strong> - more flexible methods fit better on the training data except in exceptional circumstances.)</p>
+<p>Alternatively, in the case where <span class="math inline">\(n=p\)</span>, OLS has 0 MSE and kernels cannot improve upon it.</p>
 </div>
 </div>
 </div></li>
