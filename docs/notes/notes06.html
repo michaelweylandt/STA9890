@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>STA 9890 - Introduction to Classification – STA 9890</title>
+<title>STA 9890 - Generative Classifiers – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -35,10 +69,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-7a426326b279d3ba9cc0818763c3c226.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -67,6 +101,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -81,7 +144,6 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">STA 9890</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -122,15 +184,25 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#mixture-models" id="toc-mixture-models" class="nav-link active" data-scroll-target="#mixture-models">Mixture Models</a>
+  <ul class="collapse">
+  <li><a href="#inference-from-a-mixture-distribution" id="toc-inference-from-a-mixture-distribution" class="nav-link" data-scroll-target="#inference-from-a-mixture-distribution">Inference from a Mixture Distribution</a></li>
+  </ul></li>
+  <li><a href="#building-generative-classifiers" id="toc-building-generative-classifiers" class="nav-link" data-scroll-target="#building-generative-classifiers">Building Generative Classifiers</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes06.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes06.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">STA 9890 - Introduction to Classification</h1>
+<h1 class="title">STA 9890 - Generative Classifiers</h1>
 </div>
 
 
@@ -147,10 +219,90 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>This week, we begin our study of classifiers with an analysis of <em>generative</em> classifiers. While many generative classifiers have appeared in the literature, they can essentially all be derived from a standard formula. We will discuss this standard formula first and then turn our attention to specific named instances.</p>
+<section id="mixture-models" class="level2">
+<h2 class="anchored" data-anchor-id="mixture-models">Mixture Models</h2>
+<p>Recall from <a href="https://michael-weylandt.com/STA9715">STA 9715</a> that a (discrete) mixture model is a distribution of the form:</p>
+<p><span class="math display">\[X \sim \begin{cases} X_1 &amp; Z = 1 \\ X_2 &amp; Z = 2 \\ \dots \\ X_K &amp; Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \mathcal{P}_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)\]</span></p>
+<p>That’s quite a bit to unpack, so let’s take it piece by piece: the random variable <span class="math inline">\(X\)</span> has a <span class="math inline">\(K\)</span>-component <em>mixture</em> distribution if we can sample <span class="math inline">\(X\)</span> by generating <span class="math inline">\(K\)</span> independent random variables <span class="math inline">\(\{X_1, \dots, X_K\}\)</span> (with <em>different</em> distributions) and then selecting one of them at random.</p>
+<p>Let’s look at a concrete version of this: suppose we have a population of male and female basset hounds that is 60% female. The weight of male basset hounds follows a <span class="math inline">\(\mathcal{N}(65, 10)\)</span> distribution while females have weight distributed as <span class="math inline">\(\mathcal{N}(55, 10)\)</span>. The weight of a randomly selected basset can be sampled as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rbasset <span class="ot">&lt;-</span> <span class="cf">function</span>(n){</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    Z <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span><span class="fl">0.6</span>) <span class="co"># Z=1 &lt;- Female</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(Z, <span class="fu">rnorm</span>(n, <span class="at">mean=</span><span class="dv">55</span>, <span class="at">sd=</span><span class="fu">sqrt</span>(<span class="dv">10</span>)), </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rnorm</span>(n, <span class="at">mean=</span><span class="dv">65</span>, <span class="at">sd=</span><span class="fu">sqrt</span>(<span class="dv">10</span>)))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rbasset</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 59.69341</code></pre>
+</div>
+</div>
+<p>If we collect the weights of many basset hounds, we see that the resulting distribution is not normally distributed:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">rbasset</span>(<span class="dv">10000</span>), <span class="at">breaks=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">"Distribution of Basset Hound Weights"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="notes06_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In fact, this is a <em>bimodal</em> distribution with each ‘lump’ representing males or females.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Distributions of this form can often be written more compactly using a ‘convex combination’ notation:</p>
+<p><span class="math display">\[\text{Basset} \sim \frac{2}{5}\mathcal{N}(65, 10) + \frac{3}{5}\mathcal{N}(55, 10)\]</span></p>
+<p>The above notation can be interpreted as specifying a draw from the first distribution with probability <span class="math inline">\(2/5 = 40\%\)</span> and from the second with probability <span class="math inline">\(3/5 = 60\%\)</span>; that is, it’s a particular 2-component mixture of normals.</p>
+<p>In specifying this mixture, the probabilities of each component must be non-negative and must sum to 1; these are exactly the same restrictions we put on a convex combination of points earlier in the course. In fact, the set of mixture distributions can be consider the ‘convex set’ containing all of its individual components.</p>
+<section id="inference-from-a-mixture-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="inference-from-a-mixture-distribution">Inference from a Mixture Distribution</h3>
+<p>Now suppose you are on a walk and you meet a very friendly 62 pound basset hound. You of course want to pet this marvelous dog, but you need to ask the owner’s permission first: in doing so, should you ask “may I pet him?” or “may I pet her?”</p>
+<p>While the basset hound won’t care if you misgender, you recall that you can use <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem"><em>Bayes’ Rule</em></a> to ‘invert’ the mixture distribution. That is, while the mixture distribution normally goes from sex to weight, Bayes’ rule will let us go from weight back to sex.</p>
+<p>Specifically, in this case, Bayes’ rule tells us:</p>
+<p>[(|) = ]</p>
+<p>The math here is a bit nasty numerically, but we can do it in <code>R</code> quite simply:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>p_female <span class="ot">&lt;-</span> <span class="fl">0.6</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>p_male <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span>p_female</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>p_62_female <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(<span class="dv">62</span>, <span class="at">mean=</span><span class="dv">55</span>, <span class="at">sd=</span><span class="fu">sqrt</span>(<span class="dv">10</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>p_62_male   <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(<span class="dv">62</span>, <span class="at">mean=</span><span class="dv">65</span>, <span class="at">sd=</span><span class="fu">sqrt</span>(<span class="dv">10</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>p_female_62 <span class="ot">&lt;-</span> (p_62_female <span class="sc">*</span> p_female) <span class="sc">/</span> (p_62_female <span class="sc">*</span> p_female <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                                           p_62_male <span class="sc">*</span> p_male)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="st">"There is a "</span>, <span class="fu">round</span>(p_female_62 <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"% chance that basset is a female."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "There is a 16.87% chance that basset is a female."</code></pre>
+</div>
+</div>
+<p>Given that calculation, you take a chance and ask whether you can pet <em>him</em>.</p>
+<p>What have we done here? We have <em>built</em> a basset-sex classifier from a combination of the population distribution and Bayes’ rule. This is the essence of generative classifiers - <em>if</em> we know the distribution, accurate probabilistic classification is a straightforward application of Bayes’ rule. In practice, we don’t know the distribution <em>a priori</em> and it must be estimated from data. Different generative classifiers essentially are just different ways of estimating the population (mixture) distribution.</p>
+</section>
+</section>
+<section id="building-generative-classifiers" class="level2">
+<h2 class="anchored" data-anchor-id="building-generative-classifiers">Building Generative Classifiers</h2>
+<p>Let’s formalize our approach for a two-class classifier though the extension to multi-class is simple enough. Given a training set</p>
+<p><span class="math display">\[\mathcal{D}_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\]</span></p>
+<p>we assume <span class="math inline">\(\bX\)</span> follows a two-component mixture where <span class="math inline">\(Y\)</span> is the mixing variable:</p>
+<p>[| Y=0 _0 | _1]</p>
+<p>Clearly to fully specify this distribution, we need three things:</p>
+<ul>
+<li>To know the distribution of <span class="math inline">\(Y\)</span></li>
+<li>To know the distribution <span class="math inline">\(\mathcal{P}_0\)</span></li>
+<li>To know the distribution <span class="math inline">\(\mathcal{P}_1\)</span></li>
+</ul>
+<p>The distribution of <span class="math inline">\(Y\)</span> is relatively straightforward: since it only takes values <span class="math inline">\(\{0, 1\}\)</span> it <em>must</em> have a Bernoulli distribution and hence the only thing we need to estimate is the probability, <span class="math inline">\(p\)</span>, that <span class="math inline">\(Y=1\)</span>. The simplest approach to estimating the Bernoulli probability is to simply take the empirical probability from the training data set, <em>i.e.</em>, the fraction of observations where <span class="math inline">\(Y=1\)</span>, but this can also be estimated using knowledge of a broader data set or a different population than the training data. For instance, if a data set is known to overindex on <span class="math inline">\(Y=1\)</span>, <em>e.g.</em>, because it contains patients who self-reported some disease, it may be more appropriate to estimate <span class="math inline">\(p\)</span> based on the population-wide prevalance of the disease. These concerns are typically rather problem specific.</p>
+<p>Estimation of <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> may be more difficult. If the training data is <em>extremely</em> large,</p>
 
 
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Note that a mixture of normals is not <em>always</em> multimodal (<em>e.g.</em>, if the two means are very close together), but a mixture of normals is a common model for multimodal data.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -233,8 +385,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -345,7 +495,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -576,4 +725,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes06.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes06.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes06.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes06.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
