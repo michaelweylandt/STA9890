@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -67,6 +101,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -121,8 +184,18 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
+  <li><a href="#prediction-accuracy-100-points" id="toc-prediction-accuracy-100-points" class="nav-link" data-scroll-target="#prediction-accuracy-100-points">Prediction Accuracy (100 Points)</a></li>
+  <li><a href="#final-presentation-50-points" id="toc-final-presentation-50-points" class="nav-link" data-scroll-target="#final-presentation-50-points">Final Presentation (50 Points)</a></li>
+  <li><a href="#final-report-50-points" id="toc-final-report-50-points" class="nav-link" data-scroll-target="#final-report-50-points">Final Report (50 Points)</a></li>
+  <li><a href="#example-prediction" id="toc-example-prediction" class="nav-link" data-scroll-target="#example-prediction">Example Prediction</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/competition.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/competition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -146,11 +219,210 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>In lieu of a final exam, STA 9890 has a prediction competition worth approximately one-third of your final grade. Details about this prediction competition will be posted here.</p>
+<p>In lieu of a final exam, STA 9890 has a prediction competition worth approximately one-third of your final grade. For this year’s competition, students will be predicting property valuations in a mid-sized city on the US West Coast.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Use only Provided Information">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Use only Provided Information
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You <strong>may not</strong> use any external data beyond what the instructor provides. You will be required to attest to this in your final submission.</p>
+<p>Students found to use data outside instructor-provided files will receive a zero on <em>all</em> grades related to the course competition.</p>
+</div>
+</div>
+<p>The 200 total points associated with this competition will be apportioned as:</p>
+<ul>
+<li>100 points: Prediction Accuracy on <em>private</em> leaderboard</li>
+<li>50 points: Final Presentation</li>
+<li>50 points: Final Report</li>
+</ul>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>In the United States, local taxes are typically collected using an <em>ad valorem</em> tax on real property (land and buildings). <em>Ad valorem</em> means that the tax amount is determined as a fixed percentage of the value of the property, almost always taken to be the fair market value.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Hence, to determine taxes, government authorities must undertake an annual <em>assessment</em> process.</p>
+<p>Typically, assessment procedes as follows:</p>
+<ol type="i">
+<li>Early in the year, the local assessment authority estimates the fair market value of each property in the relevant area and informs the owner</li>
+<li>The owner then has the option to <em>contest</em> (variously called “grieve”, “protest”, or “challenge”) the assessment in front of a neutral party</li>
+<li>The neutral party then assigns an updated valuation to contested properties</li>
+<li>The local assessment authority collects unchallenged and new assessment values and uses them to create property tax bills</li>
+<li>The assessment authority sends tax bills to the relevant tax collector who then collects taxes from property owners</li>
+</ol>
+<p>For large regions, this assessment process typically relies (at least in part) on some sort of automated process. In this task, you will be predicting the (finalized) assessment values of residental properties for 2019. You will be provided with assessment values for 2015-2018 (4 years) as well as various additional information about the underlying property.</p>
+<p>While assessment values are typically relatively constant over time (growing at a rate proportional to local housing prices), large assessment shifts can occur if the property is remodeled, rebuilt, or otherwise significantly altered. In the region of interest, assessments are the sum of a building assessment and a land assessment, which may not move in lockstep.</p>
+<p>The following files are provided:</p>
+<ul>
+<li><a href="./competition_data/building_details_2015.csv.gz"><code>building_details_2015.csv</code></a>: Details of the relevant properties in 2015</li>
+<li><a href="./competition_data/building_details_2016.csv.gz"><code>building_details_2016.csv</code></a>: Details of the relevant properties in 2016</li>
+<li><a href="./competition_data/building_details_2017.csv.gz"><code>building_details_2017.csv</code></a>: Details of the relevant properties in 2017</li>
+<li><a href="./competition_data/building_details_2018.csv.gz"><code>building_details_2018.csv</code></a>: Details of the relevant properties in 2018</li>
+<li><a href="./competition_data/building_details_2019.csv.gz"><code>building_details_2019.csv</code></a>: Details of the relevant properties in 2019</li>
+<li><a href="./competition_data/assessment_history_train.csv.gz"><code>assessment_history_train.csv</code></a>: A subset of realized assessments from 2015 to 2019, along with some additional useful information</li>
+<li><a href="./competition_data/assessment_history_test.csv"><code>assessment_history_test.csv</code></a>: A subset of realized assessments from 2015 to 2018. <strong>Your task is to predict the 2019 assessments for these properties.</strong></li>
+</ul>
+<p>Let us review these in some detail:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr); <span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(<span class="st">"competition_data/building_details_2015.csv.gz"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 990,765
+Columns: 27
+$ acct                &lt;chr&gt; "bb75f25168addc1117840b10c0fd6cd0c2a7b7c6", "5dd76…
+$ floor_area_primary  &lt;dbl&gt; 1658, 912, 1496, 1517, 1508, 1670, 1164, 1434, 272…
+$ floor_area_upper    &lt;dbl&gt; 879, 0, 0, 1870, 0, 0, 1164, 0, 272, 1176, 272, 27…
+$ floor_area_lower    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10…
+$ garage_area         &lt;dbl&gt; 0, 0, 0, 529, 420, 0, 0, 0, 380, 0, 380, 380, 0, 0…
+$ porch_area          &lt;dbl&gt; 266, 48, 182, 174, 0, 64, 0, 28, 60, 332, 60, 60, …
+$ deck_area           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ mobile_home_area    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ floors              &lt;dbl&gt; 2, 2, 1, 2, 1, 1, 2, 1, 3, 2, 3, 3, 3, 2, 1, 1, 3,…
+$ half_bath           &lt;dbl&gt; 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1,…
+$ full_bath           &lt;dbl&gt; 2, 2, 1, 3, 2, 2, 3, 1, 3, 2, 3, 3, 3, 2, 1, 1, 3,…
+$ total_rooms         &lt;dbl&gt; 8, 6, 6, 6, 5, 5, 8, 6, 5, 9, 5, 5, 12, 8, 5, 6, 8…
+$ bedrooms            &lt;dbl&gt; 3, 3, 3, 3, 3, 2, 4, 2, 3, 4, 3, 3, 6, 4, 2, 3, 3,…
+$ fireplaces          &lt;dbl&gt; 0, 0, 0, 0, 1, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,…
+$ elevator            &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…
+$ quality             &lt;chr&gt; "B", "D", "D", "B", "C", "D", "B", "D", "B", "B", …
+$ quality_description &lt;chr&gt; "Good", "Low", "Low", "Good", "Average", "Low", "G…
+$ year_built          &lt;dbl&gt; 2004, 1949, 1917, 2015, 2003, 1940, 2014, 1920, 19…
+$ year_remodeled      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 2004, 0, 1996, 0, 0, 0, NA, 0…
+$ building_condition  &lt;chr&gt; "Fair", "Fair", "Poor", "Average", "Fair", "Fair",…
+$ foundation_type     &lt;chr&gt; "Slab", "Crawl Space", "Crawl Space", "Slab", "Sla…
+$ grade               &lt;chr&gt; "B-", "D-", "D", "B", "C", "D", "B", "D+", "B+", "…
+$ has_cooling         &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE,…
+$ has_heat            &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE,…
+$ physical_condition  &lt;chr&gt; "Fair", "Fair", "Poor", "Average", "Average", "Fai…
+$ exterior_walls      &lt;chr&gt; "Stucco", "Concrete Block", "Concrete Block", "Bri…
+$ year                &lt;dbl&gt; 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 20…</code></pre>
+</div>
+</div>
+<p>Features here are generally self-explanatory with the exception of <code>acct</code>, a unique identifier I have created to identify assessment parcels. You will use this as the “key” to identify your predictions.</p>
+<p>Note that these data are obtained from government records and are likely full of errors and irregularities (<em>e.g.</em>, the <code>year_remodeled</code> column has many zeros); part of your task is to deal with this messiness in building your ML pipeline.</p>
+<p>The training file looks like:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr); <span class="fu">library</span>(dplyr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(<span class="st">"competition_data/assessment_history_train.csv.gz"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 628,287
+Columns: 37
+$ acct                &lt;chr&gt; "44b70ecbb15f5815f76a5982f4a80f4c48cd6958", "a126c…
+$ building_area_2015  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2015      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2250, 86…
+$ building_area_2016  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2016      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2250, 86…
+$ building_area_2017  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2017      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2654, 86…
+$ building_area_2018  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2018      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2654, 86…
+$ region              &lt;chr&gt; "05946c0909f5c241db6179659dc763e14544cf75", "7fb55…
+$ building_area_2019  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, 2434, 3955, 1659, 19…
+$ land_area_2019      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, 5292, 9360, 2654, …
+$ building_value_2015 &lt;dbl&gt; 80939, 74056, 49042, 85632, 141722, NA, 536000, 33…
+$ land_value_2015     &lt;dbl&gt; 22061, 13526, 11325, 21368, 23175, NA, 464000, 770…
+$ building_value_2016 &lt;dbl&gt; 80939, 74308, 53543, 116825, 141722, NA, 490000, 2…
+$ land_value_2016     &lt;dbl&gt; 22061, 13526, 11325, 25988, 23175, NA, 464000, 770…
+$ building_value_2017 &lt;dbl&gt; 97988, 78545, 77254, 132614, 141722, NA, 551000, 3…
+$ land_value_2017     &lt;dbl&gt; 24512, 13526, 11325, 25988, 23175, NA, 464000, 847…
+$ building_value_2018 &lt;dbl&gt; 97988, 78545, 77254, 128475, 141722, NA, 551000, 3…
+$ land_value_2018     &lt;dbl&gt; 24512, 13526, 11325, 25988, 23175, NA, 464000, 847…
+$ building_value_2019 &lt;dbl&gt; 120488, 70374, 77390, 127337, 166403, 202963, 5260…
+$ land_value_2019     &lt;dbl&gt; 24512, 12580, 11325, 25988, 23175, 22631, 464000, …
+$ assessed_2015       &lt;dbl&gt; 103000, 92171, 64968, 107000, 167732, NA, 1000000,…
+$ protested_2015      &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, FALSE, NA, TRUE, TRUE, F…
+$ assessed_2016       &lt;dbl&gt; 103000, 92171, 64968, 142813, 167732, NA, 954000, …
+$ protested_2016      &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, FALSE, NA, TRUE, FALSE,…
+$ assessed_2017       &lt;dbl&gt; 122500, 92171, 93038, 158602, 167732, NA, 1015000,…
+$ protested_2017      &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, FALSE, NA, TRUE, FALSE,…
+$ assessed_2018       &lt;dbl&gt; 122500, 92171, 93038, 154463, 167732, NA, 1015000,…
+$ protested_2018      &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, FALSE, NA, TRUE, FALSE, …
+$ assessed_2019       &lt;dbl&gt; 145000, 87291, 93038, 153325, 192413, 225594, 9900…
+$ protested_2019      &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALS…
+$ school_dist         &lt;dbl&gt; 8, 9, 1, 8, 24, 5, 25, 9, 9, 5, 4, 1, 9, 1, 16, 1,…
+$ zone                &lt;chr&gt; "1b2fc12a8ee5147b030dae24f76bfb63bf401fdd", "34827…
+$ subneighborhood     &lt;chr&gt; "9bd56df07606b41647719f2022859ef0571cf82c", "25f65…
+$ neighborhood        &lt;chr&gt; "78bde8025e65c00938c9f5a63f652c33c7b7fc61", "5495e…
+$ TARGET              &lt;dbl&gt; 145000, 87291, 93038, 153325, 192413, 225594, 9900…</code></pre>
+</div>
+</div>
+<p>Here the <code>acct</code> identifier matches the building information files. Here, I have given you assessment history (both building and land) where available as well as a record of years in which the property owners protested their initial assessment. The School District, Zone, Region, Subneighborhood, and Neighborhood identifiers can be used geographically similar properties, which may be helpful to identify ‘hot’ neighborhoods.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The <code>TARGET</code> column is simply a repeat of the <code>assessed_2019</code> column, emphasizing the prediction goal of this task.</p>
+<p>Finally, you receive the test set file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr); <span class="fu">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(<span class="st">"competition_data/assessment_history_test.csv.gz"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 418,858
+Columns: 33
+$ acct                &lt;chr&gt; "e8edfed00598c883053399cfc54b207b42a519f9", "3090f…
+$ building_area_2015  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2015      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_area_2016  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2016      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_area_2017  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2017      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_area_2018  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2018      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ region              &lt;chr&gt; "02a37f2eadcf42e9ab0748a5814e8d2f43319ecd", "02a37…
+$ building_area_2019  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2019      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_value_2015 &lt;dbl&gt; 279405, 2618, 158027, 4899, 222791, 217277, 40861,…
+$ land_value_2015     &lt;dbl&gt; 75000, 75000, 84375, 84375, 88956, 88236, 110500, …
+$ building_value_2016 &lt;dbl&gt; 233935, 2797, 132288, 4153, 210044, 217277, 31457,…
+$ land_value_2016     &lt;dbl&gt; 125000, 125000, 140625, 140625, 88956, 88236, 1381…
+$ building_value_2017 &lt;dbl&gt; 235375, 2870, 113805, 4153, 210044, 211567, 32141,…
+$ land_value_2017     &lt;dbl&gt; 125000, 125000, 140625, 140625, 88956, 88236, 1381…
+$ building_value_2018 &lt;dbl&gt; 235375, 2909, 113805, 4153, 210044, 211567, 32823,…
+$ land_value_2018     &lt;dbl&gt; 125000, 125000, 140625, 140625, 88956, 88236, 1381…
+$ assessed_2015       &lt;dbl&gt; 355945, 78118, 242402, 89274, 311747, 305513, 1538…
+$ protested_2015      &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE…
+$ assessed_2016       &lt;dbl&gt; 360475, 128297, 272913, 144778, 299000, 305513, 17…
+$ protested_2016      &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, TRU…
+$ assessed_2017       &lt;dbl&gt; 360475, 128297, 254430, 144778, 299000, 299803, 17…
+$ protested_2017      &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE…
+$ assessed_2018       &lt;dbl&gt; 360475, 128297, 254430, 144778, 299000, 299803, 17…
+$ protested_2018      &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE…
+$ protested_2019      &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, TRU…
+$ school_dist         &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ zone                &lt;chr&gt; "ea08b1b7cad521f20b71379bcef05c2741eaeee8", "ea08b…
+$ subneighborhood     &lt;chr&gt; "6f23373854222ed999c4c2114f5cb4929f22773e", "6f233…
+$ neighborhood        &lt;chr&gt; "6315b211033894c97f758c5b2d0e53a00ca66f81", "6315b…</code></pre>
+</div>
+</div>
+<p>This is similar to the training file, but with certain 2019 data deleted. (Note that you retain building and land area as well as the protest indicator.)</p>
+</section>
+<section id="prediction-accuracy-100-points" class="level2">
+<h2 class="anchored" data-anchor-id="prediction-accuracy-100-points">Prediction Accuracy (100 Points)</h2>
+<p>Prediction accuracy will be assessed using <em>Kaggle Competitions</em>. I have provided Kaggle with a private test set on which your predictions will be evaluated. Kaggle will further divide the test set into a <em>public leaderboard</em> and a <em>private leaderboard</em>. You will be able to see your accuracy on the public leaderboard but final scores will be based on <em>private leaderboard</em> accuracy so don’t overfit.</p>
+<p>Grades for this portion will be assigned as:</p>
+<p><span class="math display">\[\text{Grade} = 1 - \frac{\text{Class Best MSE}}{\text{Constant MSE}}\]</span></p>
+<p>That is, your grade will essentially be a ‘rescaled’ <span class="math inline">\(R^2\)</span> where the best performance in the class is 100% and everyone else is somefraction thereof. (Note that this means the top performance automatically gets 100% on this component.)</p>
+<p>You will be allowed to submit only <em>two</em> sets of predictions to Kaggle per day so use them wisely.</p>
+</section>
+<section id="final-presentation-50-points" class="level2">
+<h2 class="anchored" data-anchor-id="final-presentation-50-points">Final Presentation (50 Points)</h2>
+<p>TBD</p>
+</section>
+<section id="final-report-50-points" class="level2">
+<h2 class="anchored" data-anchor-id="final-report-50-points">Final Report (50 Points)</h2>
+<p>TBD</p>
+</section>
+<section id="example-prediction" class="level2">
+<h2 class="anchored" data-anchor-id="example-prediction">Example Prediction</h2>
+<p>TBD</p>
 
 
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Unsurprisingly, New York makes this more complicated.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>I will not clarify which geographic features are bigger or larger than others. All I wil guarantee is that the different hexadecimal codes are consistent across files.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -573,4 +845,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/competition.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/competition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/competition.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/competition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

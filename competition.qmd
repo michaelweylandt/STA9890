@@ -3,5 +3,158 @@ title: "{{< var course.short >}} - Course Prediction Competition"
 ---
 
 In lieu of a final exam, {{< var course.short >}} has a prediction competition
-worth approximately one-third of your final grade. Details about this 
-prediction competition will be posted here. 
+worth approximately one-third of your final grade. For this year's competition,
+students will be predicting property valuations in a mid-sized city on the US
+West Coast.
+
+::: {.callout-important title="Use only Provided Information"}
+
+You **may not** use any external data beyond what the instructor provides.
+You will be required to attest to this in your final submission. 
+
+Students found to use data outside instructor-provided files will receive
+a zero on _all_ grades related to the course competition.
+
+:::
+
+The 200 total points associated with this competition will be apportioned as:
+
+- 100 points: Prediction Accuracy on _private_ leaderboard
+- 50 points: Final Presentation
+- 50 points: Final Report
+
+## Data
+
+In the United States, local taxes are typically collected using an *ad valorem*
+tax on real property (land and buildings). *Ad valorem* means that the tax
+amount is determined as a fixed percentage of the value of the property, almost
+always taken to be the fair market value.[^ny] Hence, to determine taxes,
+government authorities must undertake an annual *assessment* process. 
+
+Typically, assessment procedes as follows: 
+
+i) Early in the year, the local assessment authority estimates the fair market
+   value of each property in the relevant area and informs the owner
+ii) The owner then has the option to _contest_ (variously called "grieve",
+    "protest", or "challenge") the assessment in front of a neutral party
+iii) The neutral party then assigns an updated valuation to contested properties
+iv) The local assessment authority collects unchallenged and new assessment
+    values and uses them to create property tax bills
+v) The assessment authority sends tax bills to the relevant tax collector who
+   then collects taxes from property owners
+   
+For large regions, this assessment process typically relies (at least in part)
+on some sort of automated process. In this task, you will be predicting the 
+(finalized) assessment values of residental properties for 2019. You will be
+provided with assessment values for 2015-2018 (4 years) as well as various
+additional information about the underlying property. 
+
+While assessment values are typically relatively constant over time (growing
+at a rate proportional to local housing prices), large assessment shifts can
+occur if the property is remodeled, rebuilt, or otherwise significantly altered.
+In the region of interest, assessments are the sum of a building assessment and
+a land assessment, which may not move in lockstep. 
+
+The following files are provided: 
+
+- [`building_details_2015.csv`](./competition_data/building_details_2015.csv.gz): Details of the relevant properties in 2015
+- [`building_details_2016.csv`](./competition_data/building_details_2016.csv.gz): Details of the relevant properties in 2016
+- [`building_details_2017.csv`](./competition_data/building_details_2017.csv.gz): Details of the relevant properties in 2017
+- [`building_details_2018.csv`](./competition_data/building_details_2018.csv.gz): Details of the relevant properties in 2018
+- [`building_details_2019.csv`](./competition_data/building_details_2019.csv.gz): Details of the relevant properties in 2019
+- [`assessment_history_train.csv`](./competition_data/assessment_history_train.csv.gz): A subset of realized assessments 
+   from 2015 to 2019, along with some additional useful information
+- [`assessment_history_test.csv`](./competition_data/assessment_history_test.csv): A subset of realized assessments from
+   2015 to 2018. **Your task is to predict the 2019 assessments for these 
+   properties.**
+   
+Let us review these in some detail: 
+
+```{r}
+#| message: false
+#| warning: false
+#| cache: true
+library(readr); library(dplyr)
+glimpse(read_csv("competition_data/building_details_2015.csv.gz"))
+```
+
+Features here are generally self-explanatory with the exception of `acct`, 
+a unique identifier I have created to identify assessment parcels. You will
+use this as the "key" to identify your predictions. 
+
+Note that these data are obtained from government records and are likely full
+of errors and irregularities (*e.g.*, the `year_remodeled` column has many
+zeros); part of your task is to deal with this messiness in building your ML
+pipeline. 
+
+The training file looks like: 
+
+```{r}
+#| message: false
+#| warning: false
+#| cache: true
+library(readr); library(dplyr)
+glimpse(read_csv("competition_data/assessment_history_train.csv.gz"))
+```
+
+Here the `acct` identifier matches the building information files. Here, 
+I have given you assessment history (both building and land) where available
+as well as a record of years in which the property owners protested their
+initial assessment. The School District, Zone, Region, Subneighborhood, and
+Neighborhood identifiers can be used geographically similar properties, which
+may be helpful to identify 'hot' neighborhoods.[^geo] The `TARGET` column is
+simply a repeat of the `assessed_2019` column, emphasizing the prediction
+goal of this task. 
+
+[^geo]: I will not clarify which geographic features are bigger or larger
+than others. All I wil guarantee is that the different hexadecimal codes are
+consistent across files.
+
+Finally, you receive the test set file: 
+
+```{r}
+#| message: false
+#| warning: false
+#| cache: true
+library(readr); library(dplyr)
+glimpse(read_csv("competition_data/assessment_history_test.csv.gz"))
+```
+
+This is similar to the training file, but with certain 2019 data deleted. 
+(Note that you retain building and land area as well as the protest indicator.)
+
+## Prediction Accuracy (100 Points)
+
+Prediction accuracy will be assessed using *Kaggle Competitions*. I have
+provided Kaggle with a private test set on which your predictions will be
+evaluated. Kaggle will further divide the test set into a *public leaderboard*
+and a *private leaderboard*. You will be able to see your accuracy on the
+public leaderboard but final scores will be based on *private leaderboard*
+accuracy so don't overfit. 
+
+Grades for this portion will be assigned as: 
+
+$$\text{Grade} = 1 - \frac{\text{Class Best MSE}}{\text{Constant MSE}}$$
+
+That is, your grade will essentially be a 'rescaled' $R^2$ where the best 
+performance in the class is 100% and everyone else is somefraction thereof. 
+(Note that this means the top performance automatically gets 100% on this
+component.)
+
+You will be allowed to submit only *two* sets of predictions to Kaggle per day
+so use them wisely. 
+
+## Final Presentation (50 Points)
+
+TBD
+
+## Final Report (50 Points)
+
+TBD
+
+## Example Prediction
+
+TBD
+
+
+[^ny]: Unsurprisingly, New York makes this more complicated. 
