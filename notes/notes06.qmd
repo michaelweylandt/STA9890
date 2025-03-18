@@ -1,4 +1,146 @@
 ---
-title: "{{< var course.short >}} - Introduction to Classification"
+title: "{{< var course.short >}} - Generative Classifiers"
 ---
 
+This week, we begin our study of classifiers with an analysis
+of *generative* classifiers. While many generative
+classifiers have appeared in the literature, they can 
+essentially all be derived from a standard formula. We will discuss
+this standard formula first and then turn our attention to specific
+named instances. 
+
+## Mixture Models
+
+Recall from [STA 9715](https://michael-weylandt.com/STA9715) that
+a (discrete) mixture model is a distribution of the form: 
+
+$$X \sim \begin{cases} X_1 & Z = 1 \\ X_2 & Z = 2 \\ \dots \\ X_K & Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \mathcal{P}_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)$$
+
+That's quite a bit to unpack, so let's take it piece by piece: the
+random variable $X$ has a $K$-component *mixture* distribution if
+we can sample $X$ by generating $K$ independent random variables
+$\{X_1, \dots, X_K\}$ (with *different* distributions) and then
+selecting one of them at random. 
+
+Let's look at a concrete version of this: suppose we have
+a population of male and female basset hounds that is 60\% female.
+The weight of male basset hounds follows a $\mathcal{N}(65, 10)$
+distribution while females have weight distributed as 
+$\mathcal{N}(55, 10)$. The weight of a randomly selected basset
+can be sampled as
+
+```{r}
+rbasset <- function(n){
+    Z <- rbinom(n, size=1, prob=0.6) # Z=1 <- Female
+    ifelse(Z, rnorm(n, mean=55, sd=sqrt(10)), 
+              rnorm(n, mean=65, sd=sqrt(10)))
+}
+rbasset(1)
+```
+
+If we collect the weights of many basset hounds, we see that
+the resulting distribution is not normally distributed: 
+
+```{r}
+hist(rbasset(10000), breaks=50, main="Distribution of Basset Hound Weights")
+```
+
+In fact, this is a *bimodal* distribution with each 'lump' representing
+males or females.[^bimodal] Distributions of this form can often be
+written  more compactly using a 'convex combination' notation: 
+
+[^bimodal]: Note that a mixture of normals is not *always* multimodal
+(*e.g.*, if the two means are very close together), but a mixture
+of normals is a common model for multimodal data.
+
+$$\text{Basset} \sim \frac{2}{5}\mathcal{N}(65, 10) + \frac{3}{5}\mathcal{N}(55, 10)$$
+
+The above notation can be interpreted as specifying a draw from 
+the first distribution with probability $2/5 = 40\%$ and from
+the second with probability $3/5 = 60\%$; that is, it's a particular
+2-component mixture of normals. 
+
+In specifying this mixture, the probabilities of each component must
+be non-negative and must sum to 1; these are exactly the same
+restrictions we put on a convex combination of points earlier in
+the course. In fact, the set of mixture distributions can be 
+consider the 'convex set' containing all of its individual 
+components. 
+
+### Inference from a Mixture Distribution
+
+Now suppose you are on a walk and you meet a very friendly 62 
+pound basset hound. You of course want to pet this marvelous dog, but
+you need to ask the owner's permission first: in doing so, should
+you ask "may I pet him?" or "may I pet her?"
+
+While the basset hound won't care if you misgender, you recall
+that you can use [*Bayes'
+Rule*](https://en.wikipedia.org/wiki/Bayes%27_theorem) to 'invert'
+the mixture distribution. That is, while the mixture distribution
+normally goes from sex to weight, Bayes' rule will let us go from
+weight back to sex. 
+
+Specifically, in this case, Bayes' rule tells us: 
+
+\[\P(\text{Female}|\text{Weight=62}) = \frac{\P(\text{Weight=62}|\text{Female})\P(\text{Female})}{\P(\text{Weight=62}|\text{Female})\P(\text{Female}+\P(\text{Weight=62}|\text{Male})\P(\text{Male}))}\]
+
+The math here is a bit nasty numerically, but we can do it in `R` quite
+simply: 
+
+```{r}
+p_female <- 0.6
+p_male <- 1-p_female
+
+p_62_female <- dnorm(62, mean=55, sd=sqrt(10))
+p_62_male   <- dnorm(62, mean=65, sd=sqrt(10))
+
+p_female_62 <- (p_62_female * p_female) / (p_62_female * p_female +
+                                           p_62_male * p_male)
+
+paste0("There is a ", round(p_female_62 * 100, 2), "% chance that basset is a female.")
+```
+Given that calculation, you take a chance and ask whether you 
+can pet *him*. 
+
+What have we done here? We have *built* a basset-sex classifier from
+a combination of the population distribution and Bayes' rule. This is
+the essence of generative classifiers - *if* we know the distribution,
+accurate probabilistic classification is a straightforward application
+of Bayes' rule. In practice, we don't know the distribution *a priori*
+and it must be estimated from data. Different generative classifiers
+essentially are just different ways of estimating the population
+(mixture) distribution. 
+
+## Building Generative Classifiers
+
+Let's formalize our approach for a two-class classifier though
+the extension to multi-class is simple enough. Given a training set
+
+$$\mathcal{D}_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$$ 
+
+we assume $\bX$ follows a two-component mixture where $Y$ is the 
+mixing variable:
+
+\[\bX | Y=0 \sim \mathcal{P}_0 \text{ and } \bX | \sim \mathcal{P}_1\]
+
+Clearly to fully specify this distribution, we need three things: 
+
+- To know the distribution of $Y$
+- To know the distribution $\mathcal{P}_0$
+- To know the distribution $\mathcal{P}_1$
+
+The distribution of $Y$ is relatively straightforward: since it only
+takes values $\{0, 1\}$ it _must_ have a Bernoulli distribution and hence
+the only thing we need to estimate is the probability, $p$, that $Y=1$. 
+The simplest approach to estimating the Bernoulli probability is to simply
+take the empirical probability from the training data set, *i.e.*, the fraction
+of observations where $Y=1$, but this can also be estimated using knowledge of
+a broader data set or a different population than the training data. 
+For instance, if a data set is known to overindex on $Y=1$, *e.g.*, because it
+contains patients who self-reported some disease, it may be more appropriate to
+estimate $p$ based on the population-wide prevalance of the disease. These concerns
+are typically rather problem specific. 
+
+Estimation of $\mathcal{P}_0, \mathcal{P}_1$ may be more difficult. If the 
+training data is _extremely_ large, 
