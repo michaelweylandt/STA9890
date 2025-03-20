@@ -261,7 +261,7 @@ Use only Provided Information
 <li><a href="./competition_data/building_details_2018.csv.gz"><code>building_details_2018.csv</code></a>: Details of the relevant properties in 2018</li>
 <li><a href="./competition_data/building_details_2019.csv.gz"><code>building_details_2019.csv</code></a>: Details of the relevant properties in 2019</li>
 <li><a href="./competition_data/assessment_history_train.csv.gz"><code>assessment_history_train.csv</code></a>: A subset of realized assessments from 2015 to 2019, along with some additional useful information</li>
-<li><a href="./competition_data/assessment_history_test.csv"><code>assessment_history_test.csv</code></a>: A subset of realized assessments from 2015 to 2018. <strong>Your task is to predict the 2019 assessments for these properties.</strong></li>
+<li><a href="./competition_data/assessment_history_test.csv.gz"><code>assessment_history_test.csv</code></a>: A subset of realized assessments from 2015 to 2018. <strong>Your task is to predict the 2019 assessments for these properties.</strong></li>
 </ul>
 <p>Let us review these in some detail:</p>
 <div class="cell">
@@ -300,7 +300,7 @@ $ year                &lt;dbl&gt; 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015
 </div>
 </div>
 <p>Features here are generally self-explanatory with the exception of <code>acct</code>, a unique identifier I have created to identify assessment parcels. You will use this as the “key” to identify your predictions.</p>
-<p>Note that these data are obtained from government records and are likely full of errors and irregularities (<em>e.g.</em>, the <code>year_remodeled</code> column has many zeros); part of your task is to deal with this messiness in building your ML pipeline.</p>
+<p>Note that these data are obtained from government records and are likely full of errors and irregularities (<em>e.g.</em>, the <code>year_remodeled</code> column has many zeros); part of your task is to deal with this messiness in building your ML pipeline. I will not further clean or prepare this data for you.</p>
 <p>The training file looks like:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr); <span class="fu">library</span>(dplyr)</span>
@@ -394,7 +394,7 @@ $ neighborhood        &lt;chr&gt; "6315b211033894c97f758c5b2d0e53a00ca66f81", "6
 </section>
 <section id="prediction-accuracy-100-points" class="level2">
 <h2 class="anchored" data-anchor-id="prediction-accuracy-100-points">Prediction Accuracy (100 Points)</h2>
-<p>Prediction accuracy will be assessed using <em>Kaggle Competitions</em>. I have provided Kaggle with a private test set on which your predictions will be evaluated. Kaggle will further divide the test set into a <em>public leaderboard</em> and a <em>private leaderboard</em>. You will be able to see your accuracy on the public leaderboard but final scores will be based on <em>private leaderboard</em> accuracy so don’t overfit.</p>
+<p>Prediction accuracy will be assessed using <em>Kaggle Competitions</em>. I have provided Kaggle with a private test set on which your predictions will be evaluated. Kaggle will further divide the test set into a <em>public leaderboard</em> and a <em>private leaderboard</em>. You will be able to see your accuracy on the public leaderboard but final scores will be based on <em>private leaderboard</em> accuracy so <em>don’t overfit</em>.</p>
 <p>Grades for this portion will be assigned as:</p>
 <p><span class="math display">\[\text{Grade} = 1 - \frac{\text{Class Best MSE}}{\text{Constant MSE}}\]</span></p>
 <p>That is, your grade will essentially be a ‘rescaled’ <span class="math inline">\(R^2\)</span> where the best performance in the class is 100% and everyone else is somefraction thereof. (Note that this means the top performance automatically gets 100% on this component.)</p>

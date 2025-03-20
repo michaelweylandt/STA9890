@@ -194,6 +194,12 @@ window.Quarto = {
   <li><a href="#inference-from-a-mixture-distribution" id="toc-inference-from-a-mixture-distribution" class="nav-link" data-scroll-target="#inference-from-a-mixture-distribution">Inference from a Mixture Distribution</a></li>
   </ul></li>
   <li><a href="#building-generative-classifiers" id="toc-building-generative-classifiers" class="nav-link" data-scroll-target="#building-generative-classifiers">Building Generative Classifiers</a></li>
+  <li><a href="#named-generative-classifiers" id="toc-named-generative-classifiers" class="nav-link" data-scroll-target="#named-generative-classifiers">Named Generative Classifiers</a>
+  <ul class="collapse">
+  <li><a href="#naive-bayes" id="toc-naive-bayes" class="nav-link" data-scroll-target="#naive-bayes">Naive Bayes</a></li>
+  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis">Linear Discriminant Analysis,</a></li>
+  </ul></li>
+  <li><a href="#a-non-standard-example" id="toc-a-non-standard-example" class="nav-link" data-scroll-target="#a-non-standard-example">A Non-Standard Example</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes06.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes06.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -219,6 +225,7 @@ window.Quarto = {
 </header>
 
 
+<p><span class="math display">\[\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\P}{\mathbb{P}}\]</span></p>
 <p>This week, we begin our study of classifiers with an analysis of <em>generative</em> classifiers. While many generative classifiers have appeared in the literature, they can essentially all be derived from a standard formula. We will discuss this standard formula first and then turn our attention to specific named instances.</p>
 <section id="mixture-models" class="level2">
 <h2 class="anchored" data-anchor-id="mixture-models">Mixture Models</h2>
@@ -234,7 +241,7 @@ window.Quarto = {
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rbasset</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 59.69341</code></pre>
+<pre><code>[1] 67.67984</code></pre>
 </div>
 </div>
 <p>If we collect the weights of many basset hounds, we see that the resulting distribution is not normally distributed:</p>
@@ -257,7 +264,7 @@ window.Quarto = {
 <p>Now suppose you are on a walk and you meet a very friendly 62 pound basset hound. You of course want to pet this marvelous dog, but you need to ask the owner’s permission first: in doing so, should you ask “may I pet him?” or “may I pet her?”</p>
 <p>While the basset hound won’t care if you misgender, you recall that you can use <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem"><em>Bayes’ Rule</em></a> to ‘invert’ the mixture distribution. That is, while the mixture distribution normally goes from sex to weight, Bayes’ rule will let us go from weight back to sex.</p>
 <p>Specifically, in this case, Bayes’ rule tells us:</p>
-<p>[(|) = ]</p>
+<p><span class="math display">\[\P(\text{Female}|\text{Weight=62}) = \frac{\P(\text{Weight=62}|\text{Female})\P(\text{Female})}{\P(\text{Weight=62}|\text{Female})\P(\text{Female}+\P(\text{Weight=62}|\text{Male})\P(\text{Male}))}\]</span></p>
 <p>The math here is a bit nasty numerically, but we can do it in <code>R</code> quite simply:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>p_female <span class="ot">&lt;-</span> <span class="fl">0.6</span></span>
@@ -283,15 +290,51 @@ window.Quarto = {
 <p>Let’s formalize our approach for a two-class classifier though the extension to multi-class is simple enough. Given a training set</p>
 <p><span class="math display">\[\mathcal{D}_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\]</span></p>
 <p>we assume <span class="math inline">\(\bX\)</span> follows a two-component mixture where <span class="math inline">\(Y\)</span> is the mixing variable:</p>
-<p>[| Y=0 _0 | _1]</p>
+<p><span class="math display">\[\bX | Y=0 \sim \mathcal{P}_0 \text{ and } \bX | Y=1 \sim \mathcal{P}_1\]</span></p>
 <p>Clearly to fully specify this distribution, we need three things:</p>
 <ul>
 <li>To know the distribution of <span class="math inline">\(Y\)</span></li>
 <li>To know the distribution <span class="math inline">\(\mathcal{P}_0\)</span></li>
 <li>To know the distribution <span class="math inline">\(\mathcal{P}_1\)</span></li>
 </ul>
-<p>The distribution of <span class="math inline">\(Y\)</span> is relatively straightforward: since it only takes values <span class="math inline">\(\{0, 1\}\)</span> it <em>must</em> have a Bernoulli distribution and hence the only thing we need to estimate is the probability, <span class="math inline">\(p\)</span>, that <span class="math inline">\(Y=1\)</span>. The simplest approach to estimating the Bernoulli probability is to simply take the empirical probability from the training data set, <em>i.e.</em>, the fraction of observations where <span class="math inline">\(Y=1\)</span>, but this can also be estimated using knowledge of a broader data set or a different population than the training data. For instance, if a data set is known to overindex on <span class="math inline">\(Y=1\)</span>, <em>e.g.</em>, because it contains patients who self-reported some disease, it may be more appropriate to estimate <span class="math inline">\(p\)</span> based on the population-wide prevalance of the disease. These concerns are typically rather problem specific.</p>
-<p>Estimation of <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> may be more difficult. If the training data is <em>extremely</em> large,</p>
+<p>The distribution of <span class="math inline">\(Y\)</span> is relatively straightforward: since it only takes values <span class="math inline">\(\{0, 1\}\)</span> it <em>must</em> have a Bernoulli distribution and hence the only thing we need to estimate is the probability, <span class="math inline">\(\pi_1\)</span>, that <span class="math inline">\(Y=1\)</span>. The simplest approach to estimating the Bernoulli probability is to simply take the empirical probability from the training data set, <em>i.e.</em>, the fraction of observations where <span class="math inline">\(Y=1\)</span>, but this can also be estimated using knowledge of a broader data set or a different population than the training data. For instance, if a data set is known to overindex on <span class="math inline">\(Y=1\)</span>, <em>e.g.</em>, because it contains patients who self-reported some disease, it may be more appropriate to estimate <span class="math inline">\(p\)</span> based on the population-wide prevalance of the disease. These concerns are typically rather problem specific.</p>
+<p>Estimation of <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> may be more difficult. If the training data is <em>extremely</em> large, we may use a <em>non-parametric</em> estimator, <em>e.g.</em>, a multivariate histogram, but in general we will need to use some sort of restrictive (parametric) model. The most commonly used generative classifiers assume some sort of multivariate normal structure, but you can create ‘custom’ classifiers appropriate to specific domains.</p>
+<p>For now, let us assume <span class="math inline">\(\mathcal{P}_{0}, \mathcal{P}_1\)</span> have been estimated and that they have PDFs <span class="math inline">\(p_0(\cdot), p_1(\cdot)\)</span>. Applying Bayes’ rule as before, with prior (baseline) probabilities <span class="math inline">\(\pi_0, \pi_1 = 1-\pi_0\)</span>, we get the following probabilities</p>
+<p><span class="math display">\[\begin{align*}
+\P(Y = 1 | \bx) &amp;= \frac{\P(\bx | Y = 1)\P(Y=1)}{\P(\bx | Y = 0)\P(Y=0)+\P(\bx | Y = 1)\P(Y=1)} \\
+&amp;= \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1}
+\end{align*}\]</span></p>
+<p>If we are happy with a <em>probabilistic</em> classifier, we are essentially done. If we want a true binary classifier, <em>i.e.</em>, a <span class="math inline">\(\{0, 1\}\)</span> valued ‘point predictor’, we also need to set a classification threshold, <span class="math inline">\(\overline{p}\)</span>, to obtain:</p>
+<p><span class="math display">\[\delta(\bx) = \begin{cases} 0 &amp; \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1} &lt; \overline{p} \\ 1 &amp; \text{ otherwise} \end{cases}\]</span></p>
+<p><span class="math inline">\(\overline{p}\)</span> can be chosen to optimize a relevant performance metric (if you practice good sample splitting hygiene) or via a full decision theoretic analysis, as discussed last week.</p>
+<p>That’s basically it!</p>
+</section>
+<section id="named-generative-classifiers" class="level2">
+<h2 class="anchored" data-anchor-id="named-generative-classifiers">Named Generative Classifiers</h2>
+<p>As mentioned above, the ‘popular’ generative classifiers are essentially defined by specific multivariate normality assumptions on <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span>. Let us review these in ascending order of complexity.</p>
+<p>Recall that a multivariate normal distribution is uniquely identified by its <em>mean</em> and <em>(co)variance (matrix)</em>, just like a standard univariate normal distribution. When estimating means, we will simply use the class means for each classifier, though James-Stein time estimators could be used for a (likely imperceptible) improvement. Estimation of variances is a harder task: to estimate the full covariance matrix of <span class="math inline">\(p\)</span> random variables (or a random <span class="math inline">\(p\)</span>-vector), we must estimate:</p>
+<ol type="i">
+<li><span class="math inline">\(p\)</span> (marginal) variances and <span class="math inline">\(\frac{p^2-3p}{2}\)</span> correlations; or</li>
+<li><span class="math inline">\(\binom{p}{2} = \frac{p(p-1)}{2}\)</span> covariances</li>
+</ol>
+<p>Making this even harder, we have to deal with the fact that the “variance of the variance”, <em>i.e.</em>, the kurtosis, is typically quite large. While we do not focus on high-dimensional covariance estimation in these notes, it is quite a rich subject: if you want dig further into it, the <a href="http://www.ledoit.net/honey.pdf">Ledoit-Wolf</a> estimator is a good place to start.</p>
+<section id="naive-bayes" class="level3">
+<h3 class="anchored" data-anchor-id="naive-bayes">Naive Bayes</h3>
+<p>In Naive Bayes, we assume <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> are multivariate normal distributions with no correlation among the features and a common covariance across classes.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This <em>significantly</em> simplifies the covariance estimation problem, since we now have all <span class="math inline">\(n\)</span> samples available to estimate only <span class="math inline">\(p\)</span> variances. Our estimates are given as follows:</p>
+<p><span class="math display">\[\hat{\mu}_0 = \frac{1}{|\mathcal{C}_0|} \sum_{i \in \mathcal{C}_0} \bx_i\]</span></p>
+<p>where <span class="math inline">\(\mathcal{C}_0\)</span> is the set of observations from class 0 and</p>
+<p><span class="math display">\[\hat{\mu}_1 = \frac{1}{|\mathcal{C}_1|} \sum_{i \in \mathcal{C}_1} \bx_i.\]</span> The variance estimates are a bit trickier:</p>
+<p><span class="math display">\[\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\mathcal{C}_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\mathcal{C}_1} (x_{ji} - \hat{\mu}_{1i})^2\right)\]</span> This looks a bit nasty, but it’s not too hard: we take the standard ‘average squared difference’ estimator of the variance, but instead of using the overall mean, we subtract the estimated mean from the relevant class. Note that here we are only estimating <span class="math inline">\(\Sigma_{ii}\)</span>, the diagonal elements, and not a full matrix <span class="math inline">\(\Sigma\)</span>.</p>
+<p>Naive Bayes classifiers are particularly important to the history of ML as they were used for one of the first and most influential spam filters.</p>
+</section>
+<section id="linear-discriminant-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="linear-discriminant-analysis">Linear Discriminant Analysis,</h3>
+<p>Generalizing a bit, we can relax the assumption that the covariance matrix <span class="math inline">\(\Sigma\)</span> is diagonal and only assume that it is constant across the two classes. Here,</p>
+</section>
+</section>
+<section id="a-non-standard-example" class="level2">
+<h2 class="anchored" data-anchor-id="a-non-standard-example">A Non-Standard Example</h2>
+<p>Suppose we have</p>
 
 
 </section>
@@ -301,6 +344,7 @@ window.Quarto = {
 
 <ol>
 <li id="fn1"><p>Note that a mixture of normals is not <em>always</em> multimodal (<em>e.g.</em>, if the two means are very close together), but a mixture of normals is a common model for multimodal data.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Sometimes, we go further and assume the standard deviations of each feature are the same: this assumption is typically not made explicitly as such but is done ‘off-camera’ by pre-standardizing features.)<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
