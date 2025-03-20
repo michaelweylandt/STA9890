@@ -64,7 +64,7 @@ The following files are provided:
 - [`building_details_2019.csv`](./competition_data/building_details_2019.csv.gz): Details of the relevant properties in 2019
 - [`assessment_history_train.csv`](./competition_data/assessment_history_train.csv.gz): A subset of realized assessments 
    from 2015 to 2019, along with some additional useful information
-- [`assessment_history_test.csv`](./competition_data/assessment_history_test.csv): A subset of realized assessments from
+- [`assessment_history_test.csv`](./competition_data/assessment_history_test.csv.gz): A subset of realized assessments from
    2015 to 2018. **Your task is to predict the 2019 assessments for these 
    properties.**
    
@@ -85,7 +85,7 @@ use this as the "key" to identify your predictions.
 Note that these data are obtained from government records and are likely full
 of errors and irregularities (*e.g.*, the `year_remodeled` column has many
 zeros); part of your task is to deal with this messiness in building your ML
-pipeline. 
+pipeline. I will not further clean or prepare this data for you. 
 
 The training file looks like: 
 
@@ -130,7 +130,7 @@ provided Kaggle with a private test set on which your predictions will be
 evaluated. Kaggle will further divide the test set into a *public leaderboard*
 and a *private leaderboard*. You will be able to see your accuracy on the
 public leaderboard but final scores will be based on *private leaderboard*
-accuracy so don't overfit. 
+accuracy so *don't overfit*. 
 
 Grades for this portion will be assigned as: 
 

@@ -2,6 +2,8 @@
 title: "{{< var course.short >}} - Generative Classifiers"
 ---
 
+$$\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\P}{\mathbb{P}}$$
+
 This week, we begin our study of classifiers with an analysis
 of *generative* classifiers. While many generative
 classifiers have appeared in the literature, they can 
@@ -83,7 +85,7 @@ weight back to sex.
 
 Specifically, in this case, Bayes' rule tells us: 
 
-\[\P(\text{Female}|\text{Weight=62}) = \frac{\P(\text{Weight=62}|\text{Female})\P(\text{Female})}{\P(\text{Weight=62}|\text{Female})\P(\text{Female}+\P(\text{Weight=62}|\text{Male})\P(\text{Male}))}\]
+$$\P(\text{Female}|\text{Weight=62}) = \frac{\P(\text{Weight=62}|\text{Female})\P(\text{Female})}{\P(\text{Weight=62}|\text{Female})\P(\text{Female}+\P(\text{Weight=62}|\text{Male})\P(\text{Male}))}$$
 
 The math here is a bit nasty numerically, but we can do it in `R` quite
 simply: 
@@ -122,7 +124,7 @@ $$\mathcal{D}_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)
 we assume $\bX$ follows a two-component mixture where $Y$ is the 
 mixing variable:
 
-\[\bX | Y=0 \sim \mathcal{P}_0 \text{ and } \bX | \sim \mathcal{P}_1\]
+$$\bX | Y=0 \sim \mathcal{P}_0 \text{ and } \bX | Y=1 \sim \mathcal{P}_1$$
 
 Clearly to fully specify this distribution, we need three things: 
 
@@ -132,7 +134,7 @@ Clearly to fully specify this distribution, we need three things:
 
 The distribution of $Y$ is relatively straightforward: since it only
 takes values $\{0, 1\}$ it _must_ have a Bernoulli distribution and hence
-the only thing we need to estimate is the probability, $p$, that $Y=1$. 
+the only thing we need to estimate is the probability, $\pi_1$, that $Y=1$. 
 The simplest approach to estimating the Bernoulli probability is to simply
 take the empirical probability from the training data set, *i.e.*, the fraction
 of observations where $Y=1$, but this can also be estimated using knowledge of
@@ -143,4 +145,96 @@ estimate $p$ based on the population-wide prevalance of the disease. These conce
 are typically rather problem specific. 
 
 Estimation of $\mathcal{P}_0, \mathcal{P}_1$ may be more difficult. If the 
-training data is _extremely_ large, 
+training data is _extremely_ large, we may use a *non-parametric* estimator, 
+*e.g.*, a multivariate histogram, but in general we will need to use some sort
+of restrictive (parametric) model. The most commonly used generative classifiers
+assume some sort of multivariate normal structure, but you can create 'custom'
+classifiers appropriate to specific domains. 
+
+For now, let us assume $\mathcal{P}_{0}, \mathcal{P}_1$ have been estimated
+and that they have PDFs $p_0(\cdot), p_1(\cdot)$. Applying Bayes' rule as before, 
+with prior (baseline) probabilities $\pi_0, \pi_1 = 1-\pi_0$, we get the following
+probabilities
+
+$$\begin{align*}
+\P(Y = 1 | \bx) &= \frac{\P(\bx | Y = 1)\P(Y=1)}{\P(\bx | Y = 0)\P(Y=0)+\P(\bx | Y = 1)\P(Y=1)} \\
+&= \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1}
+\end{align*}$$
+
+If we are happy with a *probabilistic* classifier, we are essentially done. If
+we want a true binary classifier, *i.e.*, a $\{0, 1\}$ valued 'point predictor', 
+we also need to set a classification threshold, $\overline{p}$, to obtain: 
+
+$$\delta(\bx) = \begin{cases} 0 & \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1} < \overline{p} \\ 1 & \text{ otherwise} \end{cases}$$
+
+$\overline{p}$ can be chosen to optimize a relevant performance metric (if you 
+practice good sample splitting hygiene) or via a full decision theoretic analysis,
+as discussed last week. 
+
+That's basically it! 
+
+
+## Named Generative Classifiers
+
+As mentioned above, the 'popular' generative classifiers are essentially 
+defined by specific multivariate normality assumptions on 
+$\mathcal{P}_0, \mathcal{P}_1$. Let us review these in ascending order of
+complexity. 
+
+Recall that a multivariate normal distribution is uniquely identified by its
+*mean* and *(co)variance (matrix)*, just like a standard univariate normal 
+distribution. When estimating means, we will simply use the class means for 
+each classifier, though James-Stein time estimators could be used for a 
+(likely imperceptible) improvement. Estimation of variances is a harder task: 
+to estimate the full covariance matrix of $p$ random variables (or a random
+$p$-vector), we must estimate: 
+
+i) $p$ (marginal) variances and $\frac{p^2-3p}{2}$ correlations; or 
+ii) $\binom{p}{2} = \frac{p(p-1)}{2}$ covariances
+
+Making this even harder, we have to deal with the fact that the "variance of the
+variance", *i.e.*, the kurtosis, is typically quite large. While we do not focus
+on high-dimensional covariance estimation in these notes, it is quite a rich
+subject: if you want dig further into it, the
+[Ledoit-Wolf](http://www.ledoit.net/honey.pdf) estimator is a good place to start.
+
+### Naive Bayes
+
+In Naive Bayes, we assume $\mathcal{P}_0, \mathcal{P}_1$ are multivariate normal
+distributions with no correlation among the features and a common covariance
+across classes.[^isotropic] This *significantly* simplifies the covariance 
+estimation problem, since we now have all $n$ samples available to estimate only
+$p$ variances. Our estimates are given as follows: 
+
+$$\hat{\mu}_0 = \frac{1}{|\mathcal{C}_0|} \sum_{i \in \mathcal{C}_0} \bx_i$$
+
+where $\mathcal{C}_0$ is the set of observations from class 0 and 
+
+$$\hat{\mu}_1 = \frac{1}{|\mathcal{C}_1|} \sum_{i \in \mathcal{C}_1} \bx_i.$$
+The variance estimates are a bit trickier: 
+
+$$\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\mathcal{C}_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\mathcal{C}_1} (x_{ji} - \hat{\mu}_{1i})^2\right)$$
+This looks a bit nasty, but it's not too hard: we take the standard 
+'average squared difference' estimator of the variance, but instead of using
+the overall mean, we subtract the estimated mean from the relevant class. Note
+that here we are only estimating $\Sigma_{ii}$, the diagonal elements, and not
+a full matrix $\Sigma$. 
+
+Naive Bayes classifiers are particularly important to the history of ML as
+they were used for one of the first and most influential spam filters. 
+
+
+
+[^isotropic]: Sometimes, we go further and assume the standard deviations of 
+each feature are the same: this assumption is typically not made explicitly as 
+such but is done 'off-camera' by pre-standardizing features.)
+
+### Linear Discriminant Analysis, 
+
+Generalizing a bit, we can relax the assumption that the covariance matrix 
+$\Sigma$ is diagonal and only assume that it is constant across the two classes.
+Here, 
+
+## A Non-Standard Example
+
+Suppose we have 
