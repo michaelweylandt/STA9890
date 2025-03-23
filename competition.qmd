@@ -1,5 +1,7 @@
 ---
 title: "{{< var course.short >}} - Course Prediction Competition"
+filters:
+  - list-table
 ---
 
 In lieu of a final exam, {{< var course.short >}} has a prediction competition
@@ -30,6 +32,8 @@ tax on real property (land and buildings). *Ad valorem* means that the tax
 amount is determined as a fixed percentage of the value of the property, almost
 always taken to be the fair market value.[^ny] Hence, to determine taxes,
 government authorities must undertake an annual *assessment* process. 
+
+[^ny]: Unsurprisingly, New York makes this [more complicated](https://www.tax.ny.gov/pit/property/assess/local/). 
 
 Typically, assessment procedes as follows: 
 
@@ -123,6 +127,13 @@ glimpse(read_csv("competition_data/assessment_history_test.csv.gz"))
 This is similar to the training file, but with certain 2019 data deleted. 
 (Note that you retain building and land area as well as the protest indicator.)
 
+## Team Submissions
+
+Students *may*, but are not required to, work in teams of 2 for this competition.
+Teams will submit one (shared) final presentation and final report and will 
+receive the same grade for all course elements. Students will create teams *via*
+Kaggle's team functionality. 
+
 ## Prediction Accuracy (100 Points)
 
 Prediction accuracy will be assessed using *Kaggle Competitions*. I have
@@ -134,27 +145,369 @@ accuracy so *don't overfit*.
 
 Grades for this portion will be assigned as: 
 
-$$\text{Grade} = 1 - \frac{\text{Class Best MSE}}{\text{Constant MSE}}$$
+$$\text{Grade} = 1 - \left(\frac{\text{Your Best RMSE} - \text{Constant Model RMSE} }{\text{Class Best RMSE} - \text{Constant Model RMSE} }\right)^{\alpha}$$
+
+where $\alpha \approx 1$ will be selected by the instructor to ensure a suitable
+distribution of grades. 
 
 That is, your grade will essentially be a 'rescaled' $R^2$ where the best 
-performance in the class is 100% and everyone else is somefraction thereof. 
+performance in the class is 100% and everyone else is some fraction thereof. 
 (Note that this means the top performance automatically gets 100% on this
 component.)
 
-You will be allowed to submit only *two* sets of predictions to Kaggle per day
-so use them wisely. 
+You will be allowed to submit only *three* sets of predictions to Kaggle per day
+so use them wisely. At the end of the competition, you will be able to select
+**two** sets of predictions to be used for your final evaluation (taking the
+better of the two) so track your submissions carefully. 
+
+### Example Prediction
+
+To submit your predictions for grading on Kaggle, they must be formatted in a
+two column CSV with columns: 
+
+- `ACCOUNT` - the unique identifier (`acct`) used for each property
+- `TARGET` - your prediction of the 2019 total appraisal
+
+Below, I show how to download and create a _very simple_ baseline prediction. 
+Specifically, I implement the 'constant model', where the average 2019 appraisal
+of the training samples is used as a constant predictor for _every_ point in
+the test set. (This is the constant model you must beat to get a non-zero
+score on this element of the course.) 
+
+In `R`, 
+
+```{r}
+#| eval: false
+library(readr)
+library(dplyr)
+TRAINING_SAMPLES <- read_csv("http://michael-weylandt.com/STA9890/competition_data/assessment_history_train.csv.gz")
+TEST_POINTS <- read_csv("http://michael-weylandt.com/STA9890/competition_data/assessment_history_test.csv.gz")
+
+AVERAGE_ASSESSMENT <- mean(TRAINING_SAMPLES$TARGET)
+
+TEST_PREDICTIONS <- TEST_POINTS |> 
+    select(acct) |>
+    mutate(TARGET = AVERAGE_ASSESSMENT) |>
+    rename(ACCOUNT = acct)
+
+write_csv(TEST_PREDICTIONS, "kaggle_sub_r.csv")
+```
+
+In `python`, 
+
+```{python}
+#| eval: false
+import pandas as pd
+
+TRAINING_SAMPLES = pd.read_csv("http://michael-weylandt.com/STA9890/competition_data/assessment_history_train.csv.gz")
+TEST_POINTS = pd.read_csv("http://michael-weylandt.com/STA9890/competition_data/assessment_history_test.csv.gz")
+
+AVERAGE_ASSESSMENT = TRAINING_SAMPLES["TARGET"].mean()
+
+TEST_POINTS[["acct"]].rename(columns={"acct":"ACCOUNT"}).\
+    assign(TARGET=AVERAGE_ASSESSMENT).\
+    to_csv("kaggle_sub_py.csv", index=False)
+```
+
+If your submission file is not formatted in this way, Kaggle may not accept
+it. 
+
+To submit your predictions, you need to upload them to Kaggle through the web
+interface. A link to register for the course competition will be distributed
+through Brightspace. Note that you must use your **@cuny.edu** email so that
+I can match your Kaggle ID with your student records. 
+
 
 ## Final Presentation (50 Points)
 
-TBD
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse); library(glue)
+final_report_due <- function(){
+    read_csv("key_dates.csv") |>
+        filter(`Course Element` == "Prediction Competition") |>
+        filter(str_detect(`Details`, "Report")) |>
+        mutate(dt = paste(Date, Time)) |>
+        pull(dt)
+}
+
+class_date <- function(n, details=FALSE){
+    c <- read_csv("key_dates.csv") |>
+        filter(`Course Element` == "Class Session") |>
+        filter(`Item Number` == n)
+    
+    if(details){
+        c |> pull(Details)
+    } else {
+        c |> pull(Date) |>
+             as.Date() |>
+             format("%Y-%m-%d")
+    }
+}
+```
+
+On the final day of class (`r class_date(14)`), each competition unit (either 
+an individual or a team) will give a **6** minute presentation, primarily 
+focused on the *models and methods* they used to build their predictions. This
+presentation should include discussion of: 
+
+- What 'off-the-shelf' models were found to be the most useful?
+- What (if any) extensions to standard models were developed for this project?
+  (These need not be *truly novel* - if you take an idea from a pre-existing
+  source and adapt it for use in this problem, *e.g.* because it does not appear
+  in `sklearn`, this is a contribution worth discussing.)
+- What (if any) ensembling techniques did you apply? 
+- What features or feature engineering techniques were important for the 
+  success of your model? 
+- What techniques for data splitting / model validation / test set hygiene
+  did you use in your model development process? 
+  
+Presentations must be submitted as PDF slides by midnight the night before 
+class. The instructor will aggregate slides into a single 'deck' to be used
+by all students. (Teams of two should both submit a copy of their slides. The
+instructor will de-duplicate submissions.)
+  
+Students will be graded according to the following rubric: 
+
+::: {.list-table width="1,1,1,1,1,1" aligns="c,c,c,c,c,c" header-rows=1 .hover}
+
+ * - Report Element
+   - Excellent. <br> "A-" to "A" (`90% to 100%`)
+   - Great. <br> "B-" to "B+" (`80% to 89%`)
+   - Average. <br> "C" to "C+" (`73% to 79%`)
+   - Poor. <br> "D" to "C-" (`60% to 72%`)
+   - Failure. <br> "F" (`0% to 59%`)
+   
+ * - Quality of Presentation (20 points)
+   - Excellent and Engaging Presentation. Visualizations and script
+     clearly convey content in detail without obscuring the 
+     bigger picture.
+   - Great presentation. Visualizations and script convey content
+     well with only minor flaws. Balance of detailed and big-picture
+     exposition is lost. 
+   - Solid presentation. Visualizations or script have one to two
+     notable flaws. Insufficient discussion of details OR big-picture.
+   - Poor presentation. Visualizations or script have 3 or more
+     notable flaws. Underwhelming discussion of both details AND
+     big-picture. 
+   - Unacceptable presentation. Significant weaknesses in visualization
+     and script. Significant omissions in details or big-picture 
+     analysis.
+ * - Pipeline Design (10 points)
+   - Excellent pipeline design. Allows for effective re-use of training
+     data without risk of overfitting. Allows for more detailed queries
+     than overall RMSE. 
+   - Great pipeline design. Allows for effective re-use of training
+     data without risk of overfitting, but only allows queries of RMSE.
+   - Solid pipeline design. Takes active steps to minimize chance of 
+     'leakage' but may allow issues. 
+   - Poor pipeline design. Attempts made at avoiding leakage and overfitting,
+     but approach is fundamentally flawed. 
+   - Unacceptable pipeline design. Little or no attention paid to 
+     data hygiene. 
+ * - ML Methodology (10 points)
+   - Excellent Methodology. Uses advanced methodologies not covered in class
+     in a way that is well-suited for the prediction task. Methodology uses
+     features and time structure in interesting and  creative ways. 
+   - Great Methodology. Uses 'black box' methodologies not covered in class,
+     but with little specialization for the prediction task. OR Applies and
+     combines methods covered in class with particularly insightful approaches
+     to tuning and specialization for the prediction task. 
+   - Solid Methodology. Applies and combines methods covered in class with 
+     moderate attempts to tune and specialize for task at hand. 
+   - Poor Methodology. Applies methods covered in class without any attempt to
+     improve or specialize for task at hand. 
+   - Unacceptable Methodology. Fails to apply any advanced methodology (*e.g.*,
+     only uses linear regression and/or basic ARMA-type time series models). 
+ * - Feature Engineering and Analysis[^fea] (5 points)
+   - Excellent FEA. Impressive feature engineering creating significant
+     improvements in predictive performance. Careful analysis of feature
+     importance comparing and contrasting 'model-specific' importance and 
+     'model-agnostic' importance.
+   - Great FEA. Meaningful feature engineering leading to non-trivial
+     improvements in predictive performance. Analysis of feature importance
+     compared across multiple models. 
+   - Solid FEA. Features are treated appropriately, with elementary
+     analysis of feature importance for the model(s) used. 
+   - Poor FEA. Features are treated appropriately for their modality, but
+     little to no feature analysis or engineering. 
+   - Unacceptable FEA. No attempt to analyze features. 
+ * - Timing (5 points)
+   - Presentation lasts between 5:45 and 6:15
+   - Presentation lasts between 5:25 and 5:45 or between
+     6:15 and 6:35
+   - Presentation lasts between 5:00 and 5:25 or between
+     6:35 and 7:00
+   - Presentation lasts between 4:30 and 5:00 or between
+     7:00 and 7:30
+   - Presentation runs shorter than 4:30 or longer than 7:30
+
+:::
+
+Students will also vote on an "Audience Choice" award; the winning presentation
+will automatically receive a score of 50. 
+
+[^fea]: Feature Engineering and Analysis includes 'classical' feature engineering
+and analysis to identify key features (*e.g.* feature importance rankings or
+variable selection). 
 
 ## Final Report (50 Points)
 
-TBD
+By `r final_report_due()`, each competition unit (either 
+an individual or a team) will submit a final report of no more than 10 pages 
+(10-12 point, single- or double-spaced) providing an *After-Action Report* 
+of their competition performance. This report should focus on three topics: 
 
-## Example Prediction
+- 1) Are there any systematic errors in model predictions that need to be 
+  addressed before this model could be applied broadly. (*E.g.*, is it systmatically
+  low or high in a particular neighborhood; does it undervalue especially high
+  value homes; etc?)
+- 2) What insights into the underlying data can be gleaned from the model? 
+  *E.g.*, are certain features especially important for making predictions? Or
+  are certain features which you would expect to be important not actually 
+  particularly important? 
+- 3) What steps did your team take that were particularly helpful to maximizing
+  predictive performance? Or, what parts of your model development cycle were
+  weak and could be the most improved?[^selfeval] 
 
-TBD
+[^selfeval]: In this 'self-evaluation' section, you are encouraged to be truthful
+and honest in your reflections. I already know how well you did and you won't
+be able to convince me otherwise, so if you made fundamental errors that hindered
+your performance, I would rather see them discussed honestly (indicating 
+understanding of how you could improve) rather than minimized. 
 
+Note that this report is not solely focused on predictive performance. Analysis
+that dives deep into the underlying economics of real estate assessment and generates
+novel insights will score as well (or perhaps even better) than a highly performant
+but noninterpretable model. 
 
-[^ny]: Unsurprisingly, New York makes this more complicated. 
+To assist in developing this After-Action Report, the instructor will provide
+non-anonymized versions of the data (as well as a mapping to the anonymized data)
+after the Kaggle competition ends. 
+
+The report should include all code used to prepare the data and train and predict
+from the best performing models in an Appendix. Significant penalties may be 
+applied if the instructor is unable to reliably reproduce your predictions. 
+(You may choose to submit this Appendix in the form of an iPython Notebook, 
+Quarto document, Docker container, *etc* to maximize reproducibility.)  Note
+that this appendix does not count against your 10 page limit.
+
+You may, but are not required to, share your code with the instructor via
+an emailed Zip file or link to a public code hosting platform such as GitHub.
+
+::: {.callout-tip title="Reproducibility Info"}
+
+To maximize the reproducibility of your code, make sure to: 
+
+1) Avoid hard-coding any file paths. It is better to download and/or read
+   directly from hosted copies whenever possible. 
+2) Save random seeds used to create data splits, initialize training, *etc.*
+3) List all software and packages used, *including version information.*
+4) Have a clear set of 'reproduction steps' and accompanying documentation.
+
+:::
+
+Teams of two should both submit a copy of their final report. The instructor
+will de-duplicate submissions.
+
+The report will *roughly* be assessed acccording to the following rubric though
+the instructor may deviate as necessary. 
+
+::: {.list-table width="1,1,1,1,1,1" aligns="c,c,c,c,c,c" header-rows=1 .hover}
+
+ * - Report Element
+   - Excellent. <br> "A-" to "A" (`90% to 100%`)
+   - Great. <br> "B-" to "B+" (`80% to 89%`)
+   - Average. <br> "C" to "C+" (`73% to 79%`)
+   - Poor. <br> "D" to "C-" (`60% to 72%`)
+   - Failure. <br> "F" (`0% to 59%`)
+ * - Quality of Report (15 points)
+   - Excellent Report. Report has excellent writing and formatting, with 
+     particularly effective tables and figures. Tables and Figures are
+     "publication-quality" and clearly and succinctly support claims made in 
+     the body text. Text is clear and compelling throughout. 
+   - Great Report. Report has strong writing formatting. Text is generally clear,
+     but has multiple minor weaknesses or one major weakness; tables and figures
+     make their intended points, but do not do so optimally. 
+   - Solid Report. Report exhibits solid written communication, key points are
+     made understandably and any grammatical errors do not impair
+     understanding. Code, results, and text could be better integrated, 
+     but it is clear which elements relate. Formatting is average; tables and 
+     figures do not clearly support arguments made in the text and/or are not
+     "publication quality".
+   - Poor Report. Written communication is below standard: points are not always
+     understandable and/or grammatical errors actively distract from
+     content. Code, results, and text are not actively integrated, but
+     are generally located 'near' each other in a semi-systematic fashion.
+     Poor formatting distracts from substance of report. Tables and
+     Figures exhibit significant deficiencies in formatting.
+   - Unacceptable Report. Written communication is far below standard, possibly
+     bordering on unintelligible. Formatting prohibits or significantly impairs
+     reader understanding.
+ * - Analysis of Predictive Accuracy (10 points)
+   - Excellent Analysis. Team is able to clearly identify strengths and 
+     weaknesses of their model and to propose extensions / next steps that
+     could use de-anonymized structure to further improve model performance. 
+   - Great Analysis. Team identifies strengths and weaknesses of their model, 
+     but without clear 'next steps' for model improvement.
+   - Solid Analysis. Accuracy analysis successfully identifies patterns of 
+     error, but does not connect these to modeling. 
+   - Poor Analysis. Accuracy analysis attemps to identify patterns of error, 
+     but fails to distinguish _systematic_ error from randomness. 
+   - Unacceptable Analysis. Accuracy analysis is superficial and does not
+     take advantage of data structure in a meaningful way. 
+ * - Model-Driven Insights into Data Generating Process (10 points)
+   - Excellent Insights. Modeling process creates significant new insights into
+     the economics of real property assessment. Insights are then used to 
+     further improve predictive modelling in a virtuous cycle. 
+   - Great Insights. Modeling process creates significant new insights into
+     the economics of real property assessment, but insights do not improve
+     predictive modeling. 
+   - Solid Insights. Modeling process creates new non-trivial insights, but 
+     not ones that have major impact on predictive performance. (*E.g.*, 
+     grey houses have a much higher chance of having rooftop solar than other
+     house colors because grey was the most popular 'builder spec color' by
+     the time that residential solar became commonplace. Interesting, but not
+     especially helpful.)
+   - Poor Insights. Modeling process only reproduces known / trivial insights
+     about data generating process (*e.g.*, bigger houses are worth more than
+     smaller houses *ceteris paribus*).
+   - Unacceptable Insights. No attempt is made at generating meaningful insights
+     from models. 
+ * - Reflection on Competition Workflow (10 points)
+   - Excellent Reflection. Clear identification of all important good and bad
+     decisions made over the course of the competition, with insightful 'take 
+     aways' that can be used by self and other teams to significantly improve
+     performance on future prediction tasks. Importance of key decisions is
+     clearly demonstrated. 
+   - Great Reflection. Impressive reflection on key decisions (good and bad)
+     made over the course of the competition. 'Take Away' messages would be 
+     useful if this competition were re-run as is (or with minor changes) but
+     do not necessarily generalize to other similar tasks. Importance of key
+     decisions is partially demonstrated. 
+   - Solid Reflection. Reflection on key decisions identifies major 
+     choices made throughout competition, but fails to fully analyze
+     their impact. 'Take away' messages are useful, but generic and not 
+     particularly relevant to this course or this competition. (*E.g.*, advice
+     on the best way to tune the lasso) Minimal effort to demonstrate importance
+     of key decisions. 
+   - Poor Reflection. Reflection seems to miss one or more major choices made
+     over the course of the semester OR attributes too much importance to an 
+     unimportant decision. Fails to demonstrate importance of key decisions.
+     'Take away' messages are of limited general applicability.
+   - Unacceptable Reflection. Minimal or shallow reflection. 'Take away' 
+     messages are trivial or misleading. 
+ * - Reproduction Code (5 points)
+   - Excellent Reproduction Code. Code is easy to read and execute, with excellent
+     commenting, formatting, *etc.* and clearly reproduces submitted predictions.
+   - Great Reproduction Code. Code is easy to read, but requires some effort
+     to execute and reproduce submitted predictions. 
+   - Solid Reproduction Code. Code lacks clarity, but still appears to reproduce
+     submitted predictions with reasonable effort. 
+   - Poor Reproduction Code. Instructor cannot reproduce submitted predictions
+     without significant effort. 
+   - Unacceptable Reproduction Code. Code cannot reproduce submitted predictions.
+   
+:::
