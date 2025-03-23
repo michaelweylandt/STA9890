@@ -190,10 +190,13 @@ window.Quarto = {
    
   <ul>
   <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
-  <li><a href="#prediction-accuracy-100-points" id="toc-prediction-accuracy-100-points" class="nav-link" data-scroll-target="#prediction-accuracy-100-points">Prediction Accuracy (100 Points)</a></li>
+  <li><a href="#team-submissions" id="toc-team-submissions" class="nav-link" data-scroll-target="#team-submissions">Team Submissions</a></li>
+  <li><a href="#prediction-accuracy-100-points" id="toc-prediction-accuracy-100-points" class="nav-link" data-scroll-target="#prediction-accuracy-100-points">Prediction Accuracy (100 Points)</a>
+  <ul class="collapse">
+  <li><a href="#example-prediction" id="toc-example-prediction" class="nav-link" data-scroll-target="#example-prediction">Example Prediction</a></li>
+  </ul></li>
   <li><a href="#final-presentation-50-points" id="toc-final-presentation-50-points" class="nav-link" data-scroll-target="#final-presentation-50-points">Final Presentation (50 Points)</a></li>
   <li><a href="#final-report-50-points" id="toc-final-report-50-points" class="nav-link" data-scroll-target="#final-report-50-points">Final Report (50 Points)</a></li>
-  <li><a href="#example-prediction" id="toc-example-prediction" class="nav-link" data-scroll-target="#example-prediction">Example Prediction</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/competition.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/competition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -392,25 +395,220 @@ $ neighborhood        &lt;chr&gt; "6315b211033894c97f758c5b2d0e53a00ca66f81", "6
 </div>
 <p>This is similar to the training file, but with certain 2019 data deleted. (Note that you retain building and land area as well as the protest indicator.)</p>
 </section>
+<section id="team-submissions" class="level2">
+<h2 class="anchored" data-anchor-id="team-submissions">Team Submissions</h2>
+<p>Students <em>may</em>, but are not required to, work in teams of 2 for this competition. Teams will submit one (shared) final presentation and final report and will receive the same grade for all course elements. Students will create teams <em>via</em> Kaggle’s team functionality.</p>
+</section>
 <section id="prediction-accuracy-100-points" class="level2">
 <h2 class="anchored" data-anchor-id="prediction-accuracy-100-points">Prediction Accuracy (100 Points)</h2>
 <p>Prediction accuracy will be assessed using <em>Kaggle Competitions</em>. I have provided Kaggle with a private test set on which your predictions will be evaluated. Kaggle will further divide the test set into a <em>public leaderboard</em> and a <em>private leaderboard</em>. You will be able to see your accuracy on the public leaderboard but final scores will be based on <em>private leaderboard</em> accuracy so <em>don’t overfit</em>.</p>
 <p>Grades for this portion will be assigned as:</p>
-<p><span class="math display">\[\text{Grade} = 1 - \frac{\text{Class Best MSE}}{\text{Constant MSE}}\]</span></p>
-<p>That is, your grade will essentially be a ‘rescaled’ <span class="math inline">\(R^2\)</span> where the best performance in the class is 100% and everyone else is somefraction thereof. (Note that this means the top performance automatically gets 100% on this component.)</p>
-<p>You will be allowed to submit only <em>two</em> sets of predictions to Kaggle per day so use them wisely.</p>
+<p><span class="math display">\[\text{Grade} = 1 - \left(\frac{\text{Your Best RMSE} - \text{Constant Model RMSE} }{\text{Class Best RMSE} - \text{Constant Model RMSE} }\right)^{\alpha}\]</span></p>
+<p>where <span class="math inline">\(\alpha \approx 1\)</span> will be selected by the instructor to ensure a suitable distribution of grades.</p>
+<p>That is, your grade will essentially be a ‘rescaled’ <span class="math inline">\(R^2\)</span> where the best performance in the class is 100% and everyone else is some fraction thereof. (Note that this means the top performance automatically gets 100% on this component.)</p>
+<p>You will be allowed to submit only <em>three</em> sets of predictions to Kaggle per day so use them wisely. At the end of the competition, you will be able to select <strong>two</strong> sets of predictions to be used for your final evaluation (taking the better of the two) so track your submissions carefully.</p>
+<section id="example-prediction" class="level3">
+<h3 class="anchored" data-anchor-id="example-prediction">Example Prediction</h3>
+<p>To submit your predictions for grading on Kaggle, they must be formatted in a two column CSV with columns:</p>
+<ul>
+<li><code>ACCOUNT</code> - the unique identifier (<code>acct</code>) used for each property</li>
+<li><code>TARGET</code> - your prediction of the 2019 total appraisal</li>
+</ul>
+<p>Below, I show how to download and create a <em>very simple</em> baseline prediction. Specifically, I implement the ‘constant model’, where the average 2019 appraisal of the training samples is used as a constant predictor for <em>every</em> point in the test set. (This is the constant model you must beat to get a non-zero score on this element of the course.)</p>
+<p>In <code>R</code>,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>TRAINING_SAMPLES <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_train.csv.gz"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>TEST_POINTS <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_test.csv.gz"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>AVERAGE_ASSESSMENT <span class="ot">&lt;-</span> <span class="fu">mean</span>(TRAINING_SAMPLES<span class="sc">$</span>TARGET)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>TEST_PREDICTIONS <span class="ot">&lt;-</span> TEST_POINTS <span class="sc">|&gt;</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(acct) <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">TARGET =</span> AVERAGE_ASSESSMENT) <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">ACCOUNT =</span> acct)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(TEST_PREDICTIONS, <span class="st">"kaggle_sub_r.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In <code>python</code>,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>TRAINING_SAMPLES <span class="op">=</span> pd.read_csv(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_train.csv.gz"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>TEST_POINTS <span class="op">=</span> pd.read_csv(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_test.csv.gz"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>AVERAGE_ASSESSMENT <span class="op">=</span> TRAINING_SAMPLES[<span class="st">"TARGET"</span>].mean()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>TEST_POINTS[[<span class="st">"acct"</span>]].rename(columns<span class="op">=</span>{<span class="st">"acct"</span>:<span class="st">"ACCOUNT"</span>}).<span class="op">\</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    assign(TARGET<span class="op">=</span>AVERAGE_ASSESSMENT).<span class="op">\</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    to_csv(<span class="st">"kaggle_sub_py.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If your submission file is not formatted in this way, Kaggle may not accept it.</p>
+<p>To submit your predictions, you need to upload them to Kaggle through the web interface. A link to register for the course competition will be distributed through Brightspace. Note that you must use your <strong><span class="citation" data-cites="cuny.edu">@cuny.edu</span></strong> email so that I can match your Kaggle ID with your student records.</p>
+</section>
 </section>
 <section id="final-presentation-50-points" class="level2">
 <h2 class="anchored" data-anchor-id="final-presentation-50-points">Final Presentation (50 Points)</h2>
-<p>TBD</p>
+<p>On the final day of class (2025-05-13), each competition unit (either an individual or a team) will give a <strong>6</strong> minute presentation, primarily focused on the <em>models and methods</em> they used to build their predictions. This presentation should include discussion of:</p>
+<ul>
+<li>What ‘off-the-shelf’ models were found to be the most useful?</li>
+<li>What (if any) extensions to standard models were developed for this project? (These need not be <em>truly novel</em> - if you take an idea from a pre-existing source and adapt it for use in this problem, <em>e.g.</em> because it does not appear in <code>sklearn</code>, this is a contribution worth discussing.)</li>
+<li>What (if any) ensembling techniques did you apply?</li>
+<li>What features or feature engineering techniques were important for the success of your model?</li>
+<li>What techniques for data splitting / model validation / test set hygiene did you use in your model development process?</li>
+</ul>
+<p>Presentations must be submitted as PDF slides by midnight the night before class. The instructor will aggregate slides into a single ‘deck’ to be used by all students. (Teams of two should both submit a copy of their slides. The instructor will de-duplicate submissions.)</p>
+<p>Students will be graded according to the following rubric:</p>
+<table class="table-hover caption-top table" width="1,1,1,1,1,1">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Report Element</th>
+<th style="text-align: center;">Excellent. <br> “A-” to “A” (<code>90% to 100%</code>)</th>
+<th style="text-align: center;">Great. <br> “B-” to “B+” (<code>80% to 89%</code>)</th>
+<th style="text-align: center;">Average. <br> “C” to “C+” (<code>73% to 79%</code>)</th>
+<th style="text-align: center;">Poor. <br> “D” to “C-” (<code>60% to 72%</code>)</th>
+<th style="text-align: center;">Failure. <br> “F” (<code>0% to 59%</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Quality of Presentation (20 points)</td>
+<td style="text-align: center;">Excellent and Engaging Presentation. Visualizations and script clearly convey content in detail without obscuring the bigger picture.</td>
+<td style="text-align: center;">Great presentation. Visualizations and script convey content well with only minor flaws. Balance of detailed and big-picture exposition is lost.</td>
+<td style="text-align: center;">Solid presentation. Visualizations or script have one to two notable flaws. Insufficient discussion of details OR big-picture.</td>
+<td style="text-align: center;">Poor presentation. Visualizations or script have 3 or more notable flaws. Underwhelming discussion of both details AND big-picture.</td>
+<td style="text-align: center;">Unacceptable presentation. Significant weaknesses in visualization and script. Significant omissions in details or big-picture analysis.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Pipeline Design (10 points)</td>
+<td style="text-align: center;">Excellent pipeline design. Allows for effective re-use of training data without risk of overfitting. Allows for more detailed queries than overall RMSE.</td>
+<td style="text-align: center;">Great pipeline design. Allows for effective re-use of training data without risk of overfitting, but only allows queries of RMSE.</td>
+<td style="text-align: center;">Solid pipeline design. Takes active steps to minimize chance of ‘leakage’ but may allow issues.</td>
+<td style="text-align: center;">Poor pipeline design. Attempts made at avoiding leakage and overfitting, but approach is fundamentally flawed.</td>
+<td style="text-align: center;">Unacceptable pipeline design. Little or no attention paid to data hygiene.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">ML Methodology (10 points)</td>
+<td style="text-align: center;">Excellent Methodology. Uses advanced methodologies not covered in class in a way that is well-suited for the prediction task. Methodology uses features and time structure in interesting and creative ways.</td>
+<td style="text-align: center;">Great Methodology. Uses ‘black box’ methodologies not covered in class, but with little specialization for the prediction task. OR Applies and combines methods covered in class with particularly insightful approaches to tuning and specialization for the prediction task.</td>
+<td style="text-align: center;">Solid Methodology. Applies and combines methods covered in class with moderate attempts to tune and specialize for task at hand.</td>
+<td style="text-align: center;">Poor Methodology. Applies methods covered in class without any attempt to improve or specialize for task at hand.</td>
+<td style="text-align: center;">Unacceptable Methodology. Fails to apply any advanced methodology (<em>e.g.</em>, only uses linear regression and/or basic ARMA-type time series models).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Feature Engineering and Analysis<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> (5 points)</td>
+<td style="text-align: center;">Excellent FEA. Impressive feature engineering creating significant improvements in predictive performance. Careful analysis of feature importance comparing and contrasting ‘model-specific’ importance and ‘model-agnostic’ importance.</td>
+<td style="text-align: center;">Great FEA. Meaningful feature engineering leading to non-trivial improvements in predictive performance. Analysis of feature importance compared across multiple models.</td>
+<td style="text-align: center;">Solid FEA. Features are treated appropriately, with elementary analysis of feature importance for the model(s) used.</td>
+<td style="text-align: center;">Poor FEA. Features are treated appropriately for their modality, but little to no feature analysis or engineering.</td>
+<td style="text-align: center;">Unacceptable FEA. No attempt to analyze features.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Timing (5 points)</td>
+<td style="text-align: center;">Presentation lasts between 5:45 and 6:15</td>
+<td style="text-align: center;">Presentation lasts between 5:25 and 5:45 or between 6:15 and 6:35</td>
+<td style="text-align: center;">Presentation lasts between 5:00 and 5:25 or between 6:35 and 7:00</td>
+<td style="text-align: center;">Presentation lasts between 4:30 and 5:00 or between 7:00 and 7:30</td>
+<td style="text-align: center;">Presentation runs shorter than 4:30 or longer than 7:30</td>
+</tr>
+</tbody>
+</table>
+<p>Students will also vote on an “Audience Choice” award; the winning presentation will automatically receive a score of 50.</p>
 </section>
 <section id="final-report-50-points" class="level2">
 <h2 class="anchored" data-anchor-id="final-report-50-points">Final Report (50 Points)</h2>
-<p>TBD</p>
-</section>
-<section id="example-prediction" class="level2">
-<h2 class="anchored" data-anchor-id="example-prediction">Example Prediction</h2>
-<p>TBD</p>
+<p>By 2025-05-20 11:45pm ET, each competition unit (either an individual or a team) will submit a final report of no more than 10 pages (10-12 point, single- or double-spaced) providing an <em>After-Action Report</em> of their competition performance. This report should focus on three topics:</p>
+<ul>
+<li><ol type="1">
+<li>Are there any systematic errors in model predictions that need to be addressed before this model could be applied broadly. (<em>E.g.</em>, is it systmatically low or high in a particular neighborhood; does it undervalue especially high value homes; etc?)</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>What insights into the underlying data can be gleaned from the model? <em>E.g.</em>, are certain features especially important for making predictions? Or are certain features which you would expect to be important not actually particularly important?</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>What steps did your team take that were particularly helpful to maximizing predictive performance? Or, what parts of your model development cycle were weak and could be the most improved?<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
+</ol></li>
+</ul>
+<p>Note that this report is not solely focused on predictive performance. Analysis that dives deep into the underlying economics of real estate assessment and generates novel insights will score as well (or perhaps even better) than a highly performant but noninterpretable model.</p>
+<p>To assist in developing this After-Action Report, the instructor will provide non-anonymized versions of the data (as well as a mapping to the anonymized data) after the Kaggle competition ends.</p>
+<p>The report should include all code used to prepare the data and train and predict from the best performing models in an Appendix. Significant penalties may be applied if the instructor is unable to reliably reproduce your predictions. (You may choose to submit this Appendix in the form of an iPython Notebook, Quarto document, Docker container, <em>etc</em> to maximize reproducibility.) Note that this appendix does not count against your 10 page limit.</p>
+<p>You may, but are not required to, share your code with the instructor via an emailed Zip file or link to a public code hosting platform such as GitHub.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Reproducibility Info">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Reproducibility Info
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To maximize the reproducibility of your code, make sure to:</p>
+<ol type="1">
+<li>Avoid hard-coding any file paths. It is better to download and/or read directly from hosted copies whenever possible.</li>
+<li>Save random seeds used to create data splits, initialize training, <em>etc.</em></li>
+<li>List all software and packages used, <em>including version information.</em></li>
+<li>Have a clear set of ‘reproduction steps’ and accompanying documentation.</li>
+</ol>
+</div>
+</div>
+<p>Teams of two should both submit a copy of their final report. The instructor will de-duplicate submissions.</p>
+<p>The report will <em>roughly</em> be assessed acccording to the following rubric though the instructor may deviate as necessary.</p>
+<table class="table-hover caption-top table" width="1,1,1,1,1,1">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Report Element</th>
+<th style="text-align: center;">Excellent. <br> “A-” to “A” (<code>90% to 100%</code>)</th>
+<th style="text-align: center;">Great. <br> “B-” to “B+” (<code>80% to 89%</code>)</th>
+<th style="text-align: center;">Average. <br> “C” to “C+” (<code>73% to 79%</code>)</th>
+<th style="text-align: center;">Poor. <br> “D” to “C-” (<code>60% to 72%</code>)</th>
+<th style="text-align: center;">Failure. <br> “F” (<code>0% to 59%</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Quality of Report (15 points)</td>
+<td style="text-align: center;">Excellent Report. Report has excellent writing and formatting, with particularly effective tables and figures. Tables and Figures are “publication-quality” and clearly and succinctly support claims made in the body text. Text is clear and compelling throughout.</td>
+<td style="text-align: center;">Great Report. Report has strong writing formatting. Text is generally clear, but has multiple minor weaknesses or one major weakness; tables and figures make their intended points, but do not do so optimally.</td>
+<td style="text-align: center;">Solid Report. Report exhibits solid written communication, key points are made understandably and any grammatical errors do not impair understanding. Code, results, and text could be better integrated, but it is clear which elements relate. Formatting is average; tables and figures do not clearly support arguments made in the text and/or are not “publication quality”.</td>
+<td style="text-align: center;">Poor Report. Written communication is below standard: points are not always understandable and/or grammatical errors actively distract from content. Code, results, and text are not actively integrated, but are generally located ‘near’ each other in a semi-systematic fashion. Poor formatting distracts from substance of report. Tables and Figures exhibit significant deficiencies in formatting.</td>
+<td style="text-align: center;">Unacceptable Report. Written communication is far below standard, possibly bordering on unintelligible. Formatting prohibits or significantly impairs reader understanding.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Analysis of Predictive Accuracy (10 points)</td>
+<td style="text-align: center;">Excellent Analysis. Team is able to clearly identify strengths and weaknesses of their model and to propose extensions / next steps that could use de-anonymized structure to further improve model performance.</td>
+<td style="text-align: center;">Great Analysis. Team identifies strengths and weaknesses of their model, but without clear ‘next steps’ for model improvement.</td>
+<td style="text-align: center;">Solid Analysis. Accuracy analysis successfully identifies patterns of error, but does not connect these to modeling.</td>
+<td style="text-align: center;">Poor Analysis. Accuracy analysis attemps to identify patterns of error, but fails to distinguish <em>systematic</em> error from randomness.</td>
+<td style="text-align: center;">Unacceptable Analysis. Accuracy analysis is superficial and does not take advantage of data structure in a meaningful way.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Model-Driven Insights into Data Generating Process (10 points)</td>
+<td style="text-align: center;">Excellent Insights. Modeling process creates significant new insights into the economics of real property assessment. Insights are then used to further improve predictive modelling in a virtuous cycle.</td>
+<td style="text-align: center;">Great Insights. Modeling process creates significant new insights into the economics of real property assessment, but insights do not improve predictive modeling.</td>
+<td style="text-align: center;">Solid Insights. Modeling process creates new non-trivial insights, but not ones that have major impact on predictive performance. (<em>E.g.</em>, grey houses have a much higher chance of having rooftop solar than other house colors because grey was the most popular ‘builder spec color’ by the time that residential solar became commonplace. Interesting, but not especially helpful.)</td>
+<td style="text-align: center;">Poor Insights. Modeling process only reproduces known / trivial insights about data generating process (<em>e.g.</em>, bigger houses are worth more than smaller houses <em>ceteris paribus</em>).</td>
+<td style="text-align: center;">Unacceptable Insights. No attempt is made at generating meaningful insights from models.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Reflection on Competition Workflow (10 points)</td>
+<td style="text-align: center;">Excellent Reflection. Clear identification of all important good and bad decisions made over the course of the competition, with insightful ‘take aways’ that can be used by self and other teams to significantly improve performance on future prediction tasks. Importance of key decisions is clearly demonstrated.</td>
+<td style="text-align: center;">Great Reflection. Impressive reflection on key decisions (good and bad) made over the course of the competition. ‘Take Away’ messages would be useful if this competition were re-run as is (or with minor changes) but do not necessarily generalize to other similar tasks. Importance of key decisions is partially demonstrated.</td>
+<td style="text-align: center;">Solid Reflection. Reflection on key decisions identifies major choices made throughout competition, but fails to fully analyze their impact. ‘Take away’ messages are useful, but generic and not particularly relevant to this course or this competition. (<em>E.g.</em>, advice on the best way to tune the lasso) Minimal effort to demonstrate importance of key decisions.</td>
+<td style="text-align: center;">Poor Reflection. Reflection seems to miss one or more major choices made over the course of the semester OR attributes too much importance to an unimportant decision. Fails to demonstrate importance of key decisions. ‘Take away’ messages are of limited general applicability.</td>
+<td style="text-align: center;">Unacceptable Reflection. Minimal or shallow reflection. ‘Take away’ messages are trivial or misleading.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Reproduction Code (5 points)</td>
+<td style="text-align: center;">Excellent Reproduction Code. Code is easy to read and execute, with excellent commenting, formatting, <em>etc.</em> and clearly reproduces submitted predictions.</td>
+<td style="text-align: center;">Great Reproduction Code. Code is easy to read, but requires some effort to execute and reproduce submitted predictions.</td>
+<td style="text-align: center;">Solid Reproduction Code. Code lacks clarity, but still appears to reproduce submitted predictions with reasonable effort.</td>
+<td style="text-align: center;">Poor Reproduction Code. Instructor cannot reproduce submitted predictions without significant effort.</td>
+<td style="text-align: center;">Unacceptable Reproduction Code. Code cannot reproduce submitted predictions.</td>
+</tr>
+</tbody>
+</table>
 
 
 </section>
@@ -419,8 +617,10 @@ $ neighborhood        &lt;chr&gt; "6315b211033894c97f758c5b2d0e53a00ca66f81", "6
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Unsurprisingly, New York makes this more complicated.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Unsurprisingly, New York makes this <a href="https://www.tax.ny.gov/pit/property/assess/local/">more complicated</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>I will not clarify which geographic features are bigger or larger than others. All I wil guarantee is that the different hexadecimal codes are consistent across files.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Feature Engineering and Analysis includes ‘classical’ feature engineering and analysis to identify key features (<em>e.g.</em> feature importance rankings or variable selection).<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In this ‘self-evaluation’ section, you are encouraged to be truthful and honest in your reflections. I already know how well you did and you won’t be able to convince me otherwise, so if you made fundamental errors that hindered your performance, I would rather see them discussed honestly (indicating understanding of how you could improve) rather than minimized.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
