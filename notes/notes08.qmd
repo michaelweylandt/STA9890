@@ -1,4 +1,407 @@
 ---
-title: "{{< var course.short >}} - Discriminative Classifiers"
+session: "`r session <- 8; session`"
+author: "Michael Weylandt"
+topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair='universal') |> filter(Course.Element == 'Class Session', Item.Number==session) |> pull(Details); topic`"
+title: "{{< var course.short >}} - {{< meta topic >}}"
 ---
 
+$$\newcommand{\R}{\mathbb{R}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bw}{\mathbf{w}} \newcommand{\P}{\mathbb{P}} \newcommand{\V}{\mathbb{V}} \newcommand{\C}{\mathbb{C}} \newcommand{\E}{\mathbb{E}}$$
+
+```{r}
+#| include: false
+TRUE # To ensure knitr activates
+```
+
+To this point, we have created individual models for regression and
+classification tasks. We have covered regression-type models for
+low-dimensional settings (GLMs: mainly linear and logistic), generative
+models for classification (NB, LDA, QDA), purely discriminative models
+(SVM), and flexible non-parametric models (KNN). Building on these tools,
+we have developed non-linear extensions (splines and kernels) suitable
+for the $n \gg p$ setting and regularization techniques (ridge and lasso)
+necessary for the $p \gg n$ setting. 
+
+In each of these, we have argued that certain models (more precisely,
+certain estimators) have different amounts of bias and variance and
+given a rule of thumb that in low-data settings high-bias/low-variance
+models are preferred while in high-data settings, we should feel free
+to use low-bias models since the variance will be controlled by the
+large training set. 
+
+Furthermore, we have discussed the importance of 'hold-outs' (test/train
+splits, cross-validation, *etc.*) as a tool to avoid overfitting. If we
+evaluate our models on new data (or at least new to that model), we 
+minimize the chance of 'regurgitation' and ensure that our models are 
+learning true(-ish) generalizabile relationships. Importantly, we know
+that _any time_ we make a selection, it is important to have a new data
+set for downstream tasks. So: 
+
+- If we just want to to train a single pre-specified model with no 
+  hyperparameters and use it blindly, we can use all of our data
+- If we want to to train a single pre-specified model with no 
+  hyperparameters and assess its predictive performance, we need to
+  split our data into two sets (training + test)
+- If we want to train a model and select hyperparameters but do not
+  need to assess its predictive performance, we need to split our
+  data into two sets (training + 'validation')
+- If we want to train a model, select hyperparameters, and provide
+  an unbiased assessment of predictive performance, we need to split 
+  our data into three sets (training + validation + test)
+  
+Personally, I find the jargon of these different sets a bit confusing--what
+is testing and how is it different than validation?--but the 'new data
+for each task' heuristic is easy to apply and generalize. 
+
+Finally, we have noted that - while hold out techniques are an excellent tool
+for maximizing predictive performance - they aren't the best to ensure 
+*reliability of interpretation*. If *insights* are more important than pure
+*performance*, stability techniques are typically a better strategy for 
+tuning hyperparameters. 
+
+For the next two weeks, we are going to go beyond this 'single model' 
+paradigm and consider how we might handle scenarios where we have two
+or more models available for our use. This is the domain of *ensemble 
+learning* - building models consisting of multiple 'sub-models', termed
+'base learners'. Ensemble learning is particularly powerful when 
+applied in conjunction with fast and flexible base learners, so we will
+also use this as a jumping off point for one more class of models. 
+
+## Ensemble Learning
+
+We begin with a discussion of *ensemble learning*, the task of combining
+multiple (simpler) models into a 'super model' to achieve a task. 
+Ensembles can be used for essentially any ML task, but we will focus on 
+ensemble learning for the two tasks we have focused on to date: regression
+and classification. (The differences in these two tasks will not really
+have any bearing on our 'ensembling' discussion.)
+
+Suppose that we want to predict the outcome of some variable $Y$ using
+two *statistically independent* predictors $\hat{Y}_1, \hat{Y}_2$: if
+*arguendo* we assume these are unbiased, the MSE of each prediction
+is simply
+
+$$\begin{align*}
+\text{MSE}_{\hat{Y}_i} &= \E_{Y, \hat{Y}_i}[(Y - \hat{Y}_i)^2] \\
+                       &= \E_{Y, \hat{Y}_i}[(Y - \E[Y] + \E[Y] - \hat{Y}_i)^2] \\
+                       &= \E_{Y, \hat{Y}_i}[(Y - \E[Y])^2 +2(Y - \E[Y])(\E[Y] - \hat{Y}_i)+(\E[Y] - \hat{Y}_i)^2] \\
+                       &= \E_{Y}[(Y - \E[Y])^2 +2\E_{Y, \hat{Y}_i}[(Y - \E[Y])(\E[Y] - \hat{Y}_i)]+\E_{\hat{Y}_i}[(\E[Y] - \hat{Y}_i)^2] \\
+                       &= \sigma_Y^2 + 2\E_{Y}[Y - \E[Y]]\E_{\hat{Y}_i}[\E[Y] - \hat{Y}_i)] + \sigma^2_{\hat{Y}_i} \\
+                       &= \sigma_Y^2 + \sigma^2_{\hat{Y}_i}
+\end{align*}$$
+
+(Why do the cross terms vanish?) That is, the MSE is simply sum of the 
+'irreducible error' associated with the best possible prediction ($\sigma_Y^2$
+against the optimal prediction $\E[Y]$) and the variance (error) in $\hat{Y}_i$
+as an estimator of $\E[Y]$.
+
+If $\hat{Y}_1, \hat{Y}_2$ are both predictors of $Y$, it is natural to ask
+if we can do better using a *combination* of the two of them than we can with
+either separately. Indeed, if we let $\widehat{Y} = \frac{1}{2}(\hat{Y}_1 + \hat{Y}_2)$, the above analysis tells us: 
+
+$$\begin{align*}
+\text{MSE}_{\widehat{Y}} &= \sigma_Y^2 + \sigma_{\widehat{Y}}^2 \\
+&= \sigma_Y^2 + \mathbb{V}\left[\frac{\hat{Y}_1 + \hat{Y}_2}{2}\right] \\
+&= \sigma_Y^2 + \sigma_{\hat{Y}_1}^2/4 + \sigma_{\hat{Y}_2}^2/4
+\end{align*}$$
+
+How does this compare to the separate predictions? Well, if 
+$\sigma_{\hat{Y}_1} = \sigma_{\hat{Y}_2}$, then we have clearly reduced our 
+expected MSE by half of the variance error. (By definition, we can't do anything
+about the irreducible error.) If, on the other hand, one predictor is much
+better than the other, say $\sigma_{\hat{Y}_1}^2 = 400 \sigma_{\hat{Y}_2}^2$,
+then we have
+
+$$\begin{align*}
+\text{MSE}_{\hat{Y}_1} &= \sigma_Y^2 + 400 \sigma_{\hat{Y}_2}^2 \\
+\text{MSE}_{\hat{Y}_2} &= \sigma_Y^2 + \sigma_{\hat{Y}_2}^2 \\
+\text{MSE}_{\widehat{Y}} &= \sigma_Y^2 + 100.25 \sigma_{\hat{Y}_2}^2 \\
+\end{align*}$$
+
+So we don't beat the superior predictor ($Y_2$), but we comfortably beat the
+inferior predictor ($Y_1$). Notably, if we didn't know which predictor
+was better and had to select randomly (50/50), we would have an expected
+MSE of $\sigma_Y^2 + 200\sigma_{\hat{Y}_2}^2$, so the 'averaging' predictor
+is still better. More generally, if $\hat{Y_1}$ is sometimes better and
+$\hat{Y_2}$ is better at other times, a suitable averaging strategy will 
+do better  *in the long run* than using a single predictor. (We should pick
+the averaging weights as a function of the variance of the two approaches and
+the relatively frequencies of the $\hat{Y}_1$-better and $\hat{Y}_2$-better
+scenarios.)
+
+This example - simple as it is - gets at the core insight of stacking: if we
+have several 'good enough' models, we can do better - sometimes much better -
+by using a combination of them. This is not guaranteed - if $\hat{Y}_2$ is 
+always the 'lower variance' model, adding in some $\hat{Y}_1$ pretty much
+always hurts - but we do not expect to have a single 'dominant' model. In 
+practice, we typically find ourselves armed with models of similar-enough
+performance (logistic regression, linear SVMs, RBF Kernel SVMs, RBF Kernel 
+logistic regression) and find that different models perform better on different
+inputs. *E.g.*, the 'linear' models might do well far from the decision boundary,
+while the 'kernelized' models might improve performance near the decision
+boundary while suffering from extra 'wiggliness' (variance) far from the 
+decision boundary. 
+
+So what can we take away from this discussion? 
+
+> Low correlation among predictors is helpful. If our base learners give
+  the same predictions at every point, there's nothing to be gained by 
+  combining and comparing them. 
+
+Put another way, ensemble learning benefits from a *diverse* set of base 
+learners. We hope to 'combine strength' from different approaches to build
+an ensemble predictor that is better than any of its individual components.
+
+The three major ensembling techniques we will cover - stacking, bagging, and 
+boosting - essentially come down to different ways of getting this diversity.
+
+## Stacking
+
+So this is all well and good, but where do we *actually get* different 
+predictors? Here, we're going to change notation to $\hat{f}_1, \hat{f}_2, \dots
+\hat{f}_K$ to emphasize that we want to learn a combination of _predictors_ 
+(functions estimated from data), not _predictions_. 
+
+Well... perhaps the easiest thing to do is to train different models on the
+same data. Logistic Regression, LDA, and SVMs will likely find _similar_ 
+decision boundaries, but they won't be exactly the same. Suppose we have
+
+- $\hat{f}_{\text{LR}}$: Logistic Regression (for simplicity, plain and
+  unregularized)
+- $\hat{f}_{\text{LDA}}$: Linear Discriminant Analysis
+- $\hat{f}_{\text{SVM}}$: A Linear SVM with the default hyperparameter 
+  from `sklearn`
+  
+Further, let's assume that we have the binarized predictions ($\{0, 1\}$, no
+soft labels for now) from each model. How can we combine these? 
+
+Perhaps the simplest rule is the 'majority vote' rule: if $\hat{f}_{\text{LR}}(\bx) = \hat{f}_{\text{LDA}}(\bx) = 1$ and $\hat{f}_{\text{SVM}}(\bx) = 0$, then $\hat{f}_{\text{Majority}}(\bx) = 1$. 
+
+This approach is quite easy to implement, but it treats all the inputs as
+equally reliable. While this isn't the _worst_ assumption, we can do better.
+In particular, what if we _learned_ an optimal set of weights. Specifically, 
+we want to learn a vector of weights $\bw \in \mathbb{R}^3$ to maximize
+predictive accuracy of the linear combination $w_1 \hat{f}_{\text{LR}} + w_2 \hat{f}_{\text{LDA}} + w_3 \hat{f}_{\text{SVM}}$. This gives us another
+classification problem, so let's use logistic regression to determine the weights:
+
+$$\hat{\bw} = \text{arg min}_{\bw} \sum_{i=1}^n -y_i \bw^{\top}\hat{\mathbf{f}} + \log(1 + e^{\bw^{\top}\hat{\mathbf{f}}})$$
+where $\hat{\mathbf{f}}$ is a vector of the three base learner predictions.
+
+The solution to this problem, $\hat{\bw}$, gives the _stacking weights_
+for our three base learners. Once we have $\hat{\bw}$, we can make
+predictions at our our new test point, $\tilde{\bx}$, by: 
+
+1. Apply three base learners separately: 
+   - $\hat{y}_{\text{LR}} = \hat{f}_{\text{LR}}(\tilde{\bx})$
+   - $\hat{y}_{\text{LDA}} = \hat{f}_{\text{LDA}}(\tilde{\bx})$   
+   - $\hat{y}_{\text{SVM}} = \hat{f}_{\text{SVM}}(\tilde{\bx})$
+2. Determine the weighted combination: 
+   - $\text{Stacking Score} = w_1\hat{y}_{\text{LR}} + w_2\hat{y}_{\text{LDA}}+w_3\hat{y}_{\text{SVM}}$
+3. Make a prediction using the stacking score: 
+   $$\hat{y}_{\text{Ensemble}} = \begin{cases} 1 & \text{ if } \text{Stacking Score} > \theta \\ 0 & \text{ if } \text{ Stacking Scoore} \leq \theta \end{cases}$$
+   where $\theta$ is a threshold chosen to minimize the problem-specific loss.
+   (Alternatively, set $\theta = 0$ and include an intercept term.)
+   
+We note a few practical points here: 
+
+1. What data should we use to estimate $\bw$? This is a new step in our pipeline,
+   so we need a new 'chunk' of our data. This split of the data is typically
+   called either a query or validation set, but I tend to describe it as an
+   'ensembling' set to make its purpose clear. Regardless, it serves to 
+   give us a new data set to fit our new ensemble model. (If we use the
+   training set used to train each $\hat{f}_i$, the base learners will look
+   'too good' to the ensemble learning process.)
+2. Nothing actually requires us to use the binarized predictions. For models
+   that provide soft labels (class probabilities), we can and should use those
+   in the ensemble process (both in training the ensemble weights and in
+   constructing the predictor vectors $\hat{\mathbf{f}}$). Dropping the
+   probabilities is really just throwing away data. 
+3. We motivated stacking by weighted averages. As such it is common to add
+   additional constraints to the stacking problem to make it look more like
+   averaging. For example, you will often see: 
+   - $\bw \geq 0$: The stacking weights are non-negative. This makes sense
+     if you assume each predictor is generally reasonable. 
+   - $\sum w_i = 1$: The stacking weights sum to 1. Again, a natural
+     generalization of averaging. 
+4. When fitting *large* ensembles (like any large model), it is not uncommon
+   to see ridge or lasso penalties. These are particularly important in ensemble
+   building since the base learners are generally highly correlated. 
+5. Suitably tuned (and that's a big assumption!) stacking should never do worse
+   than any individual predictor because we can always pick $\bw = (1, 0, 0)$ 
+   if the first base learner dominates the others. 
+   
+Stacking creates a 'model of models' - the turducken of machine learning - and 
+all of the ML tricks we have learned to date can be used in creating this
+meta-model. Like any modeling step, we have to practice good data hygiene
+(splitting and hold outs) to make sure we don't overfit and to generate a good
+estimate of predictive accuracy, but otherwise it is particularly straightforward.
+
+Stacking can only take us so far: the value-added of stacking comes from 
+differences between the base learners and, when trained on the same data set,
+we don't expect too much diversity among the base learners. In practical settings,
+stacking is particularly useful when we are given 'standard' or 'baseline' models
+for a task that we want to combine without changing the individual models, but
+we may want to modify our pipeline to explicitly generate more diversity. 
+
+This brings us to our next family of ensembling techniques - resampling methods,
+the most famous of which is *bootstrap aggregation* or bagging. 
+
+## Resampling
+
+In our discussion above, we argued that diversity of (variance between) base 
+learners was key to ensemble performance. When these base learners are trained
+on the same training data, we can only get so much variance. Since most of our
+models are not terrible, they generally pick out the same major patterns in
+the data. 
+
+So how can we get more variance? We could further split our training data, using
+a small chunk for each model, but this seems likely to bring about variance
+problems. If we want to fit large ensembles of 10, 20, or even 100 models, we
+might wind up using less than 1% of the overal data to train a single model,
+which is clearly subpar. 
+
+We can get around this problem using _sampling_ or _resampling_ techniques.
+We can train our esnemble members on randomly selected subsets of our data 
+(or subsets of the features). Because these models have different training sets,
+they will be more varied. (Typically, this sort of 'data randomization' induces
+more variance than just changing hyperparamters or model families.) 
+
+These randomization schemes have different names: 
+
+- Minibatching: training on random subsets of samples (rows)
+- Random Subspace Method: training on random subsets of features (columns)
+- Minipatching: training on random subsets of samples and features 
+  (row and columns)
+  
+If the model is not too sensitive to the sample size (or if we use a high
+sampling rate), these strategies can work well.[^sampling] But we have a bit
+of a bind here: if we want to use large training sets for each learner, we go
+back to the overlapping training scenario we were trying to avoid. 
+
+Can we be a bit more creative on our sampling? We want to minimize overlap
+but also get 'full sized' training sets. 
+
+[^sampling]: Most of these methods were actually designed to speed up 
+training/fitting and that remains the main use case for minibatching today
+(in *stochastic gradient descent*). We won't focus too much on implications for
+speed today. 
+
+
+### Bootstrapping
+
+To get around this problem, we rely on a key idea of late 20th century 
+statistics: **the bootstrap.**[^bootstrap] 
+Recall the core idea of bootstrapping: 
+
+- We have samples $\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$ from
+  an unknown distribution. 
+- We would like to have more samples from this distribution, but we don't have
+  the ability to gain more data. 
+- If our data set is large, we expect that the _empirical distribution_
+  $\hat{\P}_n$ will be close to the 'real' distribution $\P$. Formally, the law
+  of large numbers (and its fancy variants like Glivenko-Cantelli) guarantees
+  us that $\hat{P}_n \to \P \text{ as } n \to \infty$. 
+- Sampling from $\hat{P}_n$ is 'close' to sampling from $\P$
+
+So how can we sample from the empirical distribution $\hat{P}_n$? We sample
+_with replacement_. That is, we pick one of the training points $n$ times 
+**independently** (with no regard for prior selections). Intuitively, this
+captures the idea of IID sampling - it's also necessary so we don't just 
+reproduce the (shuffled) training data. 
+
+This scheme - sampling with replacement - is the essence of 
+**bootstrap sampling**. 
+
+### Bootstrap Aggregation (Bagging)
+
+We can use a similar strategy to generate 'new' training data for our base
+learners: 
+
+- Repeat $b=1, \dots, B$ times: 
+  - Sample from the training data $\mathcal{D}_{\text{train}}$ $n$ times 
+    *with replacement* to get a bootstrap set $\tilde{\mathcal{D}_b}$
+  - Train a base learner $\hat{f}_b$ on $\tilde{\mathcal{D}_b}$
+- Create the ensemble predictor: 
+  $$\hat{f}(\bx) = \frac{1}{B}\sum_{b=1}^B \hat{f}_b(\bx)$$
+  
+This ensembling strategy is called **bootstrap aggregation** or more simply
+**bagging**. 
+
+So how much diversity / variance can we actually expect from this strategy? It
+depends on how much overlap we get in our sampling. This is a fun little
+probability exercise: 
+
+::: {.callout-tip title="Probability of a Given Sample Being in a Bootstrap Data Set"}
+
+In our scenario above, what is the chance that $\bx_1$ is in
+$\tilde{\mathcal{D}}_b$? 
+
+For each sample, there is a $1/n$ chance that we select $\bx_1$, and hence
+a $1-1/n$ chance that we don't. If we repeat this process $n$ times, there is
+a $(1-1/n)^n$ chance that we never select $\bx_1$. For a large data set, 
+this converges to
+
+$$\lim_{n\to\infty}\left(1-\frac{1}{n}\right)^n = e^{-1} \approx \frac{2}{3}$$
+
+so about $2/3$ of our data is used for each base learner. _Unlike_ straight
+subsampling, however, this process includes repeats, so we have $n$ samples, 
+guaranteeing us repeats. (A more detailed analysis can show that the _number_ 
+of times a sample appears is asymptotically Poisson.)
+
+:::
+
+So how does bagging actually work? We know that we're always trying to control
+bias and variance so let's look at those two terms separately: 
+
+- Bias: Because we are fitting the same model $B$ times, there's really no
+  impact on bias. (*E.g.*, if we are fitting a linear model, the average of
+  $B$ lines is just another line so whatever approximation error we have is
+  unchanged.)
+- Variance: Suppose that the base learners $\hat{f}_i$ have variance $\sigma^2$
+  and correlation $\rho$. (These are constant for all $\hat{f}_i, \hat{f}_j$ by
+  the IID sampling structure used). Then the variance of $\hat{f}$ (the bagged 
+  average) is given by 
+  
+$$\begin{align*}
+\V[\hat{f}] &= \V\left[\frac{1}{B}\sum_b \hat{f}_b\right] \\
+            &= B^{-2}\V\left[\sum_b \hat{f}_b\right] \\
+            &= B^{-2}\left(\sum_{b=1}^B \V[\hat{f}_b] + \sum_{\substack{b, b'=1 \\ b \neq b'}}^B \C[\hat{f}_b, \hat{f}_{b'}]\right)\\
+            &= B^{-2}\left(\sum_{b=1}^B \sigma^2 + \sum_{\substack{b, b'=1 \\ b \neq b'}}^B \rho\sigma^2\right) \\
+            &= B^{-2}\left(B\sigma^2 + (B^2 - B) \rho\sigma^2\right) \\ 
+            &= B^{-2}\left(B(\rho\sigma^2 + (1-\rho)\sigma^2) + (B^2 - B) \rho\sigma^2\right) \\ 
+            &= B^{-2}\left(B\rho\sigma^2 + B(1-\rho)\sigma^2) + B^2\rho\sigma^2 - B\rho\sigma^2\right) \\ 
+            &= B^{-2}\left(B(1-\rho)\sigma^2) + B^2\rho\sigma^2\right) \\ 
+            &= \rho\sigma^2 + \frac{1}{B}(1-\rho)\sigma^2
+\end{align*}$$
+
+This is an interesting formula. As always, we can understand it best by taking
+the extremes: 
+
+- $B = 1$: In this case, the variance reduces to $\sigma^2$, the variance of a 
+  single predictor (as we would expect for 'ensemble of one'). 
+- $B \to \infty$: The variance decreases to $\rho\sigma^2$, but no further. 
+  Practically, we see diminishing returns in the $B\approx 200-500$ range, which
+  you will see as the default for most software that has a bagging step. 
+- $\rho \to 1$: As the base learners become more correlated, the variance
+  converges to $\sigma^2$, the variance of a single predictor. (As we would
+  expect since we have no diversity among base learners.)
+- $\rho \to 0$: As the base learners become uncorrelated, the variance converges
+  to $\sigma^2/B$, the variance of a standard average. (You might ask why not
+  take $B \to \infty$ in this case to have no bias: we really can't get an 
+  infinite number of uncorrelated models, no matter how hard we try, if they are
+  modeling the same underlying DGP)
+  
+So we see we want a flexible (low-bias) base learner that is also going to give
+us low correlation (and low variance) among the bagged predictors. How can we
+get such a base learner? We'll cover this more next week. 
+
+[^bootstrap]: If you have seen bootstrapping before, it was likely in the
+context of estimating the sampling variance of an estimator. (If you haven't
+seen this, go look it up - it's awesome!) Here, we're using bootstrap sampling
+to induce some variance, not to estimate variance, but the sampling strategy
+is the same. 
+
+### Out of Bag Error
+
+## Boosting
+
+Delayed to next week...
