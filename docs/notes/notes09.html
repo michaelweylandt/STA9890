@@ -2,12 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Michael Weylandt">
 
-<title>STA 9890 - Ensemble Methods – STA 9890</title>
+<title>STA 9890 - Tree-Based Methods – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -35,10 +70,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-7a426326b279d3ba9cc0818763c3c226.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -67,6 +102,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -81,7 +145,6 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">STA 9890</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -122,21 +185,45 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#review-of-bagging" id="toc-review-of-bagging" class="nav-link active" data-scroll-target="#review-of-bagging">Review of Bagging</a>
+  <ul class="collapse">
+  <li><a href="#out-of-bag-error" id="toc-out-of-bag-error" class="nav-link" data-scroll-target="#out-of-bag-error">‘Out of Bag’ Error</a></li>
+  </ul></li>
+  <li><a href="#decision-trees" id="toc-decision-trees" class="nav-link" data-scroll-target="#decision-trees">Decision Trees</a></li>
+  <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests">Random Forests</a></li>
+  <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting">Boosting</a>
+  <ul class="collapse">
+  <li><a href="#adaboost" id="toc-adaboost" class="nav-link" data-scroll-target="#adaboost"><code>AdaBoost</code></a></li>
+  <li><a href="#logitboost" id="toc-logitboost" class="nav-link" data-scroll-target="#logitboost"><code>LogitBoost</code></a></li>
+  <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link" data-scroll-target="#gradient-boosting">Gradient Boosting</a></li>
+  <li><a href="#xgboost" id="toc-xgboost" class="nav-link" data-scroll-target="#xgboost"><code>xgboost</code></a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes09.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes09.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">STA 9890 - Ensemble Methods</h1>
+<h1 class="title">STA 9890 - Tree-Based Methods</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Weylandt </p>
+          </div>
+  </div>
     
   
     
@@ -147,10 +234,167 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p><span class="math display">\[\newcommand{\bx}{\mathbf{x}} \newcommand{\bb}{\mathbf{b}}\newcommand{\by}{\mathbf{y}}\]</span></p>
+<section id="review-of-bagging" class="level2">
+<h2 class="anchored" data-anchor-id="review-of-bagging">Review of Bagging</h2>
+<p>Last week we discussed the ensemble learning technique known as <em>bagging</em>. Bagging, a contraction of ‘boostrap aggregation’ can be used to create an ensemble by training <span class="math inline">\(B\)</span> copies of a given base learner on <span class="math inline">\(B\)</span> distinct bootstrap samples, <em>i.e.</em>, ‘faux’ data sets of <span class="math inline">\(n\)</span> points obtained by sampling the original training data <span class="math inline">\(n\)</span> times <em>with replacement</em>. Because these <span class="math inline">\(B\)</span> trained base learners are essentially interchangeable, it is conventional to create the bagged prediction by a straight average (or majority vote if classification) of the individual base learners, though you will occasionally see the bagging base leraners combined in a ‘stacked’ fashion.</p>
+<p>We showed that the MSE associated with a bagged ensemble of size <span class="math inline">\(B\)</span> is:</p>
+<p><span class="math display">\[\text{MSE}_{\text{Bagging}} = \text{Bias}^2_{\text{Base Learner}} +\underbrace{\rho\sigma^2 + \frac{1}{B}(1-\rho)\sigma^2}_{\text{Variance}} + \text{Irreducible Error}\]</span></p>
+<p>and noted that, by sending <span class="math inline">\(B \to 0\)</span>, we reduce the ‘bootstrapping variance’ to 0 but that some ‘inherent variance’ remains from the training data.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> As we noted last week, this implies that our search for the optimal base learner should do three things:</p>
+<ul>
+<li>Have low bias</li>
+<li>Have low correlation among the bagged learners</li>
+<li>Best fast enough that we can take <span class="math inline">\(B \to \infty\)</span> and cancel that term</li>
+</ul>
+<p>If we can find something that does all of these, we will have a (near) optimal predictor (<span class="math inline">\(\text{MSE} \approx \text{Irreducible Error}\)</span>). This is our primary goal for the day.</p>
+<section id="out-of-bag-error" class="level3">
+<h3 class="anchored" data-anchor-id="out-of-bag-error">‘Out of Bag’ Error</h3>
+<p>Before we move to our long-promised final base learner, let’s consider another advantage of bagging. We know that it is important to have ‘new’ data when assessing model performance. To date, we have obtained this ‘new’ data through variants of the hold-out principle, such as the test-train split or cross-validation: if it is important to have new data, it is important enough to set aside some of our putative training data for model assessment.</p>
+<p>But bagging gives us another source of ‘unseen’ data: if we sample <span class="math inline">\(n\)</span> points from a population of size <span class="math inline">\(n\)</span> with replacement, approximately <span class="math inline">\(n/e \approx 2n/3\)</span> points will be sampled, leaving <span class="math inline">\(n(1-e^{-1}) \approx n/3\)</span> points unseen by each base learner. If these points were the same across each base learner, we would have a readily available test set. But then our whole bagging strategy would be essentially useless…</p>
+<p>We can estimate the so-called ‘out-of-bag’ error (OOB) associated with each training point by computing the predictive performance <em>on the ensemble of learners that haven’t seen that point</em>. That is, instead of testing the performance of the whole ensemble, we take a ‘subensemble’ of the base learners that never saw that point. Repeating this process over all <span class="math inline">\(n\)</span> training points (and creating <span class="math inline">\(n\)</span> different sub-ensembles) we obtain an estimate of the OOB error. Clearly, OOB is not test error of the entire ensemble, but it is a useful quantity nevertheless.</p>
+<p>Formally, we obtain the bagged ensemble and associated OOB error as follows:</p>
+<ul>
+<li><strong>Inputs</strong>:
+<ul>
+<li>Base learner family <span class="math inline">\(\mathcal{F}\)</span></li>
+<li>Training set of size <span class="math inline">\(n\)</span>: <span class="math inline">\(\mathcal{D}=\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\)</span></li>
+<li>Number of bootstrap samples <span class="math inline">\(B\)</span></li>
+</ul></li>
+<li>For <span class="math inline">\(b=1, \dots, B\)</span>:
+<ul>
+<li>Create bootstrap training set <span class="math inline">\(\mathcal{D}_b = \{(\bx_1^{(b)}, y_1^{(b)}), (\bx_2^{(b)}, y_2^{(b)}), \dots, (\bx_n^{(b)}, y_n^{(b)})\}\)</span></li>
+<li>Fit base learner <span class="math inline">\(\hat{f}_b\)</span> to <span class="math inline">\(\mathcal{D}_b\)</span></li>
+</ul></li>
+<li>Build ensemble <span class="math inline">\(\hat{f}(\bx) = B^{-1}\sum_{b=1}^B \hat{f}_b(\bx)\)</span></li>
+<li>For <span class="math inline">\(i=1, \dots, n\)</span>:
+<ul>
+<li>Let <span class="math inline">\(b_i^c = 0\)</span> be the number of bootstrap samples not containing <span class="math inline">\(i\)</span></li>
+<li>Let <span class="math inline">\(y_i^c = 0\)</span> be the average prediction of bootstrapped learners not trained on <span class="math inline">\(i\)</span></li>
+<li>For <span class="math inline">\(b = 1, \dots, B\)</span>:
+<ul>
+<li>If <span class="math inline">\(i \notin \mathcal{D}_b\)</span>:
+<ul>
+<li><span class="math inline">\(b_i^c := b_i^c+1\)</span></li>
+<li><span class="math inline">\(y_i^c := y_i^c + \hat{f}_i(\bx_i)\)</span></li>
+</ul></li>
+</ul></li>
+<li>Let <span class="math inline">\(\hat{y}_i^c = y_i^c / b_i^c\)</span> (or majority vote if classifying)</li>
+<li>Let <span class="math inline">\(\text{OOB}_i = \text{Loss}(\hat{y}_i^c, y_i)\)</span></li>
+</ul></li>
+<li>Estimate OOB error as <span class="math inline">\(\text{OOB} = n^{-1} \sum_{i=1}^n \text{OOB}_i\)</span></li>
+<li><strong>Return</strong> <span class="math inline">\(\hat{f}, \text{OOB}\)</span></li>
+</ul>
+<p>For each training point, we expect it to occur in approximately <span class="math inline">\(B/e\)</span> bootstrap samples and hence we have approximately <span class="math inline">\(1 - B/e \approx B/3\)</span> base learners used for computing the OOB error. This isn’t quite as good as the full <span class="math inline">\(B\)</span> samples we would use for a true test point, but since variance decreases quadratically in <span class="math inline">\(B\)</span>, this isn’t really a major loss.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+</section>
+</section>
+<section id="decision-trees" class="level2">
+<h2 class="anchored" data-anchor-id="decision-trees">Decision Trees</h2>
+<p>Ok - now it’s time to consider the final base learner of this course: <em>decision trees</em>. You are almost certainly already familiar with decision trees through diagrams like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dtree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(medv <span class="sc">~</span> . , <span class="at">data=</span>Boston)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(dtree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="notes09_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, the tree is evaluated by applying a series of <em>univariate binary</em> decision rules ‘downwards’: that is, at each step, we ask one step about one variable and take the left or right branch as appropriate. The final terminus (or ‘leaf’) of the tree is then our prediction.</p>
+<p>Decision trees are incredibly popular because they are easy to apply ‘mentally’ and suggest natural interpretations. Variables which are used to split early or split often are more important. Interestingly, decision trees also can be used to give an ‘intermediate prediction’ which is what we would get by stopping the prediction at that point. Splits which materially change the intermediate prediction are also more important.</p>
+<p>But how should we actually fit a decision tree to data? This is, like bagging and computing OOB error, the sort of thing which is easy to understand intuitively, but comes with a significant amount of bookkeeping in practice.</p>
+<p>Essentially, trees are fit by repeatedly asking the question: “What split would most reduce the error if my predictions stop here?” So, for the first split, the tree looks at each variable to determine its optimal split point, and then finds the optimal variable to split on. To find the optimal split point, we need to sort the data on that variable and then compute the ‘before’ and ‘after’ variance for each value. After finding the first split, the two ‘second level’ splits repeat this process <em>on only the data in their path</em>. That is, the two ‘second level’ splits are found on <em>different</em> data. The four ‘third level’ splits are found on four different data sets, <em>etc.</em></p>
+<p>Because the later splits are computed on different data sets, they almost always select different variables at each level (as in our example above, where the two ‘level two’ splits use the <code>lstat</code> and <code>rm</code> variables). Predictions are made by taking the average (or majority) of data left in that split.</p>
+<p>Note that the splits need not be <em>and typically are not</em> ‘even’ splits along a variable. <em>E.g.</em>, if we were doing a split on a variable that looks like</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr class="even">
+<td>1.1</td>
+<td>0.9</td>
+</tr>
+<tr class="odd">
+<td>1.2</td>
+<td>1.1</td>
+</tr>
+<tr class="even">
+<td>1.3</td>
+<td>1.4</td>
+</tr>
+<tr class="odd">
+<td>100</td>
+<td>500</td>
+</tr>
+<tr class="even">
+<td>105</td>
+<td>550</td>
+</tr>
+</tbody>
+</table>
+<p>The optimal split is clearly something like <span class="math inline">\(\texttt{Variable} &lt; 1.3\)</span> with conditional predictions of <span class="math inline">\(1.1\)</span> and <span class="math inline">\(525\)</span> in each split and split sizes of <span class="math inline">\(4\)</span> and <span class="math inline">\(2\)</span>.</p>
+<p>Clearly, if the tree is allowed to run ‘to completion’, there will be one data point left in each leaf and the tree can obtain 0 training error. That is, maximal decision trees are a very high complexity (low bias, high variance) model. On the other extreme, a ‘single split’ tree (often called a ‘stump’) will be low complexity (high bias, low variance). So we can take tree depth (number of levels) as a good proxy for model complexity. Like <span class="math inline">\(K\)</span>-Nearest Neighbors, we can pick depth (complexity) by a suitable cross-validation or train-test scheme, but will soon see a better way.</p>
+<p>Some other notes on trees:</p>
+<ul>
+<li>You will sometimes see decision trees refered to as <code>CART</code> (Classification and Regression Trees) or <code>rpart</code> (Recursive Partitioning) but most folks will know the term “decision trees” so I just use that.</li>
+<li>Trees extend <em>very naturally</em> to categorical variables and do not require numeric encoding: we simply have to adapt the decision rule from <span class="math inline">\(x \leq y\)</span> to <span class="math inline">\(x \in \mathcal{Y}\)</span> where <span class="math inline">\(x\)</span> is now a categorical feature and <span class="math inline">\(\mathcal{Y}\)</span> is a set of lables.</li>
+<li>Trees also handle missing values nicely: we can simply treat <code>NA</code> as <em>very high</em> or <em>very low</em> or use an explicit <code>is.na</code> decision rule</li>
+<li>Trees are rather robust to outliers: if a data point has an extreme value, it will be ‘split away’ rather early and the ‘main branch’ of the tree will be fit on the rest of the data. Non-outlier test points will funnel into this ‘main branch’ and it will be like the outlier essentially never existed</li>
+</ul>
+<p>There are tons of tiny little decisions in building trees, so I don’t recommend writing your own implementation. See, <em>e.g.</em>, <code>?rpart.control</code> for the fitting parameters used by the <code>rpart</code> package: other software will have similar options.</p>
+</section>
+<section id="random-forests" class="level2">
+<h2 class="anchored" data-anchor-id="random-forests">Random Forests</h2>
+<p>We are now ready to introduce the concept of <em>random forests</em>, which are <em>almost</em> bagged decision trees.</p>
+</section>
+<section id="boosting" class="level2">
+<h2 class="anchored" data-anchor-id="boosting">Boosting</h2>
+<section id="adaboost" class="level3">
+<h3 class="anchored" data-anchor-id="adaboost"><code>AdaBoost</code></h3>
+</section>
+<section id="logitboost" class="level3">
+<h3 class="anchored" data-anchor-id="logitboost"><code>LogitBoost</code></h3>
+</section>
+<section id="gradient-boosting" class="level3">
+<h3 class="anchored" data-anchor-id="gradient-boosting">Gradient Boosting</h3>
+</section>
+<section id="xgboost" class="level3">
+<h3 class="anchored" data-anchor-id="xgboost"><code>xgboost</code></h3>
 
 
+</section>
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>There is randomness in our selection / acquisition of training data and nothing we do can completely remove it. Three cheers for large and well-constructed training sets, the unsung heros of machine learning!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Taking a typical choice of <span class="math inline">\(B = 500\)</span>, the OOB ensemble of (expected) <span class="math inline">\(316\)</span> base learners will have a variance that is approximately <span class="math inline">\(500/316 \approx 1.6\)</span> times higher than the ‘true’ ensemble. If <span class="math inline">\(B\)</span> is large enough <span class="math inline">\((1-\rho)\sigma^2/B \approx 0\)</span>, <span class="math inline">\((1-\rho)\sigma^2/(B(1-e^{-1})) \approx 1.6(1-\rho)\sigma^2/B\)</span> will also be negligible. Put another way, the bulk of the error in bagged ensembles comes from i) bias; ii) <em>training data</em> variance; and iii) irreducible error. The ‘not enough bootstraps’ contribution is typically quite small.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -233,8 +477,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -345,7 +587,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -576,4 +817,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes09.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes09.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes09.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes09.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
