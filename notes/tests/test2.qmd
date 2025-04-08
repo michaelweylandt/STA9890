@@ -411,7 +411,7 @@ You also know that your company's domain receives nine times as many spam
 messages as valid ones.
 
 1. Given the above information, what should your *prior* probabilities
-   before for $\P(\text{Valid})$ and $\P(\text{Spam}) = 1 - \P(\text{Valid})$?
+   be for $\P(\text{Valid})$ and $\P(\text{Spam}) = 1 - \P(\text{Valid})$?
    (3 points) 
    
    ::: {.callout-tip title="Solution" collapse="true"}
