@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>STA 9890 - Spring 2025  Test 2: Classification and Ensemble Methods – STA 9890</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7a426326b279d3ba9cc0818763c3c226.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">STA 9890</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../.././syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././notes.html"> 
+<span class="menu-text">Handouts and Additional Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../reports.html"> 
+<span class="menu-text">Research Reports</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././competition.html"> 
+<span class="menu-text">Course Competition</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././resources.html"> 
+<span class="menu-text">Additional Resources and Policies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././objectives.html"> 
+<span class="menu-text">Learning Objectives</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#multiple-choice-30-points---10-questions-at-3-points-each" id="toc-multiple-choice-30-points---10-questions-at-3-points-each" class="nav-link active" data-scroll-target="#multiple-choice-30-points---10-questions-at-3-points-each">Multiple Choice (30 points - 10 questions at 3 points each)</a></li>
+  <li><a href="#short-answer-40-points---8-questions-at-5-points-each" id="toc-short-answer-40-points---8-questions-at-5-points-each" class="nav-link" data-scroll-target="#short-answer-40-points---8-questions-at-5-points-each">Short Answer (40 points - 8 questions at 5 points each)</a></li>
+  <li><a href="#mathematics-of-machine-learning-30-points-total" id="toc-mathematics-of-machine-learning-30-points-total" class="nav-link" data-scroll-target="#mathematics-of-machine-learning-30-points-total">Mathematics of Machine Learning (30 points total)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/tests/test2.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/tests/test2.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">STA 9890 - Spring 2025 <br> Test 2: Classification and Ensemble Methods</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The original test booklet can be found <a href="./sta9890_spring2025_test2.pdf">here</a>. <span class="math display">\[\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}} \newcommand{\P}{\mathbb{P}}\]</span></p>
+<section id="multiple-choice-30-points---10-questions-at-3-points-each" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-choice-30-points---10-questions-at-3-points-each">Multiple Choice (30 points - 10 questions at 3 points each)</h2>
+<ol type="1">
+<li><p>In classification, a <em>false negative</em> refers to an observation which is in the negative (0) class, but is falsely predicted as a positive (1) instead.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong> - this is a <em>false positive</em>. Because we predict a <em>positive</em> label, this scenario describes a <em>positive</em>; because our prediction is wrong, this scenario describes a <em>positive</em>.</p>
+</div>
+</div>
+</div></li>
+<li><p><em>Boosting</em> is the practice of building an ensemble by sub-sampling features.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. Boosting is iterative refinement of a predictor (see below). Feature sub-sampling does not have a universal name, though it is sometimes called the <em>random subspace</em> method.</p>
+</div>
+</div>
+</div></li>
+<li><p>Under a suitable generative model, logistic regression is BLUE.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. Logistic regression is not a linear estimator (hence the need for iterative solvers) nor is it unbiased. To wit,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rowMeans</span>(<span class="fu">replicate</span>(<span class="dv">5000</span>, {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a> X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">50</span> <span class="sc">*</span> <span class="dv">3</span>), <span class="at">nrow=</span><span class="dv">50</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a> eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a> mu <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>eta))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a> y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">50</span>, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>mu)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a> <span class="fu">coef</span>(<span class="fu">glm</span>(y <span class="sc">~</span> X <span class="sc">+</span> <span class="dv">0</span>, <span class="at">family=</span>binomial))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      X1       X2       X3 
+2.874551 5.236023 7.862089 </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p>Poisson or log-linear regression is suitable for predicting count-valued responses, such as the number of goals scored in a soccer match.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. Poisson random variables are often used to model small counts, such as the number of goals scored, and so log-linear regression is a good choice. Note, however, that the <em>margin of victory</em> (the difference in scores) does not follow a Poisson distribution (since it can be negative if the other team wins) and a <em>Skellam</em> distribution must be used instead.</p>
+</div>
+</div>
+</div></li>
+<li><p>Which of the following are properties of support vector classifiers?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Use of Hinge Loss ✅</li>
+<li>Automatic Identification of Kernel Points</li>
+<li>Lack of Tuning Parameters</li>
+<li>Probabilistic Output</li>
+<li>Insensitivity to training data far from the margin ✅</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Which of the following are discriminative classifiers?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>LDA</li>
+<li>SVM ✅</li>
+<li>Random Forest ✅</li>
+<li>Decision Trees ✅</li>
+<li>Boosting</li>
+<li>QDA</li>
+<li>Bagging</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>A maximum likelihood estimator is one which sets the unknown parameters in order to maximize the negative log PDF/PMF of the sampling distribution on the observed data.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. The <em>maximum</em> likelihood estimator is obtained by <em>maximizing</em> the likelihood or equivalently <em>minimizing</em> the <em>negative</em> logarithm of the likelihood.</p>
+</div>
+</div>
+</div></li>
+<li><p>Multiple Choice: Which of the following <strong>ARE NOT</strong> convex approximations to 0/1 Accuracy loss in classification?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Hinge Loss</li>
+<li>Smoothed Hinge Loss</li>
+<li>Gini Coefficient ✅</li>
+<li>False Negative Rate ✅</li>
+<li>Binomial Deviance Loss</li>
+<li>Tree Loss ✅</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>The main purpose of <em>boosting</em> is to iteratively refine our predictor by compensating for previous prediction errors.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>.</p>
+</div>
+</div>
+</div></li>
+<li><p>We cannot use cross-validation to tune the regularization parameter<br>
+(<span class="math inline">\(\lambda\)</span>) of logistic ridge regression for maximum 0/1-Accuracy because the 0/1-Accuracy loss function is nonconvex.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. We can use CV to optimize accuracy. Convexity comes in to play in the <em>tuning</em> procedure (because it requires search over a high-dimensional parameter space) and typically requires us to use a surrogate loss.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="short-answer-40-points---8-questions-at-5-points-each" class="level2">
+<h2 class="anchored" data-anchor-id="short-answer-40-points---8-questions-at-5-points-each">Short Answer (40 points - 8 questions at 5 points each)</h2>
+<ol type="1">
+<li><p>Apple devices support <code>FaceID</code> as an alternative to traditional password-based authentication. (In this context a ‘positive’ refers to an authorized user.) Label each of the following scenarios as a false positive (FP), false negative (FN), true positive (TP), or true negative (TN).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>TP</strong>: I am able to successfully authenticate on my phone.</li>
+<li><strong>FN</strong>: My phone refuses to authenticate me because I just woke up and my hair is a mess (`bed head’).</li>
+<li><strong>FP</strong>: My phone is stolen by my evil twin who is then able to access it because his face matches mine.</li>
+<li><strong>TN</strong>: My phone cannot be accessed by my kids when they take it without permission.</li>
+<li><strong>TP</strong>: My wife is added as a second user profile on my phone and she is able to use it to check my emails for me while I am driving.</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Given a binary classifier, how can you use it to perform to multi-class classification? <em>(Hint: “One- vs-rest” approaches may be easier to describe.)</em></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>See <a href="https://scikit-learn.org/stable/modules/multiclass.html#ovr-classification"><code>sklearn</code> docs</a>.</p>
+<p>Things to mention include (but aren’t limited to):</p>
+<ul>
+<li>Training <span class="math inline">\(K\)</span> different classifiers, each using the whole data set
+<ul>
+<li>Repeatedly changing the target variable to an indicator for a single class</li>
+</ul></li>
+<li>Prediction by taking the ‘most likely’ class</li>
+<li>A bit more interpretable</li>
+<li>A bit faster than alternatives</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Compare and contrast <em>bagging</em> and <em>stacking</em>. Give at least 2 similarities and two differences.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Possible similarities include:</p>
+<ul>
+<li>Ensemble learning</li>
+<li>Can use arbitrary base learners</li>
+<li>Parallelizable</li>
+<li>Aim for variance reduction, not bias mitigation</li>
+</ul>
+<p>Possible differences include:</p>
+<ul>
+<li>Stacking uses <em>different</em> base learners, while bagging <em>reuses</em> one family</li>
+<li>Bagging has resampling involved</li>
+<li>Stacking requires fitting a second set of weights, and hence an additional data split</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Describe the three parts of a <em>generalized linear model</em>, noting their general role in GLM specification and precisely identifying in logistic regression:</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The parts of a GLM are:</p>
+<ol type="1">
+<li>The linear predictor
+<ul>
+<li>Purpose: Estimates (a transform of) the conditional mean using a linear combination of features. Can be replaced by splines or kernel if appropriate to the problem.</li>
+<li>Logistic Regression: Standard (<span class="math inline">\(\bX\bbeta\)</span>)</li>
+</ul></li>
+<li>The sampling distribution
+<ul>
+<li>Purpose: Generative model for the observed <span class="math inline">\(y_i\)</span>. Varied to make data type fit distribution</li>
+<li>Logistic Regression: Bernoulli</li>
+</ul></li>
+<li>Mapping (or inverse link)
+<ul>
+<li>Purpose: Maps the domain of the linear predictor (<span class="math inline">\(\R\)</span>) to a suitable set of values that can be the mean of the sampling distribution</li>
+<li>Logistic Regression: <span class="math inline">\(f(z) = 1/(1+e^{-z}) = e^z/(1+e^z) = \text{softmax}(1, z)\)</span> which is known as the <em>logistic</em> function</li>
+</ul></li>
+</ol>
+</div>
+</div>
+</div></li>
+<li><p>Given the following data, draw the decision boundary estimated by a maximum margin classifier and mark the support points by circling them.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test2_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Something like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p>Given the following set of classification outcomes, compute the Folwkes-Mallows (FM) Index:</p>
+<table class="caption-top table" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td colspan="2">Ground Truth</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>+</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td rowspan="2"><br>Prediction</td>
+<td>+</td>
+<td>50</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>-</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Recall that <span class="math display">\[\text{FM} = \sqrt{\text{PPV} \times \text{TPR}}
+\text{ where } \text{PPV} = 1 - \text{FDR} = \frac{\text{TP}}{\text{TP} + \text{FP}}
+\text{ and } \text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We have</p>
+<p><span class="math display">\[\text{PPV} = \frac{50}{50+10} = \frac{5}{6}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\text{TPR} = \frac{50}{50+10} = \frac{5}{6}\]</span></p>
+<p>so</p>
+<p><span class="math display">\[\text{FM} = \sqrt{\frac{5}{6} * \frac{5}{6}} = \frac{5}{6}\]</span></p>
+</div>
+</div>
+</div></li>
+<li><p>Give an example of an <em>ordinal</em> classification problem and explain <em>in a concrete problem-specific sense</em> why it cannot be approached as a binary or multiclass classification problem (<em>i.e.</em>, your answer needs to be more substantial than “because it is ordinal.”).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Many possible solutions. Key things to highlight are ordered, but non-numeric, categories (e.g., user ratings or survey responses). Non-additivity of response.</p>
+</div>
+</div>
+</div></li>
+<li><p>Compare and contrast <em>Naive Bayes</em> and <em>Quadratic Discriminant Analysis</em>. Give at least 2 similarities and two differences.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Possible Similarities:</p>
+<ul>
+<li>Generative classifiers</li>
+<li>Based on multivariate normal distribution</li>
+<li>Both require estimating class means</li>
+</ul>
+<p>Possible Differences:</p>
+<ul>
+<li>NB is better for high-dim, QDA for low-dim</li>
+<li>NB has a linear decision boundary (linear method) while QDA has a parabolic boundary</li>
+<li>Difference covariance assumptions</li>
+</ul>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="mathematics-of-machine-learning-30-points-total" class="level2">
+<h2 class="anchored" data-anchor-id="mathematics-of-machine-learning-30-points-total">Mathematics of Machine Learning (30 points total)</h2>
+<p>In this section, you will develop your own <em>multinomial generative classifier</em> to determine whether a given email is valid (“ham”) or spam.</p>
+<p>Before we get into the mathematics, recall that a <em>multinomial</em> distribution is a generalization of the binomial distribution (with a categorical sampling scheme replacing the Bernoulli). Specifically, a <span class="math inline">\(K\)</span>-class multinomial is characterized by a sample size <span class="math inline">\(n \in \mathbb{N}\)</span> and a probability vector <span class="math inline">\(\mathbf{p}=(p_1, p_2, \dots p_K)\)</span> where <span class="math inline">\(\sum_i p_i = 1\)</span> and all <span class="math inline">\(p_i \geq 0\)</span>. The PMF of an observation is then given by <span class="math display">\[\mathbb{P}(\mathbf{X} = \mathbf{x}) = \mathbb{P}(X_1 = x_1, X_2 = x_2, \dots, X_K=x_K) = \frac{n!}{x_1!x_2!\dots x_K!}p_1^{x_1}p_2^{x_2}\dots p_K^{x_K}\]</span> where <span class="math inline">\((x_1, x_2, \dots, x_K)\)</span> are the number of observations in each category.</p>
+<p>For example, if a <span class="math inline">\(3\)</span>-class multinomial has probability parameters <span class="math inline">\((0.5, 0.25, 0.25)\)</span> and we observe <span class="math inline">\((3, 1, 1)\)</span>, the PMF of that observation is: <span class="math display">\[\frac{5!}{3!1!1!}0.5^30.25^10.25^1 = \frac{120}{6 * 1 * 1}(0.125)(0.5)(0.5) = 0.15625.\]</span></p>
+<p>You want to use a multinomial generative classifier to distinguish emails based on certain words. After discussion with your IT department, you have collected a series of valid and spam emails and found that they contain the following word counts:</p>
+<div class="#count-tbl">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Word</th>
+<th style="text-align: right;">Valid</th>
+<th style="text-align: right;">Spam</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Deal</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Double</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Money</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Free</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Spreadsheet</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Revenue</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Classifier</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>(Emails may contain other words, but you do not include them in your model.)</p>
+<p>In this context, we are using a <em>bag of words</em> approach, where the only thing that matters is the counts of various words, not the order in which they appear or any other words not on our list.</p>
+<p>You also know that your company’s domain receives nine times as many spam messages as valid ones.</p>
+<ol type="1">
+<li><p>Given the above information, what should your <em>prior</em> probabilities before for <span class="math inline">\(\P(\text{Valid})\)</span> and <span class="math inline">\(\P(\text{Spam}) = 1 - \P(\text{Valid})\)</span>? (3 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We can simply read the priors off the given information:</p>
+<p><span class="math display">\[\P(\text{Spam}) = 9\P(\text{Valid}) \implies \P(\text{Valid}) +
+  \P(\text{Spam}) = \P(\text{Valid}) + 9 * \P(\text{Valid}) = 1
+  \implies 10\P(\text{Valid}) = 1\]</span> giving us:</p>
+<ul>
+<li><span class="math inline">\(\P(\text{Valid}) = 10\%\)</span></li>
+<li><span class="math inline">\(\P(\text{Spam}) = 1 - \P(\text{Valid}) = 90\%\)</span></li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Using the above text, what are the <span class="math inline">\(\mathbf{p}\)</span> probabilities for both classes? Write your answer as two probability vectors. (5 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Keeping the same order of words in the above example, we build the probability vectors by aggregating and normalizing <em>columnwise</em> (classwise):</p>
+<p><span class="math display">\[\begin{align*}
+\mathbf{p}_{\text{Valid}} &amp;= \left(\frac{\text{\# of Word 1}}{\text{Total \# of Words}}, \frac{\text{\# of Word 2}}{\text{Total \# of Words}}, \dots\right) \\
+&amp;= \left(\frac{20}{200}, \frac{10}{200}, \dots\right) \\
+&amp;= (10\%, 5\%, 40\%, 10\%, 10\%, 20\%, 5\%)
+\end{align*}\]</span></p>
+<p>Similarly:</p>
+<p><span class="math display">\[\mathbf{p}_{\text{Spam}} = (20\%, 25\%, 25\%, 25\%, 1.25\%, 3\%, 0.75\%)\]</span></p>
+</div>
+</div>
+</div></li>
+<li><p>In order to calibrate the decision boundary for your classifiers, you perform a user experience study that reveals it takes 2 minutes on average to discard a spam email, while it takes 10 minutes to find an improperly labeled valid email and move it to the inbox.</p>
+<p>What <em>posterior</em> probability threshold should you select in order to minimize the expected amount of wasted time?(Find <span class="math inline">\(p_{\text{thresh}}\)</span> such that if the posterior probability of being spam is greater than <span class="math inline">\(p_{\text{thresh}}\)</span>, the optimal choice is to treat the email as spam.)</p>
+<p><em>Hint: When the posterior probability is equal to the threshold, the expected time loss of both decisions is equal.</em> (5 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The decision boundary should be set so that both decisions (spam / valid) have the same expected time loss. If we let <span class="math inline">\(p\)</span> be the threshold probability, then labeling the email as spam has an expected time loss of <span class="math inline">\(10(1-p)\)</span> and labeling the email as valid has an expected time loss of <span class="math inline">\(2p\)</span>. We can equate these to find</p>
+<p><span class="math display">\[\begin{align*}
+10(1-p) &amp;= 2p \\
+10 - 10p &amp;= 2p \\
+10 &amp;= 12p \\
+p &amp;= \frac{5}{6}
+\end{align*}\]</span></p>
+<p>so we set <span class="math inline">\(p_{\text{thresh}} = \frac{5}{6}\)</span></p>
+</div>
+</div>
+</div></li>
+<li><p>Your classifier receives a new message with the text:</p>
+<div class="#email_contents">
+<blockquote class="blockquote">
+<p>Hello Friend!</p>
+<p>I have a great deal for you - if you send me $100 today, I will double your money and send you $200 dollars next week. That is $100 absolutely free!!</p>
+<p>How am I able to offer such an amazing deal? I have a system for investing in the markets. I can study price patterns and identify stocks that are going up and ride them to the moon! No spreadsheet needed - just pure skill.</p>
+<p>I’m offering you this opportunity to double your money because I believe that this path to properity should be free to all. We don’t need any fancy banks with their lies - power to the people!</p>
+</blockquote>
+</div>
+<p>A. What is the data vector <span class="math inline">\((\bx)\)</span> associated with the above text? (5 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We count up the words in the above text (keeping the same order as earlier) to get</p>
+<p><span class="math display">\[\bx = (2, 2, 2, 2, 1, 0, 0)\]</span></p>
+</div>
+</div>
+</div>
+<p>B. What is the PMF of each class associated with this data vector? (5 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We substitute our observed values into the multinomial PMF given above:</p>
+<p><span class="math display">\[\P(\bx | \text{Spam}) \frac{9!}{2!2!2!2!1!0!0!} * 0.2^2 * 0.25^2 * 0.25^2 * 0.25^2 * 0.0125^1 * 0.03^0 * 0.0075^0 \approx 0.00277\]</span></p>
+<p>and</p>
+<p><span class="math display">\[ \P(\bx | \text{Valid}) = \frac{9!}{2!2!2!2!1!0!0!} * 0.1^2 * 0.05^2 * 0.40^2 * 0.1^2 * 0.1^1 * 0.2^0 * 0.05^0 \approx 9.072*10^{-5}\]</span></p>
+</div>
+</div>
+</div>
+<p>C. What are the <em>posterior</em> probabilities of each class? (5 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We use Bayes’ rule to compute the posterior probability of being spam:</p>
+<p><span class="math display">\[\begin{align*}
+\P(\text{Spam} | \bx) &amp;= \frac{\P(\bx | \text{Spam})\P(\text{Spam})}{\P(\bx | \text{Spam})\P(\text{Spam}) + \P(\bx | \text{Valid})\P(\text{Valid})} \\
+&amp;= \frac{0.00277 * 0.9}{0.00277 * 0.9 + 9.072*10^{-5} * 0.1} \\
+&amp;\approx 99.6\%
+\end{align*}\]</span></p>
+</div>
+</div>
+</div>
+<p>D. Should this email be marked as spam or not? (2 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>Yes</strong>. This email has a 99.6% chance of being spam, which is above our marking threshold of <span class="math inline">\(5/6\)</span>.</p>
+</div>
+</div>
+</div></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/michael-weylandt\.com\/STA9890\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/tests/test2.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/tests/test2.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
