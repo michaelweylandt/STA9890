@@ -112,6 +112,11 @@ this work.
 - Test 1: Regression
   - [Exam Booklet](./notes/tests/sta9890_spring2025_test1.pdf)
   - [Solutions](./notes/tests/test1.html)
+- Test 2: Classification
+  - [Exam Booklet](./notes/tests/sta9890_spring2025_test2.pdf)
+  - [Solutions](./notes/tests/test2.html)
+
+
 
 ### Additional Materials
 
