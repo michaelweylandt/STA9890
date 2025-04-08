@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Michael Weylandt">
 
-<title>STA 9890 - Non-Linear Regression – STA 9890</title>
+<title>STA 9890 - Regression III: Non-Linear Regression – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -216,13 +217,19 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">STA 9890 - Non-Linear Regression</h1>
+<h1 class="title">STA 9890 - Regression III: Non-Linear Regression</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Weylandt </p>
+          </div>
+  </div>
     
   
     
@@ -431,8 +438,17 @@ f(\bx) &amp;\approx f(\overline{\bx}) + \nabla_f(\bx_0)^{\top}(\bx - \overline{\
 <div class="cell-output cell-output-stderr">
 <pre><code>locfit 1.5-9.11      2025-01-27</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> (<span class="fu">locfit</span>(y <span class="sc">~</span> <span class="fu">lp</span>(x)))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'locfit'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    none</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> (<span class="fu">locfit</span>(y <span class="sc">~</span> <span class="fu">lp</span>(x)))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Estimation type: Local Regression 
 
@@ -444,12 +460,12 @@ Independent variables:  x
 Evaluation structure: Rectangular Tree 
 Number of evaluation points:  7 
 Degree of fit:  2 
-Fitted Degrees of Freedom:  5.194 </code></pre>
+Fitted Degrees of Freedom:  5.305 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, Ey_grid)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(m, <span class="fu">data.frame</span>(<span class="at">x =</span> x_grid))</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, y_hat, <span class="at">col=</span><span class="st">"red4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, Ey_grid)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(m, <span class="fu">data.frame</span>(<span class="at">x =</span> x_grid))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, y_hat, <span class="at">col=</span><span class="st">"red4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -462,11 +478,11 @@ Fitted Degrees of Freedom:  5.194 </code></pre>
 <p>You can also see a discussion of the “degrees of freedom” in the model output. This is not exactly the DoF you learned in earlier classes, but it’s sort of “morally equivalent.” This local fit is about as flexible as a 4th degree polynomial would be for this problem. Even though this model is made out of quadratics, it’s more flexible than a single quadratic. But we avoid the extreme variability associated with a polynomial of that high order. Win-win!</p>
 <p>We can tweak some parameters of the local fit to get different responses: the big ones are the degree (<code>deg</code>) and the number of neighbors to use.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>?lp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>?lp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> (<span class="fu">locfit</span>(y <span class="sc">~</span> <span class="fu">lp</span>(x, <span class="at">deg=</span><span class="dv">4</span>)))</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> (<span class="fu">locfit</span>(y <span class="sc">~</span> <span class="fu">lp</span>(x, <span class="at">deg=</span><span class="dv">4</span>)))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Estimation type: Local Regression 
 
@@ -478,12 +494,12 @@ Independent variables:  x
 Evaluation structure: Rectangular Tree 
 Number of evaluation points:  7 
 Degree of fit:  4 
-Fitted Degrees of Freedom:  6.986 </code></pre>
+Fitted Degrees of Freedom:  7.473 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, Ey_grid)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(m, <span class="fu">data.frame</span>(<span class="at">x =</span> x_grid))</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, y_hat, <span class="at">col=</span><span class="st">"red4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, Ey_grid)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(m, <span class="fu">data.frame</span>(<span class="at">x =</span> x_grid))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, y_hat, <span class="at">col=</span><span class="st">"red4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -494,12 +510,8 @@ Fitted Degrees of Freedom:  6.986 </code></pre>
 </div>
 <p>Pretty nice. If we ‘turn down’ the number of neighbors used:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> (<span class="fu">locfit</span>(y <span class="sc">~</span> <span class="fu">lp</span>(x, <span class="at">nn=</span><span class="fl">0.2</span>, <span class="at">deg=</span><span class="dv">4</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in lfproc(x, y, weights = weights, cens = cens, base = base, geth =
-geth, : Estimated rdf &lt; 1.0; not estimating variance</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> (<span class="fu">locfit</span>(y <span class="sc">~</span> <span class="fu">lp</span>(x, <span class="at">nn=</span><span class="fl">0.2</span>, <span class="at">deg=</span><span class="dv">4</span>)))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Estimation type: Local Regression 
 
@@ -509,9 +521,9 @@ locfit(formula = y ~ lp(x, nn = 0.2, deg = 4))
 Number of data points:  25 
 Independent variables:  x 
 Evaluation structure: Rectangular Tree 
-Number of evaluation points:  27 
+Number of evaluation points:  29 
 Degree of fit:  4 
-Fitted Degrees of Freedom:  24.257 </code></pre>
+Fitted Degrees of Freedom:  21.873 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, Ey_grid)</span>
@@ -536,9 +548,9 @@ Fitted Degrees of Freedom:  24.257 </code></pre>
 loess(formula = y ~ x)
 
 Number of Observations: 25 
-Equivalent Number of Parameters: 4.64 
-Residual Standard Error: 4.098 
-Trace of smoother matrix: 5.1  (exact)
+Equivalent Number of Parameters: 4.66 
+Residual Standard Error: 3.639 
+Trace of smoother matrix: 5.12  (exact)
 
 Control settings:
   span     :  0.75 
@@ -676,11 +688,20 @@ drop.square:  FALSE </code></pre>
 <pre><code>Loading required package: nlme</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'nlme'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    collapse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
 <pre><code>This is mgcv 1.9-1. For overview type 'help("mgcv-package")'.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x))</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: gaussian 
@@ -690,28 +711,26 @@ Formula:
 y ~ s(x)
 
 Parametric coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  -4.2852     0.5974  -7.173  1.1e-06 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  -0.8865     0.6353  -1.395    0.179
 
 Approximate significance of smooth terms:
        edf Ref.df     F p-value    
-s(x) 5.954  7.038 70.49  &lt;2e-16 ***
+s(x) 5.582  6.664 30.78  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.954   Deviance explained = 96.5%
-GCV = 12.359  Scale est. = 8.9212    n = 25</code></pre>
+R-sq.(adj) =  0.896   Deviance explained =   92%
+GCV = 13.695  Scale est. = 10.089    n = 25</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x))</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(m, <span class="fu">data.frame</span>(<span class="at">x =</span> x_grid))</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">range</span>(x_grid))</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, Ey_grid)</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, y_hat, <span class="at">col=</span><span class="st">"red4"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x))</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(m, <span class="fu">data.frame</span>(<span class="at">x =</span> x_grid))</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">range</span>(x_grid))</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, Ey_grid)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, y_hat, <span class="at">col=</span><span class="st">"red4"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -742,28 +761,28 @@ GCV = 12.359  Scale est. = 8.9212    n = 25</code></pre>
 <p><span class="math display">\[\hat{\beta}_{\text{Ridge}} = \lambda^{-1}\bX^T(\bX\bX^{\top}/\lambda + \bI)^{-1}\by = \bX^{\top}(\bX\bX^{\top}+\lambda \bI)^{-1}\by\]</span></p>
 <p>You can prove this using the <a href="https://en.wikipedia.org/wiki/Woodbury_matrix_identity">Woodbury Matrix Identity</a> or we can just check it for a single data set and trust that it generalizes:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">5</span> </span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> p), <span class="at">nrow=</span>n, <span class="at">ncol=</span>p) </span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>Ey <span class="ot">&lt;-</span> X[,<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">sqrt</span>(X[,<span class="dv">2</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">5</span>) <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[,<span class="dv">3</span>]<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> <span class="fu">cos</span>(<span class="fu">abs</span>(X[,<span class="dv">4</span>])) <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>(<span class="fu">abs</span>(X[,<span class="dv">5</span>]) <span class="sc">+</span> <span class="dv">3</span>)</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> Ey <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd=</span><span class="fu">sqrt</span>(<span class="fl">0.25</span>))</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>eye <span class="ot">&lt;-</span> <span class="cf">function</span>(p) <span class="fu">diag</span>(<span class="dv">1</span>, p, p)</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>beta_hat_ridge <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">eye</span>(p), <span class="fu">crossprod</span>(X, y))</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>beta_hat_ridge_alt <span class="ot">&lt;-</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="fu">tcrossprod</span>(X) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">eye</span>(n)) <span class="sc">%*%</span> y</span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(beta_hat_ridge, beta_hat_ridge_alt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">5</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> p), <span class="at">nrow=</span>n, <span class="at">ncol=</span>p) </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>Ey <span class="ot">&lt;-</span> X[,<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">sqrt</span>(X[,<span class="dv">2</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">5</span>) <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[,<span class="dv">3</span>]<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> <span class="fu">cos</span>(<span class="fu">abs</span>(X[,<span class="dv">4</span>])) <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>(<span class="fu">abs</span>(X[,<span class="dv">5</span>]) <span class="sc">+</span> <span class="dv">3</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> Ey <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd=</span><span class="fu">sqrt</span>(<span class="fl">0.25</span>))</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>eye <span class="ot">&lt;-</span> <span class="cf">function</span>(p) <span class="fu">diag</span>(<span class="dv">1</span>, p, p)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>beta_hat_ridge <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">eye</span>(p), <span class="fu">crossprod</span>(X, y))</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>beta_hat_ridge_alt <span class="ot">&lt;-</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="fu">tcrossprod</span>(X) <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">eye</span>(n)) <span class="sc">%*%</span> y</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(beta_hat_ridge, beta_hat_ridge_alt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           [,1]       [,2]
-[1,] 1.42746826 1.42746826
-[2,] 0.15151370 0.15151370
-[3,] 0.57121814 0.57121814
-[4,] 0.04425193 0.04425193
-[5,] 0.58742212 0.58742212</code></pre>
+<pre><code>            [,1]        [,2]
+[1,]  1.43685611  1.43685611
+[2,] -0.50138191 -0.50138191
+[3,]  0.38435758  0.38435758
+[4,] -0.05680342 -0.05680342
+[5,]  0.05131597  0.05131597</code></pre>
 </div>
 </div>
 <p>So they are the same! But why did we do this?</p>
@@ -791,14 +810,27 @@ GCV = 12.359  Scale est. = 8.9212    n = 25</code></pre>
 <p>If we break this apart, we see that our predictions at the new point <span class="math inline">\(\tilde{\bx}\)</span> are essentially just weighted averages of our original observations <span class="math inline">\(\by\)</span>, weighted by the similarity between the new point and our training points <span class="math inline">\(\kappa(\bX, \cdot)\)</span>. This intuition is super important and we’ll dig into it further below.</p>
 <p>Let’s try out <em>Kernel(ized) Ridge Regression</em>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Define a kernel function - we'll spell this out below.</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>rbf <span class="ot">&lt;-</span> <span class="fu">rbfdot</span>(<span class="at">sigma =</span> <span class="fl">0.05</span>)</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="do">## calculate kernel matrix</span></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="fu">kernelMatrix</span>(rbf, X)</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(K)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'kernlab'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    cross</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ggplot2':
+
+    alpha</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Define a kernel function - we'll spell this out below.</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>rbf <span class="ot">&lt;-</span> <span class="fu">rbfdot</span>(<span class="at">sigma =</span> <span class="fl">0.05</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="do">## calculate kernel matrix</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="fu">kernelMatrix</span>(rbf, X)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(K)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 100 100</code></pre>
 </div>
@@ -806,21 +838,21 @@ GCV = 12.359  Scale est. = 8.9212    n = 25</code></pre>
 <p>Note that this is a <span class="math inline">\(n \times n\)</span> matrix - not a <span class="math inline">\(p \times p\)</span> matrix!</p>
 <p>We can now use this to make predictions:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>krr <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">lambda=</span><span class="dv">1</span>) {</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">crossprod</span>(y, <span class="fu">solve</span>(K <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">eye</span>(n), <span class="fu">kernelMatrix</span>(rbf, X, x)))</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>krr_MSE <span class="ot">&lt;-</span> <span class="fu">mean</span>((y <span class="sc">-</span> <span class="fu">krr</span>(X))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(krr_MSE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>krr <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">lambda=</span><span class="dv">1</span>) {</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">crossprod</span>(y, <span class="fu">solve</span>(K <span class="sc">+</span> lambda <span class="sc">*</span> <span class="fu">eye</span>(n), <span class="fu">kernelMatrix</span>(rbf, X, x)))</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>krr_MSE <span class="ot">&lt;-</span> <span class="fu">mean</span>((y <span class="sc">-</span> <span class="fu">krr</span>(X))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(krr_MSE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4916979</code></pre>
+<pre><code>[1] 0.4519902</code></pre>
 </div>
 </div>
 <p>This is <em>better</em> than the OLS MSE:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(y <span class="sc">~</span> X))<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">resid</span>(<span class="fu">lm</span>(y <span class="sc">~</span> X))<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5484549</code></pre>
+<pre><code>[1] 0.4985457</code></pre>
 </div>
 </div>
 <p>Why? How is this not a contradiction of everything said before.</p>

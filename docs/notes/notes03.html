@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Michael Weylandt">
 
-<title>STA 9890 - Regularized Regression – STA 9890</title>
+<title>STA 9890 - Regression II: Regularized Regression – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -208,13 +209,19 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">STA 9890 - Regularized Regression</h1>
+<h1 class="title">STA 9890 - Regression II: Regularized Regression</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Weylandt </p>
+          </div>
+  </div>
     
   
     
@@ -705,7 +712,7 @@ Pause to Reflect
 </div>
 </div>
 </div>
-<p>Clearly, for smallish <span class="math inline">\(\lambda\)</span>, we are actually outperforming OLS, sometimes by a significant amount! For this problem, the minimum MSE (best estimate) actually seems to occur near <span class="math inline">\(\lambda \approx\)</span> 1.585</p>
+<p>Clearly, for smallish <span class="math inline">\(\lambda\)</span>, we are actually outperforming OLS, sometimes by a significant amount! For this problem, the minimum MSE (best estimate) actually seems to occur near <span class="math inline">\(\lambda \approx\)</span> 1.259</p>
 <section id="model-selection" class="level3">
 <h3 class="anchored" data-anchor-id="model-selection">Model Selection</h3>
 <p>While theory and our experiment above tell us that there is <em>some</em> value of <span class="math inline">\(\lambda\)</span> that beats OLS, how can we actually find it? We can’t do a simulation like above as we had to know <span class="math inline">\(\bbeta_*\)</span> to compute the MSE and the theory is non-constructive. (In particular, we have to know <span class="math inline">\(\bbeta_*\)</span> to compute the bias.)</p>
@@ -753,7 +760,7 @@ Pause to Reflect
 </div>
 </div>
 </div>
-<p>Our results here aren’t quite as definitive as when we knew the true <span class="math inline">\(\bbeta_*\)</span>, but they suggest we want to take <span class="math inline">\(\lambda \approx\)</span> 0.398 which isn’t too far from what we found above.</p>
+<p>Our results here aren’t quite as definitive as when we knew the true <span class="math inline">\(\bbeta_*\)</span>, but they suggest we want to take <span class="math inline">\(\lambda \approx\)</span> 0.794 which isn’t too far from what we found above.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">

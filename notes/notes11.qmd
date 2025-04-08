@@ -1,4 +1,7 @@
 ---
-title: "{{< var course.short >}} - Dimension Reduction and PCA"
+session: "`r session <- 11; session`"
+author: "Michael Weylandt"
+topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair='universal') |> filter(Course.Element == 'Class Session', Item.Number==session) |> pull(Details); topic`"
+title: "{{< var course.short >}} - {{< meta topic >}}"
 ---
 

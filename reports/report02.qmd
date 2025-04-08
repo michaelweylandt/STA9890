@@ -352,7 +352,7 @@ submission.
    - Report has strong formatting; tables and figures make their
      intended points, but do not do so optimally. 
    - Formatting is average; tables and figures do not clearly support
-     arguments made in the text and/or are not "publication quality"
+     arguments made in the text and/or are not "publication quality".
    - Poor formatting distracts from substance of report. Tables and
      Figures exhibit significant deficiencies in formatting.  
    - Formatting prohibits or significantly impairs reader understanding.

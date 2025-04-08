@@ -1,5 +1,8 @@
 ---
-title: "{{< var course.short >}} - Discriminative Classifiers"
+session: "`r session <- 7; session`"
+author: "Michael Weylandt"
+topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair='universal') |> filter(Course.Element == 'Class Session', Item.Number==session) |> pull(Details); topic`"
+title: "{{< var course.short >}} - {{< meta topic >}}"
 ---
 
 $$\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\P}{\mathbb{P}}\newcommand{\R}{\mathbb{R}} \newcommand{\by}{\mathbf{y}}\newcommand{\argmax}{\text{arg\,max}}\newcommand{\argmin}{\text{arg\,min}}$$
