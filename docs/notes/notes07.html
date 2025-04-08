@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Michael Weylandt">
 
-<title>STA 9890 - Discriminative Classifiers – STA 9890</title>
+<title>STA 9890 - Classification II: Discriminative Classifiers – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -205,13 +206,19 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">STA 9890 - Discriminative Classifiers</h1>
+<h1 class="title">STA 9890 - Classification II: Discriminative Classifiers</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Weylandt </p>
+          </div>
+  </div>
     
   
     
@@ -349,17 +356,27 @@ p(\mathcal{D}_{\text{train}}) &amp;= \prod_{i=1}^n p(y_i | \bx_i) \\
 Attaching package: 'CVXR'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    id</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    is_vector</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:stats':
 
     power</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">Variable</span>(p)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>eta  <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>objective <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="sc">-</span> y <span class="sc">*</span> eta <span class="sc">+</span> <span class="fu">logistic</span>(eta))</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>problem   <span class="ot">&lt;-</span> <span class="fu">Problem</span>(<span class="fu">Minimize</span>(objective))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(problem)<span class="sc">$</span><span class="fu">getValue</span>(beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">Variable</span>(p)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>eta  <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>objective <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="sc">-</span> y <span class="sc">*</span> eta <span class="sc">+</span> <span class="fu">logistic</span>(eta))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>problem   <span class="ot">&lt;-</span> <span class="fu">Problem</span>(<span class="fu">Minimize</span>(objective))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(problem)<span class="sc">$</span><span class="fu">getValue</span>(beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -371,19 +388,19 @@ Attaching package: 'CVXR'</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1.0574628</td>
+<td style="text-align: right;">0.9975707</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2.0266554</td>
+<td style="text-align: right;">1.6927524</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2.7117364</td>
+<td style="text-align: right;">2.8273155</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">-0.0225406</td>
+<td style="text-align: right;">0.0471099</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">0.1103746</td>
+<td style="text-align: right;">0.1771164</td>
 </tr>
 </tbody>
 </table>
@@ -391,7 +408,7 @@ Attaching package: 'CVXR'</code></pre>
 </div>
 <p>Not too bad, if we compare this to <code>R</code>’s built-in logistic regression function, we see our results basically match:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">glm</span>(y <span class="sc">~</span> X <span class="sc">+</span> <span class="dv">0</span>, <span class="at">family=</span>binomial))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">glm</span>(y <span class="sc">~</span> X <span class="sc">+</span> <span class="dv">0</span>, <span class="at">family=</span>binomial))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -399,19 +416,19 @@ glm(formula = y ~ X + 0, family = binomial)
 
 Coefficients:
    Estimate Std. Error z value Pr(&gt;|z|)    
-X1  1.05746    0.17219   6.141 8.19e-10 ***
-X2  2.02666    0.22207   9.126  &lt; 2e-16 ***
-X3  2.71174    0.26442  10.255  &lt; 2e-16 ***
-X4 -0.02254    0.13977  -0.161    0.872    
-X5  0.11037    0.14815   0.745    0.456    
+X1  0.99757    0.16318   6.113 9.76e-10 ***
+X2  1.69275    0.19420   8.716  &lt; 2e-16 ***
+X3  2.82732    0.27231  10.383  &lt; 2e-16 ***
+X4  0.04711    0.13997   0.337    0.736    
+X5  0.17712    0.12503   1.417    0.157    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
     Null deviance: 693.15  on 500  degrees of freedom
-Residual deviance: 319.95  on 495  degrees of freedom
-AIC: 329.95
+Residual deviance: 332.85  on 495  degrees of freedom
+AIC: 342.85
 
 Number of Fisher Scoring iterations: 6</code></pre>
 </div>
@@ -420,39 +437,39 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>Note that, in the above, we had to use the <code>logistic</code> function built into <code>CVX</code>. If we used <code>log(1+exp(eta))</code>, the solver would not be able to prove that it is convex and would refuse to try to solve. See the <code>CVX</code> documentation for more details.</p>
 <p>We can compute accuracy after defining a ‘decision rule’. Here, let’s just round the predicted probability</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p_hat <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>X <span class="sc">%*%</span> beta_hat))</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">round</span>(p_hat)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(y_hat <span class="sc">==</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p_hat <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>X <span class="sc">%*%</span> beta_hat))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>y_hat <span class="ot">&lt;-</span> <span class="fu">round</span>(p_hat)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(y_hat <span class="sc">==</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.856</code></pre>
+<pre><code>[1] 0.844</code></pre>
 </div>
 </div>
 <p>Now that we have this toolkit built up, we can also easily apply ridge and lasso penalization:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>penalty <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(beta))</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>lasso_problem <span class="ot">&lt;-</span> <span class="fu">Problem</span>(<span class="fu">Minimize</span>(objective <span class="sc">+</span> <span class="dv">9</span> <span class="sc">*</span> penalty))</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>beta_hat_lasso <span class="ot">&lt;-</span> <span class="fu">solve</span>(lasso_problem)<span class="sc">$</span><span class="fu">getValue</span>(beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>penalty <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(beta))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>lasso_problem <span class="ot">&lt;-</span> <span class="fu">Problem</span>(<span class="fu">Minimize</span>(objective <span class="sc">+</span> <span class="dv">9</span> <span class="sc">*</span> penalty))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>beta_hat_lasso <span class="ot">&lt;-</span> <span class="fu">solve</span>(lasso_problem)<span class="sc">$</span><span class="fu">getValue</span>(beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.6700834</td>
+<td style="text-align: right;">0.6323610</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1.4177753</td>
+<td style="text-align: right;">1.1913097</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1.9420811</td>
+<td style="text-align: right;">2.0446974</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0375919</td>
 </tr>
 </tbody>
 </table>
@@ -477,20 +494,20 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <h2 class="anchored" data-anchor-id="loss-functions-for-classification">Loss Functions for Classification</h2>
 <p>We now have a workable loss function for discriminative classification. Returning to our example from above (changed to <span class="math inline">\(\{0, 1\}\)</span> convention briefly). Let us set <span class="math inline">\(\alpha = y\hat{y}\)</span> and investigate our loss functions as a property of <span class="math inline">\(\alpha\)</span>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">length.out=</span><span class="dv">201</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>acc     <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">ifelse</span>(alpha <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>lr_loss <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>alpha))</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(alpha, <span class="fu">acc</span>(alpha), <span class="at">type=</span><span class="st">"l"</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(alpha),</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Loss"</span>, </span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Classification Losses"</span>, </span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(alpha, <span class="fu">lr_loss</span>(alpha), <span class="at">col=</span><span class="st">"red4"</span>)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, </span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red4"</span>), </span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd=</span><span class="dv">2</span>, </span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Accuracy"</span>, <span class="st">"Logistic Regression"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">length.out=</span><span class="dv">201</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>acc     <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">ifelse</span>(alpha <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>lr_loss <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>alpha))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(alpha, <span class="fu">acc</span>(alpha), <span class="at">type=</span><span class="st">"l"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(alpha),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Loss"</span>, </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Classification Losses"</span>, </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(alpha, <span class="fu">lr_loss</span>(alpha), <span class="at">col=</span><span class="st">"red4"</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red4"</span>), </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd=</span><span class="dv">2</span>, </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Accuracy"</span>, <span class="st">"Logistic Regression"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -513,22 +530,22 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>If <span class="math inline">\(y=1\)</span>, we get zero loss so long as <span class="math inline">\(\bx^{\top}\bbeta &gt; 1\)</span> and a small loss for <span class="math inline">\(0 &lt; \bx^{\top}\bbeta &lt; 1\)</span>. As <span class="math inline">\(\bx^{\top}\bbeta\)</span> crosses zero and goes negative, the loss grows linearly without bound. (Reverse all of this for the case <span class="math inline">\(y = -1\)</span>.) This is an interesting loss function: we cannot make our loss decrease as our predictions become ‘more right’, but our loss continues to increase as our prediction becomes ‘more wrong’.</p>
 <p>Visually, we can draw this on our plot from above:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">length.out=</span><span class="dv">201</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>acc     <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">ifelse</span>(alpha <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>lr_loss <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>alpha))</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>hinge_loss <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="dv">1</span><span class="sc">-</span>alpha)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(alpha, <span class="fu">acc</span>(alpha), <span class="at">type=</span><span class="st">"l"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(alpha),</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Loss"</span>, </span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Classification Losses"</span>, </span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(alpha, <span class="fu">lr_loss</span>(alpha), <span class="at">col=</span><span class="st">"red4"</span>)</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(alpha, <span class="fu">hinge_loss</span>(alpha), <span class="at">col=</span><span class="st">"green4"</span>)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, </span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red4"</span>, <span class="st">"green4"</span>), </span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd=</span><span class="dv">2</span>, </span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Accuracy"</span>, <span class="st">"Logistic Regression"</span>, <span class="st">"Hinge Loss"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">length.out=</span><span class="dv">201</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>acc     <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">ifelse</span>(alpha <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>lr_loss <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>alpha))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>hinge_loss <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha) <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="dv">1</span><span class="sc">-</span>alpha)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(alpha, <span class="fu">acc</span>(alpha), <span class="at">type=</span><span class="st">"l"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="fu">expression</span>(alpha),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Loss"</span>, </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Classification Losses"</span>, </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(alpha, <span class="fu">lr_loss</span>(alpha), <span class="at">col=</span><span class="st">"red4"</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(alpha, <span class="fu">hinge_loss</span>(alpha), <span class="at">col=</span><span class="st">"green4"</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"red4"</span>, <span class="st">"green4"</span>), </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd=</span><span class="dv">2</span>, </span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend=</span><span class="fu">c</span>(<span class="st">"Accuracy"</span>, <span class="st">"Logistic Regression"</span>, <span class="st">"Hinge Loss"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -543,32 +560,32 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p><span class="math display">\[\hat{\bbeta} = \argmin \sum_{i=1}^n (1-y_i \bx_i^{\top}\bbeta)_+ + \lambda \|\bbeta\|_2^2\]</span></p>
 <p>We can solve this directly using CVX as follows:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate data from the logistic model and fit an SVM</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>X    <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> p), <span class="at">ncol=</span>p)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>X <span class="sc">%*%</span> beta))</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>P)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Convert to +/-1 convention</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> y <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CVXR)</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">Variable</span>(p)</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>eta  <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>objective <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">pos</span>(<span class="dv">1</span> <span class="sc">-</span> y <span class="sc">*</span> eta)) <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">norm2</span>(beta)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>problem   <span class="ot">&lt;-</span> <span class="fu">Problem</span>(<span class="fu">Minimize</span>(objective))</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(problem)<span class="sc">$</span><span class="fu">getValue</span>(beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate data from the logistic model and fit an SVM</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>X    <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> p), <span class="at">ncol=</span>p)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>X <span class="sc">%*%</span> beta))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>P)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Convert to +/-1 convention</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> y <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CVXR)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">Variable</span>(p)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>eta  <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>objective <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">pos</span>(<span class="dv">1</span> <span class="sc">-</span> y <span class="sc">*</span> eta)) <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">norm2</span>(beta)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>problem   <span class="ot">&lt;-</span> <span class="fu">Problem</span>(<span class="fu">Minimize</span>(objective))</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(problem)<span class="sc">$</span><span class="fu">getValue</span>(beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using the decision rule <span class="math inline">\(\hat{y} = \text{sign}(\bx^{\top}\bbeta)\)</span>, this gives us good accuracy:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">sign</span>(X <span class="sc">%*%</span> beta_hat) <span class="sc">==</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">sign</span>(X <span class="sc">%*%</span> beta_hat) <span class="sc">==</span> y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.868</code></pre>
+<pre><code>[1] 0.88</code></pre>
 </div>
 </div>
 <p>This is comparable to what we got for logistic regression even though:</p>
