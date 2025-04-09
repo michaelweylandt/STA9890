@@ -2,7 +2,7 @@
 title: "STA 9890 - Spring 2025 </br> Test 2: Classification and Ensemble Methods"
 ---
 
-The original test booklet can be found [here](./sta9890_spring2025_test2.pdf). 
+The original test booklet can be found [here](./STA9890_test2_2025-Spring.pdf). 
 $$\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}} \newcommand{\P}{\mathbb{P}}$$ 
 
 ## Multiple Choice (30 points - 10 questions at 3 points each)

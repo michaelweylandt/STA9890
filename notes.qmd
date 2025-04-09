@@ -110,10 +110,10 @@ this work.
 ### Tests and Solutions
 
 - Test 1: Regression
-  - [Exam Booklet](./notes/tests/sta9890_spring2025_test1.pdf)
+  - [Exam Booklet](./notes/tests/STA9890_test1_2025-Spring.pdf)
   - [Solutions](./notes/tests/test1.html)
 - Test 2: Classification
-  - [Exam Booklet](./notes/tests/sta9890_spring2025_test2.pdf)
+  - [Exam Booklet](./notes/tests/STA9890_test2_2025-Spring.pdf)
   - [Solutions](./notes/tests/test2.html)
 
 
