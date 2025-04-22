@@ -71,10 +71,14 @@ rowMeans(replicate(5000, {
    ::: {.callout-tip title="Solution" collapse="true"}
    
    - Use of Hinge Loss ✅
-   - Automatic Identification of Kernel Points
+   - Automatic Identification of Kernel Points❓
    - Lack of Tuning Parameters
    - Probabilistic Output
    - Insensitivity to training data far from the margin ✅
+   
+   *Note: "Kernel Points" is not, in my experience, a
+   standard terminology, but I will allow either answer
+   here for full credit.*
    
    :::
    
@@ -88,7 +92,7 @@ rowMeans(replicate(5000, {
    - Decision Trees ✅
    - Boosting
    - QDA
-   - Bagging
+   - Bayes' Rule
    
    :::
    
