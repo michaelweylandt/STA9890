@@ -4,4 +4,9 @@
 .Ruserdata
 
 /.quarto/
+/_freeze/*
+**/*.DS_Store
+notes/**/*cache/*
+notes/**/*files/*
+
 *syllabus_packet.pdf
