@@ -266,9 +266,9 @@ Solution
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>D</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         [,1]     [,2]     [,3]
-[1,] 4.563974 0.000000 0.000000
-[2,] 0.000000 3.645929 0.000000
-[3,] 0.000000 0.000000 1.361335</code></pre>
+[1,] 3.612612 0.000000 0.000000
+[2,] 0.000000 2.420625 0.000000
+[3,] 0.000000 0.000000 1.308688</code></pre>
 </div>
 </div>
 <p>This satisfies the ‘standard’ SVD structure, if we use the <em>conjugate transpose</em> of <span class="math inline">\(\bV\)</span> instead of the regular transpose.</p>
@@ -352,7 +352,7 @@ Solution
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">svd</span>(X)<span class="sc">$</span>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 8.474398 7.826820 7.362175 6.265585 5.753458</code></pre>
+<pre><code>[1] 8.837815 7.775607 7.246872 6.762783 5.309579</code></pre>
 </div>
 </div>
 <p>To address this problem, there is a large literature on <em>high-dimensional covariance estimation</em>. While we do not focus on high-dimensional covariance estimation in this class, it is quite a rich subject: if you want dig further into it, the <a href="http://www.ledoit.net/honey.pdf">Ledoit-Wolf</a> estimator is a good place to start.</p>
@@ -754,6 +754,21 @@ Solution
 <li><strong><code>Until</code></strong>: the labels (<span class="math inline">\(\{C_i\}_{i=1}^n\)</span>) do not change between iterations or the maximum number of iterations has been reached</li>
 <li><strong><code>Return</code></strong>: Estimated Labels</li>
 </ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Additional Details">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Additional Details
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
 <p>We can implement this rather simply in <code>R</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
@@ -765,11 +780,13 @@ Solution
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rpois</span>(<span class="dv">4</span> <span class="sc">*</span> n, <span class="at">lambda=</span><span class="fu">c</span>(lambda_1, lambda_2)),</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">nrow=</span><span class="dv">2</span> <span class="sc">*</span> n, <span class="at">byrow=</span><span class="cn">FALSE</span>)</span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>], <span class="at">col=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">pch=</span><span class="dv">16</span>, </span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Feature (Lab Test) 1"</span>, </span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Feature (Lab Test) 2"</span>, </span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Poisson Clustering Data (True Clusters)"</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a> true_labels <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">times=</span><span class="dv">50</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>], <span class="at">col=</span>true_labels, <span class="at">pch=</span><span class="dv">16</span>, </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Feature (Lab Test) 1"</span>, </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Feature (Lab Test) 2"</span>, </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Poisson Clustering Data (True Clusters)"</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -833,6 +850,51 @@ Solution
 </div>
 </div>
 <p>which looks pretty good!</p>
+<p>Numerically,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ARI <span class="ot">&lt;-</span> mclust<span class="sc">::</span>adjustedRandIndex</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ARI</span>(labels, <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">times=</span><span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+<p>which exceeds (by just a bit) what we’d get from standard (Gaussian) <span class="math inline">\(K\)</span>-Means:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(X, <span class="at">centers=</span><span class="dv">2</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ARI</span>(kmeans_fit<span class="sc">$</span>cluster, true_labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8448428</code></pre>
+</div>
+</div>
+<p>We can verify that this isn’t purely just an artifact of poor initialization:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(X, <span class="at">centers=</span><span class="dv">2</span>, <span class="at">nstart=</span><span class="dv">500</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ARI</span>(kmeans_fit<span class="sc">$</span>cluster, true_labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8448428</code></pre>
+</div>
+</div>
+<p>In fact, <span class="math inline">\(K\)</span>-means gets a worse answer even when we give it the ‘true’ cluster centers as a starting point:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>oracle_centers <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(lambda_1, lambda_1, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                           lambda_2, lambda_2), </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>oracle_kmeans_fit <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(X, <span class="at">centers=</span>oracle_centers)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ARI</span>(oracle_kmeans_fit<span class="sc">$</span>cluster, true_labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8448428</code></pre>
+</div>
+</div>
+<p>For this very simple model, the difference really comes from the fact that:</p>
+<ol type="i">
+<li>We have a Poisson specific decision rule</li>
+<li>We estimate one mean for both coordinates as opposed to a different mean for the <span class="math inline">\(x, y\)</span> coordinates.</li>
+</ol>
+<p>Neither of these are huge changes, but hopefully you can see how this <em>principle</em> of <a href="https://doi.org/10.1201/9781003277965">model-based</a> <a href="https://doi.org/10.1198/016214502760047131">clustering</a> can be usefully applied more broadly.</p>
 </div>
 </div>
 </div></li>
@@ -880,7 +942,7 @@ Solution
 </blockquote>
 <p>Please note that there are more than five possible issues in this scenario.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solution">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -889,7 +951,7 @@ Solution
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>There are <strong>many</strong> possible answers to this scenario, including:</p>
 <ul>
@@ -970,7 +1032,7 @@ Solution
 </blockquote>
 <p>While this project is “unsupervised” in that you are not provided a single canonical response variable, you may used supervised techniques wherever helpful.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solution">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -979,7 +1041,7 @@ Solution
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>There are <strong>many</strong> possible answers to this question. Partial credit will be given liberally.</p>
 </div>
