@@ -115,7 +115,9 @@ this work.
 - Test 2: Classification
   - [Exam Booklet](./notes/tests/STA9890_test2_2025-Spring.pdf)
   - [Solutions](./notes/tests/test2.html)
-
+- Test 3: Unsupervised Learning and ML Practice
+  - [Exam Booklet](./notes/tests/STA9890_test3_2025-Spring.pdf)
+  - [Solutions](./notes/tests/test3.html)
 
 
 ### Additional Materials

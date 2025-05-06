@@ -1,0 +1,15 @@
+{
+  "hash": "298296a0e0211aae4bdee6b6022df782",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\nsession: \"13\"\nauthor: \"Michael Weylandt\"\ntopic: \"Introduction to Generative Models\"\ntitle: \"{{< var course.short >}} - {{< meta topic >}}\"\ndate: \"2025-04-08\"\n---\n\n::: {.cell}\n\n```{.r .cell-code}\n1+1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

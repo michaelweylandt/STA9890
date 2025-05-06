@@ -1,0 +1,15 @@
+{
+  "hash": "e8f40817de30a1295ef25b05cd6d03f6",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\nsession: \"10\"\nauthor: \"Michael Weylandt\"\ntopic: \"Introduction to Unsupervised Learning\"\ntitle: \"{{< var course.short >}} - {{< meta topic >}}\"\n---\n\n\n\n\n\nUnsupervised learning: \n\n- Discovering patterns which we hope will hold true in future samples\n\nTypes of problems:\n\n- Groups\n- Regularity / Patterns\n- Outlier Detection\n- Prototypes/Archetypes\n\nHow to validate? \n\n- No 'magic' like hold-out sets\n- Stability principle\n- Hopefully doesn't matter too much (robustness)\n- Success on a downstream class\n- Often very specific strategies for individual problems\n\nMath Review\n\n- Eigendecomposition\n- Multivariate Normal\n- SVD\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

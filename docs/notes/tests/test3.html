@@ -265,10 +265,10 @@ Solution
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>D</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         [,1]     [,2]      [,3]
-[1,] 2.387411 0.000000 0.0000000
-[2,] 0.000000 1.997579 0.0000000
-[3,] 0.000000 0.000000 0.7293177</code></pre>
+<pre><code>         [,1]     [,2]     [,3]
+[1,] 4.563974 0.000000 0.000000
+[2,] 0.000000 3.645929 0.000000
+[3,] 0.000000 0.000000 1.361335</code></pre>
 </div>
 </div>
 <p>This satisfies the ‘standard’ SVD structure, if we use the <em>conjugate transpose</em> of <span class="math inline">\(\bV\)</span> instead of the regular transpose.</p>
@@ -352,7 +352,7 @@ Solution
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">svd</span>(X)<span class="sc">$</span>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 9.313553 8.143191 7.495543 6.835022 5.972116</code></pre>
+<pre><code>[1] 8.474398 7.826820 7.362175 6.265585 5.753458</code></pre>
 </div>
 </div>
 <p>To address this problem, there is a large literature on <em>high-dimensional covariance estimation</em>. While we do not focus on high-dimensional covariance estimation in this class, it is quite a rich subject: if you want dig further into it, the <a href="http://www.ledoit.net/honey.pdf">Ledoit-Wolf</a> estimator is a good place to start.</p>
