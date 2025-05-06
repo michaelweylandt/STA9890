@@ -265,10 +265,10 @@ Solution
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>D</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         [,1]     [,2]     [,3]
-[1,] 3.612612 0.000000 0.000000
-[2,] 0.000000 2.420625 0.000000
-[3,] 0.000000 0.000000 1.308688</code></pre>
+<pre><code>         [,1]     [,2]      [,3]
+[1,] 3.603399 0.000000 0.0000000
+[2,] 0.000000 2.560264 0.0000000
+[3,] 0.000000 0.000000 0.5576813</code></pre>
 </div>
 </div>
 <p>This satisfies the ‘standard’ SVD structure, if we use the <em>conjugate transpose</em> of <span class="math inline">\(\bV\)</span> instead of the regular transpose.</p>
@@ -352,7 +352,7 @@ Solution
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">svd</span>(X)<span class="sc">$</span>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 8.837815 7.775607 7.246872 6.762783 5.309579</code></pre>
+<pre><code>[1] 8.360675 7.854200 7.295551 6.591210 4.920648</code></pre>
 </div>
 </div>
 <p>To address this problem, there is a large literature on <em>high-dimensional covariance estimation</em>. While we do not focus on high-dimensional covariance estimation in this class, it is quite a rich subject: if you want dig further into it, the <a href="http://www.ledoit.net/honey.pdf">Ledoit-Wolf</a> estimator is a good place to start.</p>
@@ -563,7 +563,7 @@ Solution
 <p>Recall that the Poisson distribution with parameter <span class="math inline">\(\lambda\)</span> has a PMF given by:</p>
 <p><span class="math display">\[\P(X = x) = \frac{\lambda^x e^{-\lambda}}{x!}\]</span></p>
 <ol type="1">
-<li><p><strong>M</strong>-Step: To build the <strong>M</strong>-Step of our clustering algorithm, we need to determine the *maximum likelihood estimator} (MLE) of the Poisson parameters <span class="math inline">\(\lambda_j\)</span>. Recall that, within a cluster, our data are IID so we will begin by deriving the MLE for IID Poisson samples. (10 points total)</p>
+<li><p><strong>M</strong>-Step: To build the <strong>M</strong>-Step of our clustering algorithm, we need to determine the <em>maximum likelihood estimator</em> (MLE) of the Poisson parameters <span class="math inline">\(\lambda_j\)</span>. Recall that, within a cluster, our data are IID so we will begin by deriving the MLE for IID Poisson samples. (10 points total)</p>
 <ol type="1">
 <li><p>Suppose a single point <span class="math inline">\(z\)</span> is observed from a Poisson distribution with unknown parameter <span class="math inline">\(\theta\)</span>. What is the <em>negative log-likelihood</em> associated with this observation? (2 points)</p>
 <p><em>Recall: The likelihood is a function of the parameter, <span class="math inline">\(\theta\)</span>, holding the data <span class="math inline">\(z\)</span> constant.</em></p>
@@ -758,7 +758,7 @@ Solution
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled" title="Additional Details">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -767,7 +767,7 @@ Additional Details
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-18" class="callout-18-contents callout-collapse collapse show">
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>We can implement this rather simply in <code>R</code>:</p>
 <div class="cell">
