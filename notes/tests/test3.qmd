@@ -291,7 +291,7 @@ has a PMF given by:
 $$\P(X = x) = \frac{\lambda^x e^{-\lambda}}{x!}$$
 
 1. **M**-Step: To build the **M**-Step of our clustering algorithm,
-   we need to determine the *maximum likelihood estimator} (MLE)
+   we need to determine the *maximum likelihood estimator* (MLE)
    of the Poisson parameters $\lambda_j$. Recall that, within a
    cluster, our data are IID so we will begin by deriving
    the MLE for IID Poisson samples. (10 points total)
