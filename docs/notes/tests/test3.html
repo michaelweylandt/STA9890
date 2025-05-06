@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>STA 9890 - Spring 2025  Test 3: Unsupervised Learning – STA 9890</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7a426326b279d3ba9cc0818763c3c226.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">STA 9890</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../.././syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././notes.html"> 
+<span class="menu-text">Handouts and Additional Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../reports.html"> 
+<span class="menu-text">Research Reports</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././competition.html"> 
+<span class="menu-text">Course Competition</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././resources.html"> 
+<span class="menu-text">Additional Resources and Policies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././objectives.html"> 
+<span class="menu-text">Learning Objectives</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#multiple-choice-30-points---10-questions-at-3-points-each" id="toc-multiple-choice-30-points---10-questions-at-3-points-each" class="nav-link active" data-scroll-target="#multiple-choice-30-points---10-questions-at-3-points-each">Multiple Choice (30 points - 10 questions at 3 points each)</a></li>
+  <li><a href="#mathematics-of-machine-learning-20-points-total" id="toc-mathematics-of-machine-learning-20-points-total" class="nav-link" data-scroll-target="#mathematics-of-machine-learning-20-points-total">Mathematics of Machine Learning (20 Points Total)</a></li>
+  <li><a href="#practice-of-ml---supervised-25-points-total" id="toc-practice-of-ml---supervised-25-points-total" class="nav-link" data-scroll-target="#practice-of-ml---supervised-25-points-total">Practice of ML - Supervised (25 points total)</a></li>
+  <li><a href="#practice-of-ml---unsupervised-25-points-total" id="toc-practice-of-ml---unsupervised-25-points-total" class="nav-link" data-scroll-target="#practice-of-ml---unsupervised-25-points-total">Practice of ML - Unsupervised (25 points total)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/tests/test3.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/tests/test3.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">STA 9890 - Spring 2025 <br> Test 3: Unsupervised Learning</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The original test booklet can be found <a href="./STA9890_test3_2025-Spring.pdf">here</a>. <span class="math display">\[\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\N}{\mathbb{N}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}} \newcommand{\P}{\mathbb{P}}\]</span></p>
+<section id="multiple-choice-30-points---10-questions-at-3-points-each" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-choice-30-points---10-questions-at-3-points-each">Multiple Choice (30 points - 10 questions at 3 points each)</h2>
+<ol type="1">
+<li><p>True/False: PCA cannot be applied without centering the data first.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong> - PCA can be applied without centering the data first if your primary goal is to understand the <em>mean</em> structure of complex and high-dimensional data. The <em>second</em> PC will then be the first PC of the covariance <em>after fitting a particular low-rank mean model</em></p>
+</div>
+</div>
+</div></li>
+<li><p>True/False: The singular values of a (real-valued) matrix are always positive.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. In fact, it is not even required that the matrix be real-valued: complex-valued matrices have real singular values as well (since singular values capture the magnitude of the ‘stretch’ in a certain direction). To wit,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">complex</span>(<span class="at">real=</span><span class="fu">rnorm</span>(n <span class="sc">*</span> p), </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">imaginary=</span><span class="fu">rnorm</span>(n <span class="sc">*</span> p)), </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">nrow=</span>n)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">svd</span>(X)<span class="sc">$</span>d)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>U <span class="ot">&lt;-</span> <span class="fu">svd</span>(X)<span class="sc">$</span>u</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>V <span class="ot">&lt;-</span> <span class="fu">svd</span>(X)<span class="sc">$</span>v</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>D</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]     [,2]      [,3]
+[1,] 2.387411 0.000000 0.0000000
+[2,] 0.000000 1.997579 0.0000000
+[3,] 0.000000 0.000000 0.7293177</code></pre>
+</div>
+</div>
+<p>This satisfies the ‘standard’ SVD structure, if we use the <em>conjugate transpose</em> of <span class="math inline">\(\bV\)</span> instead of the regular transpose.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(X, U <span class="sc">%*%</span> D <span class="sc">%*%</span> <span class="fu">t</span>(<span class="fu">Conj</span>(V)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>The <span class="math inline">\(\bU\)</span>, <span class="math inline">\(\bV\)</span> matrices are now <em>Hermitian</em> (not orthogonal) matrices and satisfy <span class="math inline">\(\bU^{H}\bU = \bI\)</span> and <span class="math inline">\(\bV^{H}\bV = \bI\)</span> instead:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">t</span>(<span class="fu">Conj</span>(x))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">zapsmall</span>(<span class="fu">h</span>(U) <span class="sc">%*%</span> U)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,] 1+0i 0+0i 0+0i
+[2,] 0+0i 1+0i 0+0i
+[3,] 0+0i 0+0i 1+0i</code></pre>
+</div>
+</div>
+<p>and</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zapsmall</span>(<span class="fu">h</span>(V) <span class="sc">%*%</span> V)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,] 1+0i 0+0i 0+0i
+[2,] 0+0i 1+0i 0+0i
+[3,] 0+0i 0+0i 1+0i</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p>Estimated principal components are orthogonal to the data.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. PCs are not orthogonal to the data: they are in fact, ‘optimally correlated’ with the data to capture as much variance as possible.</p>
+<p>PCs are generally orthogonal <em>with each other</em> and <em>with the residual (deflated) data</em>, though this assumption may be relaxed for certain versions of Sparse PCA. See <a href="https://michael-weylandt.com/publications/mrsfpca.html">this paper</a> for details</p>
+</div>
+</div>
+</div></li>
+<li><p>The sample covariance matrix of a data set is always <em>strictly positive definite</em> (all eigenvalues strictly greater than zero).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. Oh that it were so!</p>
+<p>The <strong>rank</strong> (number of non-zero eigenvalues) of a covariance matrix estimated from a data matrix of size <span class="math inline">\(n\)</span>-<span class="math inline">\(times\)</span>-<span class="math inline">\(p\)</span> is at most <span class="math inline">\(\min\{n, p\}\)</span>, so in the <em>high-dimensional</em> context, we don’t have enough (<span class="math inline">\(p\)</span>) non-zero.</p>
+<p>To wit:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> p), <span class="at">nrow=</span>n)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Computing this numerically, there's a bit of 'trash'</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># we need to discard</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">eigen</span>(<span class="fu">crossprod</span>(X))<span class="sc">$</span>values <span class="sc">&gt;</span> <span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5</code></pre>
+</div>
+</div>
+<p>Equivalently (and more directly):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">svd</span>(X)<span class="sc">$</span>d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.313553 8.143191 7.495543 6.835022 5.972116</code></pre>
+</div>
+</div>
+<p>To address this problem, there is a large literature on <em>high-dimensional covariance estimation</em>. While we do not focus on high-dimensional covariance estimation in this class, it is quite a rich subject: if you want dig further into it, the <a href="http://www.ledoit.net/honey.pdf">Ledoit-Wolf</a> estimator is a good place to start.</p>
+</div>
+</div>
+</div></li>
+<li><p>Select One: Which of the following relates the singular values of <span class="math inline">\(\bX\)</span> (<span class="math inline">\(\sigma_i\)</span>) and the eigenvalues of <span class="math inline">\(\bX^{\top}\bX\)</span> (<span class="math inline">\(\lambda_i\)</span>) for all <span class="math inline">\(i = 1, \dots, \textsf{Rank}(\bX)\)</span>?</p>
+<ul class="task-list">
+<li><label><input type="checkbox"><span class="math inline">\(\sigma_i=\lambda_i\)</span></label></li>
+<li><label><input type="checkbox"><span class="math inline">\(\sigma_i^2 = \lambda_i\)</span></label></li>
+<li><label><input type="checkbox"><span class="math inline">\(\sigma_i = \lambda_i^2\)</span></label></li>
+<li><label><input type="checkbox"><span class="math inline">\(\sigma_i \geq \lambda_i\)</span></label></li>
+<li><label><input type="checkbox"><span class="math inline">\(\sigma_i \leq \lambda_i\)</span></label></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The correct relation is <span class="math inline">\(\sigma_i^2 = \lambda_i\)</span>. (Note that one or both of the inequalities may be true depending on <span class="math inline">\(\sigma_i \geq 1\)</span> or <span class="math inline">\(\sigma_i \leq 1\)</span> but they do not hold universally.)</p>
+<p>To see this, let</p>
+<p><span class="math display">\[\bX = \bU\bD\bV^{\top} \implies \bX^{\top}\bX = (\bU\bD\bV^{\top})^{\top}(\bU\bD\bV^{\top}) = \bV\bD^2\bV^{\top}\]</span></p>
+<p>so the eigenvalues (found in <span class="math inline">\(\bD^2\)</span>) are the squares of the singular values (found in <span class="math inline">\(\bD\)</span>).</p>
+</div>
+</div>
+</div></li>
+<li><p>Select One: Which of the following <strong>is not</strong> a common rule for selecting the PCA rank?</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Elbow Rule</label></li>
+<li><label><input type="checkbox">80% Rule</label></li>
+<li><label><input type="checkbox">Boulder Plot</label></li>
+<li><label><input type="checkbox">Hypothesis Testing</label></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The <strong>Boulder Plot</strong> is not a common method of PCA rank selection. (The name, designed to be a red herring, is an oblique reference to the <em>scree</em> or <em>elbow</em> plot, but the point of the <em>scree</em> plot is that there aren’t major components ‘boulders’ beyond the curve.)</p>
+</div>
+</div>
+</div></li>
+<li><p>Select One: Which of the following pairs of vectors are orthogonal?</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Loading Vector <span class="math inline">\(i\)</span> and Loading Vector <span class="math inline">\(i+2\)</span></label></li>
+<li><label><input type="checkbox">Score Vector <span class="math inline">\(j\)</span> and Score Vector <span class="math inline">\(j-1\)</span></label></li>
+<li><label><input type="checkbox">Loading Vector <span class="math inline">\(k\)</span> and Score Vector <span class="math inline">\(k+1\)</span></label></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There is no orthogonality relationship <em>per se</em> between loading and score vectors. In fact, the loading and score vectors live in different spaces (<span class="math inline">\(\R^n\)</span> vs <span class="math inline">\(\R^p\)</span>) so there isn’t even an appropriate inner product for them to be orthogonal under.</p>
+</div>
+</div>
+</div></li>
+<li><p>Select <em>All</em> That Apply: Which of the following are properties of (generic/standard) PCA decomposition?</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Additive</label></li>
+<li><label><input type="checkbox">Ordered</label></li>
+<li><label><input type="checkbox">Orthogonal</label></li>
+<li><label><input type="checkbox">Regularized</label></li>
+<li><label><input type="checkbox">Sparse</label></li>
+<li><label><input type="checkbox">Non-Negative</label></li>
+<li><label><input type="checkbox">Nested</label></li>
+<li><label><input type="checkbox">Easily-Computed to Global Optimality</label></li>
+<li><label><input type="checkbox">Convex</label></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ Additive</li>
+<li>✅ Ordered</li>
+<li>✅ Orthogonal</li>
+<li><label><input type="checkbox">Regularized</label></li>
+<li><label><input type="checkbox">Sparse</label></li>
+<li><label><input type="checkbox">Non-Negative</label></li>
+<li>✅ Nested</li>
+<li>✅ Easily-Computed to Global Optimality</li>
+<li><label><input type="checkbox">Convex</label></li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Select <em>All</em> That Apply: Which of the following are properties of Non-Negative Matrix Factorization?</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Additive</label></li>
+<li><label><input type="checkbox">Ordered</label></li>
+<li><label><input type="checkbox">Orthogonal</label></li>
+<li><label><input type="checkbox">Regularized</label></li>
+<li><label><input type="checkbox">Sparse</label></li>
+<li><label><input type="checkbox">Non-Negative</label></li>
+<li><label><input type="checkbox">Nested</label></li>
+<li><label><input type="checkbox">Easily-Computed to Global Optimality</label></li>
+<li><label><input type="checkbox">Convex</label></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ Additive</li>
+<li><label><input type="checkbox">Ordered</label></li>
+<li><label><input type="checkbox">Orthogonal</label></li>
+<li>✅ Regularized</li>
+<li>✅ Sparse</li>
+<li>✅ Non-Negative</li>
+<li><label><input type="checkbox">Nested</label></li>
+<li><label><input type="checkbox">Easily-Computed to Global Optimality</label></li>
+<li><label><input type="checkbox">Convex</label></li>
+</ul>
+<p>Most NMF variants are <em>non-convex</em>, but at least one well known convex variant exists, so I will accept that answer. I will accept “easily-computed” <strong>iff</strong> you select convex.</p>
+</div>
+</div>
+</div></li>
+<li><p>Select <em>All</em> That Apply: Which of the following are properties of sparse PCA decomposition?</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Additive</label></li>
+<li><label><input type="checkbox">Ordered</label></li>
+<li><label><input type="checkbox">Orthogonal</label></li>
+<li><label><input type="checkbox">Regularized</label></li>
+<li><label><input type="checkbox">Sparse</label></li>
+<li><label><input type="checkbox">Non-Negative</label></li>
+<li><label><input type="checkbox">Nested</label></li>
+<li><label><input type="checkbox">Easily-Computed to Global Optimality</label></li>
+<li><label><input type="checkbox">Convex</label></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ Additive</li>
+<li>✅ Ordered</li>
+<li><label><input type="checkbox">Orthogonal</label></li>
+<li>✅ Regularized</li>
+<li>✅ Sparse</li>
+<li><label><input type="checkbox">Non-Negative</label></li>
+<li>✅ Nested</li>
+<li><label><input type="checkbox">Easily-Computed to Global Optimality</label></li>
+<li><label><input type="checkbox">Convex</label></li>
+</ul>
+<p><em>Most</em> sparse PCA variants are not orthogonal, but certain <a href="https://michael-weylandt.com/publications/mrsfpca.html">orthogonal variants have been proposed</a> relying on rather tricky optimization, so I will allow that answer.</p>
+<p>Similarly, <em>most</em> sparse PCA is non-convex, but certain convex relaxations <a href="https://proceedings.neurips.cc/paper/2013/file/81e5f81db77c596492e6f1a5a792ed53-Paper.pdf">have been proposed</a> so I will allow that answer. I will allow <em>easily computed</em> <strong>iff</strong> you select convex.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="mathematics-of-machine-learning-20-points-total" class="level2">
+<h2 class="anchored" data-anchor-id="mathematics-of-machine-learning-20-points-total">Mathematics of Machine Learning (20 Points Total)</h2>
+<p>In this problem, you will derive a <span class="math inline">\(K\)</span>-Means-type clustering algorithm for <em>bivariate Poisson</em> data. Specifically, you will use the <strong>EM</strong>-Framework to cluster data that is generated from the following statistical model:</p>
+<blockquote class="blockquote">
+<p>For each data point, <span class="math inline">\(\bx \in \N^2\)</span>, both coordinates <span class="math inline">\((x^{(1)}, x^{(2)})\)</span> are sampled IID from a Poisson distribution with (common) mean <span class="math inline">\(\lambda\)</span>. The value of <span class="math inline">\(\lambda\)</span> depends on the underlying (but unknown) class: formally,</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><span class="math display">\[\bx_i | i \in \text{Cluster-$j$} \buildrel{\text{iid}}\over\sim \text{Poisson}^{\otimes 2}(\lambda_j)\]</span></p>
+</blockquote>
+<p>You can think of this is a model for clustering genetic data where <span class="math inline">\(i\)</span> indexes patients, <span class="math inline">\(j\)</span> indexes disease subtypes, and each patient has their gene expression values processed by two different IID labs for reliability.</p>
+<p>Recall that the Poisson distribution with parameter <span class="math inline">\(\lambda\)</span> has a PMF given by:</p>
+<p><span class="math display">\[\P(X = x) = \frac{\lambda^x e^{-\lambda}}{x!}\]</span></p>
+<ol type="1">
+<li><p><strong>M</strong>-Step: To build the <strong>M</strong>-Step of our clustering algorithm, we need to determine the *maximum likelihood estimator} (MLE) of the Poisson parameters <span class="math inline">\(\lambda_j\)</span>. Recall that, within a cluster, our data are IID so we will begin by deriving the MLE for IID Poisson samples. (10 points total)</p>
+<ol type="1">
+<li><p>Suppose a single point <span class="math inline">\(z\)</span> is observed from a Poisson distribution with unknown parameter <span class="math inline">\(\theta\)</span>. What is the <em>negative log-likelihood</em> associated with this observation? (2 points)</p>
+<p><em>Recall: The likelihood is a function of the parameter, <span class="math inline">\(\theta\)</span>, holding the data <span class="math inline">\(z\)</span> constant.</em></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>If the PMF is <span class="math inline">\(f_{\lambda}(z) = \lambda^z e^{-\lambda} / z!\)</span>, the loglikelihood is obtained by making <span class="math inline">\(\lambda\)</span> the argument and taking logs to get</p>
+<p><span class="math display">\[\begin{align*}
+f_{\lambda}(z) &amp;= \lambda^z e^{-\lambda} / z! \\
+\log f_{\lambda}(z) &amp;= z \log(\lambda) - \lambda - \log(z!)\\
+\ell(\lambda) &amp;= z \log(\lambda) - \lambda - \log(z!)
+\end{align*}\]</span></p>
+</div>
+</div>
+</div></li>
+<li><p>Now, suppose we have <span class="math inline">\(n\)</span> IID samples (<span class="math inline">\(z_1, z_2, \dots, z_n\)</span>) from the same distribution. What is the <em>joint</em> negative log-likelihood associated with these observations? (3 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because PMFs of independent samples multiply, their NLL adds:</p>
+<p><span class="math display">\[\begin{align*}
+\ell(\lambda; z) &amp;= z \log(\lambda) - \lambda - \log(z!) \\
+\implies \ell(\lambda; \{z_1, z_2, \dots, z_n\}) &amp;= \sum_{i=1}^n \ell(\lambda; z_i) \\
+&amp;= \sum_{i=1}^n z_i \log(\lambda) - \lambda - \log(z_i!)\\
+&amp;= -n \lambda + \sum_{i=1}^n z_i \log(\lambda) - \log(z_i!)\\
+&amp;= -n \lambda + \log(\lambda) \sum_{i=1}^n z_i- \log(z_i!)
+\end{align*}\]</span></p>
+<p>or equivalent.</p>
+</div>
+</div>
+</div></li>
+<li><p>What is the <em>maximum likelihood estimator</em> associated with this observation? Recall that the MLE is the value of the parameter that maximizes the likelihood, or equivalently maximizes the log-likelihood (or equivalently minimizes the negative log-likelihood) (3 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Taking the gradient of the above with respect to <span class="math inline">\(\lambda\)</span>, we find the MLE is:</p>
+<p><span class="math display">\[\begin{align*}
+0 &amp;= \frac{\text{d}\,\ell(\lambda)}{\text{d}\,\lambda} \\
+  &amp;= \frac{\text{d}\,}{\text{d}\,\lambda}\left[-n \lambda + \log(\lambda)\sum_{i=1}^n -z_i  + \log(z_i!)\right] \\
+  &amp;= -n + \lambda^{-1}\sum_{i=1}^n z_i + 0 \\
+n &amp;= \lambda^{-1} \sum_{i=1}^n z_i \\
+\implies \hat{\lambda}_{\text{MLE}} &amp;= \frac{\sum_{i=1}^n z_i}{n}
+\end{align*}\]</span></p>
+<p>So the MLE for the mean parameter <span class="math inline">\(\lambda\)</span> is just the sample mean. (This is not always the case, but the Poisson is a member of a <a href="https://en.wikipedia.org/wiki/Exponential_family">nice family of distributions</a> where these types of calculations often have nice interpretations.)</p>
+</div>
+</div>
+</div></li>
+<li><p>For our <em>bivariate</em> model, we have multiple data values <span class="math inline">\(z_i^{(1)}, z_i^{(2)}\)</span> for each observation instead. How should we modify our MLE for this data? What is the resulting MLE? (2 points)</p>
+<p><em>Recall that the two values per observation are IID.</em></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Because the data can essentially be treated as a ‘double sample’, the MLE is simply</p>
+<p><span class="math display">\[\hat{\lambda}_{\text{MLE}} &amp;= \frac{\sum_{i=1}^n x_i^{(1)} + x_i^{(2)}}{2n}\]</span></p>
+</div>
+</div>
+</div></li>
+</ol></li>
+<li><p><strong>E</strong>-Step: To build the <strong>E</strong>-Step of our clustering algorithm, we need a rule for guessing the most probable class label for each observation. That is, assuming we know <span class="math inline">\(\lambda_1, \lambda_2,
+\dots, \lambda_K\)</span>, we build a <em>classification rule</em> for each observation <span class="math inline">\(\bx_i\)</span>. For this analysis, we will fix <span class="math inline">\(K=2\)</span>. (5 points total)</p>
+<ol type="1">
+<li><p>Given a new observation <span class="math inline">\(\bx_i\)</span>, compute its PMF under class <span class="math inline">\(1\)</span> (<span class="math inline">\(\lambda = \lambda_1\)</span>) and class <span class="math inline">\(2\)</span> (<span class="math inline">\(\lambda = \lambda_2\)</span>). (2 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Given <span class="math inline">\(\bx\)</span>, our PMFs for class 1 and class 2 are</p>
+<p><span class="math display">\[\P_i(\bx) = \P_i(x^{(1)})\P_i(x^{(2)}) = \frac{\lambda_i^{x^{(1)}}e^{-\lambda_i}}{x^{(1)}!}\frac{\lambda_i^{x^{(2)}}e^{-\lambda_i}}{x^{(2)}!}=\frac{\lambda_i^{x^{(1)} + x^{(2)}} e^{-2\lambda_i}}{x^{(1)}!x^{(2)}!} \text{ for } i = 1, 2\]</span></p>
+</div>
+</div>
+</div></li>
+<li><p>Determine the relevant classification rule as a (simple) function of <span class="math inline">\(x^{(1)}_i, x^{(2)}_i, \lambda_1, \lambda_2\)</span>.</p>
+<p>You may assume (without loss of generality) that <span class="math inline">\(\lambda_1 &gt; \lambda_2\)</span>. (3 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We will classify to the most likely class, so we can look at the PMF ratio:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{\P_1(\bx)}{\P_2(\bx)} &amp;= \frac{\frac{\lambda_1^{x^{(1)} + x^{(2)}} e^{-2\lambda_1}}{x^{(1)}!x^{(2)}!}}{\frac{\lambda_2^{x^{(1)} + x^{(2)}} e^{-2\lambda_2}}{x^{(1)}!x^{(2)}!}} \\
+&amp;= \left(\frac{\lambda_1}{\lambda_2}\right)^{x^{(1)} + x^{(2)}} e^{2(\lambda_2 - \lambda_1)}
+\end{align*}\]</span></p>
+<p>Since our decision is class 1 at values where this ratio is greater than 1, we can simply find the conditions on <span class="math inline">\(\bx\)</span> where its logarithm is greater than zero:</p>
+<p><span class="math display">\[\begin{align*}
+\log \frac{\P_1(\bx)}{\P_2(\bx)} &amp;= (x^{(1)} + x^{(2)}) \log(\lambda_1 / \lambda_2) + 2(\lambda_2 - \lambda_1) \\
+&amp;= \frac{(x^{(1)} + x^{(2)})}{2} \log(\lambda_1 / \lambda_2) + (\lambda_2 - \lambda_1) \\
+0 &amp; \leq \frac{(x^{(1)} + x^{(2)})}{2} \log(\lambda_1 / \lambda_2) + (\lambda_2 - \lambda_1)\\
+\lambda_1 - \lambda_2 &amp;\leq \frac{(x^{(1)} + x^{(2)})}{2} \log(\lambda_1 / \lambda_2) \\
+\implies \frac{x^{(1)} + x^{(2)}}{2} &amp;\geq \frac{\lambda_1-\lambda_2}{\log(\lambda_1) - \log(\lambda_2)}
+\end{align*}\]</span></p>
+<p>so we classify to <span class="math inline">\(\lambda_1\)</span> if the average of the two observations is greater than the quantity <span class="math display">\[\frac{\lambda_1 - \lambda_2}{\log(\lambda_1) - \log(\lambda_2)}.\]</span></p>
+<p>I don’t have an intuitive way to derive or explain this formula, but we can verify that it indeed works.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>lambda_1 <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>lambda_2 <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">2</span>, <span class="at">lambda=</span>lambda_1)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">dpois</span>(x, <span class="at">lambda=</span>lambda_1))) <span class="sc">&gt;</span> <span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">dpois</span>(x, <span class="at">lambda=</span>lambda_2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>vs</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x) <span class="sc">&gt;</span> (lambda_1 <span class="sc">-</span> lambda_2) <span class="sc">/</span> (<span class="fu">log</span>(lambda_1) <span class="sc">-</span> <span class="fu">log</span>(lambda_2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+</ol></li>
+<li><p>Finally, we are ready to put these steps together into a single unified clustering algorithm. Fill out the skeleton below using the <strong>M</strong>- and <strong>E</strong>-Steps you derived above (5 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><code>Input</code></strong>: <span class="math inline">\(n\)</span> samples: <span class="math inline">\(\bx_1, \bx_2, \dots, \bx_n\)</span></li>
+<li><strong><code>Initialize</code></strong>: Set labels randomly <span class="math inline">\(C_1 = \begin{cases} 1 &amp; \text{ with probability } 0.5 \\ 2 &amp; \text{ otherwise } \end{cases} \text{ for } i = 1,\dots,n\)</span></li>
+<li><strong><code>Repeat</code></strong>:
+<ul>
+<li><strong>M</strong>-Step: For <span class="math inline">\(k=1, 2\)</span>: update clusters <span class="math display">\[\hat{\lambda}_k = \frac{1}{|\{i: C_i = k\}}\sum_{i: C_i = k} x^{(1)}_i + x^{(2)}_i\]</span></li>
+<li><strong>E</strong>-Step: For <span class="math inline">\(i=1, \dots, n\)</span>, reset labels: <span class="math display">\[C_i = \begin{cases} 1 &amp; \text{ if } \frac{x_i^{(1)} + x^{(2)}_i}{2} &gt; \frac{\lambda_1-\lambda_2}{\log(\lambda_1) - \log(\lambda_2)} \\ 2 &amp; \text{ otherwise } \end{cases}\]</span></li>
+</ul></li>
+<li><strong><code>Until</code></strong>: the labels (<span class="math inline">\(\{C_i\}_{i=1}^n\)</span>) do not change between iterations or the maximum number of iterations has been reached</li>
+<li><strong><code>Return</code></strong>: Estimated Labels</li>
+</ul>
+<p>We can implement this rather simply in <code>R</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>lambda_1 <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>lambda_2 <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rpois</span>(<span class="dv">4</span> <span class="sc">*</span> n, <span class="at">lambda=</span><span class="fu">c</span>(lambda_1, lambda_2)),</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">nrow=</span><span class="dv">2</span> <span class="sc">*</span> n, <span class="at">byrow=</span><span class="cn">FALSE</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>], <span class="at">col=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">pch=</span><span class="dv">16</span>, </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Feature (Lab Test) 1"</span>, </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Feature (Lab Test) 2"</span>, </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Poisson Clustering Data (True Clusters)"</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test3_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Applying our algorithm:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>starting_labels <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">size=</span><span class="fu">NROW</span>(X), <span class="at">prob=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>], <span class="at">col=</span>starting_labels, <span class="at">pch=</span><span class="dv">16</span>, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Feature (Lab Test) 1"</span>, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Feature (Lab Test) 2"</span>, </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Poisson Clustering Data (Starting Clusters)"</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test3_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>which our algorithm improves to:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> starting_labels</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">repeat</span> {</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>   old_labels <span class="ot">&lt;-</span> labels</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Update centroids - M Step</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>   lambda_1_hat <span class="ot">&lt;-</span> <span class="fu">mean</span>(X[labels <span class="sc">==</span> <span class="dv">1</span>,])</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>   lambda_2_hat <span class="ot">&lt;-</span> <span class="fu">mean</span>(X[labels <span class="sc">==</span> <span class="dv">2</span>,])</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Update labels - E Step</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>   X1 <span class="ot">&lt;-</span> X[,<span class="dv">1</span>]; X2 <span class="ot">&lt;-</span> X[,<span class="dv">2</span>]</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>   thresh <span class="ot">&lt;-</span> (lambda_1_hat <span class="sc">-</span> lambda_2_hat) <span class="sc">/</span> <span class="fu">log</span>(lambda_1_hat <span class="sc">/</span> lambda_2_hat)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>   labels <span class="ot">=</span> <span class="fu">ifelse</span>((X1 <span class="sc">+</span> X2)<span class="sc">/</span><span class="dv">2</span> <span class="sc">&gt;</span> thresh, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span>(<span class="fu">all</span>(labels <span class="sc">==</span> old_labels)) <span class="cf">break</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2
+ [38] 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1
+ [75] 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(X[,<span class="dv">1</span>], X[,<span class="dv">2</span>], <span class="at">col=</span>labels, <span class="at">pch=</span><span class="dv">16</span>, </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Feature (Lab Test) 1"</span>, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">"Feature (Lab Test) 2"</span>, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Poisson Clustering Data (Estimated Clusters)"</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="test3_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>which looks pretty good!</p>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="practice-of-ml---supervised-25-points-total" class="level2">
+<h2 class="anchored" data-anchor-id="practice-of-ml---supervised-25-points-total">Practice of ML - Supervised (25 points total)</h2>
+<p>In this <em>issue spotter</em> question, I will describe a theoretical application of supervised machine learning. As described, this application falls short of “best practices” in several regards. Identify <em>five</em> places where this pipeline could be improved and recommend alternative (superior) practices. For each issue, you will receive:</p>
+<ul>
+<li>1 point for identifying a valid issue</li>
+<li>(Up to) 2 points for explaining what is <em>wrong</em> with the described practice and <em>what impact / bias / error</em> would be induced</li>
+<li>(Up to) 2 points for accurately describing an alternative approach</li>
+</ul>
+<p>Scenario:</p>
+<blockquote class="blockquote">
+<p>You have been hired to build a extreme weather prediction system for the City of New York. For the first stage of your project, the client has asked you to focus on predicting periods of extreme rainfall.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>To train your model, you have collected hourly rainfall data for the previous 25 years, giving a total of <span class="math inline">\(n=219,250\)</span> training points. With each training point, you have also collected several predictors from weather stations surrounding NYC:</p>
+</blockquote>
+<blockquote class="blockquote">
+<ol type="1">
+<li>Temperature</li>
+<li>Time of Day</li>
+<li>Wind speed</li>
+<li>Wind direction</li>
+<li>Cloud cover percentage</li>
+<li>Relative Humidity</li>
+<li>Barometric Pressure</li>
+<li>Visibility</li>
+<li>Rate of Precipitation</li>
+</ol>
+</blockquote>
+<blockquote class="blockquote">
+<p>You have each of these measured contemporaneously, at one hour lag, at a three hour lag, and at a 24 hour lag, giving a total of <span class="math inline">\(p=36\)</span> features.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Given the dimensions of your data, you prefer to use a linear model and you begin by fitting a ridge regression model to all <span class="math inline">\(n=219,250\)</span> training points. You observe an error of approximately <span class="math inline">\(0.5\)</span> inches RMSE. In order to make your model more interpretable, you fit a lasso model. In order to tune <span class="math inline">\(\lambda\)</span>, you pick <span class="math inline">\(\lambda\)</span> so that your MSE matches that which you got from ridge regression. This gives you a model with 5 important features. Because the difference between “extreme” rain and “average” rain is more than 0.5in, you consider your model to be sufficiently accurate to deliver to the customer.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>After you send your results to your customer, your boss calls you into the office and provides some “rather emphatic” feedback. Based on this feedback, you scrap your model building process and start from scratch. You first transform the response variable to 0/1 indicating extreme rain (1) or or not (0). You then fit a classifier on this data using all the features. The longer you run , the smaller your True Negative Rate (TNR) becomes, so you run over <span class="math inline">\(100,000\)</span> iterations to get a TNR less than 0.01%. You show these results to your boss, who is now happy with them, and you then share them with the customer.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Your client is interested in better understanding the resulting model. To help your client, you provide feature importance scores which show current rate of precipitation and one-hour delayed rate of precipitation as the two most important features. Because these features cannot be known 3 or more hours in advance, your client believes the model is useless and wants to terminate the project without paying your company. To save the deal, you argue that the model also uses other features and that you can simply replace the two troublesome measures with 3 and 6 hour delayed values and the model won’t suffer much loss in accuracy because those features are highly correlated. Satisfied, the client prepares to deploy your model into production.</p>
+</blockquote>
+<p>Please note that there are more than five possible issues in this scenario.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There are <strong>many</strong> possible answers to this scenario, including:</p>
+<ul>
+<li>Binarization of the Response</li>
+<li>Constructing an Appropriate Classification Loss</li>
+<li>Lack of Any Internal Validation</li>
+<li>Over-fitting in Boosting</li>
+<li>Replacing Model Features without Further Examination</li>
+<li>Not thinking about linear vs non-linear models</li>
+<li>Tuning the lasso</li>
+<li>Determining feature importance</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="practice-of-ml---unsupervised-25-points-total" class="level2">
+<h2 class="anchored" data-anchor-id="practice-of-ml---unsupervised-25-points-total">Practice of ML - Unsupervised (25 points total)</h2>
+<p>For this problem, I will describe a scenario in which unsupervised learning may be useful to achieve one or more scientific aims. You should describe, in reasonable detail, how you would approach this problem. Be sure to justify each step (say <em>why</em> you are making particular choices).</p>
+<p><em>Note that this section will likely take longer to answer fully than any previous section, so budget your time wisely.</em></p>
+<p>Scenario:</p>
+<blockquote class="blockquote">
+<p>You have been hired as a data analyst at marketing firm. Because you do not have any client relationships, you have been assigned to a (BD) team, which attempts to identify potential customers (companies) that could benefit from a new marketing campaign. After a productive strategy session with representatives from across the company, the BD manager asks you to identify several ‘factors’ that could be used to identify potential new customers. You are given access to the company’s existing client data files which contain the following features:</p>
+</blockquote>
+<blockquote class="blockquote">
+<ul>
+<li>Company Details:
+<ul>
+<li>Company Size (Number of Customers)</li>
+<li>Average Revenue per Customer</li>
+<li>Industry / Sector</li>
+<li>Years with Current Ad Agency</li>
+<li>Total Promotional Budget</li>
+<li>Average Monthly Repeat Customers (pre-Advertising)</li>
+<li>Average Monthly New Customers (pre-Advertising)</li>
+<li>Average Monthly Spend per Existing Customer (pre-Advertising)</li>
+<li>Average First Month Spend per New Customer (pre-Advertising)</li>
+</ul></li>
+<li>Current Marketing Campaign Details:
+<ul>
+<li>Total Campaign Budget</li>
+<li>Budget spent on Facebook Ads</li>
+<li>Budget spent on YouTube Ads</li>
+<li>Budget spent on Google AdSense Ads</li>
+<li>Target Gender Breakdown (% Female)</li>
+<li>Target Age Breakdown (% 18-25)</li>
+<li>Target Age Breakdown (% 25-49)</li>
+<li>Target Age Breakdown (% 50-64)</li>
+<li>Target Age Breakdown (% 65+)</li>
+<li>Celebrity Endorsement (TRUE/FALSE)</li>
+</ul></li>
+<li>Estimated Campaign Benefit:
+<ul>
+<li>Increase in New Customers</li>
+<li>Increase in Customer Retention</li>
+<li>Increase in First Month Spend per New Customer</li>
+<li>Increase in Monthly Spend per Existing Customer</li>
+</ul></li>
+</ul>
+</blockquote>
+<blockquote class="blockquote">
+<p>You have data for over 10,000 companies in your data base. Of these, only 2000 are your current clients for which you have marketing campaign details; of those, only 1000 have been engaged in their current campaign long enough to have estimated benefits.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Before you start this project, your manager warns you that the database is not particularly well-curated and has occasional large errors.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Your manager gives you a week to work with this data and asks you to develop an interpretable ML pipeline, resulting in an interpretable ‘BD Index’ that can be passed to the sales team. For your meeting with the sales team in a week, you are asked to provide:</p>
+</blockquote>
+<blockquote class="blockquote">
+<ol type="1">
+<li>The names of the top 10 companies on the BD index</li>
+<li>An explanation of the BD index that the sales team can provide feedback upon</li>
+<li>Estimates of the potential benefits your company could provide the potential new clients identified by the BD index</li>
+<li>An ‘action plan’ for addressing data quality issues in the current database</li>
+<li>A strategy for ‘validating’ the BD index</li>
+</ol>
+</blockquote>
+<p>While this project is “unsupervised” in that you are not provided a single canonical response variable, you may used supervised techniques wherever helpful.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There are <strong>many</strong> possible answers to this question. Partial credit will be given liberally.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/michael-weylandt\.com\/STA9890\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/tests/test3.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/tests/test3.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
