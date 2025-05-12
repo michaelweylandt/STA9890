@@ -145,7 +145,7 @@ accuracy so *don't overfit*.
 
 Grades for this portion will be assigned as: 
 
-$$\text{Grade} = 1 - \left(\frac{\text{Your Best RMSE} - \text{Constant Model RMSE} }{\text{Class Best RMSE} - \text{Constant Model RMSE} }\right)^{\alpha}$$
+$$\text{Grade} = \left(\frac{\text{Your Best RMSE} - \text{Constant Model RMSE} }{\text{Class Best RMSE} - \text{Constant Model RMSE} }\right)^{\alpha}$$
 
 where $\alpha \approx 1$ will be selected by the instructor to ensure a suitable
 distribution of grades. 
