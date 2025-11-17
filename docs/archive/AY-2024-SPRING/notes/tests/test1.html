@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>STA 9890 - Spring 2025  Test 1: Regression – STA 9890</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-1c47065645911eb62ace0da5c8a22cd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">STA 9890</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./../../syllabus.html">
+<span class="menu-text">Syllabus</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./../../notes.html">
+<span class="menu-text">Handouts and Additional Notes</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./../../reports.html">
+<span class="menu-text">Research Reports</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./../../competition.html">
+<span class="menu-text">Course Competition</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./../../resources.html">
+<span class="menu-text">Additional Resources and Policies</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./../../objectives.html">
+<span class="menu-text">Learning Objectives</span></a>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<div id="quarto-announcement" data-announcement-id="6a42bbecdcf2d6ce6b61d47c55fab2f9" class="alert alert-danger">
+  <i class="bi bi-info-circle quarto-announcement-icon"></i>
+  <div class="quarto-announcement-content">
+    <strong>Warning</strong> - This page is for a prior offering of STA 9890. For the latest offering, click <a id="exit-archive-link" href="../../../notes/tests/test1.html">here</a
+>.
+  </div>
+</div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+
+  <ul>
+  <li><a href="#true-or-false-30-points---10-questions-at-3-points-each" id="toc-true-or-false-30-points---10-questions-at-3-points-each" class="nav-link active" data-scroll-target="#true-or-false-30-points---10-questions-at-3-points-each">True or False (30 points - 10 questions at 3 points each)</a></li>
+  <li><a href="#short-answer-50-points---10-questions-at-5-points-each" id="toc-short-answer-50-points---10-questions-at-5-points-each" class="nav-link" data-scroll-target="#short-answer-50-points---10-questions-at-5-points-each">Short Answer (50 points - 10 questions at 5 points each)</a></li>
+  <li><a href="#mathematics-of-machine-learning-20-points-total" id="toc-mathematics-of-machine-learning-20-points-total" class="nav-link" data-scroll-target="#mathematics-of-machine-learning-20-points-total">Mathematics of Machine Learning (20 points total)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/notes/tests/test1.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/notes/tests/test1.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">STA 9890 - Spring 2025 <br> Test 1: Regression</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+
+
+
+  </div>
+
+
+
+</header>
+
+
+<p>The original test booklet can be found <a href="./STA9890_test1_2025-Spring.pdf">here</a>. <span class="math display">\[\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}}\]</span></p>
+<section id="true-or-false-30-points---10-questions-at-3-points-each" class="level2">
+<h2 class="anchored" data-anchor-id="true-or-false-30-points---10-questions-at-3-points-each">True or False (30 points - 10 questions at 3 points each)</h2>
+<ol type="1">
+<li><p>Linear regression is a supervised learning method because it has a matrix of features <span class="math inline">\(\bX \in \R^{n \times p}\)</span> and a vector of responses <span class="math inline">\(\by \in \R^{n}\)</span> which we attempt to predict using <span class="math inline">\(\bX\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. Linear regression methods are <em>supervised</em> learning methods because they attempt to predict (continuous) responses <span class="math inline">\(y\)</span> using a set of covariates <span class="math inline">\(\bx\)</span>.</p>
+</div>
+</div>
+</div></li>
+<li><p>Models with higher training error always have higher test error.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False.</strong> If this were true, we could solve all of life’s problems by minimizing training error with no regard for overfitting.</p>
+<p><em>Aside</em>: This story is made somewhat more difficult by recent studies in ML practice where we have learned to fit rather complex models in a way that keeps both training and test error small. We will return to this later in this course, but it is still by no means an <em>always</em> relationship.</p>
+</div>
+</div>
+</div></li>
+<li><p>For the same level of sparsity, best subsets provides smaller training error than the lasso.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. Because best subsets does not apply shrinkage, it achieves smaller <em>training</em> error than the lasso. But this is not necessarily a good thing: see, <em>e.g.</em>, T. Hastie, R. Tibshirani, R. Tibshirani. “Best Subset, Forward Stepwise or Lasso? Analysis and Recommendations Based on Extensive Comparisons. <em>Statistical Science</em> <strong>35(4)</strong>, p.579-592. 2020. DOI:<a href="https://dx.doi.org/10.1214/19-STS733">10.1214/19-STS733</a>.</p>
+</div>
+</div>
+</div></li>
+<li><p>Because kernel methods are more flexible than pure linear models, they always provide in-sample (training) error improvements.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. Linear functions are contained in (essentially?) all kernel spaces, so the kernel finds the best training fit over linear and non-linear functions, allowing improvements over pure linear fits.</p>
+<p>This question was a bit ambiguous about the function space used and whether any regularization was applied (as it almost always is in kernel methods), so I will also accept <strong>False</strong> here. (But you should understand that the answer is <em>essentially</em> always <strong>True</strong> - more flexible methods fit better on the training data except in exceptional circumstances.)</p>
+<p>Alternatively, in the case where <span class="math inline">\(n=p\)</span>, OLS has 0 MSE and kernels cannot improve upon it.</p>
+</div>
+</div>
+</div></li>
+<li><p>OLS finds the linear model with the lowest test MSE.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. OLS identifes the linear model with the lowest <em>training</em> MSE but it does not guarantee optimal test MSE (no method can do that). In fact, we know that suitably-tuned ridge regression will always achieve lower test MSE than OLS (in expectation).</p>
+</div>
+</div>
+</div></li>
+<li><p>When cross-validation is used to select the optimal value of <span class="math inline">\(\lambda\)</span> in lasso regression, the CV estimate of the out-of-sample (test) error of the selected model is unbiased because the cross-validation error is computed on an unseen ‘hold-out’ set and not on the training data.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. Whenever we use an error estimate to select a parameter or a hyperparameter, that error is no longer an unbiased answer for the eventual test error. There is no difference between optimizing <span class="math inline">\(\hat{\beta}\)</span> and optimizing <span class="math inline">\(\lambda\)</span> in this regard.</p>
+</div>
+</div>
+</div></li>
+<li><p>Ordinary least squares is BLUE when applied to a VAR<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> model if the underlying data generating process is truly linear, the errors are mean zero and have constant variance (no `heteroscedasticity’).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. BLUE-ness of OLS presumes independent errors, which is not stated in the above question and is generally not true for time series models.</p>
+</div>
+</div>
+</div></li>
+<li><p>Reducing variance always increases bias.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. While this is <em>often</em> true, it is not always so. Ensemble methods, which we discuss later in this course, reduce variance without increasing bias. More prosaically, increasing sample size reduces variance but does not increase bias.</p>
+</div>
+</div>
+</div></li>
+<li><p><span class="math inline">\(K\)</span>-Nearest Neighbors can be used for regression and classification.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. We give examples of both in the course notes.</p>
+</div>
+</div>
+</div></li>
+<li><p>Linear models are preferred in high-dimensional scenarios because they have a low bias.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. Linear models are preferred in high-dimensional scenarios because they have lower <em>variance</em> than non-linear models.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="short-answer-50-points---10-questions-at-5-points-each" class="level2">
+<h2 class="anchored" data-anchor-id="short-answer-50-points---10-questions-at-5-points-each">Short Answer (50 points - 10 questions at 5 points each)</h2>
+<ol type="1">
+<li><p>Give an example that demonstrates why the <span class="math inline">\(\ell_0\)</span>-“norm” is not convex.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Recall that a convex function satisfies the inequality</p>
+<p><span class="math display">\[f(\lambda \bx + (1-\lambda)\by) \leq \lambda f(\bx) + (1-\lambda) f(\by)\]</span></p>
+<p>for all <span class="math inline">\(\bx, \by\)</span> and all <span class="math inline">\(\lambda \in [0, 1]\)</span>.</p>
+<p>Let us take</p>
+<p><span class="math display">\[\bx = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \by = \begin{pmatrix} 0 \\ 1 \end{pmatrix}\]</span></p>
+<p>with <span class="math inline">\(\lambda = 0.5\)</span> so</p>
+<p><span class="math display">\[\lambda \bx + (1-\lambda) \bx = \begin{pmatrix} 0.5 \\ 0.5 \end{pmatrix}.\]</span></p>
+<p>This then gives us</p>
+<p><span class="math display">\[\|\bx\|_0 = 1, \|\by\|_0 = 1 \text{ but } \|\lambda \bx + (1-\lambda)\by\|_0 = 2\]</span></p>
+<p>which violates our inequality.</p>
+</div>
+</div>
+</div></li>
+<li><p>List three reasons we may choose to use a <em>sparse</em> model.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Possible answers include:</p>
+<ol type="1">
+<li><p>Interpretability</p></li>
+<li><p>Better Estimation / Improved Test Performance / Shrinkage</p></li>
+<li><p>Fewer Features to Collect on Test Points</p></li>
+<li><p>Faster Predictions / Computational Efficiency</p></li>
+<li><p>Faster Fitting</p></li>
+</ol>
+<p>This list is not comprehensive and alternate correct answers will also receive credit.</p>
+</div>
+</div>
+</div></li>
+<li><p>Compare and contrast spline and kernel models. Give at least 2 key similarities (“compare”) and 2 key differences (“contrast”).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Potential answers include the following similarities:</p>
+<ul>
+<li>Both perform non-linear supervised learning</li>
+<li>Both fit smooth non-linear functions</li>
+</ul>
+<p>and differences:</p>
+<ul>
+<li>Kernel methods fit combinations (interactions) of features while standard spline models are fit to a single feature at a time</li>
+<li>Splines are fit locally while kernels are fit globally</li>
+<li>Because they are univariate, splines are easy to interpret and can be used in sparse models</li>
+</ul>
+<p>This list is not comprehensive and alternate correct answers will also receive credit.</p>
+</div>
+</div>
+</div></li>
+<li><p>The <em>elastic net</em> is a combination of ridge and lasso regression: <span class="math display">\[\argmin_{\bbeta} \frac{1}{2}\left\|\by - \bX\bbeta\right\|_2^2 + \lambda_1 \|\bbeta\|_1 + \frac{\lambda_2}{2} \|\bbeta\|_2^2.\]</span> In the case where <span class="math inline">\(\bX\)</span> is the identity matrix, what is <span class="math inline">\(\hat{\bbeta}\)</span> in terms of <span class="math inline">\(\by, \lambda_1, \lambda_2\)</span>?</p>
+<p><em>Hint: Note that the solution is the composition of the ridge and lasso shrinkage operators, applied in any order. That is, if the ridge and lasso shrinkage operators are <span class="math inline">\(S_1(\cdot), S_2(\cdot)\)</span>, the solution will be of the form <span class="math inline">\(S_1(S_2(\cdot)) = S_2(S_1(\cdot))\)</span></em>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Recall that the lasso and ridge shrinkage operators are given by</p>
+<p><span class="math display">\[S_{\lambda, \ell_1}(x) = \begin{cases} x - \lambda &amp; x &gt; \lambda \\ 0 &amp; |x| &lt; \lambda \\ x + \lambda &amp; x &lt; -\lambda\end{cases}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[S_{\lambda, \ell_2^2}(x) = \frac{x}{1+\lambda}\]</span></p>
+<p>so their composition is given by:</p>
+<p><span class="math display">\[S(x) = \begin{cases}\frac{x - \lambda_1}{1+\lambda_2} &amp; x &gt; \lambda_1 \\ 0 &amp; |x| &lt; \lambda_1 \\ \frac{x + \lambda_1}{1+\lambda_2} &amp; x &lt; -\lambda_1\end{cases} = \frac{1}{1+\lambda_2}\mathcal{S}_{\lambda_1}(x) \]</span></p>
+<p>where <span class="math inline">\(\mathcal{S}_{\lambda}(\cdot)\)</span> is the soft-threshold operator. Hence the solution is <span class="math display">\[\hat{\bbeta} = \frac{1}{1+\lambda_2}\mathcal{S}_{\lambda_1}(\by)\]</span></p>
+<p>See <a href="https://papers.nips.cc/paper_files/paper/2013/hash/98dce83da57b0395e163467c9dae521b-Abstract.html">Y. Yu “On Decomposing the Proximal Map” in <em>NeurIPS 2013: Advances in Neural Information Processing Systems 26</em></a>.</p>
+<p>This operation:</p>
+<p><span class="math display">\[f(\bz) = \argmin_{\bx} f(\bx) + \frac{1}{2}\|\bx - \bz\|_2^2\]</span></p>
+<p>is known as the <em>proximal operator</em> of the function <span class="math inline">\(f\)</span> and it has applications throughout machine learning and statistics. See N.G. Polson, J.G. Scott, and B.T. Willard. “Proximal Algorithms in Statistics and Machine Learning.” <em>Statistical Science</em> <strong>30(4)</strong>, pp.559-581. 2015. DOI:<a href="https://dx.doi.org/10.1214/15-STS530">10.1214/15-STS530</a> and N. Parikh and S. Boyd “Proximal Algorithms.” <em>Foundations and Trends in Optimization</em> <strong>1(3)</strong>, p.123-231. 2013 DOI:<a href="https://dx.doi.org/10.1561/2400000003">10.1561/2400000003</a> for more.</p>
+</div>
+</div>
+</div></li>
+<li><p>Name three advantages of <em>convexity</em> in formulating machine learning approaches.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Possible answers include:</p>
+<ol type="1">
+<li><p>Efficient optimization algorithms</p></li>
+<li><p>Guarantees of global optimality</p></li>
+<li><p>Statistical stability - the minima of convex functions are less sensitive to noise</p></li>
+<li><p>Theoretical simplicity - convex functions are easier to analyze than non-convex functions</p></li>
+</ol>
+</div>
+</div>
+</div></li>
+<li><p>In your own words, explain why use of a holdout set (or similar techniques) is important for choosing hyperparameters in machine learning.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Your answer should discuss how the use of a holdout set (distinct from a training set) can be used to get unbiased estimates of the test error which we can then use to select the hyperparameter. If we don’t use a holdout set, we are more likely to overfit the training data since we never test a model’s out-of-sample predictive capability.</p>
+</div>
+</div>
+</div></li>
+<li><p>Give two reasons why is the lasso preferred over best subsets for fitting linear models.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Computational tractability. Best subsets is <em>hard</em>.</p></li>
+<li><p>Shrinkage and improved out of sample performance</p></li>
+</ol>
+</div>
+</div>
+</div></li>
+<li><p>Rank the following models in terms of (statistical) complexity with 1 being the lowest complexity and 5 being the highest: OLS, 1-Nearest Neighbor Regression, Cubic Spline Regression, Cubic Polynomial Regression, Ridge Regression</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Ridge Regression is simpler than</li>
+<li>OLS is simpler than</li>
+<li>Cubic Spline Regression is simpler than</li>
+<li>Cubic Polynomial Regression is simpler than</li>
+<li><span class="math inline">\(1\)</span>-Nearest Neighbor Regression</li>
+</ul>
+<p>I will accept answers that switch the order of cubic splines and cubic polynomials as a cubic spline with many knots can have more complexity (effective degrees of freedom) than a single cubic polynomial fit. This question should have said <em>piecewise cubic polynomial regression</em>.</p>
+</div>
+</div>
+</div></li>
+<li><p>On the first plot, draw a curve of typical training and test errors for a <span class="math inline">\(K\)</span>-nearest neighbor regressor. On the second plot, draw a curve of the typical bias and variance for <span class="math inline">\(K\)</span>-NN regression.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Your plots should:</p>
+<ul>
+<li>Have the training error of <span class="math inline">\(K\)</span>-NN start at 0 for <span class="math inline">\(K\)</span>=1</li>
+<li>Have the training error of <span class="math inline">\(K\)</span>-NN increase in <span class="math inline">\(K\)</span></li>
+<li>Have a “U” shape for the test error of <span class="math inline">\(K\)</span>-NN</li>
+<li>Have the bias of <span class="math inline">\(K\)</span>-NN start at 0 and increase in <span class="math inline">\(K\)</span></li>
+<li>Have the variance of <span class="math inline">\(K\)</span>-NN start high and decrease in <span class="math inline">\(K\)</span></li>
+<li>The test error should remain above the training error</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>On the first plot, draw a curve of typical training and test errors for ridge regression. On the second plot, draw a curve of the typical bias and variance for ridge regression.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Your plots should:</p>
+<ul>
+<li>Increase Bias as <span class="math inline">\(\lambda\)</span> increases</li>
+<li>Decrease Variance as <span class="math inline">\(\lambda\)</span> increases</li>
+<li>Have monotonically increasing training error</li>
+<li>Have a <span class="math inline">\(U\)</span>-shape for test error</li>
+</ul>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="mathematics-of-machine-learning-20-points-total" class="level2">
+<h2 class="anchored" data-anchor-id="mathematics-of-machine-learning-20-points-total">Mathematics of Machine Learning (20 points total)</h2>
+<p>In this section, you will analyze so-called <em>generalized</em> ridge and lasso penalties. These methods apply the ridge or lasso penalties to something other than the vector of estimated coefficients (<span class="math inline">\(\hat{\bbeta}\)</span>):</p>
+<p><span class="math display">\[\begin{align*}
+    \argmin_{\bbeta} &amp;\frac{1}{2}\left\|\by - \bX\bbeta\right\|_2^2 +\frac{\lambda}{2} \|\bD\bbeta\|_2^2\tag{Generalized Ridge} \\
+    \argmin_{\bbeta} &amp;\frac{1}{2}\left\|\by - \bX\bbeta\right\|_2^2 +\lambda \|\bD\bbeta\|_1\tag{Generalized Lasso}
+\end{align*}\]</span></p>
+<p>Most commonly, <span class="math inline">\(\bD\)</span> is taken to be some sort of first-or-second order difference matrix so that <span class="math display">\[\|\bD_1\bbeta\|^2_2 = \sum_{i=1}^{p-1} (\beta_{i+1}-\beta_i)^2 \text{ and } \|\bD_1\bbeta\|_1 = \sum_{i=1}^{p-1} |\beta_{i+1}-\beta_i| \tag{First order difference}\]</span> and <span class="math display">\[\|\bD_2\bbeta\|^2_2 = \sum_{i=1}^{p-2} (\beta_{i+2} - 2\beta_{i+1}+\beta_i)^2 \text{ and } \|\bD_2\bbeta\|_1 = \sum_{i=1}^{p-2} |\beta_{i+2} - 2\beta_{i+1}+\beta_i|\tag{2nd order difference}\]</span> but other choices are also popular.</p>
+<ol type="1">
+<li><p>By analyzing the stationarity (zero gradient) condition, derive the closed-form solution for generalized ridge regression (arbitrary <span class="math inline">\(\bD\)</span>). Box your answer so that it is clearly identifiable. You may assume all relevant matrices are full-rank and/or invertible. (8 points)</p>
+<p><em>Hint: Note that <span class="math inline">\(\partial \|\bD\bbeta\|_2^2 / \partial \bbeta = 2\bD^{\top}\bD\bbeta\)</span>.</em></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We simply take the gradient of the generalized ridge loss and set it equal to zero:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{\partial}{\partial \bbeta}\left(\frac{1}{2}\|\by - \bX\bbeta\|_2^2 + \frac{\lambda}{2}\|\bD\bbeta\|_2^2\right) &amp;= -\bX^{\top}(\by - \bX\bbeta) + \lambda\bD^{\top}\bD\bbeta \\
+\bzero &amp;= (\bX^{\top}\bX + \lambda \bD^{\top}\bD)\bbeta - \bX^{\top}{\by}\\
+\implies \hat{\bbeta} &amp;= (\bX^{\top}\bX + \lambda \bD^{\top}\bD)^{-1}\bX^{\top}\by
+\end{align*}\]</span></p>
+</div>
+</div>
+</div></li>
+<li><p>In order to build intuition, let us consider the case where <span class="math inline">\(\bX = \bI\)</span> and consider what happens when we change <span class="math inline">\(\lambda\)</span> in the generalized lasso problem. On the following plot, I have drawn the vector of observation <span class="math inline">\(\by\)</span> (dots) as well as the <span class="math inline">\(\bD_1\)</span>-generalized lasso solution for <span class="math inline">\(\lambda=0\)</span> (small dashes) and <span class="math inline">\(\lambda=\infty\)</span> (large dashes).</p>
+<p>On the blank set of axes, draw the estimated <span class="math inline">\(\hat{\bbeta}\)</span> vectors from the <span class="math inline">\(\bD_1\)</span>-generalized lasso at a both ‘small-ish’ and ‘large-ish’ value of <span class="math inline">\(\lambda\)</span>. Label each solution carefully. (4 points)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>You plots should be piecewise constant, with fewer jumps for moderate <span class="math inline">\(\lambda\)</span> than for small <span class="math inline">\(\lambda\)</span>.</p>
+</div>
+</div>
+</div></li>
+<li><p>What is the relationship between <span class="math inline">\(\bD_2\)</span>-generalized ridge regression and spline methods?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The <span class="math inline">\(\bD_2\)</span> matrix is a second-difference matrix and it plays the same role as the second derivative on a finite grid. As such, <span class="math inline">\(\bD_2\)</span>-generalized ridge regression will find a curve that fits the data while controlling the sum of squared second differences. Spline regression will find a curve that fits the data while controlling the integral of squared second derivative. For simple equispaced settings, these approaches essentially coincide.</p>
+<p>Key points to mention:</p>
+<ul>
+<li>Both can be used fit smooth curves</li>
+<li>Both capture “second derivative” type information</li>
+<li>Both induce a roughness penalty regularizer which must be tuned</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Describe a situation in which generalized ridge or generalized lasso regression would be appropriate. What value of <span class="math inline">\(\bD\)</span> would you choose for your application?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There are many possible answers for this part.</p>
+</div>
+</div>
+</div></li>
+</ol>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>VAR, or Vector Autoregressive, is a simple linear model for multivariate time series.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button,
+          { trigger: "manual",
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/michael-weylandt\.com\/STA9890\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined;
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              }
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            }
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/notes/tests/test1.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/notes/tests/test1.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

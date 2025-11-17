@@ -1,0 +1,12 @@
+---
+session: "`r session <- 13; session`"
+author: "Michael Weylandt"
+topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair='universal') |> filter(Course.Element == 'Class Session', Item.Number==session) |> pull(Details); topic`"
+title: "{{< var course.short >}} - {{< meta topic >}}"
+date: "`r Sys.Date()`"
+---
+
+```{r}
+1+1
+```
+

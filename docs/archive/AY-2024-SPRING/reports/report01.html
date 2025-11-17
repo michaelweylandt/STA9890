@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>STA 9890 Research Report #01: Bias and Variance in Linear Regression – STA 9890</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-1c47065645911eb62ace0da5c8a22cd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./../index.html">
+    <span class="navbar-title">STA 9890</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link" href="./.././syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././notes.html"> 
+<span class="menu-text">Handouts and Additional Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./../reports.html"> 
+<span class="menu-text">Research Reports</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././competition.html"> 
+<span class="menu-text">Course Competition</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././resources.html"> 
+<span class="menu-text">Additional Resources and Policies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././objectives.html"> 
+<span class="menu-text">Learning Objectives</span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-announcement" data-announcement-id="6a42bbecdcf2d6ce6b61d47c55fab2f9" class="alert alert-danger">
+  <i class="bi bi-info-circle quarto-announcement-icon"></i>
+  <div class="quarto-announcement-content">
+    <strong>Warning</strong> - This page is for a prior offering of STA 9890. For the latest offering, click <a id="exit-archive-link" href="../../../reports/report01.html">here</a
+>.
+  </div>
+</div>
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#key-dates" id="toc-key-dates" class="nav-link active" data-scroll-target="#key-dates">Key Dates</a></li>
+  <li>
+<a href="#research-report" id="toc-research-report" class="nav-link" data-scroll-target="#research-report">Research Report #01: Bias and Variance in Linear Regression</a>
+  <ul class="collapse">
+<li><a href="#project-skeleton" id="toc-project-skeleton" class="nav-link" data-scroll-target="#project-skeleton">Project Skeleton</a></li>
+  <li><a href="#additional-background" id="toc-additional-background" class="nav-link" data-scroll-target="#additional-background">Additional Background</a></li>
+  <li><a href="#possible-topics-for-additional-research" id="toc-possible-topics-for-additional-research" class="nav-link" data-scroll-target="#possible-topics-for-additional-research">Possible Topic(s) for Additional Research</a></li>
+  <li><a href="#submission-instructions" id="toc-submission-instructions" class="nav-link" data-scroll-target="#submission-instructions">Submission Instructions</a></li>
+  <li><a href="#grading" id="toc-grading" class="nav-link" data-scroll-target="#grading">Grading</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/reports/report01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/reports/report01.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">STA 9890 Research Report #01: Bias and Variance in Linear Regression</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="key-dates" class="level3"><h3 class="anchored" data-anchor-id="key-dates">Key Dates</h3>
+<ul>
+<li>Released to Students: 2025-02-04</li>
+<li><strong>Submission: 2025-03-07 11:45pm ET on Brightspace</strong></li>
+</ul>
+<p><em>Estimated Time to Complete: 9 Hours</em></p>
+</section><section id="research-report" class="level2"><h2 class="anchored" data-anchor-id="research-report">Research Report #01: Bias and Variance in Linear Regression</h2>
+<p>In this research report, you will dive deeply into the bias-variance trade-off and the BLUE-ness (or lack thereof) of ordinary least squares.</p>
+<section id="project-skeleton" class="level3"><h3 class="anchored" data-anchor-id="project-skeleton">Project Skeleton</h3>
+<p>Your report should be divided into four sections, covering the following:</p>
+<ol type="i">
+<li>Theoretical background</li>
+<li>Computation - Gradient Descent and Weight Decay</li>
+<li>Bias and Variance Under Linear Data Generating Processes (DGP)</li>
+<li>Bias and Variance Under Non-Linear DGP</li>
+</ol>
+<p>At a minimum, these should include the following elements:</p>
+<ul>
+<li>Theoretical Background
+<ul>
+<li>
+<p>Rigorous Statement and Proof of the Bias-Variance Decomposition</p>
+<p><span class="math display">\[\mathbb{E}[\text{MSE}] = \text{Bias}^2 + \text{Variance} (+ \text{Irreducible Noise})\]</span></p>
+<p>Discuss how this statement is to be interpreted in the context of parameter estimation (when the underlying DGP is linear) and in the context of (possibly misspecified) prediction. Be sure to clarify when the “Irreducible Noise” term is needed.</p>
+</li>
+<li><p>Proof of the “BLUE” property of OLS with clear statement of the relevant assumptions. Take care to differentiate which assumptions are required for “B” and which are required for “U”.</p></li>
+</ul>
+</li>
+<li>Computation
+<ul>
+<li>Derivation and implementation of the ‘closed-form’ matrix expression for OLS</li>
+<li>Derivation and implementation of the ‘closed-form’ matrix expression for Ridge Regression</li>
+<li>Derivation and implementation of a gradient descent method for OLS</li>
+<li>Derivation and implementation of a ‘weight decay’ modification for OLS gradient descent.</li>
+<li>Empirical demonstration of the equivalance of OLS+Weight Decay with Ridge Regression</li>
+</ul>
+</li>
+<li>Bias and Variance Under Linear DGP
+<ul>
+<li>Posit a Linear DGP</li>
+<li>Using <em>Monte Carlo</em> simulations:
+<ul>
+<li>Show that OLS is unbiased under this DGP</li>
+<li>Compute the variance of a given regression coefficient</li>
+<li>Compute the in- and out-of-sample prediction MSE</li>
+<li>Show how the variance, in-sample, and out-of-sample MSE change with the sample size, <span class="math inline">\(n\)</span>
+</li>
+</ul>
+</li>
+<li>Compare against ridge regression
+<ul>
+<li>Show that RR is <em>biased</em> under this DGP</li>
+<li>Compare the variance of OLS and RR</li>
+<li>Demonstrate the <em>MSE Existence Theorem</em> for Ridge Regression</li>
+<li>Compare the MSE of RR and OLS as a function of the sample size <span class="math inline">\(n\)</span>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Bias and Variance Under Non-Linear DGP
+<ul>
+<li>Posit a Non-Linear DGP</li>
+<li>Using simulation, determine the “best approximate” linear regression coefficients: that is, find the OLS coefficients minimizing MSE</li>
+<li>Show that the estimated OLS coefficients converge to the “best approximate” coefficients as the sample size <span class="math inline">\(n\)</span> increases</li>
+<li>Compute the MSE of RR in simulation and then use 5-fold cross-validation to determine the optimal regularization level</li>
+<li>Compare the MSE of RR and OLS in the non-linear setting</li>
+</ul>
+</li>
+</ul>
+<p>Finally, note that because we are interested in bias, variance, and MSE – each of which is defined with respect to a (known) DGP – we only use statistical simulation for this project. In <a href="./report02.html">Report #02</a> and <a href="./report03.html">Report #03</a>, you will apply methods to real (non-simulated) data.</p>
+</section><section id="additional-background" class="level3"><h3 class="anchored" data-anchor-id="additional-background">Additional Background</h3>
+<p><em>Gradient Descent</em> methods fit models by taking small steps in the direction opposite the gradient of the loss function. (Recall the gradient points in the direction of steepest increase, so moving in the opposite direction leads to a decrease in error.)</p>
+<p>Abstractly, given a differentiable loss function, <span class="math inline">\(\mathcal{L}(\beta)\)</span>, gradient descent proceeds as follows:</p>
+<ol type="i">
+<li>Select initial guess <span class="math inline">\(\beta^{(0)}\)</span> and set <span class="math inline">\(k=0\)</span>
+</li>
+<li>Repeat until convergence:</li>
+</ol>
+<ul>
+<li>Compute gradient <span class="math inline">\(\nabla\mathcal{L}|_{\beta = \beta^{(k)}}\)</span>
+</li>
+<li>Update guess using a gradient step <span class="math display">\[\beta^{(k+1)} = \beta^{(k)} - c \nabla\mathcal{L}|_{\beta = \beta^{(k)}}\]</span>
+</li>
+<li>Increment <span class="math inline">\(k := k+1\)</span>
+</li>
+<li>Check convergence:
+<ul>
+<li>Parameter convergence: if <span class="math inline">\(\beta^{(k+1)} \approx \beta^{(k)}\)</span>, we have converged.</li>
+<li>Objective convergence: if <span class="math inline">\(\mathcal{L}(\beta^{(k+1)}) \approx \mathcal{L}(\beta^{(k)})\)</span>, we have converged</li>
+</ul>
+</li>
+</ul>
+<ol start="3" type="i">
+<li>At convergence, return <span class="math inline">\(\beta^{(k+1)}\)</span>
+</li>
+</ol>
+<p>This scheme is pretty easy to implement, but there are a few points where it behooves you to be careful:</p>
+<ol type="i">
+<li>How do we check the approximate equality in the convergence check?<br>
+We will almost never get <em>exact</em> equality, so you need to pick a norm and a <em>tolerance</em>.</li>
+<li>How do we choose the step-size <span class="math inline">\(c\)</span>? <strong>Much</strong> has been written about this; for our purposes it suffices to take a very small value of <span class="math inline">\(c\)</span> and keep it constant.</li>
+<li>What if we never reach convergence? Should we stop after some (large) number of iterations?</li>
+</ol>
+<p>The method of <em>weight-decay</em> modifies the gradient update as follows:</p>
+<p><span class="math display">\[\beta^{(k+1)} = \beta^{(k)} - c \nabla\mathcal{L}|_{\beta = \beta^{(k)}} - \omega \beta^{(k)}\]</span></p>
+<p>Here <span class="math inline">\(\omega\)</span> is another small constant scalar value. By subtracting off a fraction of <span class="math inline">\(\beta^{(k)}\)</span> at each step, weight decay prevents the estimate from ever getting to be too big (hence the name). In the case of OLS, this can be shown to be equivalent to a form of ridge regression.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>The <em>MSE Existence Theorem</em> for Ridge Regression comes in two forms:</p>
+<ul>
+<li>
+<p>Estimation Variant. Let <span class="math display">\[\text{MSE}_i(\hat{\beta}) = \mathbb{E}_{\mathbf{X}, \mathbf{y}}[(\hat{\beta_i} - \beta_i^*)^2]\]</span> denote the mean squared estimation error in the <span class="math inline">\(i^\text{th}\)</span> component of <span class="math inline">\(\hat{\beta}\)</span> as an estimator of the true regression coefficients <span class="math inline">\(\beta^*\)</span>. Here the expectation is taken over random realizations of both the design matrix <span class="math inline">\(\mathbf{X}\)</span> and the response vector <span class="math inline">\(\mathbf{y}\)</span>, as well as the estimator <span class="math inline">\(\hat{\beta}\)</span> which is a function of <span class="math inline">\(\mathbf{X}, \mathbf{y}\)</span>.</p>
+<p>Then, there exists some positive value <span class="math inline">\(\lambda &gt; 0\)</span> such that</p>
+<p><span class="math display">\[\text{MSE}_i(\hat{\beta}_{\text{OLS}}) &gt; \text{MSE}_i(\hat{\beta}_{\text{RR}, \lambda})\]</span></p>
+<p>where <span class="math inline">\(\hat{\beta}_{\text{RR}, \lambda}\)</span> is the ridge regression estimate with regularization parameter <span class="math inline">\(\lambda\)</span>.</p>
+</li>
+<li>
+<p>Prediction Variant. Let <span class="math display">\[\text{MSE}(\hat{\beta}) = \mathbb{E}_{\mathbf{X}, \mathbf{y}, \mathbf{y}'}[\|\mathbf{X}\hat{\beta} - \mathbf{y}'\|_2^2\]</span> denote the mean squared prediction error associated with the estimator <span class="math inline">\(\hat{\beta}\)</span>. Here the expectation is taken over random realizations of both the design matrix <span class="math inline">\(\mathbf{X}\)</span> and the response vector <span class="math inline">\(\mathbf{y}\)</span> used for training, as well as the test data vector <span class="math inline">\(\mathbf{y}'\)</span> which must be drawn from the same DGP.</p>
+<p>Then, there exists some positive value <span class="math inline">\(\lambda &gt; 0\)</span> such that</p>
+<p><span class="math display">\[\text{MSE}_i(\hat{\beta}_{\text{OLS}}) &gt; \text{MSE}_i(\hat{\beta}_{\text{RR}, \lambda})\]</span></p>
+<p>where <span class="math inline">\(\hat{\beta}_{\text{RR}, \lambda}\)</span> is the ridge regression estimate with regularization parameter <span class="math inline">\(\lambda\)</span>.</p>
+</li>
+</ul>
+<p>It is important to note that both of these are statements <em>in expectation</em>: OLS may perform better than RR on a single realization, but in average - over many realizations - suitably-tuned RR will perform better.</p>
+<p>Also, we note that the MSE Existence Theorem does not give any practical advice on selecting <span class="math inline">\(\lambda\)</span>; we have to fall back on our standard approaches, such as cross-validation, for doing so.</p>
+<p>Finally, note that the prediction version of the MSE Existence Theorem only holds when we look at test (out-of-sample) prediction accuracy. OLS is the optimal linear method for in-sample MSE <strong>always and forever.</strong></p>
+</section><section id="possible-topics-for-additional-research" class="level3"><h3 class="anchored" data-anchor-id="possible-topics-for-additional-research">Possible Topic(s) for Additional Research</h3>
+<p>Recent ML research has focused on the case of <em>overparameterized</em> models: that is, models with more parameters than data points used for training. We have already seen ridge regression as one way to deal with this problem. Another approach is to simply use an iterative method, such as gradient descent, and stop it when the training error reaches zero. (This is a non-unique global minimum for the convex OLS problem.) How does this procedure compare? Does it complicate our understanding of the bias-variance trade-off?</p>
+<p>Another recent line of research generalizes the “BLUE” property, showing that OLS is in an appropriate sense “BUE” - it is still optimal even if we allow for (certain types of) non-linear estimators as well. Can you show this?</p>
+</section><section id="submission-instructions" class="level3"><h3 class="anchored" data-anchor-id="submission-instructions">Submission Instructions</h3>
+<p>Submit your research report as a PDF of 6-8 pages on Brightspace.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Your submission should include all <em>essential</em> code, <em>e.g.</em>, code used to fit models or to perform simulations, but may omit <em>incidental</em> code, <em>e.g.</em> code used to create figures or import data.</p>
+<p>You are <strong>required</strong> to implement ML methods by hand; use of ‘built-in’ ML functionality is disallowed unless authorized by instructor. You may use built-in linear algebra subroutines and are not required to, <em>e.g.</em>, implement matrix multiplication from scratch. While you must use your own implementation of ML methods, it is smart to compare against existing ‘reference’ implementations.</p>
+<p>Your report should be in the style of a technical “blog post”, accessible to someone who is just getting into Machine Learning but has solid background in the prerequisite subjects (<em>e.g.</em>, you on the day before this class started). Make sure to (rigorously) define and prove all results used. You should also cite relevant authoritative resources, <em>e.g.</em>, the recommended textbooks, where appropriate.</p>
+<p>Each student must submit an individual and independently written report, but you are encouraged to work together with your peers to understand methods, design simulations, review relevant literature, <em>etc.</em> I strongly recommend having a classmate <a href="https://en.wikipedia.org/wiki/Red_team">“red-team”</a> your report before submission to find unclear writing, sub-standard figures and tables, unconvincing simulations, incorrect code, <em>etc.</em> Per the course’s <a href="../resources.html#aipolicy">Academic Integrity Policy</a>, you must explicitly acknowledge all collaborators in your submission.</p>
+</section><section id="grading" class="level3"><h3 class="anchored" data-anchor-id="grading">Grading</h3>
+<p>Your submission will be evaluated <em>holistically</em> and graded out of 100 points. The following rubric will guide this holistic evaluation, but the instructor may deviate as necessary to accurately grade the final submission.</p>
+<table class="table-hover caption-top table" width="1,1,1,1,1,1">
+<thead><tr class="header">
+<th style="text-align: center;">Report Element</th>
+<th style="text-align: center;">Excellent. <br> “A-” to “A” (<code>90% to 100%</code>)</th>
+<th style="text-align: center;">Great. <br> “B-” to “B+” (<code>80% to 89%</code>)</th>
+<th style="text-align: center;">Average. <br> “C” to “C+” (<code>73% to 79%</code>)</th>
+<th style="text-align: center;">Poor. <br> “D” to “C-” (<code>60% to 72%</code>)</th>
+<th style="text-align: center;">Failure. <br> “F” (<code>0% to 59%</code>)</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Presentation (15%)</td>
+<td style="text-align: center;">Report has excellent formatting, with particularly effective tables and figures. Tables and Figures are “publication-quality” and clearly and succinctly support claims made in the body text.</td>
+<td style="text-align: center;">Report has strong formatting; tables and figures make their intended points, but do not do so optimally.</td>
+<td style="text-align: center;">Formatting is average; tables and figures do not clearly support arguments made in the text and/or are not “publication quality”</td>
+<td style="text-align: center;">Poor formatting distracts from substance of report. Tables and Figures exhibit significant deficiencies in formatting.<br>
+</td>
+<td style="text-align: center;">Formatting prohibits or significantly impairs reader understanding.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><p>Project Skeleton (15%)</p></td>
+<td style="text-align: center;">
+<p>Report includes all required elements and goes significantly deeper than required by the project skeleton in a manner that provides additional insights.</p>
+<p>Mathematical definitions and proofs are clearly stated.</p>
+</td>
+<td style="text-align: center;">
+<p>Report includes all required elements and dives deeper into the topic, but does not generate additional insights. (<em>E.g.</em>, additional simulations showing the same phenomena)</p>
+<p>Mathematical definitions and proofs are correctly stated, but clarity could be improved.</p>
+</td>
+<td style="text-align: center;">
+<p>Report includes all required elements.</p>
+<p>Mathematical definitions and proofs are essentially correct, but difficult to understand and/or contain trivial errors.</p>
+</td>
+<td style="text-align: center;">
+<p>Report does not include all required elements, but is still able to capture key points.</p>
+<p>Mathematical definitions and proofs contain significant, but non-fatal, errors.</p>
+</td>
+<td style="text-align: center;">
+<p>Report fails to adequately address the topic.</p>
+<p>Mathematical definitions and proofs are fundamentally incorrect.</p>
+</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Algorithms and Computational Efficiency (20%)</td>
+<td style="text-align: center;">Report implements all methods efficiently with high-quality, well-formatted and performant code.</td>
+<td style="text-align: center;">Report implements all methods efficiently with acceptable code quality.</td>
+<td style="text-align: center;">Report implements all methods, but does not do so efficiently and/or with substandard code.</td>
+<td style="text-align: center;">Report uses built-in methods instead of implementing methods from scratch</td>
+<td style="text-align: center;">Code does not appear to run properly / insufficient code submitted.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><p>Methodological Aspects and Simulation Design(20%)</p></td>
+<td style="text-align: center;"><p>Methods are accurately and correctly implemented in a robust / bullet-proof manner, designed to responsibly check for and address possible modes of failure. Simulations clearly and efficiently support all claims.</p></td>
+<td style="text-align: center;"><p>Methods are accurately and correctly implemented, but are not robust to failure. Simulations clearly and efficiently support all claims.</p></td>
+<td style="text-align: center;"><p>Methods are implemented with minor harmless errors and/or poor validation. Simulations do not fully support claims.</p></td>
+<td style="text-align: center;">
+<p>Methods are implemented with significant errors leading to incorrect results.</p>
+<p>Simulations do not give sufficient support for key claims.</p>
+</td>
+<td style="text-align: center;"><p>Methods are not correctly implemented. Simulations do not support claims.</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Communication and Writing (20%)</td>
+<td style="text-align: center;">Report exhibits excellent written communication, making all points exceptionally clearly and at the level of a quality academic publication. Code, results, and text are skillfully woven together.</td>
+<td style="text-align: center;">Report exhibits great written communication, all points are made clearly without notable grammatical errors. Code, results, and text are neatly tied together.</td>
+<td style="text-align: center;">Report exhibits solid written communication, key points are made understandably and any grammatical errors do not impair understanding. Code, results, and text could be better integrated, but it is clear which elements relate.</td>
+<td style="text-align: center;">Written communication is below standard: points are not always understandable and/or grammatical errors actively distract from content. Code, results, and text are not actively integrated, but are generally located ‘near’ each other in a semi-systematic fashion.</td>
+<td style="text-align: center;">Written communication is far below standard, possibly bordering on unintelligible. Large blocks of code are shown without any relevant results or text.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Contextualization (10%)</td>
+<td style="text-align: center;">Report draws on relevant, modern research literature to give context to its findings and to broaden its scope.</td>
+<td style="text-align: center;">Report draws on standard textbooks and/or classical research literature to give context to its findings and to broaden its scope.</td>
+<td style="text-align: center;">Report cites textbooks to give context, but does not take a ‘big picture’ view.</td>
+<td style="text-align: center;">Report gives appropriate context, but lacks citations.</td>
+<td style="text-align: center;">Report gives limited, insufficient context.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>This work ©2025 by <a href="https://michael-weylandt.com">Michael Weylandt</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Creative Commons BY-NC-SA 4.0</a> license. <img src="http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png" class="img-fluid" style="width:10.0%"></p>
+
+
+</section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<ol>
+<li id="fn1"><p>A somewhat remarkable finding of much recent research is that <em>many</em> ‘new’ regularization methods pioneered for fitting neural networks have essentially the same effect as ridge (<span class="math inline">\(\ell_2^2\)</span> or Tikhonov) regularization: weight decay, drop out, early stopping, mini-batching and mini-patching. Sometimes it’s hard to beat the classics.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>If you wish to use an alternate submission format to allow interactive and/or animated elements, please seek pre-approval from the instructor.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/michael-weylandt\.com\/STA9890\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/reports/report01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/reports/report01.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
