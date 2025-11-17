@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>STA 9890 - Course Prediction Competition – STA 9890</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-1c47065645911eb62ace0da5c8a22cd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">STA 9890</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="././syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="././notes.html"> 
+<span class="menu-text">Handouts and Additional Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./reports.html"> 
+<span class="menu-text">Research Reports</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="././competition.html"> 
+<span class="menu-text">Course Competition</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="././resources.html"> 
+<span class="menu-text">Additional Resources and Policies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="././objectives.html"> 
+<span class="menu-text">Learning Objectives</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<div id="quarto-announcement" data-announcement-id="6a42bbecdcf2d6ce6b61d47c55fab2f9" class="alert alert-danger">
+  <i class="bi bi-info-circle quarto-announcement-icon"></i>
+  <div class="quarto-announcement-content">
+    <strong>Warning</strong> - This page is for a prior offering of STA 9890. For the latest offering, click <a id="exit-archive-link" href="../../competition.html">here</a
+>.
+  </div>
+</div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
+  <li><a href="#team-submissions" id="toc-team-submissions" class="nav-link" data-scroll-target="#team-submissions">Team Submissions</a></li>
+  <li><a href="#prediction-accuracy-100-points" id="toc-prediction-accuracy-100-points" class="nav-link" data-scroll-target="#prediction-accuracy-100-points">Prediction Accuracy (100 Points)</a>
+  <ul class="collapse">
+  <li><a href="#example-prediction" id="toc-example-prediction" class="nav-link" data-scroll-target="#example-prediction">Example Prediction</a></li>
+  </ul></li>
+  <li><a href="#final-presentation-50-points" id="toc-final-presentation-50-points" class="nav-link" data-scroll-target="#final-presentation-50-points">Final Presentation (50 Points)</a></li>
+  <li><a href="#final-report-50-points" id="toc-final-report-50-points" class="nav-link" data-scroll-target="#final-report-50-points">Final Report (50 Points)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/competition.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/competition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">STA 9890 - Course Prediction Competition</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In lieu of a final exam, STA 9890 has a prediction competition worth approximately one-third of your final grade. For this year’s competition, students will be predicting property valuations in a mid-sized city on the US West Coast.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Use only Provided Information">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Use only Provided Information
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You <strong>may not</strong> use any external data beyond what the instructor provides. You will be required to attest to this in your final submission.</p>
+<p>Students found to use data outside instructor-provided files will receive a zero on <em>all</em> grades related to the course competition.</p>
+</div>
+</div>
+<p>The 200 total points associated with this competition will be apportioned as:</p>
+<ul>
+<li>100 points: Prediction Accuracy on <em>private</em> leaderboard</li>
+<li>50 points: Final Presentation</li>
+<li>50 points: Final Report</li>
+</ul>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>In the United States, local taxes are typically collected using an <em>ad valorem</em> tax on real property (land and buildings). <em>Ad valorem</em> means that the tax amount is determined as a fixed percentage of the value of the property, almost always taken to be the fair market value.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Hence, to determine taxes, government authorities must undertake an annual <em>assessment</em> process.</p>
+<p>Typically, assessment procedes as follows:</p>
+<ol type="i">
+<li>Early in the year, the local assessment authority estimates the fair market value of each property in the relevant area and informs the owner</li>
+<li>The owner then has the option to <em>contest</em> (variously called “grieve”, “protest”, or “challenge”) the assessment in front of a neutral party</li>
+<li>The neutral party then assigns an updated valuation to contested properties</li>
+<li>The local assessment authority collects unchallenged and new assessment values and uses them to create property tax bills</li>
+<li>The assessment authority sends tax bills to the relevant tax collector who then collects taxes from property owners</li>
+</ol>
+<p>For large regions, this assessment process typically relies (at least in part) on some sort of automated process. In this task, you will be predicting the (finalized) assessment values of residental properties for 2019. You will be provided with assessment values for 2015-2018 (4 years) as well as various additional information about the underlying property.</p>
+<p>While assessment values are typically relatively constant over time (growing at a rate proportional to local housing prices), large assessment shifts can occur if the property is remodeled, rebuilt, or otherwise significantly altered. In the region of interest, assessments are the sum of a building assessment and a land assessment, which may not move in lockstep.</p>
+<p>The following files are provided:</p>
+<ul>
+<li><a href="./competition_data/building_details_2015.csv.gz"><code>building_details_2015.csv</code></a>: Details of the relevant properties in 2015</li>
+<li><a href="./competition_data/building_details_2016.csv.gz"><code>building_details_2016.csv</code></a>: Details of the relevant properties in 2016</li>
+<li><a href="./competition_data/building_details_2017.csv.gz"><code>building_details_2017.csv</code></a>: Details of the relevant properties in 2017</li>
+<li><a href="./competition_data/building_details_2018.csv.gz"><code>building_details_2018.csv</code></a>: Details of the relevant properties in 2018</li>
+<li><a href="./competition_data/building_details_2019.csv.gz"><code>building_details_2019.csv</code></a>: Details of the relevant properties in 2019</li>
+<li><a href="./competition_data/assessment_history_train.csv.gz"><code>assessment_history_train.csv</code></a>: A subset of realized assessments from 2015 to 2019, along with some additional useful information</li>
+<li><a href="./competition_data/assessment_history_test.csv.gz"><code>assessment_history_test.csv</code></a>: A subset of realized assessments from 2015 to 2018. <strong>Your task is to predict the 2019 assessments for these properties.</strong></li>
+</ul>
+<p>Let us review these in some detail:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr); <span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(<span class="st">"competition_data/building_details_2015.csv.gz"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 990,765
+Columns: 27
+$ acct                &lt;chr&gt; "bb75f25168addc1117840b10c0fd6cd0c2a7b7c6", "5dd76…
+$ floor_area_primary  &lt;dbl&gt; 1658, 912, 1496, 1517, 1508, 1670, 1164, 1434, 272…
+$ floor_area_upper    &lt;dbl&gt; 879, 0, 0, 1870, 0, 0, 1164, 0, 272, 1176, 272, 27…
+$ floor_area_lower    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10…
+$ garage_area         &lt;dbl&gt; 0, 0, 0, 529, 420, 0, 0, 0, 380, 0, 380, 380, 0, 0…
+$ porch_area          &lt;dbl&gt; 266, 48, 182, 174, 0, 64, 0, 28, 60, 332, 60, 60, …
+$ deck_area           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ mobile_home_area    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ floors              &lt;dbl&gt; 2, 2, 1, 2, 1, 1, 2, 1, 3, 2, 3, 3, 3, 2, 1, 1, 3,…
+$ half_bath           &lt;dbl&gt; 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1,…
+$ full_bath           &lt;dbl&gt; 2, 2, 1, 3, 2, 2, 3, 1, 3, 2, 3, 3, 3, 2, 1, 1, 3,…
+$ total_rooms         &lt;dbl&gt; 8, 6, 6, 6, 5, 5, 8, 6, 5, 9, 5, 5, 12, 8, 5, 6, 8…
+$ bedrooms            &lt;dbl&gt; 3, 3, 3, 3, 3, 2, 4, 2, 3, 4, 3, 3, 6, 4, 2, 3, 3,…
+$ fireplaces          &lt;dbl&gt; 0, 0, 0, 0, 1, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,…
+$ elevator            &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…
+$ quality             &lt;chr&gt; "B", "D", "D", "B", "C", "D", "B", "D", "B", "B", …
+$ quality_description &lt;chr&gt; "Good", "Low", "Low", "Good", "Average", "Low", "G…
+$ year_built          &lt;dbl&gt; 2004, 1949, 1917, 2015, 2003, 1940, 2014, 1920, 19…
+$ year_remodeled      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 2004, 0, 1996, 0, 0, 0, NA, 0…
+$ building_condition  &lt;chr&gt; "Fair", "Fair", "Poor", "Average", "Fair", "Fair",…
+$ foundation_type     &lt;chr&gt; "Slab", "Crawl Space", "Crawl Space", "Slab", "Sla…
+$ grade               &lt;chr&gt; "B-", "D-", "D", "B", "C", "D", "B", "D+", "B+", "…
+$ has_cooling         &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE,…
+$ has_heat            &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE,…
+$ physical_condition  &lt;chr&gt; "Fair", "Fair", "Poor", "Average", "Average", "Fai…
+$ exterior_walls      &lt;chr&gt; "Stucco", "Concrete Block", "Concrete Block", "Bri…
+$ year                &lt;dbl&gt; 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 20…</code></pre>
+</div>
+</div>
+<p>Features here are generally self-explanatory with the exception of <code>acct</code>, a unique identifier I have created to identify assessment parcels. You will use this as the “key” to identify your predictions.</p>
+<p>Note that these data are obtained from government records and are likely full of errors and irregularities (<em>e.g.</em>, the <code>year_remodeled</code> column has many zeros); part of your task is to deal with this messiness in building your ML pipeline. I will not further clean or prepare this data for you.</p>
+<p>The training file looks like:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr); <span class="fu">library</span>(dplyr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(<span class="st">"competition_data/assessment_history_train.csv.gz"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 628,287
+Columns: 37
+$ acct                &lt;chr&gt; "cb6434705a05b139cb63994aa2a194b226b9e750", "965bb…
+$ building_area_2015  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2015      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2250, 86…
+$ building_area_2016  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2016      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2250, 86…
+$ building_area_2017  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2017      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2654, 86…
+$ building_area_2018  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, NA, 3955, 1659, 1935…
+$ land_area_2018      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, NA, 9360, 2654, 86…
+$ region              &lt;chr&gt; "05946c0909f5c241db6179659dc763e14544cf75", "7fb55…
+$ building_area_2019  &lt;dbl&gt; 1853, 1282, 1705, 1525, 2873, 2434, 3955, 1659, 19…
+$ land_area_2019      &lt;dbl&gt; 4263, 6780, 11400, 6050, 12371, 5292, 9360, 2654, …
+$ building_value_2015 &lt;dbl&gt; 80939, 74056, 49042, 85632, 141722, NA, 536000, 33…
+$ land_value_2015     &lt;dbl&gt; 22061, 13526, 11325, 21368, 23175, NA, 464000, 770…
+$ building_value_2016 &lt;dbl&gt; 80939, 74308, 53543, 116825, 141722, NA, 490000, 2…
+$ land_value_2016     &lt;dbl&gt; 22061, 13526, 11325, 25988, 23175, NA, 464000, 770…
+$ building_value_2017 &lt;dbl&gt; 97988, 78545, 77254, 132614, 141722, NA, 551000, 3…
+$ land_value_2017     &lt;dbl&gt; 24512, 13526, 11325, 25988, 23175, NA, 464000, 847…
+$ building_value_2018 &lt;dbl&gt; 97988, 78545, 77254, 128475, 141722, NA, 551000, 3…
+$ land_value_2018     &lt;dbl&gt; 24512, 13526, 11325, 25988, 23175, NA, 464000, 847…
+$ building_value_2019 &lt;dbl&gt; 120488, 70374, 77390, 127337, 166403, 202963, 5260…
+$ land_value_2019     &lt;dbl&gt; 24512, 12580, 11325, 25988, 23175, 22631, 464000, …
+$ assessed_2015       &lt;dbl&gt; 103000, 92171, 64968, 107000, 167732, NA, 1000000,…
+$ protested_2015      &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, FALSE, NA, TRUE, TRUE, F…
+$ assessed_2016       &lt;dbl&gt; 103000, 92171, 64968, 142813, 167732, NA, 954000, …
+$ protested_2016      &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, FALSE, NA, TRUE, FALSE,…
+$ assessed_2017       &lt;dbl&gt; 122500, 92171, 93038, 158602, 167732, NA, 1015000,…
+$ protested_2017      &lt;lgl&gt; TRUE, FALSE, FALSE, FALSE, FALSE, NA, TRUE, FALSE,…
+$ assessed_2018       &lt;dbl&gt; 122500, 92171, 93038, 154463, 167732, NA, 1015000,…
+$ protested_2018      &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, FALSE, NA, TRUE, FALSE, …
+$ assessed_2019       &lt;dbl&gt; 145000, 87291, 93038, 153325, 192413, 225594, 9900…
+$ protested_2019      &lt;lgl&gt; TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALS…
+$ school_dist         &lt;dbl&gt; 8, 9, 1, 8, 24, 5, 25, 9, 9, 5, 4, 1, 9, 1, 16, 1,…
+$ zone                &lt;chr&gt; "1b2fc12a8ee5147b030dae24f76bfb63bf401fdd", "34827…
+$ subneighborhood     &lt;chr&gt; "9bd56df07606b41647719f2022859ef0571cf82c", "25f65…
+$ neighborhood        &lt;chr&gt; "78bde8025e65c00938c9f5a63f652c33c7b7fc61", "5495e…
+$ TARGET              &lt;dbl&gt; 145000, 87291, 93038, 153325, 192413, 225594, 9900…</code></pre>
+</div>
+</div>
+<p>Here the <code>acct</code> identifier matches the building information files. Here, I have given you assessment history (both building and land) where available as well as a record of years in which the property owners protested their initial assessment. The School District, Zone, Region, Subneighborhood, and Neighborhood identifiers can be used geographically similar properties, which may be helpful to identify ‘hot’ neighborhoods.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The <code>TARGET</code> column is simply a repeat of the <code>assessed_2019</code> column, emphasizing the prediction goal of this task.</p>
+<p>Finally, you receive the test set file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr); <span class="fu">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(<span class="st">"competition_data/assessment_history_test.csv.gz"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 418,858
+Columns: 33
+$ acct                &lt;chr&gt; "bb75f25168addc1117840b10c0fd6cd0c2a7b7c6", "8def0…
+$ building_area_2015  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2015      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_area_2016  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2016      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_area_2017  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2017      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_area_2018  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2018      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ region              &lt;chr&gt; "02a37f2eadcf42e9ab0748a5814e8d2f43319ecd", "02a37…
+$ building_area_2019  &lt;dbl&gt; 2537, 1496, 1508, 1670, 1944, 1944, 1732, 3841, 11…
+$ land_area_2019      &lt;dbl&gt; 5000, 5000, 6250, 6250, 1765, 1720, 6050, 5000, 50…
+$ building_value_2015 &lt;dbl&gt; 279405, 2618, 158027, 4899, 222791, 217277, 40861,…
+$ land_value_2015     &lt;dbl&gt; 75000, 75000, 84375, 84375, 88956, 88236, 110500, …
+$ building_value_2016 &lt;dbl&gt; 233935, 2797, 132288, 4153, 210044, 217277, 31457,…
+$ land_value_2016     &lt;dbl&gt; 125000, 125000, 140625, 140625, 88956, 88236, 1381…
+$ building_value_2017 &lt;dbl&gt; 235375, 2870, 113805, 4153, 210044, 211567, 32141,…
+$ land_value_2017     &lt;dbl&gt; 125000, 125000, 140625, 140625, 88956, 88236, 1381…
+$ building_value_2018 &lt;dbl&gt; 235375, 2909, 113805, 4153, 210044, 211567, 32823,…
+$ land_value_2018     &lt;dbl&gt; 125000, 125000, 140625, 140625, 88956, 88236, 1381…
+$ assessed_2015       &lt;dbl&gt; 355945, 78118, 242402, 89274, 311747, 305513, 1538…
+$ protested_2015      &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE…
+$ assessed_2016       &lt;dbl&gt; 360475, 128297, 272913, 144778, 299000, 305513, 17…
+$ protested_2016      &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, TRU…
+$ assessed_2017       &lt;dbl&gt; 360475, 128297, 254430, 144778, 299000, 299803, 17…
+$ protested_2017      &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE…
+$ assessed_2018       &lt;dbl&gt; 360475, 128297, 254430, 144778, 299000, 299803, 17…
+$ protested_2018      &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE…
+$ protested_2019      &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, TRU…
+$ school_dist         &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ zone                &lt;chr&gt; "ea08b1b7cad521f20b71379bcef05c2741eaeee8", "ea08b…
+$ subneighborhood     &lt;chr&gt; "6f23373854222ed999c4c2114f5cb4929f22773e", "6f233…
+$ neighborhood        &lt;chr&gt; "6315b211033894c97f758c5b2d0e53a00ca66f81", "6315b…</code></pre>
+</div>
+</div>
+<p>This is similar to the training file, but with certain 2019 data deleted. (Note that you retain building and land area as well as the protest indicator.)</p>
+</section>
+<section id="team-submissions" class="level2">
+<h2 class="anchored" data-anchor-id="team-submissions">Team Submissions</h2>
+<p>Students <em>may</em>, but are not required to, work in teams of 2 for this competition. Teams will submit one (shared) final presentation and final report and will receive the same grade for all course elements. Students will create teams <em>via</em> Kaggle’s team functionality.</p>
+</section>
+<section id="prediction-accuracy-100-points" class="level2">
+<h2 class="anchored" data-anchor-id="prediction-accuracy-100-points">Prediction Accuracy (100 Points)</h2>
+<p>Prediction accuracy will be assessed using <em>Kaggle Competitions</em>. I have provided Kaggle with a private test set on which your predictions will be evaluated. Kaggle will further divide the test set into a <em>public leaderboard</em> and a <em>private leaderboard</em>. You will be able to see your accuracy on the public leaderboard but final scores will be based on <em>private leaderboard</em> accuracy so <em>don’t overfit</em>.</p>
+<p>Grades for this portion will be assigned as:</p>
+<p><span class="math display">\[\text{Grade} = \left(\frac{\text{Your Best RMSE} - \text{Constant Model RMSE} }{\text{Class Best RMSE} - \text{Constant Model RMSE} }\right)^{\alpha}\]</span></p>
+<p>where <span class="math inline">\(\alpha \approx 1\)</span> will be selected by the instructor to ensure a suitable distribution of grades.</p>
+<p>That is, your grade will essentially be a ‘rescaled’ <span class="math inline">\(R^2\)</span> where the best performance in the class is 100% and everyone else is some fraction thereof. (Note that this means the top performance automatically gets 100% on this component.)</p>
+<p>You will be allowed to submit only <em>three</em> sets of predictions to Kaggle per day so use them wisely. At the end of the competition, you will be able to select <strong>two</strong> sets of predictions to be used for your final evaluation (taking the better of the two) so track your submissions carefully.</p>
+<section id="example-prediction" class="level3">
+<h3 class="anchored" data-anchor-id="example-prediction">Example Prediction</h3>
+<p>To submit your predictions for grading on Kaggle, they must be formatted in a two column CSV with columns:</p>
+<ul>
+<li><code>ACCOUNT</code> - the unique identifier (<code>acct</code>) used for each property</li>
+<li><code>TARGET</code> - your prediction of the 2019 total appraisal</li>
+</ul>
+<p>Below, I show how to download and create a <em>very simple</em> baseline prediction. Specifically, I implement the ‘constant model’, where the average 2019 appraisal of the training samples is used as a constant predictor for <em>every</em> point in the test set. (This is the constant model you must beat to get a non-zero score on this element of the course.)</p>
+<p>In <code>R</code>,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>TRAINING_SAMPLES <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_train.csv.gz"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>TEST_POINTS <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_test.csv.gz"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>AVERAGE_ASSESSMENT <span class="ot">&lt;-</span> <span class="fu">mean</span>(TRAINING_SAMPLES<span class="sc">$</span>TARGET)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>TEST_PREDICTIONS <span class="ot">&lt;-</span> TEST_POINTS <span class="sc">|&gt;</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(acct) <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">TARGET =</span> AVERAGE_ASSESSMENT) <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">ACCOUNT =</span> acct)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(TEST_PREDICTIONS, <span class="st">"kaggle_sub_r.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In <code>python</code>,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>TRAINING_SAMPLES <span class="op">=</span> pd.read_csv(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_train.csv.gz"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>TEST_POINTS <span class="op">=</span> pd.read_csv(<span class="st">"http://michael-weylandt.com/STA9890/competition_data/assessment_history_test.csv.gz"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>AVERAGE_ASSESSMENT <span class="op">=</span> TRAINING_SAMPLES[<span class="st">"TARGET"</span>].mean()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>TEST_POINTS[[<span class="st">"acct"</span>]].rename(columns<span class="op">=</span>{<span class="st">"acct"</span>:<span class="st">"ACCOUNT"</span>}).<span class="op">\</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    assign(TARGET<span class="op">=</span>AVERAGE_ASSESSMENT).<span class="op">\</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    to_csv(<span class="st">"kaggle_sub_py.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If your submission file is not formatted in this way, Kaggle may not accept it.</p>
+<p>To submit your predictions, you need to upload them to Kaggle through the web interface. A link to register for the course competition will be distributed through Brightspace. Note that you must use your <strong><span class="citation" data-cites="cuny.edu">@cuny.edu</span></strong> email so that I can match your Kaggle ID with your student records.</p>
+</section>
+</section>
+<section id="final-presentation-50-points" class="level2">
+<h2 class="anchored" data-anchor-id="final-presentation-50-points">Final Presentation (50 Points)</h2>
+<p>On the final day of class (2025-05-13), each competition unit (either an individual or a team) will give a <strong>6</strong> minute presentation, primarily focused on the <em>models and methods</em> they used to build their predictions. This presentation should include discussion of:</p>
+<ul>
+<li>What ‘off-the-shelf’ models were found to be the most useful?</li>
+<li>What (if any) extensions to standard models were developed for this project? (These need not be <em>truly novel</em> - if you take an idea from a pre-existing source and adapt it for use in this problem, <em>e.g.</em> because it does not appear in <code>sklearn</code>, this is a contribution worth discussing.)</li>
+<li>What (if any) ensembling techniques did you apply?</li>
+<li>What features or feature engineering techniques were important for the success of your model?</li>
+<li>What techniques for data splitting / model validation / test set hygiene did you use in your model development process?</li>
+</ul>
+<p>Presentations must be submitted as PDF slides by midnight the night before class. The instructor will aggregate slides into a single ‘deck’ to be used by all students. (Teams of two should both submit a copy of their slides. The instructor will de-duplicate submissions.)</p>
+<p>Students will be graded according to the following rubric:</p>
+<table class="table-hover caption-top table" width="1,1,1,1,1,1">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Report Element</th>
+<th style="text-align: center;">Excellent. <br> “A-” to “A” (<code>90% to 100%</code>)</th>
+<th style="text-align: center;">Great. <br> “B-” to “B+” (<code>80% to 89%</code>)</th>
+<th style="text-align: center;">Average. <br> “C” to “C+” (<code>73% to 79%</code>)</th>
+<th style="text-align: center;">Poor. <br> “D” to “C-” (<code>60% to 72%</code>)</th>
+<th style="text-align: center;">Failure. <br> “F” (<code>0% to 59%</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Quality of Presentation (20 points)</td>
+<td style="text-align: center;">Excellent and Engaging Presentation. Visualizations and script clearly convey content in detail without obscuring the bigger picture.</td>
+<td style="text-align: center;">Great presentation. Visualizations and script convey content well with only minor flaws. Balance of detailed and big-picture exposition is lost.</td>
+<td style="text-align: center;">Solid presentation. Visualizations or script have one to two notable flaws. Insufficient discussion of details OR big-picture.</td>
+<td style="text-align: center;">Poor presentation. Visualizations or script have 3 or more notable flaws. Underwhelming discussion of both details AND big-picture.</td>
+<td style="text-align: center;">Unacceptable presentation. Significant weaknesses in visualization and script. Significant omissions in details or big-picture analysis.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Pipeline Design (10 points)</td>
+<td style="text-align: center;">Excellent pipeline design. Allows for effective re-use of training data without risk of overfitting. Allows for more detailed queries than overall RMSE.</td>
+<td style="text-align: center;">Great pipeline design. Allows for effective re-use of training data without risk of overfitting, but only allows queries of RMSE.</td>
+<td style="text-align: center;">Solid pipeline design. Takes active steps to minimize chance of ‘leakage’ but may allow issues.</td>
+<td style="text-align: center;">Poor pipeline design. Attempts made at avoiding leakage and overfitting, but approach is fundamentally flawed.</td>
+<td style="text-align: center;">Unacceptable pipeline design. Little or no attention paid to data hygiene.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">ML Methodology (10 points)</td>
+<td style="text-align: center;">Excellent Methodology. Uses advanced methodologies not covered in class in a way that is well-suited for the prediction task. Methodology uses features and time structure in interesting and creative ways.</td>
+<td style="text-align: center;">Great Methodology. Uses ‘black box’ methodologies not covered in class, but with little specialization for the prediction task. OR Applies and combines methods covered in class with particularly insightful approaches to tuning and specialization for the prediction task.</td>
+<td style="text-align: center;">Solid Methodology. Applies and combines methods covered in class with moderate attempts to tune and specialize for task at hand.</td>
+<td style="text-align: center;">Poor Methodology. Applies methods covered in class without any attempt to improve or specialize for task at hand.</td>
+<td style="text-align: center;">Unacceptable Methodology. Fails to apply any advanced methodology (<em>e.g.</em>, only uses linear regression and/or basic ARMA-type time series models).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Feature Engineering and Analysis<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> (5 points)</td>
+<td style="text-align: center;">Excellent FEA. Impressive feature engineering creating significant improvements in predictive performance. Careful analysis of feature importance comparing and contrasting ‘model-specific’ importance and ‘model-agnostic’ importance.</td>
+<td style="text-align: center;">Great FEA. Meaningful feature engineering leading to non-trivial improvements in predictive performance. Analysis of feature importance compared across multiple models.</td>
+<td style="text-align: center;">Solid FEA. Features are treated appropriately, with elementary analysis of feature importance for the model(s) used.</td>
+<td style="text-align: center;">Poor FEA. Features are treated appropriately for their modality, but little to no feature analysis or engineering.</td>
+<td style="text-align: center;">Unacceptable FEA. No attempt to analyze features.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Timing (5 points)</td>
+<td style="text-align: center;">Presentation lasts between 5:45 and 6:15</td>
+<td style="text-align: center;">Presentation lasts between 5:25 and 5:45 or between 6:15 and 6:35</td>
+<td style="text-align: center;">Presentation lasts between 5:00 and 5:25 or between 6:35 and 7:00</td>
+<td style="text-align: center;">Presentation lasts between 4:30 and 5:00 or between 7:00 and 7:30</td>
+<td style="text-align: center;">Presentation runs shorter than 4:30 or longer than 7:30</td>
+</tr>
+</tbody>
+</table>
+<p>Students will also vote on an “Audience Choice” award; the winning presentation will automatically receive a score of 50.</p>
+</section>
+<section id="final-report-50-points" class="level2">
+<h2 class="anchored" data-anchor-id="final-report-50-points">Final Report (50 Points)</h2>
+<p>By 2025-05-20 11:45pm ET, each competition unit (either an individual or a team) will submit a final report of no more than 10 pages (10-12 point, single- or double-spaced) providing an <em>After-Action Report</em> of their competition performance. This report should focus on three topics:</p>
+<ul>
+<li><ol type="1">
+<li>Are there any systematic errors in model predictions that need to be addressed before this model could be applied broadly. (<em>E.g.</em>, is it systmatically low or high in a particular neighborhood; does it undervalue especially high value homes; etc?)</li>
+</ol></li>
+<li><ol start="2" type="1">
+<li>What insights into the underlying data can be gleaned from the model? <em>E.g.</em>, are certain features especially important for making predictions? Or are certain features which you would expect to be important not actually particularly important?</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>What steps did your team take that were particularly helpful to maximizing predictive performance? Or, what parts of your model development cycle were weak and could be the most improved?<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
+</ol></li>
+</ul>
+<p>Note that this report is not solely focused on predictive performance. Analysis that dives deep into the underlying economics of real estate assessment and generates novel insights will score as well (or perhaps even better) than a highly performant but noninterpretable model.</p>
+<p>To assist in developing this After-Action Report, the instructor will provide non-anonymized versions of the data (as well as a mapping to the anonymized data) after the Kaggle competition ends.</p>
+<p>The report should include all code used to prepare the data and train and predict from the best performing models in an Appendix. Significant penalties may be applied if the instructor is unable to reliably reproduce your predictions. (You may choose to submit this Appendix in the form of an iPython Notebook, Quarto document, Docker container, <em>etc</em> to maximize reproducibility.) Note that this appendix does not count against your 10 page limit.</p>
+<p>You may, but are not required to, share your code with the instructor via an emailed Zip file or link to a public code hosting platform such as GitHub.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Reproducibility Info">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Reproducibility Info
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To maximize the reproducibility of your code, make sure to:</p>
+<ol type="1">
+<li>Avoid hard-coding any file paths. It is better to download and/or read directly from hosted copies whenever possible.</li>
+<li>Save random seeds used to create data splits, initialize training, <em>etc.</em></li>
+<li>List all software and packages used, <em>including version information.</em></li>
+<li>Have a clear set of ‘reproduction steps’ and accompanying documentation.</li>
+</ol>
+</div>
+</div>
+<p>Teams of two should both submit a copy of their final report. The instructor will de-duplicate submissions.</p>
+<p>The report will <em>roughly</em> be assessed acccording to the following rubric though the instructor may deviate as necessary.</p>
+<table class="table-hover caption-top table" width="1,1,1,1,1,1">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Report Element</th>
+<th style="text-align: center;">Excellent. <br> “A-” to “A” (<code>90% to 100%</code>)</th>
+<th style="text-align: center;">Great. <br> “B-” to “B+” (<code>80% to 89%</code>)</th>
+<th style="text-align: center;">Average. <br> “C” to “C+” (<code>73% to 79%</code>)</th>
+<th style="text-align: center;">Poor. <br> “D” to “C-” (<code>60% to 72%</code>)</th>
+<th style="text-align: center;">Failure. <br> “F” (<code>0% to 59%</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Quality of Report (15 points)</td>
+<td style="text-align: center;">Excellent Report. Report has excellent writing and formatting, with particularly effective tables and figures. Tables and Figures are “publication-quality” and clearly and succinctly support claims made in the body text. Text is clear and compelling throughout.</td>
+<td style="text-align: center;">Great Report. Report has strong writing formatting. Text is generally clear, but has multiple minor weaknesses or one major weakness; tables and figures make their intended points, but do not do so optimally.</td>
+<td style="text-align: center;">Solid Report. Report exhibits solid written communication, key points are made understandably and any grammatical errors do not impair understanding. Code, results, and text could be better integrated, but it is clear which elements relate. Formatting is average; tables and figures do not clearly support arguments made in the text and/or are not “publication quality”.</td>
+<td style="text-align: center;">Poor Report. Written communication is below standard: points are not always understandable and/or grammatical errors actively distract from content. Code, results, and text are not actively integrated, but are generally located ‘near’ each other in a semi-systematic fashion. Poor formatting distracts from substance of report. Tables and Figures exhibit significant deficiencies in formatting.</td>
+<td style="text-align: center;">Unacceptable Report. Written communication is far below standard, possibly bordering on unintelligible. Formatting prohibits or significantly impairs reader understanding.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Analysis of Predictive Accuracy (10 points)</td>
+<td style="text-align: center;">Excellent Analysis. Team is able to clearly identify strengths and weaknesses of their model and to propose extensions / next steps that could use de-anonymized structure to further improve model performance.</td>
+<td style="text-align: center;">Great Analysis. Team identifies strengths and weaknesses of their model, but without clear ‘next steps’ for model improvement.</td>
+<td style="text-align: center;">Solid Analysis. Accuracy analysis successfully identifies patterns of error, but does not connect these to modeling.</td>
+<td style="text-align: center;">Poor Analysis. Accuracy analysis attemps to identify patterns of error, but fails to distinguish <em>systematic</em> error from randomness.</td>
+<td style="text-align: center;">Unacceptable Analysis. Accuracy analysis is superficial and does not take advantage of data structure in a meaningful way.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Model-Driven Insights into Data Generating Process (10 points)</td>
+<td style="text-align: center;">Excellent Insights. Modeling process creates significant new insights into the economics of real property assessment. Insights are then used to further improve predictive modelling in a virtuous cycle.</td>
+<td style="text-align: center;">Great Insights. Modeling process creates significant new insights into the economics of real property assessment, but insights do not improve predictive modeling.</td>
+<td style="text-align: center;">Solid Insights. Modeling process creates new non-trivial insights, but not ones that have major impact on predictive performance. (<em>E.g.</em>, grey houses have a much higher chance of having rooftop solar than other house colors because grey was the most popular ‘builder spec color’ by the time that residential solar became commonplace. Interesting, but not especially helpful.)</td>
+<td style="text-align: center;">Poor Insights. Modeling process only reproduces known / trivial insights about data generating process (<em>e.g.</em>, bigger houses are worth more than smaller houses <em>ceteris paribus</em>).</td>
+<td style="text-align: center;">Unacceptable Insights. No attempt is made at generating meaningful insights from models.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Reflection on Competition Workflow (10 points)</td>
+<td style="text-align: center;">Excellent Reflection. Clear identification of all important good and bad decisions made over the course of the competition, with insightful ‘take aways’ that can be used by self and other teams to significantly improve performance on future prediction tasks. Importance of key decisions is clearly demonstrated.</td>
+<td style="text-align: center;">Great Reflection. Impressive reflection on key decisions (good and bad) made over the course of the competition. ‘Take Away’ messages would be useful if this competition were re-run as is (or with minor changes) but do not necessarily generalize to other similar tasks. Importance of key decisions is partially demonstrated.</td>
+<td style="text-align: center;">Solid Reflection. Reflection on key decisions identifies major choices made throughout competition, but fails to fully analyze their impact. ‘Take away’ messages are useful, but generic and not particularly relevant to this course or this competition. (<em>E.g.</em>, advice on the best way to tune the lasso) Minimal effort to demonstrate importance of key decisions.</td>
+<td style="text-align: center;">Poor Reflection. Reflection seems to miss one or more major choices made over the course of the semester OR attributes too much importance to an unimportant decision. Fails to demonstrate importance of key decisions. ‘Take away’ messages are of limited general applicability.</td>
+<td style="text-align: center;">Unacceptable Reflection. Minimal or shallow reflection. ‘Take away’ messages are trivial or misleading.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Reproduction Code (5 points)</td>
+<td style="text-align: center;">Excellent Reproduction Code. Code is easy to read and execute, with excellent commenting, formatting, <em>etc.</em> and clearly reproduces submitted predictions.</td>
+<td style="text-align: center;">Great Reproduction Code. Code is easy to read, but requires some effort to execute and reproduce submitted predictions.</td>
+<td style="text-align: center;">Solid Reproduction Code. Code lacks clarity, but still appears to reproduce submitted predictions with reasonable effort.</td>
+<td style="text-align: center;">Poor Reproduction Code. Instructor cannot reproduce submitted predictions without significant effort.</td>
+<td style="text-align: center;">Unacceptable Reproduction Code. Code cannot reproduce submitted predictions.</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Unsurprisingly, New York makes this <a href="https://www.tax.ny.gov/pit/property/assess/local/">more complicated</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>I will not clarify which geographic features are bigger or larger than others. All I wil guarantee is that the different hexadecimal codes are consistent across files.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Feature Engineering and Analysis includes ‘classical’ feature engineering and analysis to identify key features (<em>e.g.</em> feature importance rankings or variable selection).<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In this ‘self-evaluation’ section, you are encouraged to be truthful and honest in your reflections. I already know how well you did and you won’t be able to convince me otherwise, so if you made fundamental errors that hindered your performance, I would rather see them discussed honestly (indicating understanding of how you could improve) rather than minimized.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/michael-weylandt\.com\/STA9890\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/competition.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/competition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

@@ -1,0 +1,131 @@
+---
+title: "{{< var course.short >}} - Research Reports"
+format: 
+  html: 
+    code-copy: true
+---
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+DATES <- readr::read_csv("key_dates.csv") |>
+    rename(element = `Course Element`,
+           item    = `Item Number`) |>
+    mutate(dt = case_when(is.na(Time) ~ as.character(Date),
+                          TRUE ~ paste(Date, Time)))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(glue)
+library(rlang)
+library(yaml)
+get_rr_title <- function(N){
+    rr_file <- glue("reports/report0{N}.qmd")
+    rr_text <- readLines(rr_file, n=50)
+    
+    header_end <- which(grepl("---", rr_text))[2]
+    
+    header_info <- yaml.load(readLines(rr_file, n=header_end))
+    
+    header_info$rr_title %||% "TBD"
+}
+```
+
+In lieu of traditional homework, {{< var course.short >}} has three 
+"research reports" (one for each unit of the course). These research reports
+are intended to help you develop your skills in the *computational* and
+*methodological* aspects of Statistical Machine Learning. Specifically, these
+reports are designed to help you learn to deal with novel machine learning 
+developments published as academic research papers, to assess whether so-called
+developments are actually able to do what they claim, to determine whether a 
+proposed method can actually solve the problem you care about and, if 
+appropriate, to call shenanigans on the 'puffery' that is pervasive in the ML
+literature. 
+
+Each Research Report must be submitted as a fully-typed PDF using the
+course Brightspace. (No handwritten work will be graded.) Each report
+must include all code used and should have several figures. Reports
+should be 6-8 pages, double or single spaced in a 
+legible 10 to 12 point font. You may include appendices for things like
+code or longer proofs, but the ``main body'' of your submission must
+cover the expected material.
+
+### Research Reports
+
+#### Research Report #01: `r get_rr_title(01)`
+
+```{r echo=FALSE}
+rr <-  DATES |> filter(element == "Research Report", item == 1)
+```
+
+**Due Dates:**
+
+  - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+  - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
+  
+In [Research Report #01](./reports/report01.html), you will dig into
+the oft-cited claim that Ordinary Least Squares is a *Best Linear
+Unbiased Estimator* (BLUE). In classical statistics, the BLUE property is often
+used as an argument of optimality, implying that we can't beat OLS, so we
+shouldn't even try. As you will see, this optimality of OLS is quite overstated:
+OLS can be beaten quite easily whenever its assumptions are violated, whenever
+non-linear estimators are allowed, or whenever bias is permitted (taking "Best"
+to mean "minimum MSE" instead of "minimum variance"). 
+
+These findings may seem a bit abstract, but they get at the heart of almost
+every method and principle we will cover in this course. In this project,
+in addition to getting a better understanding of what BLUE does and does not 
+mean, you will learn to: 
+
+i)   implement gradient descent methods
+ii)  design *Monte Carlo* simulations to assess bias and variance
+iii) find optimal values of tuning parameters using cross-validation
+
+
+#### Research Report #02: `r get_rr_title(02)`
+
+```{r echo=FALSE}
+rr <-  DATES |> filter(element == "Research Report", item == 2)
+```
+
+**Due Dates:**
+
+  - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+  - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
+  
+In [Research Report #02](./reports/report02.html), you will apply some of
+the tools we have developed to the problem of **fairness in machine learning** 
+(FairML). While not a core topic for this course, this exercise is useful to 
+see how the core idea of this course--regularization, optimization, *etc.*--can
+be applied to interesting and novel questions. In this project, you will also
+engage critically with a newly proposed ML method and investigate i) whether
+it truly does what it claims to; ii) whether it can be efficiently and reliably
+implemented; and iii) the degree to which (if any!) it solves *your* problem
+of interest. As working Data Scientists and Business Analysts, you may not 
+think of yourselves as *researchers*, but knowing how to read and critically 
+evaluate cutting-edge work will let you maintain and enhance your skills
+throughout your career. 
+
+#### Research Report #03: `r get_rr_title(03)`
+
+```{r echo=FALSE}
+rr <-  DATES |> filter(element == "Research Report", item == 3)
+```
+
+**Due Dates:**
+
+  - Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+  - **Submission Deadline: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)`**
+  
+In [Research Report #03](./reports/report03.html), you will explore sparse PCA
+and apply it to a data set of interest. As you do so, you will see how a modern
+machine learning principle (sparsity) can be used to improve a classical
+statistical technique like PCA to get 'the best of both worlds.' Because our
+focus here is on an unsupervised method, this report should be careful to consider
+*interpretation* and *validation* of the resulting PCs, as standard validation
+techniques for supervised methods cannot be applied.

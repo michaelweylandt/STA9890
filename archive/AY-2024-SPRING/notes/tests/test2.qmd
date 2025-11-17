@@ -1,0 +1,551 @@
+---
+title: "STA 9890 - Spring 2025 </br> Test 2: Classification and Ensemble Methods"
+---
+
+The original test booklet can be found [here](./STA9890_test2_2025-Spring.pdf). 
+$$\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}} \newcommand{\P}{\mathbb{P}}$$ 
+
+## Multiple Choice (30 points - 10 questions at 3 points each)
+
+1. In classification, a *false negative* refers to an observation which is
+   in the negative (0) class, but is falsely predicted as a positive (1) instead.
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False** - this is a *false positive*. 
+   Because we predict a *positive* label, this scenario describes a *positive*;
+   because our prediction is wrong, this scenario describes a *positive*. 
+   
+   :::
+
+2. *Boosting* is the practice of building an ensemble by sub-sampling features.
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False**. Boosting is iterative refinement of a predictor (see below). 
+   Feature sub-sampling does not have a universal name, though it is sometimes
+   called the *random subspace* method.
+   
+   :::
+   
+3. Under a suitable generative model, logistic regression is BLUE. 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False**. Logistic regression is not a linear estimator (hence the need
+   for iterative solvers) nor is it unbiased. To wit, 
+   
+   ```{r}
+#| cache: true
+#| warning: false
+beta <- c(1, 2, 3)
+
+rowMeans(replicate(5000, {
+    
+    X <- matrix(rnorm(50 * 3), nrow=50)
+    eta <- X %*% beta
+    mu <- 1/(1+exp(-eta))
+    y <- rbinom(50, size=1, prob=mu)
+
+    coef(glm(y ~ X + 0, family=binomial))
+}))
+   ```
+   
+   :::
+   
+4. Poisson or log-linear regression is suitable for predicting count-valued
+   responses, such as the number of goals scored in a soccer match. 
+    
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **True**. Poisson random variables are often used to model small counts,
+   such as the number of goals scored, and so log-linear regression is a good
+   choice. Note, however, that the *margin of victory* (the difference in
+   scores) does not follow a Poisson distribution (since it can be negative
+   if the other team wins) and a *Skellam* distribution must be used instead.
+   
+   :::
+   
+5. Which of the following are properties of support vector classifiers? 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   - Use of Hinge Loss ✅
+   - Automatic Identification of Kernel Points❓
+   - Lack of Tuning Parameters
+   - Probabilistic Output
+   - Insensitivity to training data far from the margin ✅
+   
+   *Note: "Kernel Points" is not, in my experience, a
+   standard terminology, but I will allow either answer
+   here for full credit.*
+   
+   :::
+   
+6. Which of the following are discriminative classifiers? 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   - LDA 
+   - SVM ✅
+   - Random Forest ✅
+   - Decision Trees ✅
+   - Boosting
+   - QDA
+   - Bayes' Rule
+   
+   :::
+   
+7. A maximum likelihood estimator is one which sets the unknown parameters in
+   order to maximize the negative log PDF/PMF of the sampling distribution on
+   the observed data. 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **False**. The _maximum_ likelihood estimator is obtained by _maximizing_
+   the likelihood or equivalently _minimizing_ the _negative_ logarithm of
+   the likelihood. 
+   
+   :::
+   
+8. Multiple Choice: Which of the following **ARE NOT** convex
+   approximations to 0/1 Accuracy loss in classification?
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   - Hinge Loss
+   - Smoothed Hinge Loss
+   - Gini Coefficient ✅
+   - False Negative Rate ✅
+   - Binomial Deviance Loss 
+   - Tree Loss ✅
+   
+   :::
+   
+9. The main purpose of *boosting* is to iteratively refine our 
+   predictor by compensating for previous prediction errors. 
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **True**. 
+   
+   :::
+   
+10. We cannot use cross-validation to tune the regularization parameter  
+    ($\lambda$) of logistic ridge regression for maximum 0/1-Accuracy because
+    the 0/1-Accuracy loss function is nonconvex.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. We can use CV to optimize accuracy. Convexity comes in to play
+    in the *tuning* procedure (because it requires search over a
+    high-dimensional parameter space) and typically requires us to use a
+    surrogate loss. 
+   
+    :::
+
+## Short Answer (40 points - 8 questions at 5 points each)
+
+1. Apple devices support `FaceID` as an alternative to traditional
+   password-based authentication. (In this context a 'positive' refers to an
+   authorized user.) Label each of the following scenarios as a false positive
+   (FP), false negative (FN), true positive (TP), or true negative (TN).
+   
+   ::: {.callout-tip title="Solution" collapse="true"}
+
+   - **TP**: I am able to successfully authenticate on my phone.
+   - **FN**: My phone refuses to authenticate me because I just woke 
+     up and my hair is a mess (`bed head').
+   - **FP**: My phone is stolen by my evil twin who is then able to access it
+     because his face matches mine.
+   - **TN**: My phone cannot be accessed by my kids when they take it
+     without permission.
+   - **TP**: My wife is added as a second user profile on my phone and 
+   she is able to use it to check my emails for me while I am driving.
+
+   :::
+
+2. Given a binary classifier, how can you use it to perform to multi-class
+   classification? *(Hint: "One- vs-rest" approaches may be easier to describe.)*
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   See [`sklearn` docs](https://scikit-learn.org/stable/modules/multiclass.html#ovr-classification). 
+   
+   Things to mention include (but aren't limited to): 
+   
+   - Training $K$ different classifiers, each using the whole data set
+     - Repeatedly changing the target variable to an indicator for a single class
+   - Prediction by taking the 'most likely' class
+   - A bit more interpretable
+   - A bit faster than alternatives
+
+   :::
+
+3. Compare and contrast *bagging* and *stacking*. Give at least 2
+   similarities and two differences.
+
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   Possible similarities include: 
+   
+   - Ensemble learning
+   - Can use arbitrary base learners
+   - Parallelizable
+   - Aim for variance reduction, not bias mitigation
+   
+   Possible differences include: 
+   
+   - Stacking uses *different* base learners, while bagging *reuses* one family
+   - Bagging has resampling involved
+   - Stacking requires fitting a second set of weights, and hence an additional
+     data split
+
+   :::
+
+4. Describe the three parts of a *generalized linear model*, noting
+   their general role in GLM specification and precisely identifying in
+   logistic regression:
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   The parts of a GLM are: 
+   
+   1. The linear predictor
+      - Purpose: Estimates (a transform of) the conditional mean using a linear
+                 combination of features. Can be replaced by splines or kernel
+                 if appropriate to the problem.
+      - Logistic Regression: Standard ($\bX\bbeta$)
+   2. The sampling distribution
+      - Purpose: Generative model for the observed $y_i$. Varied to make data
+        type fit distribution
+      - Logistic Regression: Bernoulli
+   3. Mapping (or inverse link)
+      - Purpose: Maps the domain of the linear predictor ($\R$) to a suitable
+        set of values that can be the mean of the sampling distribution
+      - Logistic Regression: $f(z) = 1/(1+e^{-z}) = e^z/(1+e^z) = \text{softmax}(1, z)$
+        which is known as the *logistic* function
+
+   :::
+
+5. Given the following data, draw the decision boundary estimated by a
+   maximum margin classifier and mark the support points by circling them.
+   
+   ```{r}
+   #| echo: false
+plot(0:5, 0:5,
+     type="n",
+     xlab=expression(x[1]),
+     ylab=expression(x[2]),
+     axes=FALSE
+)
+axis(1)
+axis(2)
+
+# CLASS_1
+points(x=c(0.2, 0.5, 0.6, 0.9, 1.12),
+       y=c(3, 3, 4, 2, 2),
+       pch=16, cex=2)
+
+# CLASS_2
+points(x=c(2.2, 2.5, 3.6, 4.9, 3.12),
+       y=c(3, 5, 4, 0.5, 2),
+       pch=17, cex=2)
+   ```
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   Something like this: 
+   
+   ```{r}
+   #| echo: false
+plot(0:5, 0:5,
+     type="n",
+     xlab=expression(x[1]),
+     ylab=expression(x[2]),
+     axes=FALSE
+)
+axis(1)
+axis(2)
+
+abline(a=7.5, b=-3, lwd=3, col="red4")
+
+# CLASS_1
+points(x=c(0.2, 0.5, 0.6, 0.9, 1.12),
+       y=c(3, 3, 4, 2, 2),
+       pch=16, cex=2)
+
+# CLASS_2
+points(x=c(2.2, 2.5, 3.6, 4.9, 3.12),
+       y=c(  3, 5, 4, 0.5, 2),
+       pch=17, cex=2)
+       
+points(x=c(0.6, 1.12, 2.2), 
+       y=c(  4,    2,   3), 
+       pch=1, cex=4, col="red4", lwd=2)
+   ```
+   
+   :::
+
+6. Given the following set of classification outcomes, compute the 
+   Folwkes-Mallows (FM) Index:
+  
+   ```{=html}
+<table>
+    <tr>
+        <td></td>
+        <td></td>
+        <td colspan="2">Ground Truth</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>+</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td rowspan="2"></br>Prediction</td><td>+</td><td>50</td><td>10</td>
+    </tr>
+    <tr>
+        <td></td><td>-</td><td>10</td><td>1000</td>
+    </tr>
+</table>
+
+   ```
+   
+   Recall that
+   $$\text{FM} = \sqrt{\text{PPV} \times \text{TPR}} 
+   \text{ where } \text{PPV} = 1 - \text{FDR} = \frac{\text{TP}}{\text{TP} + \text{FP}} 
+   \text{ and } \text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   We have 
+   
+   $$\text{PPV} = \frac{50}{50+10} = \frac{5}{6}$$
+   
+   and 
+   
+   $$\text{TPR} = \frac{50}{50+10} = \frac{5}{6}$$
+   
+   so
+   
+   $$\text{FM} = \sqrt{\frac{5}{6} * \frac{5}{6}} = \frac{5}{6}$$
+   :::
+
+7. Give an example of an *ordinal* classification problem and explain
+   *in a concrete problem-specific sense* why it cannot be approached as
+   a binary or multiclass classification problem (*i.e.*, your answer needs
+   to be more substantial than "because it is ordinal.").
+
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   Many possible solutions. Key things to highlight are ordered, but non-numeric,
+   categories (e.g., user ratings or survey responses). Non-additivity of response.
+
+   :::
+
+8. Compare and contrast *Naive Bayes* and *Quadratic Discriminant
+   Analysis*. Give at least 2 similarities and two differences.
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   Possible Similarities: 
+   
+   - Generative classifiers
+   - Based on multivariate normal distribution
+   - Both require estimating class means
+   
+   Possible Differences: 
+   
+   - NB is better for high-dim, QDA for low-dim
+   - NB has a linear decision boundary (linear method) while QDA has a parabolic
+     boundary
+   - Difference covariance assumptions
+
+   :::
+
+## Mathematics of Machine Learning (30 points total)
+
+In this section, you will develop your own *multinomial generative
+classifier* to determine whether a given email is valid ("ham") or spam.
+
+Before we get into the mathematics, recall that a *multinomial*
+distribution is a generalization of the binomial distribution (with a
+categorical sampling scheme replacing the Bernoulli). Specifically, a
+$K$-class multinomial is characterized by a sample size $n \in \mathbb{N}$
+and a probability vector $\mathbf{p}=(p_1, p_2, \dots p_K)$ where
+$\sum_i p_i = 1$ and all $p_i \geq 0$.  The PMF of an observation is 
+then given by
+$$\mathbb{P}(\mathbf{X} = \mathbf{x}) = \mathbb{P}(X_1 = x_1, X_2 = x_2, \dots, X_K=x_K) = \frac{n!}{x_1!x_2!\dots x_K!}p_1^{x_1}p_2^{x_2}\dots p_K^{x_K}$$
+where $(x_1, x_2, \dots, x_K)$ are the number of observations in each category.
+
+For example, if a $3$-class multinomial has probability parameters
+$(0.5, 0.25, 0.25)$ and we observe $(3, 1, 1)$, the PMF of that observation is:
+$$\frac{5!}{3!1!1!}0.5^30.25^10.25^1 = \frac{120}{6 * 1 * 1}(0.125)(0.25)(0.25) = 0.15625.$$
+
+You want to use a multinomial generative classifier to distinguish emails based
+on certain words. After discussion with your IT department, you have collected
+a series of valid and spam emails and found that they contain the following
+word counts:
+
+::: #count-tbl
+
+| Word       | Valid | Spam |
+|:----------:|------:|-----:|
+| Deal       | 20    | 80   |
+| Double     | 10    | 100  |
+| Money      | 80    | 100  |
+| Free       | 20    | 100  |
+| Spreadsheet| 20    | 5    |
+| Revenue    | 40    | 12   |
+| Classifier | 10    | 3    |
+
+:::
+
+(Emails may contain other words, but you do not include them in your model.)
+
+In this context, we are using a *bag of words* approach, where the only
+thing that matters is the counts of various words, not the order in which they
+appear or any other words not on our list.
+
+You also know that your company's domain receives nine times as many spam
+messages as valid ones.
+
+1. Given the above information, what should your *prior* probabilities
+   be for $\P(\text{Valid})$ and $\P(\text{Spam}) = 1 - \P(\text{Valid})$?
+   (3 points) 
+   
+   ::: {.callout-tip title="Solution" collapse="true"}
+
+   We can simply read the priors off the given information: 
+
+   $$\P(\text{Spam}) = 9\P(\text{Valid}) \implies \P(\text{Valid}) + 
+     \P(\text{Spam}) = \P(\text{Valid}) + 9 * \P(\text{Valid}) = 1 
+     \implies 10\P(\text{Valid}) = 1$$ giving us: 
+
+   - $\P(\text{Valid}) = 10\%$
+   - $\P(\text{Spam}) = 1 - \P(\text{Valid}) = 90\%$
+
+   :::
+      
+2. Using the above text, what are the $\mathbf{p}$ probabilities for
+   both classes? Write your answer as two probability vectors. (5 points)
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+
+   Keeping the same order of words in the above example, we build the probability
+   vectors by aggregating and normalizing _columnwise_ (classwise): 
+
+   $$\begin{align*}
+   \mathbf{p}_{\text{Valid}} &= \left(\frac{\text{\# of Word 1}}{\text{Total \# of Words}}, \frac{\text{\# of Word 2}}{\text{Total \# of Words}}, \dots\right) \\
+   &= \left(\frac{20}{200}, \frac{10}{200}, \dots\right) \\
+   &= (10\%, 5\%, 40\%, 10\%, 10\%, 20\%, 5\%)
+   \end{align*}$$
+
+   Similarly: 
+
+   $$\mathbf{p}_{\text{Spam}} = (20\%, 25\%, 25\%, 25\%, 1.25\%, 3\%, 0.75\%)$$
+
+   :::
+      
+3. In order to calibrate the decision boundary for your classifiers, you
+   perform a user experience study that reveals it takes 2 minutes on average
+   to discard a spam email, while it takes 10 minutes to find an improperly
+   labeled valid email and move it to the inbox.
+
+   What *posterior* probability threshold should you select in order to
+   minimize the expected amount of wasted time?(Find $p_{\text{thresh}}$
+   such that if the posterior probability of being spam is greater than
+   $p_{\text{thresh}}$, the optimal choice is to treat the email as spam.)
+
+   *Hint: When the posterior probability is equal to the threshold, the
+   expected time loss of both decisions is equal.* (5 points)
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+
+   The decision boundary should be set so that both decisions (spam / valid) have
+   the same expected time loss. If we let $p$ be the threshold probability, then 
+   labeling the email as spam has an expected time loss of $10(1-p)$ and labeling 
+   the email as valid has an expected time loss of $2p$. We can equate these to find
+
+   $$\begin{align*}
+   10(1-p) &= 2p \\
+   10 - 10p &= 2p \\
+   10 &= 12p \\
+   p &= \frac{5}{6}
+   \end{align*}$$
+
+   so we set $p_{\text{thresh}} = \frac{5}{6}$
+:::
+
+4. Your classifier receives a new message with the text:
+    
+   ::: #email_contents
+   
+   > Hello Friend!
+   >
+   > I have a great deal for you - if you send me \$100 today, I will double
+   > your money and send you \$200 dollars next week. That is \$100 absolutely free!!
+   >
+   > How am I able to offer such an amazing deal? I have a system for investing
+   > in the markets. I can study price patterns and identify stocks that are going
+   > up and ride them to the moon! No spreadsheet needed - just pure skill.
+   >
+   > I'm offering you this opportunity to double your money because I believe that
+   > this path to properity should be free to all. We don't need any fancy banks
+   > with their lies - power to the people!
+   
+   :::
+    
+   A. What is the data vector $(\bx)$ associated with the above text? (5 points)
+  
+   ::: {.callout-tip title="Solution" collapse="true"}
+
+      We count up the words in the above text (keeping the same order as 
+      earlier) to get 
+
+      $$\bx = (2, 2, 2, 2, 1, 0, 0)$$
+
+   :::
+
+   B. What is the PMF of each class associated with this data vector? (5 points)
+
+   ::: {.callout-tip title="Solution" collapse="true"}
+
+   We substitute our observed values into the multinomial PMF given above: 
+
+   $$\P(\bx | \text{Spam}) \frac{9!}{2!2!2!2!1!0!0!} * 0.2^2 * 0.25^2 * 0.25^2 * 0.25^2 * 0.0125^1 * 0.03^0 * 0.0075^0 \approx 0.00277$$
+   
+   and 
+   
+    $$ \P(\bx | \text{Valid}) = \frac{9!}{2!2!2!2!1!0!0!} * 0.1^2 * 0.05^2 * 0.40^2 * 0.1^2 * 0.1^1 * 0.2^0 * 0.05^0 \approx 9.072*10^{-5}$$
+   :::
+
+   C. What are the *posterior* probabilities of each class? (5 points)
+  
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   We use Bayes' rule to compute the posterior probability of being spam: 
+
+   $$\begin{align*}
+   \P(\text{Spam} | \bx) &= \frac{\P(\bx | \text{Spam})\P(\text{Spam})}{\P(\bx | \text{Spam})\P(\text{Spam}) + \P(\bx | \text{Valid})\P(\text{Valid})} \\
+   &= \frac{0.00277 * 0.9}{0.00277 * 0.9 + 9.072*10^{-5} * 0.1} \\
+   &\approx 99.6\%
+   \end{align*}$$
+   
+   :::
+
+   D. Should this email be marked as spam or not? (2 points)
+   
+   ::: {.callout-tip title="Solution" collapse="true"}
+   
+   **Yes**. This email has a 99.6\% chance of being spam, which is above our
+   marking threshold of $5/6$. 
+   
+   :::
+
+
+

@@ -1,0 +1,145 @@
+---
+title: "{{< var course.short >}} - Handouts and Additional Notes"
+---
+
+Supplemental course notes and links to useful external resources will be
+posted here.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+library(glue)
+class_details <- function(n){
+    d <- read_csv("key_dates.csv") |>
+        filter(`Course Element` == "Class Session") |>
+        filter(`Item Number` == n) 
+    
+    with(d, glue("Week {`Item Number`} - {`Details`} ({`Date`})"))
+}
+```
+
+### Supplemental Lecture Notes
+
+#### `r class_details(01)` {#week01}
+
+- [Instructor Notes](./notes/notes01.html)
+
+#### `r class_details(02)` {#week02}
+
+- [Instructor Notes](./notes/notes02.html)
+
+The YouTube channel "3Blue1Brown" makes excellent videos explaining
+mathematical concepts. A recent entry discusses gradient descent
+in the context of Neural Networks. At this point in the course, 
+our focus is still on simpler (convex) methods, so not all of this
+will be directly applicable, but it is still a useful summary and
+gives helpful background on how gradient methods remain at the heart
+of all modern ML. 
+
+{{< video https://www.youtube.com/watch?v=IHZwWFHWa-w >}}
+
+You may also find value in 3Blue1Brown videos on [Linear
+Algebra](https://www.3blue1brown.com/topics/linear-algebra) and
+on [Probability](https://www.3blue1brown.com/topics/probability). 
+
+Of these, the following are likely to be particularly useful in
+this course: 
+
+- [Vectors](https://youtu.be/fNk_zzaMoSs?si=-OYsIsbfRXXYsujw)
+- [Linear Transformations](https://www.youtube.com/watch?v=kYB8IZa5AuE)
+- [Matrix Multiplication](https://youtu.be/XkY2DOUCWMU?si=j71QI26FqjweNPEA)
+- [Inverses, Rank, and Null Space](https://www.youtube.com/watch?v=uQhTuRlWMxw)
+- [Dot Products and Duality](https://youtu.be/LyGKycYT2v0?si=xcWoQiDnvrfem319)
+- [Eigenvectors and Eigenvalues](https://youtu.be/PFDu9oVAE-g?si=A2vubgawyYC0HA5D)
+- [Bayes' Theorem](https://youtu.be/HZGCoVF3YvM?si=NmWr1IWjyq6gypnU)
+
+though you don't need to watch all of these *immediately*. 
+
+In this course, we will apply calculus techniques (mainly
+differentiation) to functions $\mathbb{R}^{p} \to \mathbb{R}$. The website
+[matrixcalculus.org/](https://www.matrixcalculus.org/) is helpful for
+this work. 
+
+#### `r class_details(03)` {#week03}
+
+- [Instructor Notes](./notes/notes03.html)
+
+#### `r class_details(04)` {#week04}
+
+- [Instructor Notes](./notes/notes04.html)
+
+#### `r class_details(05)` {#week05}
+
+- [Instructor Notes](./notes/notes05.html)
+
+#### `r class_details(06)` {#week06}
+
+- [Instructor Notes](./notes/notes06.html)
+
+#### `r class_details(07)` {#week07}
+
+- [Instructor Notes](./notes/notes07.html)
+
+#### `r class_details(08)` {#week08}
+
+- [Instructor Notes](./notes/notes08.html)
+
+#### `r class_details(09)` {#week09}
+
+- [Instructor Notes](./notes/notes09.html)
+
+#### `r class_details(10)` {#week10}
+
+- [Instructor Notes](./notes/notes10.html)
+
+#### `r class_details(11)` {#week11}
+
+- [Instructor Notes](./notes/notes11.html)
+
+#### `r class_details(12)` {#week12}
+
+- [Instructor Notes](./notes/notes12.html)
+
+#### `r class_details(13)` {#week13}
+
+- [Instructor Notes](./notes/notes13.html)
+
+
+### Tests and Solutions
+
+- Test 1: Regression
+  - [Exam Booklet](./notes/tests/STA9890_test1_2025-Spring.pdf)
+  - [Solutions](./notes/tests/test1.html)
+- Test 2: Classification
+  - [Exam Booklet](./notes/tests/STA9890_test2_2025-Spring.pdf)
+  - [Solutions](./notes/tests/test2.html)
+- Test 3: Unsupervised Learning and ML Practice
+  - [Exam Booklet](./notes/tests/STA9890_test3_2025-Spring.pdf)
+  - [Solutions](./notes/tests/test3.html)
+
+
+### Additional Materials
+
+The following homework problems and exams were used for the 
+Spring 2024 offering of this course. You may find them useful
+as you study for the three in-class tests. Note, however, that
+these were 3-hour take-home cumulative exams, rather than the
+1-hour in-class non-cumulative exams used this semester, so
+the questions are not exactly what you should expect. In 
+particular, note that the exam boundaries do not exactly line
+up with our schedule this semester. 
+
+Solutions will not be provided, but I am happy to discuss
+individual problems in office hours or on the course discussion
+board. 
+
+- Homeworks
+  - [Homework #01](./notes/old/STA9890_HW01_2024-Spring.pdf)
+  - [Homework #02](./notes/old/STA9890_HW02_2024-Spring.pdf)
+  - [Homework #03](./notes/old/STA9890_HW03_2024-Spring.pdf)
+  - [Homework #04](./notes/old/STA9890_HW04_2024-Spring.pdf)
+- Exams
+  - [Midterm Exam](./notes/old/STA9890_midterm_2024-Spring.pdf)
+  - [Final Exam](./notes/old/STA9890_final_2024-Spring.pdf)

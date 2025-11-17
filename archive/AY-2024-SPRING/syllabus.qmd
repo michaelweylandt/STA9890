@@ -1,0 +1,589 @@
+---
+title: "{{< var course.short >}} - Course Syllabus"
+filters:
+    - list-table
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(tidyverse)
+class_date <- function(n, details=FALSE){
+    c <- read_csv("key_dates.csv") |>
+        filter(`Course Element` == "Class Session") |>
+        filter(`Item Number` == n)
+    
+    if(details){
+        c |> pull(Details)
+    } else {
+        c |> pull(Date) |>
+             as.Date() |>
+             format("%Y-%m-%d")
+    }
+}
+```
+
+
+
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+holiday_date <- function(n, details=FALSE){
+    h <- read_csv("key_dates.csv") |>
+            filter(`Course Element` == "Holiday") |>
+            filter(`Item Number` == n)
+    
+    if(details){
+        h |> pull(Details)
+    } else {
+        h |> pull(Date) |> 
+             as.Date()  |>
+             format("%Y-%m-%d")
+    }
+}
+```
+
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+test_date <- function(n, details=FALSE){
+    t <- read_csv("key_dates.csv") |>
+            filter(`Course Element` == "Test") |>
+            filter(`Item Number` == n)
+    
+    if(details){
+        t |> pull(Details)
+    } else {
+        t |> pull(Date) |>
+             as.Date() |>
+             format("%Y-%m-%d")
+    }
+}
+```
+
+
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+report_date <- function(n, due=TRUE){
+    r <- read_csv("key_dates.csv") |>
+            filter(`Course Element` == "Research Report") |>
+            filter(`Item Number` == n)
+    
+    if(due){
+        r <- r |> filter(`Responsible Party` == "Students")
+    } else {
+        r <- r |> filter(`Responsible Party` == "Instructor")
+    }
+    
+    r |> pull(Date) |>
+         as.Date() |>
+         format("%Y-%m-%d")
+}
+```
+
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+voe_date <- function(){
+    read_csv("key_dates.csv") |>
+      filter(`Course Element` == "Syllabus Quiz") |>
+      pull(Date) |>
+      as.Date() |>
+      format("%Y-%m-%d")
+}
+```
+
+**`All syllabus and course schedule provisions subject to change with suitable advance notice.`**
+
+### Instructor
+
+-   [Professor Michael Weylandt](https://michael-weylandt.com)
+-   Department of Information Systems & Statistics
+-   Zicklin School of Business
+-   Baruch College, CUNY
+
+### Course Meetings
+
+#### Lecture / Lab Sessions
+
+-   Tuesdays 6:05pm - 9:00pm
+    -   [Baruch Main Campus (1 Bernard Baruch
+         Way)](https://www.baruch.cuny.edu/campus-map-and-directions/)
+    -   {{< var course.location >}}
+    
+#### Office Hours
+
+-   In-Person
+    -   [Baruch Main Campus (1 Bernard Baruch Way)](https://www.baruch.cuny.edu/campus-map-and-directions/)
+    -   Newman Vertical Campus (NVC) 11-246
+    -   Tuesdays 4:30-5:30pm
+    -   Subject to periodic cancellation (communicated via Brightspace)
+-   Virtual:
+    -   Thursdays 4:30pm-5:30pm
+    -   Zoom link provided via Brightspace
+
+### Grading
+
+{{< var course.short >}} is a(n advanced) master's-level course in Statistical
+Machine Learning. As such, by the end of the course, students should be able to
+capably apply standard machine learning techniques to important scientific and
+business applications, to extend and adapt standard machine learning techniques
+in novel fashions, to implement complex estimation and prediction algorithms,
+and to critically engage with modern machine learning literature. The grading
+in this course reflects this diversity of objectives.
+
+Specifically, the grading in this course draws on three separate modes of
+assessment: 
+
+  i) in-class 'midterms' which assess students' fluency with the 
+     theoretical and mathematical aspects of machine learning; 
+  ii) three 'research reports' designed to build students' skills in the
+      computational and methodological aspects of machine learning; and 
+  iii) a course prediction competition, designed to build students' skills in
+       applications of machine learning to important scientific problems. 
+       
+All three elements are equally weighted as follows: 
+
+- 33.3% One-Hour Mid-Semester Tests (Best two of three; 100 points each, 200 points total)
+  - Test 1: `r test_date(01)` - `r test_date(01, details=TRUE)`
+  - Test 2: `r test_date(02)` - `r test_date(02, details=TRUE)`
+  - Test 3: `r test_date(03)` - `r test_date(03, details=TRUE)`
+- 33.3% Research Reports (Best two of three; 100 points each, 200 points total)
+  - [Report 1](./reports/report01.html): Due `r report_date(01)`
+  - [Report 2](./reports/report02.html): Due `r report_date(02)`
+  - [Report 3](./reports/report03.html): Due `r report_date(03)`
+- 33.3% [Prediction Competition](./competition.html) (200 points total)
+
+Final course grades will be curved in accordance with relevant program,
+departmental, school, and college policies.[^1]
+
+[^1]: Theoretically, this may result in scores equivalent to an `A` in an
+un-curved course receiving a lower grade in this course. In practice, the
+instructor will design course assessments to induce a range of scores and does
+not anticipate "down-curving" happening.
+
+#### Weekly Quizzes
+
+In lieu of homework, I will provide a set of **suggested readings** following
+each lecture. At the start of the following lecture, a short three question
+($\approx$ 15 minute) quiz will be administered. The quiz questions will not be
+**verbatim** from the reading, but if you can answer the textbook questions in
+the suggested sections quickly and fluently, the quiz should pose little
+difficulty.
+
+These in-class weekly quizzes will generate *extra credit* applied to your
+*final aggregate score*. Each quiz will receive a score out of 3 added
+directly to your final score. Because the final aggregate score is out of
+600, perfect scores on all 9 weekly quizzes can raise your final aggregate
+score (*pre-curve*) **up to 5%**.
+
+To take part in the weekly quizzes, please come to class with both i) a black
+or blue pen; and ii) a red pen (for peer grading) each week.
+
+Make-up opportunities for the weekly quizzes will only be allowed in
+*exceptional* and *unforeseeable* circumstances.
+
+#### Verification of Enrollment {#voe}
+
+CUNY mandates a [Verification of
+Enrollment (VoE)](https://enrollmentmanagement.baruch.cuny.edu/registrar/verification-of-enrollment/)
+activity be completed for students to remain enrolled in a course. 
+For {{< var course.short >}}, this VoE activity takes the form of an ungraded, 
+but mandatory, Brightspace quiz. This quiz covers the contents of this syllabus.
+
+Students who do not successfully complete this quiz by the required date 
+(`r voe_date()`) may be involuntarily disenrolled from this course. 
+
+You must complete the VoE Syllabus Quiz with a perfect score before you will
+be able to submit any assignments on Brightspace. The Quiz is set up to allow
+unlimited attempts. 
+
+#### Regrading Policy
+
+If you feel an assignment has been improperly graded, please contact the
+instructor by private message on the course discussion board within 48 hours
+of the graded assignment being returned. Note that the instructor will regrade
+the assignment *de novo*, so your grade may be adjusted upwards or downwards.
+
+#### Late Work Policy
+
+Students are given 4 **Late Days** that can be used at any time during the
+semester, without instructor pre-approval or permission, on any of the submitted
+elements of this course (competition final report, research reports). When late
+days are used, work is accepted without penalty; late work submitted beyond the
+four late days will not be accepted. Late Days are used on a "first come, first
+serve" basis, so if 2 Late Days are used on each of the first two research
+reports, any late submission on the final research report will not be accepted
+and will receive an zero. 
+
+Additionally, note that: 
+
+- Outside of the use of Late Days, no late work will be accepted. You can use
+  Late Days however you see fit. I recommend saving them to the end of 
+  the semester for personal emergencies. Even if not needed for personal
+  emergencies, you will appreciate having them available to you to help navigate
+  the end-of-semester "crunch" period. 
+- Late Days cannot be applied to in-class activities such as tests or
+  presentations.
+- Late days will not be applied fractionally: 1 minute late is 1 day late; 
+  24 hours and 1 minute late is 2 days late; *etc.* Brightspace will be used to
+  determine time of submission.
+- Work **must be submitted on Brightspace** unless *specifically* otherwise
+  stated in the written course description or approved *in writing* by the
+  instructor *at least 48 hours* before the deadline. (If we discuss alterations
+  in office hours or after class, you **must** follow up by email and get my 
+  pre-approval in writing.) Email submissions are not allowed.[^email]
+- Technology issues are not an approved excuse for late submissions; in 
+  particular, Brightspace issues are not an approved excuse for late submission
+  of the [Research Reports](./reports.html). Brightspace support is provided by
+  [BCTC](https://bctc.baruch.cuny.edu/students/) and the [BCTC Help 
+  Desk](https://bctc.baruch.cuny.edu/instructional-technology/services/service-now/). 
+  The Help Desk is not staffed 24 hours per day, so you are encouraged to submit
+  early and submit often to avoid issues. 
+- Once work is submitted and graded by the instructor, you cannot use late days
+  to re-submit a revised copy. The instructor may grade work quickly after the
+  standard submission deadline passes, so make sure to only submit 'final' 
+  (or 'final enough') versions if using late days. 
+- Late days cannot be used to submit work after the registrar mandated 
+  last day of the semester. (This date may be found on Baruch's academic
+  calendar.) In particular, the end-of-semester date sets the final day on
+  which the course final report may be submitted (even if you have sufficient
+  remaining late days to submit beyond that window) without explicit instructor
+  pre-authorization (see above).
+
+Individual exceptions will be made i) with *prior written* approval of
+instructor; or ii) *ex post* with written note from the [Office of the
+Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
+
+[^email]: Though ubiquitous, email is a remarkably 'flaky' service, providing
+the sender no way to guarantee their message arrives untampered and providing
+the recipient no way to guarantee the providence of a message received.
+(This is not quite true: there are [tools for more secure 
+email](https://gnupg.org) but they are somewhat more difficult to use and
+are not supported at CUNY.)
+Brightspace is integrated with CUNY's Identity Verification Services and
+allows students to guarantee correct submission. Note that Brightspace does
+not, by default, send students an email confirming submission, but I believe
+this is an option that can be enabled on the student's end. 
+
+#### Attendance Policy
+
+Attendance is not required for this course and absences do not need
+to be excused. Make-up opportunities for Quizzes and Tests missed while
+absent will not provided except with i) with *prior written* approval
+of instructor; or ii) *ex post* with written note from the [Office of
+the Dean of Students](https://studentaffairs.baruch.cuny.edu/dean-of-students/).
+
+
+### Pre- and Post-Reading Suggestions
+
+Students learn material most effectively when exposed to it on multiple
+occasions, ideally using alternative presentations strategies and formats.[^2]
+To this end, suggested *pre-reading* and *post-reading* is provided for each
+week of the course. Students are encouraged to *pre-read* the recommended text,
+which typically presents that week's material in a less technical / more
+intuitive manner, before each week's course session. Similarly, students are
+encouraged to review the *post-reading* for each week after lecture to see
+additional examples of topics covered. 
+
+[^2]: Haoyu Chen and Jiongjiong Yang. "Multiple Exposures Enhance Both Item Memory and Contextual Memory over Time". *Frontiers in Psychology* **11**. November 2020. [DOI:10.3389/fpsyg.2020.565169](https://doi.org/10.3389/fpsyg.2020.565169)
+
+While lectures will focus primarily on 'big picture' and 'major themes', the
+recommended reading, especially the post-reading, provides additional coverage
+of relevant technical detail. Note that pre- and post-reading are *entirely
+optional* and will not be directly assessed. I have included (overlapping)
+presentations from various text books to encourage students to find the style
+and presentation that works best for them. 
+
+### Tentative Course Schedule
+
+::: {.list-table width="1,1,6,1,1,2,1" aligns="c,c,l,l,l,l,l" header-rows=1 .hover}
+
+   * - Week 
+     - Lecture Date
+     - Topics
+     - Pre-Reading
+     - Post-Reading
+     - Research Reports
+     - Additional Notes
+     
+   * - 1
+     - `r class_date (01)`
+     - `r class_date (01, details=TRUE)`: 
+       - Taxonomy of Learning
+       - In-Sample and Out-of-Sample Accuracy
+       - Complexity and Overfitting
+       - Nearest Neighbor Methods
+     - None
+     - ISL §2
+     
+       HR §1-4
+       
+       UML §1-2, 5, 19
+   * - 2
+     - `r class_date (02)`
+     - `r class_date (02, details=TRUE)`: 
+       - Review of OLS
+       - Linear Algebra Review
+       - Introduction to Convex Optimization
+     - DFO §2.1-2.6, §3.1-3.4, §5.1-5.2, §5.8, §7.1, §7.3, §9.1-9.2
+     
+       ISL §3
+     - BV §2-4
+     
+       HR §5, 14
+       
+       UML §12, §14
+     - [Research Report #01](./reports/report01.html) released on `r report_date(01, due=FALSE)` - due on `r report_date(01, due=TRUE)`
+       
+   * - 3
+     - `r class_date (03)`
+     - `r class_date (03, details=TRUE)`: 
+       - Regularization
+       - Ridge Regression
+       - Sparsity and the Lasso
+       - Supervised Model Selection
+     - DFO §8.1-8.3
+     
+       ISL §6
+     - BV §6
+     
+       SLS §2, 4, 5
+       
+       PML-1 §11.1-11.4
+       
+       UML §11, 13, 25.1
+     - 
+     - [VOE Syllabus Quiz](#voe) due on Brightspace **`r voe_date()`**.  
+
+   * - 
+     - `r holiday_date(1)`
+     <td colspan="5" style="text-align:center"> ***`r holiday_date(1, details=TRUE)`*** </td>
+
+       
+   * - 4
+     - `r class_date (04)`
+     - `r class_date (04, details=TRUE)`: 
+       - Non-Linear Methods
+       - Kernel Trick
+       - Splines
+     - DFO §12.4
+       
+       ISL §7
+     - PML-1 §11.5-11.8, §17.1
+     
+       UML §16
+       
+   * - 5
+     - `r class_date (05)`
+     <td colspan="5" style="text-align:center"> **Mid-Term Test I: Regression** 
+       <br> `r class_date (05, details=TRUE)`  </td> 
+
+   * - 6
+     - `r class_date (06)`
+     - `r class_date (06, details=TRUE)`: 
+       - Basics of Classification
+       - Mixture Methods & Generative Methods
+     - DFO §11.1-11.5
+     
+       ISL §4
+     - PML-1 §10, 12
+     
+       UML §9, 24
+     - [Research Report #01](./reports/report01.html) Due on **`r report_date(01, due=TRUE)`** (NB - Friday before class)
+     
+       [Research Report #02](./reports/report02.html) released on `r report_date(02, due=FALSE)` - due on `r report_date(02, due=TRUE)`
+
+   * - 7
+     - `r class_date (07)`
+     - `r class_date (07, details=TRUE)`: 
+       - Discriminative Methods
+       - Multi-Class Classification
+       - Fairness in Machine Learning
+     - DFO §12.1-12.6
+     
+       ISL §9
+     - SLS §3
+     
+       PML-1 §9
+       
+       UML §15
+       
+   * - 8
+     - `r class_date (08)`
+     - `r class_date (08, details=TRUE)`
+     - ISL §5
+     - SF §1-3, 5
+     
+       UML §10
+     
+   * - 9
+     - `r class_date (09)`
+     - `r class_date (09, details=TRUE)`
+     - ISL §8
+     - PML-1 §18
+     
+       UML §18
+     
+   * - 10
+     - `r class_date (10)`
+      <td colspan="5" style="text-align:center"> **Mid-Term Test II: Classification, Ensemble Learning, Tree-Based Methods** <br> `r class_date (10, details=TRUE)` </td> 
+
+   * - 
+     - `r holiday_date(2)`
+     <td colspan="5" style="text-align:center"> ***`r holiday_date(2, details=TRUE)`*** </td>
+
+   * - 11
+     - `r class_date (11)`
+     - `r class_date (11, details=TRUE)`
+       - Dimension Reduction
+       - Principal Components Analysis
+       - Covariance Estimation
+     - DFO §3.5, §3.8, §4.2-4.6, §10.1-10.8
+     
+       ISL §12.1-12.3
+     - SLS §7-8
+     
+       PML-1 §20.1-20.2
+       
+       UML §23.1
+     - [Research Report #02](./reports/report02.html) Due on **`r report_date(02, due=TRUE)`** (NB - Friday before class)
+     
+       [Research Report #03](./reports/report03.html) released on `r report_date(03, due=FALSE)` - due on `r report_date(03, due=TRUE)`
+     
+
+   * - 12
+     - `r class_date (12)`
+     - `r class_date (12, details=TRUE)`
+       - Clustering
+       - Density Estimation
+       - Outlier Detection
+       - Manifold Learning
+       
+     - ISL §12.4-12.5
+     - PML-1 §20.3-21.6
+     
+       UML §22
+       
+   * - 13
+     - `r class_date (13)`
+     <td colspan="5" style="text-align:center"> **Mid-Term Test III: Unsupervised Learning**      <br> `r class_date (13, details=TRUE)` </td> 
+     
+   * - 14
+     - `r class_date(14)`
+     <td colspan="4" style="text-align:center"> **Course Project Presentations** <br> **`r class_date (14, details=TRUE)`** </td>
+     - [Research Report #03](./reports/report01.html) Due on **`r report_date(03, due=TRUE)`** (NB - Friday before class)
+::: 
+
+
+
+
+### Workload Expectations
+
+The following _approximate_ breakdown of expected course workload is
+intended to help you properly prepare for and schedule the out-of-class
+work associated with this course. Note that, persuant to relevant
+[Federal](https://www.ecfr.gov/current/title-34/part-600#p-600.2(Credit%20hour))
+and [State](https://govt.westlaw.com/nycrr/Document/Ieca5c8abc22111dd97adcd755bda2840)
+regulations, a 3-credit course taken over a 15 week semester should
+require approximately 6 hours of out-of-class work from an _average_ 
+student, or 90 hours total over the course of the semester.[^avg][^gc] This
+time should be roughly allocated as: 
+
+- Weekly Pre-Reading (9 hours - 1 hour per lecture)
+- Weekly Post-Reading and Review (18 hours - 2 hours per lecture)
+- Test Preparation (15 hours total - 5 hours per test)
+- Research Reports (27 hours total - 9 hours each)
+- Prediction Competition (21 hours total)
+  - Ongoing Submissions (18 hours - approximately 2 hours per week for 9 weeks)
+  - Final Presentation and Report Preparation (3 hour)
+  
+Note that, for the course prediction competition, you will need to make
+regular progress throughout the semester. If you attempt to "back-load" your
+work, you will do poorly. 
+
+[^avg]: For this course, an _average_ student is a student who enters the
+course with: 
+
+    i) Fluency with statistical and numerical software at the level of
+       (at least) STA 9750; 
+    ii) Fluency with univariate and multivariate regression at the level of
+        (at least) STA 9700; and
+    iii) Familiarity with probability and linear algebra; 
+
+    <br>and is earning a B-range grade. If you have less background or are 
+    aiming for a higher grade, you should expect to commit proportionally
+    more time to this course. 
+    
+    If you lack the prerequisite background listed above or
+    simply wish to review it before the semester begins in
+    earnest, please reach out to the instructor and I will be
+    more than happy to provide supplementary readings. 
+
+[^gc]: The CUNY Graduate Center has a useful [summary of these
+expectations](https://gc.catalog.cuny.edu/general-information/credithourpolicy).
+Baruch courses follow the same standards. See also [CUNY Central
+Policy](https://www.cuny.edu/wp-content/uploads/sites/4/page-assets/about/administration/offices/registrar/resources/State-and-Federal-Credit-Hour-Definitions-08022019-2-1.pdf).
+
+### Coding Requirements
+
+{{< var course.short >}} is, at its heart, a **machine learning** course and as
+such use of a machine, *i.e.* **coding**, is required, even though there is no
+formal coding prerequisite for this course. Per the [External Resources 
+Policy](./resources.html#externalresources), you are allowed (and encouraged) to
+use freely available coding assistance technologies, including generative tools
+like GitHub CoPilot.[^copilot] 
+
+You may use whatever programming language you prefer to complete the course
+assignments, subject to instructor approval: `R`, `python`, `julia`, and `matlab`
+are pre-approved for all students by default. (I will approve most other
+languages as well, provided they are not *too* obscure.) 
+
+Tools like [`quarto`](https://quarto.org/) or [`Jupyter 
+Notebooks`](https://jupyter.org/) will be useful for completing the [Research
+Reports](./reports.html) required for this course. If you have not used these
+previously, many useful free resources can be found online, including my 
+[`STA9750`](https://michael-weylandt.com/STA9750/) course materials.
+
+#### `PyTorch`, `TensorFlow`, and Similar
+
+An exciting aspect of modern ML is the widespread availability of flexible
+and powerful model fitting frameworks like [`TensorFlow`](https://www.tensorflow.org/)
+and [`PyTorch`](https://pytorch.org/). Use of these frameworks is not required 
+for this course, though students interested in ML focused careers would benefit
+from familiarizing themselves with them. 
+
+For the [Research Reports](./reports.html), you **may not** use these frameworks
+in lieu of the required coding aspects of each assignment. For example, if a 
+Report requires implementing a gradient descent method, you must do so "by hand:"
+computing gradients analytically, selecting step sizes, performing updates, 
+checking convergence, *etc.*[^impl] In Reports where an optimization library
+like `CVX` is used, you may use these frameworks instead, though doing so will
+require a bit more work. Each Report allows (and encourages!) you to go beyond
+the standard instructor-provided skeleton; comparing your implementation with
+an implementation using one of these frameworks would be an interesting
+contribution, so you are welcome to do so *in addition* to the "by hand" 
+implementation. 
+
+For the [Prediction Competition](./competition.html), you may use these
+frameworks or indeed any freely available (F/OSS) statistical or ML software;
+instructor pre-approval is not required. 
+
+[^copilot]: As a student, you have free access to [GitHub
+CoPilot](https://github.com/features/copilot) once you create a student GitHub
+account and register for the [Student Developer
+Pack](https://education.github.com/pack). 
+
+[^impl]: In theory, you can work with these frameworks at this sort of
+"low-level", but they are likely to be far more cumbersome than using base `R`
+or standard `numpy` for these tasks. If you are interested in working with
+these frameworks in this manner in order to better familiarize yourself with the
+core computational abstractions, you may request instructor permission to do so.
+
+**`All syllabus and course schedule provisions subject to change with suitable advance notice.`**

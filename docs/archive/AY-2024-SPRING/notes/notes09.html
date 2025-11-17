@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Michael Weylandt">
+
+<title>STA 9890 - Tree-Based Methods – STA 9890</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-1c47065645911eb62ace0da5c8a22cd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./../index.html">
+    <span class="navbar-title">STA 9890</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./.././syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././notes.html"> 
+<span class="menu-text">Handouts and Additional Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./../reports.html"> 
+<span class="menu-text">Research Reports</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././competition.html"> 
+<span class="menu-text">Course Competition</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././resources.html"> 
+<span class="menu-text">Additional Resources and Policies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./.././objectives.html"> 
+<span class="menu-text">Learning Objectives</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<div id="quarto-announcement" data-announcement-id="6a42bbecdcf2d6ce6b61d47c55fab2f9" class="alert alert-danger">
+  <i class="bi bi-info-circle quarto-announcement-icon"></i>
+  <div class="quarto-announcement-content">
+    <strong>Warning</strong> - This page is for a prior offering of STA 9890. For the latest offering, click <a id="exit-archive-link" href="../../../notes/notes09.html">here</a
+>.
+  </div>
+</div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#review-of-bagging" id="toc-review-of-bagging" class="nav-link active" data-scroll-target="#review-of-bagging">Review of Bagging</a>
+  <ul class="collapse">
+  <li><a href="#out-of-bag-error" id="toc-out-of-bag-error" class="nav-link" data-scroll-target="#out-of-bag-error">‘Out of Bag’ Error</a></li>
+  </ul></li>
+  <li><a href="#decision-trees" id="toc-decision-trees" class="nav-link" data-scroll-target="#decision-trees">Decision Trees</a></li>
+  <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests">Random Forests</a></li>
+  <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting">Boosting</a>
+  <ul class="collapse">
+  <li><a href="#adaboost" id="toc-adaboost" class="nav-link" data-scroll-target="#adaboost"><code>AdaBoost</code></a></li>
+  <li><a href="#logitboost" id="toc-logitboost" class="nav-link" data-scroll-target="#logitboost"><code>LogitBoost</code></a></li>
+  <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link" data-scroll-target="#gradient-boosting">Gradient Boosting</a></li>
+  <li><a href="#xgboost" id="toc-xgboost" class="nav-link" data-scroll-target="#xgboost"><code>xgboost</code></a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/notes/notes09.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/notes/notes09.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">STA 9890 - Tree-Based Methods</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Michael Weylandt </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><span class="math display">\[\newcommand{\bx}{\mathbf{x}} \newcommand{\bb}{\mathbf{b}}\newcommand{\by}{\mathbf{y}}\]</span></p>
+<section id="review-of-bagging" class="level2">
+<h2 class="anchored" data-anchor-id="review-of-bagging">Review of Bagging</h2>
+<p>Last week we discussed the ensemble learning technique known as <em>bagging</em>. Bagging, a contraction of ‘boostrap aggregation’ can be used to create an ensemble by training <span class="math inline">\(B\)</span> copies of a given base learner on <span class="math inline">\(B\)</span> distinct bootstrap samples, <em>i.e.</em>, ‘faux’ data sets of <span class="math inline">\(n\)</span> points obtained by sampling the original training data <span class="math inline">\(n\)</span> times <em>with replacement</em>. Because these <span class="math inline">\(B\)</span> trained base learners are essentially interchangeable, it is conventional to create the bagged prediction by a straight average (or majority vote if classification) of the individual base learners, though you will occasionally see the bagging base leraners combined in a ‘stacked’ fashion.</p>
+<p>We showed that the MSE associated with a bagged ensemble of size <span class="math inline">\(B\)</span> is:</p>
+<p><span class="math display">\[\text{MSE}_{\text{Bagging}} = \text{Bias}^2_{\text{Base Learner}} +\underbrace{\rho\sigma^2 + \frac{1}{B}(1-\rho)\sigma^2}_{\text{Variance}} + \text{Irreducible Error}\]</span></p>
+<p>and noted that, by sending <span class="math inline">\(B \to 0\)</span>, we reduce the ‘bootstrapping variance’ to 0 but that some ‘inherent variance’ remains from the training data.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> As we noted last week, this implies that our search for the optimal base learner should do three things:</p>
+<ul>
+<li>Have low bias</li>
+<li>Have low correlation among the bagged learners</li>
+<li>Best fast enough that we can take <span class="math inline">\(B \to \infty\)</span> and cancel that term</li>
+</ul>
+<p>If we can find something that does all of these, we will have a (near) optimal predictor (<span class="math inline">\(\text{MSE} \approx \text{Irreducible Error}\)</span>). This is our primary goal for the day.</p>
+<section id="out-of-bag-error" class="level3">
+<h3 class="anchored" data-anchor-id="out-of-bag-error">‘Out of Bag’ Error</h3>
+<p>Before we move to our long-promised final base learner, let’s consider another advantage of bagging. We know that it is important to have ‘new’ data when assessing model performance. To date, we have obtained this ‘new’ data through variants of the hold-out principle, such as the test-train split or cross-validation: if it is important to have new data, it is important enough to set aside some of our putative training data for model assessment.</p>
+<p>But bagging gives us another source of ‘unseen’ data: if we sample <span class="math inline">\(n\)</span> points from a population of size <span class="math inline">\(n\)</span> with replacement, approximately <span class="math inline">\(n/e \approx 2n/3\)</span> points will be sampled, leaving <span class="math inline">\(n(1-e^{-1}) \approx n/3\)</span> points unseen by each base learner. If these points were the same across each base learner, we would have a readily available test set. But then our whole bagging strategy would be essentially useless…</p>
+<p>We can estimate the so-called ‘out-of-bag’ error (OOB) associated with each training point by computing the predictive performance <em>on the ensemble of learners that haven’t seen that point</em>. That is, instead of testing the performance of the whole ensemble, we take a ‘subensemble’ of the base learners that never saw that point. Repeating this process over all <span class="math inline">\(n\)</span> training points (and creating <span class="math inline">\(n\)</span> different sub-ensembles) we obtain an estimate of the OOB error. Clearly, OOB is not test error of the entire ensemble, but it is a useful quantity nevertheless.</p>
+<p>Formally, we obtain the bagged ensemble and associated OOB error as follows:</p>
+<ul>
+<li><strong>Inputs</strong>:
+<ul>
+<li>Base learner family <span class="math inline">\(\mathcal{F}\)</span></li>
+<li>Training set of size <span class="math inline">\(n\)</span>: <span class="math inline">\(\mathcal{D}=\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\)</span></li>
+<li>Number of bootstrap samples <span class="math inline">\(B\)</span></li>
+</ul></li>
+<li>For <span class="math inline">\(b=1, \dots, B\)</span>:
+<ul>
+<li>Create bootstrap training set <span class="math inline">\(\mathcal{D}_b = \{(\bx_1^{(b)}, y_1^{(b)}), (\bx_2^{(b)}, y_2^{(b)}), \dots, (\bx_n^{(b)}, y_n^{(b)})\}\)</span></li>
+<li>Fit base learner <span class="math inline">\(\hat{f}_b\)</span> to <span class="math inline">\(\mathcal{D}_b\)</span></li>
+</ul></li>
+<li>Build ensemble <span class="math inline">\(\hat{f}(\bx) = B^{-1}\sum_{b=1}^B \hat{f}_b(\bx)\)</span></li>
+<li>For <span class="math inline">\(i=1, \dots, n\)</span>:
+<ul>
+<li>Let <span class="math inline">\(b_i^c = 0\)</span> be the number of bootstrap samples not containing <span class="math inline">\(i\)</span></li>
+<li>Let <span class="math inline">\(y_i^c = 0\)</span> be the average prediction of bootstrapped learners not trained on <span class="math inline">\(i\)</span></li>
+<li>For <span class="math inline">\(b = 1, \dots, B\)</span>:
+<ul>
+<li>If <span class="math inline">\(i \notin \mathcal{D}_b\)</span>:
+<ul>
+<li><span class="math inline">\(b_i^c := b_i^c+1\)</span></li>
+<li><span class="math inline">\(y_i^c := y_i^c + \hat{f}_i(\bx_i)\)</span></li>
+</ul></li>
+</ul></li>
+<li>Let <span class="math inline">\(\hat{y}_i^c = y_i^c / b_i^c\)</span> (or majority vote if classifying)</li>
+<li>Let <span class="math inline">\(\text{OOB}_i = \text{Loss}(\hat{y}_i^c, y_i)\)</span></li>
+</ul></li>
+<li>Estimate OOB error as <span class="math inline">\(\text{OOB} = n^{-1} \sum_{i=1}^n \text{OOB}_i\)</span></li>
+<li><strong>Return</strong> <span class="math inline">\(\hat{f}, \text{OOB}\)</span></li>
+</ul>
+<p>For each training point, we expect it to occur in approximately <span class="math inline">\(B/e\)</span> bootstrap samples and hence we have approximately <span class="math inline">\(1 - B/e \approx B/3\)</span> base learners used for computing the OOB error. This isn’t quite as good as the full <span class="math inline">\(B\)</span> samples we would use for a true test point, but since variance decreases quadratically in <span class="math inline">\(B\)</span>, this isn’t really a major loss.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+</section>
+</section>
+<section id="decision-trees" class="level2">
+<h2 class="anchored" data-anchor-id="decision-trees">Decision Trees</h2>
+<p>Ok - now it’s time to consider the final base learner of this course: <em>decision trees</em>. You are almost certainly already familiar with decision trees through diagrams like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dtree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(medv <span class="sc">~</span> . , <span class="at">data=</span>Boston)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(dtree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="notes09_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, the tree is evaluated by applying a series of <em>univariate binary</em> decision rules ‘downwards’: that is, at each step, we ask one step about one variable and take the left or right branch as appropriate. The final terminus (or ‘leaf’) of the tree is then our prediction.</p>
+<p>Decision trees are incredibly popular because they are easy to apply ‘mentally’ and suggest natural interpretations. Variables which are used to split early or split often are more important. Interestingly, decision trees also can be used to give an ‘intermediate prediction’ which is what we would get by stopping the prediction at that point. Splits which materially change the intermediate prediction are also more important.</p>
+<p>But how should we actually fit a decision tree to data? This is, like bagging and computing OOB error, the sort of thing which is easy to understand intuitively, but comes with a significant amount of bookkeeping in practice.</p>
+<p>Essentially, trees are fit by repeatedly asking the question: “What split would most reduce the error if my predictions stop here?” So, for the first split, the tree looks at each variable to determine its optimal split point, and then finds the optimal variable to split on. To find the optimal split point, we need to sort the data on that variable and then compute the ‘before’ and ‘after’ variance for each value. After finding the first split, the two ‘second level’ splits repeat this process <em>on only the data in their path</em>. That is, the two ‘second level’ splits are found on <em>different</em> data. The four ‘third level’ splits are found on four different data sets, <em>etc.</em></p>
+<p>Because the later splits are computed on different data sets, they almost always select different variables at each level (as in our example above, where the two ‘level two’ splits use the <code>lstat</code> and <code>rm</code> variables). Predictions are made by taking the average (or majority) of data left in that split.</p>
+<p>Note that the splits need not be <em>and typically are not</em> ‘even’ splits along a variable. <em>E.g.</em>, if we were doing a split on a variable that looks like</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr class="even">
+<td>1.1</td>
+<td>0.9</td>
+</tr>
+<tr class="odd">
+<td>1.2</td>
+<td>1.1</td>
+</tr>
+<tr class="even">
+<td>1.3</td>
+<td>1.4</td>
+</tr>
+<tr class="odd">
+<td>100</td>
+<td>500</td>
+</tr>
+<tr class="even">
+<td>105</td>
+<td>550</td>
+</tr>
+</tbody>
+</table>
+<p>The optimal split is clearly something like <span class="math inline">\(\texttt{Variable} &lt; 1.3\)</span> with conditional predictions of <span class="math inline">\(1.1\)</span> and <span class="math inline">\(525\)</span> in each split and split sizes of <span class="math inline">\(4\)</span> and <span class="math inline">\(2\)</span>.</p>
+<p>Clearly, if the tree is allowed to run ‘to completion’, there will be one data point left in each leaf and the tree can obtain 0 training error. That is, maximal decision trees are a very high complexity (low bias, high variance) model. On the other extreme, a ‘single split’ tree (often called a ‘stump’) will be low complexity (high bias, low variance). So we can take tree depth (number of levels) as a good proxy for model complexity. Like <span class="math inline">\(K\)</span>-Nearest Neighbors, we can pick depth (complexity) by a suitable cross-validation or train-test scheme, but will soon see a better way.</p>
+<p>Some other notes on trees:</p>
+<ul>
+<li>You will sometimes see decision trees refered to as <code>CART</code> (Classification and Regression Trees) or <code>rpart</code> (Recursive Partitioning) but most folks will know the term “decision trees” so I just use that.</li>
+<li>Trees extend <em>very naturally</em> to categorical variables and do not require numeric encoding: we simply have to adapt the decision rule from <span class="math inline">\(x \leq y\)</span> to <span class="math inline">\(x \in \mathcal{Y}\)</span> where <span class="math inline">\(x\)</span> is now a categorical feature and <span class="math inline">\(\mathcal{Y}\)</span> is a set of lables.</li>
+<li>Trees also handle missing values nicely: we can simply treat <code>NA</code> as <em>very high</em> or <em>very low</em> or use an explicit <code>is.na</code> decision rule</li>
+<li>Trees are rather robust to outliers: if a data point has an extreme value, it will be ‘split away’ rather early and the ‘main branch’ of the tree will be fit on the rest of the data. Non-outlier test points will funnel into this ‘main branch’ and it will be like the outlier essentially never existed</li>
+</ul>
+<p>There are tons of tiny little decisions in building trees, so I don’t recommend writing your own implementation. See, <em>e.g.</em>, <code>?rpart.control</code> for the fitting parameters used by the <code>rpart</code> package: other software will have similar options.</p>
+</section>
+<section id="random-forests" class="level2">
+<h2 class="anchored" data-anchor-id="random-forests">Random Forests</h2>
+<p>We are now ready to introduce the concept of <em>random forests</em>, which are <em>almost</em> bagged decision trees.</p>
+</section>
+<section id="boosting" class="level2">
+<h2 class="anchored" data-anchor-id="boosting">Boosting</h2>
+<section id="adaboost" class="level3">
+<h3 class="anchored" data-anchor-id="adaboost"><code>AdaBoost</code></h3>
+</section>
+<section id="logitboost" class="level3">
+<h3 class="anchored" data-anchor-id="logitboost"><code>LogitBoost</code></h3>
+</section>
+<section id="gradient-boosting" class="level3">
+<h3 class="anchored" data-anchor-id="gradient-boosting">Gradient Boosting</h3>
+</section>
+<section id="xgboost" class="level3">
+<h3 class="anchored" data-anchor-id="xgboost"><code>xgboost</code></h3>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>There is randomness in our selection / acquisition of training data and nothing we do can completely remove it. Three cheers for large and well-constructed training sets, the unsung heros of machine learning!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Taking a typical choice of <span class="math inline">\(B = 500\)</span>, the OOB ensemble of (expected) <span class="math inline">\(316\)</span> base learners will have a variance that is approximately <span class="math inline">\(500/316 \approx 1.6\)</span> times higher than the ‘true’ ensemble. If <span class="math inline">\(B\)</span> is large enough <span class="math inline">\((1-\rho)\sigma^2/B \approx 0\)</span>, <span class="math inline">\((1-\rho)\sigma^2/(B(1-e^{-1})) \approx 1.6(1-\rho)\sigma^2/B\)</span> will also be negligible. Put another way, the bulk of the error in bagged ensembles comes from i) bias; ii) <em>training data</em> variance; and iii) irreducible error. The ‘not enough bootstraps’ contribution is typically quite small.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/michael-weylandt\.com\/STA9890\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/archive/AY-2024-SPRING/notes/notes09.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/archive/AY-2024-SPRING/notes/notes09.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

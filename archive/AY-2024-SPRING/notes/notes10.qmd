@@ -1,0 +1,37 @@
+---
+session: "`r session <- 10; session`"
+author: "Michael Weylandt"
+topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair='universal') |> filter(Course.Element == 'Class Session', Item.Number==session) |> pull(Details); topic`"
+title: "{{< var course.short >}} - {{< meta topic >}}"
+---
+
+```{r}
+#| include: false
+TRUE # To ensure knitr activates
+```
+
+Unsupervised learning: 
+
+- Discovering patterns which we hope will hold true in future samples
+
+Types of problems:
+
+- Groups
+- Regularity / Patterns
+- Outlier Detection
+- Prototypes/Archetypes
+
+How to validate? 
+
+- No 'magic' like hold-out sets
+- Stability principle
+- Hopefully doesn't matter too much (robustness)
+- Success on a downstream class
+- Often very specific strategies for individual problems
+
+Math Review
+
+- Eigendecomposition
+- Multivariate Normal
+- SVD
+

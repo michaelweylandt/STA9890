@@ -1,0 +1,337 @@
+---
+title: "{{< var course.short >}} Research Report #{{< meta rr_num >}}: {{< meta rr_title >}}"
+format:
+  html:
+    code-link: true
+rr_num: "03"
+rr_title: "Sparse Principal Components Analysis"
+filters:
+  - list-table
+---
+
+```{r echo=FALSE, message=FALSE}
+library(tidyverse)
+DATES <- readr::read_csv("../key_dates.csv") |>
+    rename(element=`Course Element`,
+           item=`Item Number`) |>
+    mutate(dt = case_when(is.na(Time) ~ as.character(Date),
+                          TRUE ~ paste(Date, Time)))
+```
+
+```{r echo=FALSE, warning=FALSE}
+library(glue)
+rr_id <- 3
+rr <-  DATES |> filter(element == "Research Report", 
+                       item == rr_id)
+```
+
+### Key Dates
+
+- Released to Students: `{r} rr |> filter(str_detect(Details, "Released")) |> pull(dt)`
+- **Submission: `{r} rr |> filter(str_detect(Details, "Due")) |> pull(dt)` on Brightspace**
+
+*Estimated Time to Complete: 9 Hours*
+
+## Research Report #{{< meta rr_num >}}: {{< meta rr_title >}}
+
+In the final Research Report of this course, you will investigate the
+intersection of *sparsity*, a form of interpretability, with *unsupervised
+learning*, the branch of ML focused on finding meaningful patterns in data.
+
+Classically, principal components analysis (PCA) is the cornerstone of
+dimension reduction methods. By reducing a large number of features to a smaller
+number of linearly independent (uncorrelated) components, PCA is often said
+to increase interpretability. This assumes a degree of "reification" - is the PC
+something meaningful on its own? 
+
+If the PC captures a true underlying factor, then perhaps we have found
+something worth interpreting; but PCA always finds some sort of factorization,
+even when there is no "true" underlying factor. In some circumstances, this PC
+becomes a thing in itself, *e.g.*, IQ, but that cannot always be assumed. If we
+do not assume or define a meaning to the PC, it can only be understood as a
+combination of all of the features used to create it, hardly a paragon of
+interpretability. 
+
+Sparse PCA takes a different approach: rather than finding an interpretation of
+the linear combination of all features that captures the most variance, it seeks
+a linear combination of only a few features that explain nearly-the-most variance.
+Because only a few features are used, the resulting PC is more interpretable
+*a priori* than the output of classical PCA. 
+
+As background, you should read the paper by Weylandt and Swiler[^beyondpca] and
+review the [Supporting Materials](https://zenodo.org/records/10581710) to see how
+Sparse PCA can be applied in a scientific setting. For more methodological 
+background, see the references cited therein, especially the paper by Witten 
+*et al.*, as well as ISL §6.3.1 and §12.2 and SLS §8.1-8.2.2. 
+
+[^beyondpca]: M. Weylandt and L.P. Swiler. "Beyond PCA: Additional Dimension
+Reduction Techniques to Consider in the Development of Climate Fingerprints". 
+*Journal of Climate* **37(5)**, p.1723-1735. 2024. DOI:
+[10.1175/JCLI-D-23-0267.1](https://doi.org/10.1175/JCLI-D-23-0267.1). 
+[Direct Link](https://journals.ametsoc.org/view/journals/clim/37/5/JCLI-D-23-0267.1.pdf)
+
+### Project Skeleton
+
+
+Your report should be divided into three sections, covering the
+following: 
+
+i)   Background on PCA and Sparse PCA
+ii)  Computation - Implementing the Power Method and the Sparse Power Method
+     for PCA
+iii) Implementation and Assessment of Sparse PCA
+
+At a minimum, these should include the following elements: 
+
+- Background on PCA and Sparse PCA
+  - Derivation of PCA from Variance Maximization to Singular Value Decomposition
+  - Proof of Convergence of the Power Method for SVD Computations
+  - Modification of Classical Power Method for Sparsity
+- Computation
+  - Implementation of Classical and Sparsified Power Method
+  - Discussion of Convergence for Power Methods[^convergence]
+  - How might one tune the sparsity level used? 
+- Implementation and Assessment
+  - In-Simulation: Construct simulations to compare the accuracy of 
+      classical and sparse PCA. Which does better when the "true" PCs are dense?
+      When they are sparse? Does this depend on the sample size? How can we
+      measure accuracy of the estimated PCs? 
+  - On Real Data: Identify a real data set where PCA can be applied. Apply both
+    classical and sparse PCA and compare the results. Which PCA is better (in
+    whatever sense)? Which PCA is more interepretable? Is there a way to
+    validate your interpretation?
+    
+[^convergence]: Recall that PCs are only defined "up to sign". If $\hat{\mathbf{u}}$
+is a valid PC, so is $-\hat{\mathbf{u}}$. You will need to modify your usual
+convergence checks to account for this. 
+  
+  
+### Additional Background
+
+The *Power Method* is a classical approach to computing eigenvectors and, by
+extension, singular vectors. For this research report, you will build upon
+the singular vector variant, so I review the eigenvector variant here. 
+
+Suppose $\mathbf{\Sigma} \in \mathbb{R}^{p \times p}_{\succ 0}$ is a strictly positive 
+definite $p \times p$ matrix. By the spectral theorem, it has an
+eigendecomposition: 
+
+$$\mathbf{\Sigma} = \sum_{i=1}^p \lambda_i \mathbf{v}_i\mathbf{v}_i^{\top}$$
+
+where the eigenvalues $\{\lambda_i\}$ are decreasing and strictly positive: 
+($\lambda_1 \geq \lambda_2 \geq \dots \geq \lambda_p$). If the eigenvalues are
+distinct (as they are with probability 1 for continuous-valued data observed
+noisly), then this decomposition is unique up to sign.[^sign]
+
+The *power method* for computing the leading (highest eigenvalue) eigenvector
+of $\mathbf{\Sigma}$ proceeds as follows: 
+
+- Initialize: select $\mathbf{v}^{(0)}$ as a random unit vector
+- Repeat Until Convergence: 
+  - Multiply: $\tilde{\mathbf{v}}^{(k+1)} = \mathbf{\Sigma} \mathbf{v}^{(k)}$
+  - Normalize: $\mathbf{v}^{(k+1)} = \tilde{\mathbf{v}}^{(k+1)} / \|\tilde{\mathbf{v}}^{(k+1)}\|_2$
+  - Iterate: $k \leftarrow k + 1$
+- Return: At convergence, return the eigenvector $\mathbf{v}^{(k)}$ and the
+  eigenvalue $\lambda = \|\mathbf{\Sigma} \mathbf{v}^{(k)}\|_2$
+
+Additional eigenvectors can be found by "deflating" $\mathbf{\Sigma}$ and 
+applying the power method to $$\mathbf{\Sigma}' = \mathbf{\Sigma} - \lambda \hat{\mathbf{v}}\hat{\mathbf{v}}^{\top}.$$
+
+So long as the eigenvalues of $\mathbf{\Sigma}$ are distinct, the power method
+converges to the leading eigenvector as long as the initial guess is not
+perfectly orthogonal to the true eigenvector. If we pick our initial guess
+randomly, this is a very reasonable assumption. To see why this is the case,
+note that: 
+
+$$\begin{align*}
+\mathbf{v}^{(k)} &\propto \mathbf{\Sigma}^k \mathbf{v}^{(0)} \\
+                 &= \left(\sum_{i=1}^p \lambda_i^k \mathbf{v}_i\mathbf{v}_i^{\top}\right)\mathbf{v}^{(0)} \\
+                 &= \sum_{i=1}^p \lambda_i^k \langle\mathbf{v}_i, \mathbf{v}^{(0)}\rangle \mathbf{v}_i
+\end{align*}$$
+
+Viewed here, you can see why the power method has its name. As $k \to \infty$,
+the first term in this series becomes much much larger than the others, so we get
+
+$$\mathbf{v}^{(k)} \buildrel \sim \over \propto \lambda_1^k \langle\mathbf{v}_1, \mathbf{v}^{(0)}\rangle \mathbf{v}_1$$
+After normalizing and dropping the scalar terms, we have
+
+$$\mathbf{v}^{(k)} \to \mathbf{v}_1$$ 
+
+as desired. This argument also clarifies the two possible failure modes of the
+power method: 
+
+i) If the initial guess is unlucky and orthogonal to the true eigenvector, we
+   have $\langle \mathbf{v}_1, \mathbf{v}^{(0)} \rangle = 0$ so the 
+   $\mathbf{v}_1$ term drops out of the answer and we converge to the next 
+   eigenvector (unless we are orthogonal to that one as well).
+ii) If the eigenvalues are not distinct, then multiple terms become large
+    and we get a strange 'superposition' of multiple eigenvectors. (Alternatively,
+    there isn't a 'true' right answer, but we get one possible eigenvector.)
+
+[^sign]: Note that we can  substitute $\mathbf{v}_i \to -\mathbf{v}_i$ without changing the result since the minus signs will cancel in $(-\mathbf{v}_i)(-\mathbf{v}_i)^{\top} = \mathbf{v}_i\mathbf{v}_i^{\top}$.
+
+### Potential Topics for Additional Research
+
+While the main focus of this report is on *Sparse PCA*, a suitably sparsified
+SVD can be used for a wide variety of multivariate analysis problems. You may
+wish to extend your analysis to other sparse multivariate methods, such as 
+*Sparse CCA* or *Sparse PLS*. 
+
+Alternatively, a huge number of approaches to Sparse PCA have been proposed, not
+all of which are based on the power method. You may wish to compare the approach
+I prefer (projected power method) with other approaches: be sure to consider 
+i) accuracy; ii) interpretability; and iii) computational ease / efficiency 
+in your comparison. 
+
+### Submission Instructions
+
+Submit your research report as a PDF of 6-8 pages on Brightspace.[^pdf]
+Your submission should include all *essential* code, *e.g.*, code
+used to fit models or to perform simulations, but may omit
+*incidental* code, *e.g.* code used to create figures or import
+data. 
+
+You are **required** to implement ML methods by hand; use of 'built-in'
+ML functionality is disallowed unless authorized by instructor. You may use
+built-in linear algebra subroutines and are not required to, *e.g.*, implement
+matrix multiplication from scratch. While you must use your own implementation
+of ML methods, it is smart to compare against existing 'reference' implementations.
+
+Your report should be in the style of a technical "blog post", accessible
+to someone who is just getting into Machine Learning but has solid
+background in the prerequisite subjects (*e.g.*, you on the day before
+this class started). Make sure to (rigorously) define and prove all
+results used. You should also cite relevant authoritative resources, 
+*e.g.*, the recommended textbooks, where appropriate. 
+
+Each student must submit an individual and independently written report, but you
+are encouraged to work together with your peers to understand methods, design
+simulations, review relevant literature, *etc.* I strongly recommend having a
+classmate ["red-team"](https://en.wikipedia.org/wiki/Red_team) your report
+before submission to find unclear writing, sub-standard figures and tables, 
+unconvincing simulations, incorrect code, *etc.* Per the course's [Academic
+Integrity Policy](../resources.html#aipolicy), you must explicitly acknowledge
+all collaborators in your submission.
+
+[^pdf]: If you wish to use an alternate submission format to allow
+interactive and/or animated elements, please seek pre-approval from
+the instructor. 
+
+### Grading 
+
+Your submission will be evaluated *holistically* and graded out of 100
+points. The following rubric will guide this holistic evaluation, but
+the instructor may deviate as necessary to accurately grade the final
+submission. 
+
+::: {.list-table width="1,1,1,1,1,1" aligns="c,c,c,c,c,c" header-rows=1 .hover}
+
+ * - Report Element
+   - Excellent. <br> "A-" to "A" (`90% to 100%`)
+   - Great. <br> "B-" to "B+" (`80% to 89%`)
+   - Average. <br> "C" to "C+" (`73% to 79%`)
+   - Poor. <br> "D" to "C-" (`60% to 72%`)
+   - Failure. <br> "F" (`0% to 59%`)
+   
+ * - Presentation (15%)
+   - Report has excellent formatting, with particularly effective 
+     tables and figures. Tables and Figures are "publication-quality"
+     and clearly and succinctly support claims made in the body text.
+   - Report has strong formatting; tables and figures make their
+     intended points, but do not do so optimally. 
+   - Formatting is average; tables and figures do not clearly support
+     arguments made in the text and/or are not "publication quality"
+   - Poor formatting distracts from substance of report. Tables and
+     Figures exhibit significant deficiencies in formatting.  
+   - Formatting prohibits or significantly impairs reader understanding.
+ 
+ * - Project Skeleton (15%)
+   - Report includes all required elements and goes significantly deeper
+     than required by the project skeleton in a manner that provides 
+     additional insights. 
+     
+     Mathematical definitions and proofs are clearly stated. 
+     
+   - Report includes all required elements and dives deeper into the
+     topic, but does not generate additional insights. (*E.g.*,
+     additional simulations showing the same phenomena)
+     
+     Mathematical definitions and proofs are correctly stated, but 
+     clarity could be improved. 
+     
+   - Report includes all required elements. 
+   
+     Mathematical definitions and proofs are essentially correct,
+     but difficult to understand and/or contain trivial errors.
+   
+   - Report does not include all required elements, but is still
+     able to capture key points. 
+     
+     Mathematical definitions and proofs contain significant, but
+     non-fatal, errors. 
+   - Report fails to adequately address the topic. 
+   
+     Mathematical definitions and proofs are fundamentally incorrect. 
+ 
+ * - Algorithms and Computational Efficiency (20%)
+   - Report implements all methods efficiently with high-quality,
+     well-formatted and performant code. 
+   - Report implements all methods efficiently with acceptable
+     code quality. 
+   - Report implements all methods, but does not do so efficiently
+     and/or with substandard code. 
+   - Report uses built-in methods instead of implementing methods
+     from scratch
+   - Code does not appear to run properly / insufficient code submitted. 
+ 
+ * - Methodological Aspects and Simulation Design(20%)
+   - Methods are accurately and correctly implemented in a robust / bullet-proof
+     manner, designed to responsibly check for and address possible modes of
+     failure. Simulations clearly and efficiently support all claims. 
+   - Methods are accurately and correctly implemented, but are not robust to
+     failure. Simulations clearly and efficiently support all claims. 
+   - Methods are implemented with minor harmless errors and/or poor validation.
+     Simulations do not fully support claims. 
+   - Methods are implemented with significant errors leading to incorrect results. 
+   
+     Simulations do not give sufficient support for key claims.
+   - Methods are not correctly implemented. Simulations do not support claims.
+ 
+ * - Communication and Writing (20%)
+   - Report exhibits excellent written communication, making all points
+     exceptionally clearly and at the level of a quality academic
+     publication. Code, results, and text are skillfully woven together.
+   - Report exhibits great written communication, all points are made
+     clearly without notable grammatical errors. Code, results, and
+     text are neatly tied together. 
+   - Report exhibits solid written communication, key points are made 
+     understandably and any grammatical errors do not impair
+     understanding. Code, results, and text could be better integrated, 
+     but it is clear which elements relate. 
+   - Written communication is below standard: points are not always
+     understandable and/or grammatical errors actively distract from
+     content. Code, results, and text are not actively integrated, but
+     are generally located 'near' each other in a semi-systematic fashion.
+   - Written communication is far below standard, possibly bordering
+     on unintelligible. Large blocks of code are shown without any
+     relevant results or text. 
+ 
+ * - Contextualization (10%)
+   - Report draws on relevant, modern research literature to give context
+     to its findings and to broaden its scope. 
+   - Report draws on standard textbooks and/or classical research literature
+     to give context to its findings and to broaden its scope. 
+   - Report cites textbooks to give context, but does not take a 'big picture' 
+     view. 
+   - Report gives appropriate context, but lacks citations. 
+   - Report gives limited, insufficient context.
+
+:::
+
+------------------------------------------------------------------------
+
+This work ©2025 by [Michael Weylandt](https://michael-weylandt.com) is licensed
+under a [Creative Commons BY-NC-SA 
+4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) license.
+![](http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png){width="10%"}
+
