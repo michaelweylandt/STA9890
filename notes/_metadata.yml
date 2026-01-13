@@ -1,0 +1,7 @@
+title: "{{< var course.short >}} - {{< meta topic >}}"
+engine: knitr
+format:
+  html:
+    code-link: true
+author: "Michael Weylandt"
+freeze: "auto"

@@ -1,24 +1,21 @@
 Subject,Start Date,Start Time,End Date,End Time,All Day Event,Location
-STA 9890 Lecture 1 - Course Overview & Introduction to ML,2025-01-28,6:05 PM,2025-01-28,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-"STA 9890 Lecture 2 - Regression I: Review of Linear Algebra, Convex Optimization, OLS",2025-02-04,6:05 PM,2025-02-04,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 3 - Regression II: Regularized Regression,2025-02-11,6:05 PM,2025-02-11,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-Mandatory Verification of Enrollment Syllabus Quiz,2025-02-12,11:15pm,2025-02-12,11:45pm,False,Brightspace
-STA 9890 Lecture 4 - Regression III: Non-Linear Regression,2025-02-25,6:05 PM,2025-02-25,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 5 - Introduction to Classification,2025-03-04,6:05 PM,2025-03-04,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Test 1 - Theory of Supervised Learning; Regression,2025-03-04,6:05 PM,2025-03-04,7:15 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Research Report 1 Due,2025-03-07,11:15 PM,2025-03-07,11:45 PM,False,Brightspace
-STA 9890 Lecture 6 - Classification I: Generative Classifiers,2025-03-11,6:05 PM,2025-03-11,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 7 - Classification II: Discriminative Classifiers,2025-03-18,6:05 PM,2025-03-18,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 8 - Ensemble Learning & Resampling Methods,2025-03-25,6:05 PM,2025-03-25,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 9 - Tree-Based Methods,2025-04-01,6:05 PM,2025-04-01,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 10 - Introduction to Unsupervised Learning,2025-04-08,6:05 PM,2025-04-08,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Test 2 - Classification; Ensemble Learning; Tree-Based Methods,2025-04-08,6:05 PM,2025-04-08,7:15 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Research Report 2 Due,2025-04-18,11:15 PM,2025-04-18,11:45 PM,False,Brightspace
-STA 9890 Lecture 11 - Unsupervised Learning I: Dimension Reduction,2025-04-22,6:05 PM,2025-04-22,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 12 - Unsupervised Learning II: Clustering,2025-04-29,6:05 PM,2025-04-29,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Lecture 13 - Introduction to Generative Models,2025-05-06,6:05 PM,2025-05-06,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Test 3 - Unsupervised Learning,2025-05-06,6:05 PM,2025-05-06,7:15 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Research Report 3 Due,2025-05-09,11:15 PM,2025-05-09,11:45 PM,False,Brightspace
-STA 9890 Lecture 14 - Course Wrap-Up,2025-05-13,6:05 PM,2025-05-13,9:00 PM,False,Newman Vertical Campus (NVC) 5-175
-STA 9890 Competition - In-Class Presentations,2025-05-13,11:15pm,2025-05-13,11:45pm,False,Brightspace
-STA 9890 Competition - Final Report,2025-05-20,11:15pm,2025-05-20,11:45pm,False,Brightspace
+STA 9890 Lecture 1 - Fundamentals of ML: I. Introduction to ML,2026-01-28,6:05 PM,2026-01-28,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 2 - Fundamentals of ML: II. Linear Algebra Foundations,2026-02-04,6:05 PM,2026-02-04,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 3 - Fundamentals of ML: III. Accuracy and Loss in ML,2026-02-11,6:05 PM,2026-02-11,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+Mandatory Verification of Enrollment Syllabus Quiz,2026-02-12,11:15pm,2026-02-12,11:45pm,False,Brightspace
+STA 9890 Lecture 4 - Fundamentals of ML: IV. Optimization & Simulation in ML,2026-02-18,6:05 PM,2026-02-18,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 5 - Supervised Learning: I. Regularization & Ridge Regression,2026-02-25,6:05 PM,2026-02-25,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Test 1 - Test I: Fundamentals of ML,2026-02-25,6:05 PM,2026-02-25,7:15 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 6 - Supervised Learning: II. Sparsity and the Lasso,2026-03-04,6:05 PM,2026-03-04,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 7 - Supervised Learning: III. Generative Classifiers,2026-03-11,6:05 PM,2026-03-11,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 8 - Supervised Learning: IV. Discriminative Classifiers & Non-Linear Methods,2026-03-18,6:05 PM,2026-03-18,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 9 - Supervised Learning: V. Trees & Ensemble Methods,2026-03-25,6:05 PM,2026-03-25,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 10 - Unsupervised Learning: I. Introduction,2026-04-15,6:05 PM,2026-04-15,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Test 2 - Test II: Supervised Learning,2026-04-15,6:05 PM,2026-04-15,7:15 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 11 - Unsupervised Learning: II. Clustering,2026-04-22,6:05 PM,2026-04-22,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 12 - Unsupervised Learning: III. Dimension Reduction & Manifold Learning,2026-04-29,6:05 PM,2026-04-29,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 13 - Unsupervised Learning: IV. Generative Models,2026-05-06,6:05 PM,2026-05-06,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Lecture 14 - Course Wrap-Up,2026-05-13,6:05 PM,2026-05-13,9:00 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Test 3 - Test III: Unsupervised Learning,2026-05-13,6:05 PM,2026-05-13,7:15 PM,False,Newman Vertical Campus (NVC) 13-150
+STA 9890 Competition - In-Class Presentations,2026-05-20,11:15pm,2026-05-20,11:45pm,False,Brightspace
+STA 9890 Competition - Final Report,2026-05-26,11:15pm,2026-05-26,11:45pm,False,Brightspace

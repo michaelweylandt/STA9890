@@ -17,14 +17,16 @@ website:
         href: "./syllabus.html"
       - text: "Handouts and Additional Notes"
         href: "./notes.html"
-      - text: "Research Reports"
-        href: "/reports.html"
       - text: "Course Competition"
         href: "./competition.html"
       - text: "Additional Resources and Policies"
         href: "./resources.html"
       - text: "Learning Objectives"
         href: "./objectives.html"
+      - text: "Prior Offerings"
+        menu:
+        - text: "Spring 2025"
+        - href: "./archive/AY-2024-SPRING"
 
 format:
   html:

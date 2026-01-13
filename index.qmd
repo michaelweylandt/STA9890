@@ -17,8 +17,9 @@ This site hosts the unofficial [Course Syllabus](./syllabus.html),
 Objectives](./objectives.html). Official copies of these documents can be
 found on [CUNY Brightspace](https://brightspace.cuny.edu).
 
-This site also hosts descriptions of the [Course Competition](./competition.html)
-and [Research Reports (Homework)](./reports.html), as well as selected [Handouts and Additional Notes](notes.html) that will be useful. 
+This site also hosts the official description of the 
+[Course Competition](./competition.html) and selected 
+[Handouts and Additional Notes](notes.html) that will be useful. 
 
 There are quite a few moving parts to this course, so this [key dates file](./key_dates.csv)
 or the list of upcoming course activities below may be useful:

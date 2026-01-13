@@ -3,7 +3,8 @@ title: "{{< var course.short >}} - Handouts and Additional Notes"
 ---
 
 Supplemental course notes and links to useful external resources will be
-posted here.
+posted here. These will be updated repeatedly throughout the semester without
+fanfare, so please check here often.
 
 ```{r}
 #| echo: false
@@ -109,37 +110,15 @@ this work.
 
 ### Tests and Solutions
 
-- Test 1: Regression
-  - [Exam Booklet](./notes/tests/STA9890_test1_2025-Spring.pdf)
-  - [Solutions](./notes/tests/test1.html)
-- Test 2: Classification
-  - [Exam Booklet](./notes/tests/STA9890_test2_2025-Spring.pdf)
-  - [Solutions](./notes/tests/test2.html)
-- Test 3: Unsupervised Learning and ML Practice
-  - [Exam Booklet](./notes/tests/STA9890_test3_2025-Spring.pdf)
-  - [Solutions](./notes/tests/test3.html)
-
+Mid-semester tests and solutions will be posted here *after* the exam. 
 
 ### Additional Materials
 
-The following homework problems and exams were used for the 
-Spring 2024 offering of this course. You may find them useful
-as you study for the three in-class tests. Note, however, that
-these were 3-hour take-home cumulative exams, rather than the
-1-hour in-class non-cumulative exams used this semester, so
-the questions are not exactly what you should expect. In 
-particular, note that the exam boundaries do not exactly line
-up with our schedule this semester. 
+Older notes, homework problems, and exam from prior offerings of this course
+can be found using the `Prior Offerings` tab above. Note that the syllabus
+of this course has changed slightly from semester to semester, so the format
+and content of exams may not map cleanly onto this semester. 
 
-Solutions will not be provided, but I am happy to discuss
-individual problems in office hours or on the course discussion
-board. 
-
-- Homeworks
-  - [Homework #01](./notes/old/STA9890_HW01_2024-Spring.pdf)
-  - [Homework #02](./notes/old/STA9890_HW02_2024-Spring.pdf)
-  - [Homework #03](./notes/old/STA9890_HW03_2024-Spring.pdf)
-  - [Homework #04](./notes/old/STA9890_HW04_2024-Spring.pdf)
-- Exams
-  - [Midterm Exam](./notes/old/STA9890_midterm_2024-Spring.pdf)
-  - [Final Exam](./notes/old/STA9890_final_2024-Spring.pdf)
+Additional solutions will not be provided if not already posted, but I am 
+happy to discuss individual problems in office hours or on the course 
+discussion board. 
