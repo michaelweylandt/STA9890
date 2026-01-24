@@ -334,6 +334,7 @@ and presentation that works best for them.
    * - 6
      - `r class_date (06)`
      - `r class_date (06, details=TRUE)`: 
+       - Ridge Regression & $\ell_2$ Regularization
        - Sparsity
        - $\ell_1$-Penalization
        - $\ell_2$ vs $\ell_1$
