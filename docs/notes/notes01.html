@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-01-13">
+<meta name="dcterms.date" content="2026-01-28">
 <title>STA 9890 - Fundamentals of ML: I. Introduction to ML – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -183,9 +183,17 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#a-taxonomy-of-machine-learning" id="toc-a-taxonomy-of-machine-learning" class="nav-link active" data-scroll-target="#a-taxonomy-of-machine-learning">A Taxonomy of Machine Learning</a></li>
+<li>
+<a href="#a-taxonomy-of-machine-learning" id="toc-a-taxonomy-of-machine-learning" class="nav-link active" data-scroll-target="#a-taxonomy-of-machine-learning">A Taxonomy of Machine Learning</a>
+  <ul class="collapse">
+<li><a href="#types-of-learning" id="toc-types-of-learning" class="nav-link" data-scroll-target="#types-of-learning">Types of Learning</a></li>
+  <li><a href="#types-of-data" id="toc-types-of-data" class="nav-link" data-scroll-target="#types-of-data">Types of Data</a></li>
+  </ul>
+</li>
   <li><a href="#test-and-training-error" id="toc-test-and-training-error" class="nav-link" data-scroll-target="#test-and-training-error">Test and Training Error</a></li>
   <li><a href="#generalization-and-model-complexity" id="toc-generalization-and-model-complexity" class="nav-link" data-scroll-target="#generalization-and-model-complexity">Generalization and Model Complexity</a></li>
+  <li><a href="#model-families-and-estimation" id="toc-model-families-and-estimation" class="nav-link" data-scroll-target="#model-families-and-estimation">Model Families and Estimation</a></li>
+  <li><a href="#overture" id="toc-overture" class="nav-link" data-scroll-target="#overture">Overture</a></li>
   <li><a href="#nearest-neighbor-methods" id="toc-nearest-neighbor-methods" class="nav-link" data-scroll-target="#nearest-neighbor-methods">Nearest Neighbor Methods</a></li>
   <li>
 <a href="#model-complexity-redux" id="toc-model-complexity-redux" class="nav-link" data-scroll-target="#model-complexity-redux">Model Complexity (Redux)</a>
@@ -215,7 +223,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 13, 2026</p>
+      <p class="date">January 28, 2026</p>
     </div>
   </div>
   
@@ -229,6 +237,7 @@ window.Quarto = {
 <p>For example, given a large set of medical records, the natural instinct of a statistician is to find the indicators of cancer in order assess them via some sort of follow-on genetic study, while a ML practitioner will typically start by building a predictive algorithm to predict who will be diagnosed with cancer. The statistician will perform calculations with <span class="math inline">\(p\)</span>-values, test statistics, and the like to make sure that any discovered relationship is accurate, while the ML practitioner will verify the performance by finding a new (hopefully similar) set of medical records to test algorithm performance.</p>
 <p>Clearly, this difference is more one of style than substance: the statistician might see what features are important in the ML model to decide what to investigate, while the ML modeler will use statistical tools to make sure the model is finding something real and not just fitting to noise. In this course, the distinction may be even blurrier as our focus is <em>statistical machine learning</em> - that little niche right on the boundary between the two fields.</p>
 <p>In brief, “statistics vs ML” is a bit of a meaningless distinction as both fields draw heavily from each other. I tend to say one is <em>doing statistics</em> whenever the end-goal is to <em>better understand</em> something about the real world (<em>ie.</em>, the end product is <em>knowledge</em>), while one is <em>doing ML</em> whenever one is building a system to be used in an automated fashion (<em>ie.</em>, the end product is <em>software</em>), but definitions vary.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<section id="types-of-learning" class="level3"><h3 class="anchored" data-anchor-id="types-of-learning">Types of Learning</h3>
 <p>In this course we will use the following taxonomy borrowed from the ML literature:</p>
 <ul>
 <li>
@@ -264,10 +273,21 @@ window.Quarto = {
 </ul>
 <p>Linear Regression, which we will study more below, is the canonical example of a <em>regression</em> tool for <em>supervised</em> learning.</p>
 <p>At this point, you can already foresee one of the (many) terminology inconsistencies will will encounter in this course: <em>logistic regression</em> is a tool for <em>classification</em>, not regression. As modern ML is the intersection of many distinct intellectual traditions, the terminology is rarely consistent.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-</section><section id="test-and-training-error" class="level2"><h2 class="anchored" data-anchor-id="test-and-training-error">Test and Training Error</h2>
+</section><section id="types-of-data" class="level3"><h3 class="anchored" data-anchor-id="types-of-data">Types of Data</h3>
+<p>It is also worth thinking of the many types of data we might analyze: much of remarkable success of modern ML comes from an openness (and willingness) to analyze types of data historically ‘out of bounds’ (or, at least, not in the mainstream) for classical statistics.</p>
+<p>Let’s divide this into two axes: i) <em>organizational</em>, what is the natural way to store and represent this data on a computer; and ii) <em>modal</em>, what “type” of thing is each individual datum. While these are useful questions to ask, these are not <em>fixed</em> within a single problem. For instance, if given a large text sample (such as doctor’s notes on a medical patient), it is possible to change this data from “sequence” data (things in a row) to “tabular” data, by simply counting the occurence of each word. This transformation is sometimes called a “bag-of-words” representation and it is lossy, but it can often still be good enough for many applications: <em>e.g.</em>, if the notes have the word “cancer” appearing many times, it is a good guess that the patient should receive advanced cancer screening; while it is <em>theoretically</em> possible that the doctor wrote “no sign of cancer” after each visit, this is unlikely.</p>
+<p>This example highlights two ways of arranging data:</p>
+<ul>
+<li>Tabular Data: this is your classic “spreadsheet”-style data, with rows representing separate observations and columns corresponding to well-defined features. (In <a href="https://michael-weylandt.com/STA9750/">STA 9750</a>, you may have heard this referred to as a “data frame”.)</li>
+<li>Sequence Data: this is data presented as an organized sequence of ‘tokens’, where the ordering has meaning. Examples of sequence data include natural language (words as tokens), DNA sequence (the four amino acids as tokens), and certain representations of computer signals (0/1 binary). Sequence data is typically characterized by inconsistent length (sentences can be short or long) as opposed to tabular data where we represent observations with fixed-length vectors.</li>
+</ul>
+<p>Other data structures may include image data (data represented on a 2D grid), 3D imaging data (as often occuring in medical imaging), video data (image data with an additional time dimension), functional data (where we observe a ‘function’ on a continuous domain, <em>e.g.</em>, an audio recording), or even shape data (<em>e.g.</em>, inferring the malignancy of a strange growth on your skin from its <em>shape</em>).</p>
+<p>Within these organizational patterns, we can also categorize data by the <em>modality</em> of each datum. We spoke a bit about continuous and binary data above (in the context of regression and classification), but you may also see ordinal data (rankings, not corresponding to specific values, like survey responses to “do you strongly agree, agree, slightly agree, <em>etc.</em>-type questions) and categorical data (where there is a finite set of possible unranked answers). Within categorical data, it is often useful to further distinguish low-cardinality and high-cardinality problems: low-cardinality refer to situations where there are relatively few possible categories (”summer/fall/winter/spring”); high-cardinality problems are those where the set of values is so impractically large that you can’t handle each value separately. It is typical to model text data, such as LLMs, as a high-cardinality problem because, while there is technically a finite set of possible output words from an LLM, the problem of guessing the next LLM output doesn’t bear too much practical resemblence with a standard yes/no classification.</p>
+<p>In this course, we focus on tabular real-valued data, but we will discuss extensions to other data where appropriate.</p>
+</section></section><section id="test-and-training-error" class="level2"><h2 class="anchored" data-anchor-id="test-and-training-error">Test and Training Error</h2>
 <p>As we think about measuring a model’s predictive performance, it becomes increasingly important to distinguish between <em>in-sample</em> and <em>out-of-sample</em> performance, also called training (in-sample) and testing (out-of-sample) performance.</p>
-<p>In previous courses, you likely have assessed model fit by seeing how well your model fits the data it was trained on: statistics like <span class="math inline">\(R^2\)</span>, SSE, SSR in regression or <span class="math inline">\(F\)</span>-tests for model comparison do just this. As you have used them, they are primarily useful for comparison of <em>similar</em> models, <em>e.g.</em>, OLS with different numbers of predictor variables. But it’s worth reflecting on this process a bit more: didn’t the model with more predictors always fit the data better? If so, why don’t we always just include all of our predictors?</p>
-<p>Of course you know, the answer is that we want to avoid overfitting. Just because a model fit the data a bit better doesn’t mean it is actually better. If you need 1,000 variables to get a 0.1% reduction in MSE, do you really believe those features are doing much? No!</p>
+<p>In previous courses, you likely have assessed model fit by seeing how well your model fits the data it was trained on: statistics like <span class="math inline">\(R^2\)</span>, SSE, SSR in regression or <span class="math inline">\(F\)</span>-tests for model comparison do just this. As you have used them, they are primarily useful for comparison of <em>similar</em> models, <em>e.g.</em>, OLS with different numbers of predictor variables. But it’s worth reflecting on this process a bit more: don’t the model with more predictors always fit the data better? If so, why don’t we always just include all of our predictors?</p>
+<p>Of course, as you know, the answer is that we want to avoid “overfitting.” Just because a model fit the data a bit better doesn’t mean it is actually better. If you need 1,000 variables to get a 0.1% reduction in MSE, do you really believe those features are doing much? No!</p>
 <p>You likely have a sense that a feature needs to “earn its keep” to be worth including in a model. Statisticians have formalized this idea very well in some contexts: quantities like <em>degrees of freedom</em> or <em>adjusted</em> <span class="math inline">\(R^2\)</span> attemps to measure whether a variable provides a <em>statistically significant</em> improvement in performance. These calculations typically rely on subtle calculations involving nice properties of the multivariate normal distribution and ordinary least squares, or things that can be (asymptotically) considered essentially equivalent.</p>
 <p>In this class, we don’t want to make those sorts of strong distributional and modeling assumptions. So what can we do instead? Well, if we want to see if Model A predicts more accurately than Model B on new data, why don’t we just do that? Let’s get some new data and compare the MSEs of Model A and Model B: whichever one does better is the one that does better.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <p>This is a pretty obvious idea, so it’s worth asking why it’s not the baseline and why statisticians bothered with all the degrees of freedom business to start with. As always, you have to know your history: statistics comes from a lineage of scientific experimentation where data is limited and often quite expensive to get. If you are running a medical trial, you can’t just toss a few hundred extra participants in - this costs money! If you are doing an agricultural experiment, it may take several years to see whether a new seed type actually has higher yield than the previous version. It’s also not clear how one should separate data into training and test sets: if you are studying, <em>e.g.</em>, friendship dynamics on Facebook, you don’t have an (obvious) “second Facebook” that you can use to assess model accuracy.</p>
@@ -290,13 +310,27 @@ Advice
 <ul>
 <li>If we don’t have an explicit test set, where can we get one? Can we ‘fake it to make it’?</li>
 <li>What types of models have small “test-training” gap, <em>i.e.</em> do about as well on the test and training sets, and what models have a large gap?</li>
-</ul></section><section id="generalization-and-model-complexity" class="level2"><h2 class="anchored" data-anchor-id="generalization-and-model-complexity">Generalization and Model Complexity</h2>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Pause for Reflection">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pause for Reflection
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Take the time to make sure you deeply understand what “overfitting” means. When we talk about overfitting, we typically assume that there is a “correct” estimate and that the correct estimate is “best”. But if we fit <em>better</em> than best, what is really going on?</p>
+</div>
+</div>
+</section><section id="generalization-and-model-complexity" class="level2"><h2 class="anchored" data-anchor-id="generalization-and-model-complexity">Generalization and Model Complexity</h2>
 <p>So far, we have two useful concepts:</p>
 <ul>
-<li>Training Error</li>
-<li>Test Error</li>
+<li>Training Set (the data we used to select our model)</li>
+<li>Test Set (the new data we used to assess our model)</li>
 </ul>
-<p>with a third we can set up a trivial, but surprisingly useful, inequality:</p>
+<p>The performance of a model on these two sets is, unsurprisingly, known as <em>training error</em> and <em>test error</em>, respectively. With these in hand, we introduce a third quantity that gives us a trivial, but surprisingly useful, inequality:</p>
 <p><span class="math display">\[\text{Test Error} = \text{Training Error} + \text{Generalization Gap}\]</span></p>
 <p>Here, the “Generalization Gap” is defined as the difference between the training error and the test error.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Essentially, the Generalization Gap measures the “optimism” bias obtained by measuring accuracy on the original training data. If the Generalization Gap is large, the model will look much better on the training data then when we actually go to put it into practice. Conversely, if the Generalization Gap is small, the performance we estimate from the training data will continue when we deploy our model.</p>
 <p>This is a all a bit circular, but it lets us break our overarching goal (small test error) into two parts:</p>
@@ -304,12 +338,12 @@ Advice
 <li>We want a model with small training error; and</li>
 <li>We want a model with small generalization gap.</li>
 </ul>
-<p>We can only be confident that we’ll have a small test error when these <em>both</em> of these are true. Again - and just to be clear - having a small training error <em>is important</em>, but it is only <em>necessary</em> and not <em>sufficient</em> to have a small test error.</p>
+<p>We can only be guaranteed that we’ll have a small test error when these <em>both</em> of these are true. Again - and just to be clear - having a small training error <em>is important</em>, but it is only <em>necessary</em> and not <em>sufficient</em> to have a small test error.</p>
 <p>We can simply observe training error, so much of our theoretical analysis focuses on understanding the generalization gap. For now, let’s think about the generalization gap of plain linear regression (OLS). It is not hard to show (and we might show in class next week) that, if the OLS model is true, the expected training MSE is:</p>
 <p><span class="math display">\[\mathbb{E}[\text{Training MSE}] = \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n(y_i - \sum_{j=1}^p x_{ij}\hat{\beta}_j)^2\right] = \frac{\sigma^2(n-p)}{n} = \sigma^2\left(1-\frac{p}{n}\right)\]</span></p>
 <p>Here <span class="math inline">\(\sigma^2\)</span> is the ‘noise variance’ of the OLS model. (We will review the OLS model in much more detail next week.)</p>
-<p>This is somewhat remarkable: if we knew the exact true model <span class="math inline">\(\beta_*\)</span>, our MSE would be <span class="math inline">\(\sigma^2\)</span>, but our training MSE is less than that. How can we do better than the optimal and exactly correct model? <strong>Overfitting</strong> - our OLS fits our training data a bit ‘too well’ and it manages to capture the true signal <em>and</em> the noise. Whatever noise is in the data doesn’t carry into the test set, so we get a bit of overfitting.</p>
-<p>Even a simple model like OLS is vulnerable to a bit of overfitting. It isn’t too big in this context and our formula above actually lets us see how it behaves:</p>
+<p>This is somewhat remarkable: if we knew the exact true model <span class="math inline">\(\beta_*\)</span>, our MSE would be <span class="math inline">\(\sigma^2\)</span>, but our training MSE is less than that. How can we do better than the optimal and exactly correct model? <strong>Overfitting</strong> - our OLS fits our training data a bit ‘too well’ and it manages to capture the true signal <em>and</em> the noise. Whatever noise is in the data doesn’t extend into (generalize to) the test set, so we get a bit of overfitting.</p>
+<p>Even a simple model like OLS is vulnerable to overfitting. It isn’t too big in this context and our formula above actually lets us see how it behaves:</p>
 <ul>
 <li>As <span class="math inline">\(n\to\infty\)</span>, the amount of overfitting goes down. This is of course the behavior we want: as we get more data, we should stop fitting noise and only fit signal.</li>
 <li>As <span class="math inline">\(p \to n\)</span>, the amount of overfitting goes up. That is, as we add more features (covariates) to our regression, we expect more over fitting. When we supply OLS with more ‘degrees of freedom’, some of those wind up fitting noise.</li>
@@ -319,21 +353,60 @@ Advice
 <p>This <em>complexity</em> story is one we will follow through the rest of this course. A more <em>complex</em> model is one which is able to fit its training data easily. Mathematically, we actually measure complexity by seeing how well a model fits pure noise: if it doesn’t fit it well at all (because there is no signal!), we can usually assume it won’t overfit on signal + noise. But if it fits pure noise perfectly, it has <em>by definition</em> overfit the training data.</p>
 <p>I like to think of complexity as “superstitious” or “gullibility”: the model will believe (fit to) anything we tell it (training data), whether it is true (signal) or not (noise).</p>
 <p>We don’t want a model that is too complex, but we also don’t want a model that is too simple. If it can’t fit signal, it is essentially useless. In our metaphor, an overly simple (low complexity) model is like a person who simply doesn’t believe anything at all: they are never tricked, but they also can’t really understand the world.</p>
-<p>Let us now take a quick detour into a flexible <em>family</em> of models and see how performance relates to the complexity story.</p>
-</section><section id="nearest-neighbor-methods" class="level2"><h2 class="anchored" data-anchor-id="nearest-neighbor-methods">Nearest Neighbor Methods</h2>
-<p>Let’s now see how complexity plays out for a very simple classifier, <span class="math inline">\(K\)</span>-Nearest Neighbors (KNN). KNN formalizes the intuition of “similar inputs -&gt; similar outputs.” KNN looks at the <span class="math inline">\(K\)</span> most similar points in its training data (“nearest neighbors” if you were to plot the data) and takes the average label to make its prediction.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+</section><section id="model-families-and-estimation" class="level2"><h2 class="anchored" data-anchor-id="model-families-and-estimation">Model Families and Estimation</h2>
+<p>Of course, the story we have told so far skims over a fundamental idea: model <em>fitting</em>. If we are given a set of parameters,-or, more generally, a prediction function–we might be able to discuss how well they fit (or overfit) the data, but that’s not really the situation we often find ourselves in. In practice, we have some data and are asked to come up with the predictor function ourselves. How can we do this?</p>
+<p>Well, this is a <em>machine</em> learning course, so it’s a reasonable starting assumption that we want our predictor to be implemented on a (finite-sized) computer. Taking a reasonable upper bound for the size of the computer’s memory, say 32 GB, this restricts us to an enormous, but technically finite, set of possible models.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> Ignoring resource constraints, we <em>could</em> in theory try out all of these models and pick the one that fits our data “best”.</p>
+<p>Obviously, this has some practical problems about runtime (and our power bill), but there’s also the very real possibility that there’s not a single “best” fit. We can address both of these possibilities by restricting our attention to a much smaller universe of prediction functions than “all possible programs”. For example, we might restrict our attention to univariate linear regression models, parameterized by a single slope (one “double” value, or 64 bits) and a single intercept (64 bits again). This gives us 128 bits total, so “only” <span class="math inline">\(2^{128}\)</span> possible lines to check.</p>
+<p>This is obviously still deeply impractical, but this restriction allows us to use much smarter algorithms than simply “try everything”. The mathematical concept that lets us find the “best” predictor efficiently is called <em>convexity</em> and we will study it later in this course. Furthermore, this set of “all possible lines” is small enough that there will almost always be a single “best” line, so our problem of finding the best predictor <em>within the class of simple linear regression models</em> is well-posed.</p>
+<p>So restriction to a set of possible models does (at least) two useful things for us:</p>
+<ol type="1">
+<li>It gives us a fighting-chance of finding the best possible model <em>in that category</em>
+</li>
+<li>It makes it possible to have one (or at least a small-ish number) of best possible models</li>
+</ol>
+<p>This restriction does even more for us: it can be used to control the size of the generalization gap we talked about above. When we start with our “big” class of all possible programs, it’s clear that there are trillions of programs that will fit our training data perfectly but can go totally wild when exposed to new data.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> When we instead focus on linear regression, there is an “upper limit” of terribleness. If our model was doing reasonably well in the past and our training data resembles our test data, we can feel reasonably confident things won’t go off the rails at test time.</p>
+<p>This final idea is <em>statistical complexity</em>: if we pick a “reasonable” set of models, we will be able to argue that the generalization gap is not too big. So building an ML system is really a two stage process:</p>
+<ol type="1">
+<li>We need to select a class of models that is interesting enough to reasonably capture our training data, but not so complex that it could have a huge generalization gap.</li>
+<li>We use smart algorithms to pick the <em>best</em> model within the model class.</li>
+</ol>
+<p>While we won’t rigorously characterize the complexity of model classes in this course, it’s still helpful to be familiar with the concept in a “know it when you see it” way.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a></p>
+</section><section id="overture" class="level2"><h2 class="anchored" data-anchor-id="overture">Overture</h2>
+<p>Before we turn to the first model class we’ll consider in this class, let’s take a quite look ahead and what we’ll be covering for the next few weeks:</p>
+<ul>
+<li>
+<p>Week 02: Linear Algebra Foundations. We will first review some of the basic linear algebra used throughout this course. Linear algebra is essential to machine learning in several respects:</p>
+<ol type="i">
+<li>Tabular data is organized as a matrix, the fundamental object of study in linear algebra.</li>
+<li>Linear methods (<em>e.g.</em>, OLS) are a useful baseline for many different problems.</li>
+<li>Most computational math is built from linear algebra tools. Even non-linear problems are typically solved by repeatedly applying linear algebra techniques to linear approximations (think Taylor series).</li>
+</ol>
+</li>
+<li><p>Week 03: Accuracy and Loss in ML. Next, we’ll take a deep dive into what it means for a ML system to perform <em>well</em>. While familiar measures like MSE might make sense in some contexts, their applicability is much less clear when applied to things like LLMs. A key theme here will be <em>metrical determinism,</em><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> the idea that once we settle on what our actual goal is and the way we will be measuring it, the best procedure is often automatically determined. We will also explore the popular MSE loss in more detail, showing how it can be broken into several easily-interpretable terms and relating these terms to model complexity.</p></li>
+<li><p>Week 04: Optimization &amp; Simulation in ML. Our last week of foundations will consider the role of computers in ML. We will discuss ways of finding that “best fit” predictor in a given class (mathematical optimization) and the uses and limits of simulation studies as a way of understanding the usefulness of ML models.</p></li>
+<li><p>Week 05: Regularization &amp; Shrinkage. As we begin our study of supervised learning, we will briefly introduce the idea of <em>statistical shrinkage</em>, the idea of willingly accepting a small systematic error to eliminate the possibility of large random errors. We will explore this in the classic context of mean estimation before applying shrinkage ideas to more interesting prediction problems.</p></li>
+<li><p>Week 06: Penalized Regression. We will apply shrinkage to our beloved OLS using two fundamental forms of shrinkage: <span class="math inline">\(\ell_1\)</span> and <span class="math inline">\(\ell_2^2\)</span>-penalization. While mathematically similar, these induce very different behaviors in OLS estimates. We will particularly focus on the role of <em>sparsity</em> and model selection in high-dimensional problems.</p></li>
+<li><p>Week 07: Generative Classifiers. We will next turn to classification problems, with a focus on generative (probability-based) classifiers. This (hopefully) coincides with Baruch’s “Ethics Week” so we will also discuss the perils of (societal) bias in classification contexts.</p></li>
+<li><p>Week 08: Discriminative Classifiers &amp; Non-Linear Methods. We will explore another tradition of classification problems based on geometry (not probability). These models play particularly nicely with non-linear decision boundaries, so we will also introduce methods for turning linear methods into non-linear predictors. (Note that these can be applied to both regression and classification problems.)</p></li>
+<li><p>Week 09: Trees &amp; Ensemble Methods. Finally, we will consider <em>ensemble learning</em>, the practice of building predictors out of several simpler predictors. Ensembling is particularly powerful when applied to flexible but simple models, like decision trees, and this will let us introduce two of the most widely-used “fire and forget” ML models: random forests and <code>xgboost</code>.</p></li>
+<li><p>Week 10: Introduction to Unsupervised Learning. After finishing our discussion of supervised learning, we will turn to the <em>unsupervised</em> context. Unsupervised learning poses extra challenges around validation and performance measurement, so we will begin with a discussion of the aims (and limits) of unsupervised learning.</p></li>
+<li><p>Week 11: Clustering. We will cover the important unsupervised task of finding “typical” or “representative” simple structure in data distributions. In certain cases, we can “simplify” data into these patterns, providing methods of dimension reduction. Special emphasis will be placed on the most important statistical dimension reduction technique, PCA.</p></li>
+<li><p>Week 12: Dimension Reduction &amp; Manifold Learning.</p></li>
+<li><p>Week 13: Generative Models.</p></li>
+</ul></section><section id="nearest-neighbor-methods" class="level2"><h2 class="anchored" data-anchor-id="nearest-neighbor-methods">Nearest Neighbor Methods</h2>
+<p>Let us now take a quick detour into a flexible <em>family</em> of models and see how performance relates to the complexity story. Specifically, let’s look at how complexity plays out for a very simple classifier, <span class="math inline">\(K\)</span>-Nearest Neighbors (KNN). KNN formalizes the intuition of “similar inputs -&gt; similar outputs.” KNN looks at the <span class="math inline">\(K\)</span> most similar points in its training data (“nearest neighbors” if you were to plot the data) and takes the average label to make its prediction.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">class</a></span><span class="op">)</span> <span class="co"># Provides a KNN function for classification</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">class</a></span><span class="op">)</span> <span class="co"># Provides a KNN function for classification</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/args.html">args</a></span><span class="op">(</span><span class="va">knn</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>function (train, test, cl, k = 1, l = 0, prob = FALSE, use.all = TRUE) 
 NULL</code></pre>
 </div>
 </div>
-<p>You can see here that KNN requires access to the full training set at prediction time: this is different than something like OLS where we reduce our data to a set of regression coefficients (parameters).<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>You can see here that KNN requires access to the full training set at prediction time: this is different than something like OLS where we reduce our data to a set of regression coefficients (parameters).<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a></p>
 <p>We’ll also need some data to play with. For now, we’ll use synthetic data:</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Make two interleaving half-circles</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Make two interleaving half-circles</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @param n_samples Number of points (will be divided equally among the circles)</span></span>
 <span><span class="co">#' @param shuffle Whether to randomize the sequence</span></span>
@@ -374,10 +447,10 @@ NULL</code></pre>
 <p>This function comes from the <code>clusteringdatasets</code> R package, but the underlying idea comes from a function in <code>sklearn</code>, a popular Python ML library.</p>
 <p>Let’s take a look at this sort of data:</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">TRAINING_DATA</span> <span class="op">&lt;-</span> <span class="fu">make_moons</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">TRAINING_DATA</span> <span class="op">&lt;-</span> <span class="fu">make_moons</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span>, </span>
 <span>           labels<span class="op">=</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -385,24 +458,24 @@ NULL</code></pre>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>We can make this a bit more attractive:</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MY_THEME</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MY_THEME</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">theme_set</a></span><span class="op">(</span><span class="va">MY_THEME</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span>, labels<span class="op">=</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span>, labels<span class="op">=</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">X1</span>, y<span class="op">=</span><span class="va">X2</span>, color<span class="op">=</span><span class="va">labels</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Sample Realization of the Moons Dataset"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -410,7 +483,7 @@ NULL</code></pre>
 <p>Much better!</p>
 <p>Let’s try making a simple prediction at the point (0, 0):</p>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span>, </span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span>, </span>
 <span>    cl<span class="op">=</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">labels</span>, </span>
 <span>    test<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>X1<span class="op">=</span><span class="fl">0</span>, X2<span class="op">=</span><span class="fl">0</span><span class="op">)</span>, k<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -419,7 +492,7 @@ Levels: A B</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -428,11 +501,11 @@ Pause to Reflect
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Does this match what you expect from the plot above? Why or why not? The following image might help:</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com">ggforce</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com">ggforce</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span>, labels<span class="op">=</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">X1</span>, y<span class="op">=</span><span class="va">X2</span>, color<span class="op">=</span><span class="va">labels</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -440,7 +513,7 @@ Pause to Reflect
 <span>  <span class="fu"><a href="https://ggforce.data-imaginist.com/reference/geom_circle.html">geom_circle</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x0<span class="op">=</span><span class="fl">0</span>, y0<span class="op">=</span><span class="fl">0</span>, r<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>, linetype<span class="op">=</span><span class="fl">2</span>, color<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -451,7 +524,7 @@ Pause to Reflect
 </div>
 <p>We can also visualize the output of KNN at every point in space:</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">visualize_knn_boundaries</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">training_data</span>, <span class="va">k</span><span class="op">=</span><span class="cn">NULL</span><span class="op">)</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">visualize_knn_boundaries</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">training_data</span>, <span class="va">k</span><span class="op">=</span><span class="cn">NULL</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="va">xrng</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">training_data</span><span class="op">$</span><span class="va">samples</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">training_data</span><span class="op">$</span><span class="va">samples</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">yrng</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">training_data</span><span class="op">$</span><span class="va">samples</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">training_data</span><span class="op">$</span><span class="va">samples</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span>    </span>
@@ -480,24 +553,14 @@ Pause to Reflect
 <span><span class="fu">visualize_knn_boundaries</span><span class="op">(</span><span class="va">TRAINING_DATA</span>, k<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>If we raise <span class="math inline">\(K\)</span>, we get smoother boundaries:</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">visualize_knn_boundaries</span><span class="op">(</span><span class="va">TRAINING_DATA</span>, k<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>And if we go all the way to <span class="math inline">\(K\)</span> near to the size of the training data, we get very boring boundaries indeed:</p>
-<div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">visualize_knn_boundaries</span><span class="op">(</span><span class="va">TRAINING_DATA</span>, k<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">NROW</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">visualize_knn_boundaries</span><span class="op">(</span><span class="va">TRAINING_DATA</span>, k<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
@@ -505,8 +568,18 @@ Pause to Reflect
 </div>
 </div>
 </div>
+<p>And if we go all the way to <span class="math inline">\(K\)</span> near to the size of the training data, we get very boring boundaries indeed:</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">visualize_knn_boundaries</span><span class="op">(</span><span class="va">TRAINING_DATA</span>, k<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">NROW</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -515,7 +588,7 @@ Pause to Reflect
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>What does this tell us about the <em>complexity</em> of KNN as a function of <span class="math inline">\(K\)</span>?</p>
 </div>
@@ -524,7 +597,7 @@ Pause to Reflect
 <p>In the terminology we introduced above, we see that increasing <span class="math inline">\(K\)</span> decreases model complexity (wiggliness).</p>
 <p>Let’s now see how training error differs as we change <span class="math inline">\(K\)</span>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">TEST_DATA</span> <span class="op">&lt;-</span> <span class="fu">make_moons</span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">TEST_DATA</span> <span class="op">&lt;-</span> <span class="fu">make_moons</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">TRAINING_ERRORS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
@@ -556,19 +629,19 @@ At k = 18, the training (in-sample) error of KNN is 8%
 At k = 19, the training (in-sample) error of KNN is 9%
 At k = 20, the training (in-sample) error of KNN is 8%</code></pre>
 </div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">TRAINING_ERRORS</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">training_error</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">TRAINING_ERRORS</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">training_error</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Training (In-Sample) Error of KNN"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Compare this to the test error:</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">TESTING_ERRORS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">TESTING_ERRORS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="va">pred_labels_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">samples</span>, cl<span class="op">=</span><span class="va">TRAINING_DATA</span><span class="op">$</span><span class="va">labels</span>, <span class="va">TEST_DATA</span><span class="op">$</span><span class="va">samples</span>, k<span class="op">=</span><span class="va">k</span><span class="op">)</span></span>
 <span>    <span class="va">true_labels_train</span> <span class="op">&lt;-</span> <span class="va">TEST_DATA</span><span class="op">$</span><span class="va">labels</span></span>
@@ -598,23 +671,9 @@ At k = 18, the test (out-of-sample) error of KNN is 5%
 At k = 19, the test (out-of-sample) error of KNN is 5%
 At k = 20, the test (out-of-sample) error of KNN is 6%</code></pre>
 </div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">TESTING_ERRORS</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">test_error</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">TESTING_ERRORS</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">test_error</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Test (Out-of-Sample) Error of KNN"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The difference between the two is clearer if we put them on the same figure:</p>
-<div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ERRS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">TRAINING_ERRORS</span>, <span class="va">TESTING_ERRORS</span>, by<span class="op">=</span><span class="st">"k"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>        <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">k</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Error<span class="op">=</span><span class="va">value</span>, Type<span class="op">=</span><span class="va">name</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ERRS</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">Error</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
@@ -622,19 +681,13 @@ At k = 20, the test (out-of-sample) error of KNN is 6%</code></pre>
 </div>
 </div>
 </div>
-<p>We notice a few things here:</p>
-<ol type="1">
-<li>Training Error increases in <span class="math inline">\(K\)</span><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, with 0 training error at <span class="math inline">\(K=1\)</span>. (Why?)</li>
-<li>Test Error is basically always higher than test error</li>
-<li>The best training error does not have the best test error</li>
-</ol>
-<p>We can also look at the gap between training and test error: this is called <code>generalization error</code> or <code>optimism</code>:</p>
+<p>The difference between the two is clearer if we put them on the same figure:</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">TRAINING_ERRORS</span>, <span class="va">TESTING_ERRORS</span>, by<span class="op">=</span><span class="st">"k"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>optimism<span class="op">=</span><span class="va">test_error</span> <span class="op">-</span> <span class="va">training_error</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">optimism</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ERRS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">TRAINING_ERRORS</span>, <span class="va">TESTING_ERRORS</span>, by<span class="op">=</span><span class="st">"k"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>        <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">k</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>        <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Error<span class="op">=</span><span class="va">value</span>, Type<span class="op">=</span><span class="va">name</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ERRS</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">Error</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
@@ -642,8 +695,28 @@ At k = 20, the test (out-of-sample) error of KNN is 6%</code></pre>
 </div>
 </div>
 </div>
+<p>We notice a few things here:</p>
+<ol type="1">
+<li>Training Error increases in <span class="math inline">\(K\)</span><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>, with 0 training error at <span class="math inline">\(K=1\)</span>. (Why?)</li>
+<li>Test Error is basically always higher than test error</li>
+<li>The best training error does not have the best test error</li>
+</ol>
+<p>We can also look at the gap between training and test error: this is called <code>generalization error</code> or <code>optimism</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">TRAINING_ERRORS</span>, <span class="va">TESTING_ERRORS</span>, by<span class="op">=</span><span class="st">"k"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>optimism<span class="op">=</span><span class="va">test_error</span> <span class="op">-</span> <span class="va">training_error</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">k</span>, y<span class="op">=</span><span class="va">optimism</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes01_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -652,7 +725,7 @@ Pause to Reflect
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Consider the following questions:</p>
 <ul>
@@ -671,12 +744,12 @@ Pause to Reflect
 <li>For large <span class="math inline">\(K\)</span>, the model became quite simple, barely fit the training data, but did just as well on the training data as the test data (poorly on both). This is indicative of a <em>small generalization gap</em> and a <em>low complexity</em> model.</li>
 <li>For python <span class="math inline">\(K\)</span>, the model became rather complex, fit the training data well, but didn’t perform as well as we would like on the test data. This is indicative of a <em>large generalization gap</em> and a <em>high complexity</em> model.</li>
 </ul>
-<p>In this case, we could see the complexity visually by looking at the decision boundaries (the lines separating predictions of class “A” from class “B”). This isn’t universally true<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>, but the intuition of “high complexity = more wiggles” is usually pretty good.</p>
-<p>The classical story of ML and complexity is given by something like this:<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
+<p>In this case, we could see the complexity visually by looking at the decision boundaries (the lines separating predictions of class “A” from class “B”). This isn’t universally true<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>, but the intuition of “high complexity = more wiggles” is usually pretty good.</p>
+<p>The classical story of ML and complexity is given by something like this:<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a></p>
 <p><img src="https://mlstory.org/assets/gen-ushaped.svg" class="img-fluid"></p>
 <p>For now, you can interpret “risk” as “test error” and “empirical risk” as “training error”.</p>
 <div class="callout callout-style-default callout-caution callout-titled" title="A more complex story of complexity">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -685,7 +758,7 @@ A more complex story of complexity
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Recent research has suggested that the story is not quite so simple. Some methods exhibit a “single descent” curve</p>
 <p><img src="https://mlstory.org/assets/gen-single.svg" class="img-fluid"></p>
@@ -697,7 +770,7 @@ A more complex story of complexity
 </div>
 <p>So how do we measure complexity? For OLS, it seems to be proportional to <span class="math inline">\(p\)</span>, while for KNN it seems to be inverse to <span class="math inline">\(K\)</span>. In this class, we won’t really focus too much on the actual measurements. For most of the methods we study, it is usually pretty clear what drives complexity up or down, even if we can’t quite put a number on it.</p>
 <section id="stability-and-generalization" class="level3"><h3 class="anchored" data-anchor-id="stability-and-generalization">Stability and Generalization</h3>
-<p>It turns out there is a deep connection between generalization and a suitable notion of “stability”. A model is said to be relatively stable if changes to an input point do not change the output predictions significantly.<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a></p>
+<p>It turns out there is a deep connection between generalization and a suitable notion of “stability”. A model is said to be relatively stable if changes to an input point do not change the output predictions significantly.<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a></p>
 <p>At an intuitive level, this makes sense: if the model is super sensitive to individual inputs, it must be very flexible and hence quite complex. (A very simple model cannot be sensitive to all of its inputs.)</p>
 <p>We can apply this idea to understand some rules-of-thumb and informal practices you might have seen in previous statistics courses:</p>
 <ul>
@@ -706,7 +779,7 @@ A more complex story of complexity
 <li><p>Use of robust statistics, <em>e.g.</em> medians instead of means. These explicitly control the stability of our process.</p></li>
 </ul>
 <p>Perhaps most importantly: this justifies why the large <span class="math inline">\(n\)</span> (big sample) limit seems to avoid overfitting. If our model is fit to many distinct data points, it can’t be too sensitive to any of them. At least, that’s the hope…</p>
-<p>The sort of statistical models you have seen to date – so-called <em>parametric</em> models – have a ‘stabilizing’ effect. By reducing lots of data to only a few parameters, those parameters (and hence the model output) can’t depend too much on any individual input point.<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> This ‘bottleneck’ in the parameter space seems to improve performance.</p>
+<p>The sort of statistical models you have seen to date – so-called <em>parametric</em> models – have a ‘stabilizing’ effect. By reducing lots of data to only a few parameters, those parameters (and hence the model output) can’t depend too much on any individual input point.<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> This ‘bottleneck’ in the parameter space seems to improve performance.</p>
 <p>Other methods, like <span class="math inline">\(1\)</span>-Nearest-Neighbor, become increasingly more complex as we get more data and do not benefit from this sort of ‘bottleneck’ effect.</p>
 <p>At this point, you might think that stability and variance are closely related concepts - you are not wrong and we will explore the connection in more detail next week.</p>
 </section></section><section id="key-terms-and-concepts" class="level2"><h2 class="anchored" data-anchor-id="key-terms-and-concepts">Key Terms and Concepts</h2>
@@ -732,13 +805,24 @@ A more complex story of complexity
 <li id="fn3"><p>You might still worry about the randomness of this comparison process: if we had a slightly different sample of our new data, would the better model still look better? You aren’t wrong to worry about this, but we have at a minimum made the problem much easier: now we are just comparing the means of two error distributions - classic <span class="math inline">\(t\)</span>-test stuff - as opposed to comparing two (potentially complex) models.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Anecdotally, a Google Data Scientist once mentioned to me that they rarely bother doing <span class="math inline">\(p\)</span>-value or significance calculations. At the scale of Google’s A/B testing on hundreds of billions of ad impressions, <em>everything</em> is statistically significant.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>I’m being a bit sloppy here. This is more precisely the <em>population test error</em>, not the <em>test set test error</em>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>There are details here about how we measure similarity, but for now we will restrict our attention to simple Euclidean distance.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>KNN is a <em>non-parameteric</em> method, but not all <em>non-parametric</em> methods require access to the training data at test time. We’ll cover some of those later in the course.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>It is easier to understand this ‘in reverse’: as <span class="math inline">\(K \downarrow 1\)</span>, training error decreases to 0, so as <span class="math inline">\(K \uparrow n\)</span>, training error increases.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>In OLS, the complexity doesn’t make the model ‘wigglier’ in a normal sense - it’s still linear after all - but you can think of it as the additional complexity of a 3D ‘map’ (<em>i.e.</em>, a to-scale model) vs a standard 2D map.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>Figures from HR Chapter 6, <em>Generalization</em>.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11"><p>For details, see <a href="https://jmlr.org/papers/volume2/bousquet02a/bousquet02a.pdf">O. Bousquet and A. Elisseeff, <em>Stability and Generalization</em> in <strong>Journal of Machine Learning Research 2</strong>, pp.499-526.</a><a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn12"><p>Some regression textbooks advocate a rule that you have 30 data points for every variable in your model. This is essentially guaranteeing that the <span class="math inline">\(p/n\)</span> ratio that controls the generalization of OLS (see above!) stays quite small.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>A mere <span class="math inline">\(32 = 1024^3 * 8 = 2^{38} = 274,877,906,944\)</span> bits, giving <span class="math inline">\(2^{274877906944}=2^{2^{38}} = 2^{2^{2^{19}}}\)</span> possible programs, but who’s counting?<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7">
+<p>Consider programs of the form:</p>
+<pre><code>if x in TRAINING DATA: 
+return corresponding y
+else:
+return SOME RANDOM FIXED VALUE</code></pre>
+<p>In training error, these models are all perfect, but depending on the choice of “else” value, they will have very different test errors. And it’s not at all hard to imagine that we can do much better than a single fixed value in the “else” branch.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p>
+</li>
+<li id="fn8"><p>The book <em>High-Dimensional Statistics</em> by Wainwright introduces these ideas beautifully, but they are unavoidably a bit technical.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>I picked up this term from Ben Recht’s blog, but it is explored in more detail in <a href="https://arxiv.org/abs/2509.04546">this paper</a>.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>There are details here about how we measure similarity, but for now we will restrict our attention to simple Euclidean distance.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>KNN is a <em>non-parameteric</em> method, but not all <em>non-parametric</em> methods require access to the training data at test time. We’ll cover some of those later in the course.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>It is easier to understand this ‘in reverse’: as <span class="math inline">\(K \downarrow 1\)</span>, training error decreases to 0, so as <span class="math inline">\(K \uparrow n\)</span>, training error increases.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>In OLS, the complexity doesn’t make the model ‘wigglier’ in a normal sense - it’s still linear after all - but you can think of it as the additional complexity of a 3D ‘map’ (<em>i.e.</em>, a to-scale model) vs a standard 2D map.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>Figures from HR Chapter 6, <em>Generalization</em>.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>For details, see <a href="https://jmlr.org/papers/volume2/bousquet02a/bousquet02a.pdf">O. Bousquet and A. Elisseeff, <em>Stability and Generalization</em> in <strong>Journal of Machine Learning Research 2</strong>, pp.499-526.</a><a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>Some regression textbooks advocate a rule that you have 30 data points for every variable in your model. This is essentially guaranteeing that the <span class="math inline">\(p/n\)</span> ratio that controls the generalization of OLS (see above!) stays quite small.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

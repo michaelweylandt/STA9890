@@ -47,6 +47,8 @@ CS history vs Statistics' "Science-Support" history: notably, ML
 folks think of (binary) classification while statisticians think of
 regression as the first task to teach.
 
+### Types of Learning
+
 In this course we will use the following taxonomy borrowed from the
 ML literature: 
 
@@ -96,6 +98,66 @@ consistent.[^uk]
 [^uk]: You may recall the famous quip about the US and the UK: "Two countries,
 separated by a common language."
 
+### Types of Data
+
+It is also worth thinking of the many types of data we might analyze: much of
+remarkable success of modern ML comes from an openness (and willingness) to 
+analyze types of data historically 'out of bounds' (or, at least, not in the 
+mainstream) for classical statistics.
+
+Let's divide this into two axes: i) _organizational_, what is the natural 
+way to store and represent this data on a computer; and ii) _modal_, what 
+"type" of thing is each individual datum. While these are useful questions to
+ask, these are not _fixed_ within a single problem. For instance, if given
+a large text sample (such as doctor's notes on a medical patient), it is possible
+to change this data from "sequence" data (things in a row) to "tabular" data,
+by simply counting the occurence of each word. This transformation is
+sometimes called a "bag-of-words" representation and it is lossy, but it can 
+often still be good enough for many applications: *e.g.*, if the notes have
+the word "cancer" appearing many times, it is a good guess that the patient
+should receive advanced cancer screening; while it is _theoretically_ possible
+that the doctor wrote "no sign of cancer" after each visit, this is unlikely.
+
+This example highlights two ways of arranging data: 
+
+- Tabular Data: this is your classic "spreadsheet"-style data, with rows
+  representing separate observations and columns corresponding to well-defined
+  features. (In [STA 9750](https://michael-weylandt.com/STA9750/), you may have
+  heard this referred to as a "data frame".)
+- Sequence Data: this is data presented as an organized sequence of 'tokens',
+  where the ordering has meaning. Examples of sequence data include natural
+  language (words as tokens), DNA sequence (the four amino acids as tokens), and
+  certain representations of computer signals (0/1 binary). Sequence data is
+  typically characterized by inconsistent length (sentences can be short or long)
+  as opposed to tabular data where we represent observations with fixed-length
+  vectors. 
+  
+Other data structures may include image data (data represented on a 2D grid), 
+3D imaging data (as often occuring in medical imaging), video data (image data
+with an additional time dimension), functional data (where we observe a 
+'function' on a continuous domain, *e.g.*, an audio recording), or even shape
+data (*e.g.*, inferring the malignancy of a strange growth on your skin
+from its _shape_). 
+
+Within these organizational patterns, we can also categorize data by the 
+_modality_ of each datum. We spoke a bit about continuous and binary
+data above (in the context of regression and classification), but you may also
+see ordinal data (rankings, not corresponding to specific values, like 
+survey responses to  "do you strongly agree, agree, slightly agree, *etc.*-type
+questions) and categorical data (where there is a finite set of possible
+unranked answers). Within categorical data, it is often useful to further
+distinguish low-cardinality and high-cardinality problems: low-cardinality refer
+to situations where there are relatively few possible categories
+("summer/fall/winter/spring"); high-cardinality problems are those where the 
+set of values is so impractically large that you can't handle each value 
+separately. It is typical to model text data, such as LLMs, as a 
+high-cardinality problem because, while there is technically a finite set of 
+possible output words from an LLM, the problem of guessing the next LLM output
+doesn't bear too much practical resemblence with a standard yes/no classification.
+
+In this course, we focus on tabular real-valued data, but we will discuss
+extensions to other data where appropriate. 
+
 ## Test and Training Error
 
 As we think about measuring a model's predictive performance, it becomes
@@ -108,10 +170,10 @@ your model fits the data it was trained on: statistics like $R^2$, SSE, SSR in
 regression or $F$-tests for model comparison do just this. As you have used them,
 they are primarily useful for comparison of _similar_ models, *e.g.*, OLS with
 different numbers of predictor variables. But it's worth reflecting on this
-process a bit more: didn't the model with more predictors always fit the data
+process a bit more: don't the model with more predictors always fit the data
 better? If so, why don't we always just include all of our predictors? 
 
-Of course you know, the answer is that we want to avoid overfitting. Just
+Of course, as you know, the answer is that we want to avoid "overfitting." Just
 because a model fit the data a bit better doesn't mean it is actually better. 
 If you need 1,000 variables to get a 0.1% reduction in MSE, do you really
 believe those features are doing much? No! 
@@ -191,14 +253,26 @@ distributions - classic $t$-test stuff - as opposed to comparing two (potentiall
 complex) models.
 
 
+::: {.callout-tip title="Pause for Reflection"}
+
+Take the time to make sure you deeply understand what "overfitting" means. When
+we talk about overfitting, we typically assume that there is a "correct" 
+estimate and that the correct estimate is "best". But if we fit _better_ than
+best, what is really going on?
+
+:::
+
 ## Generalization and Model Complexity 
 
 So far, we have two useful concepts:
 
-- Training Error
-- Test Error
+- Training Set (the data we used to select our model)
+- Test Set (the new data we used to assess our model)
 
-with a third we can set up a trivial, but surprisingly useful, inequality: 
+The performance of a model on these two sets is, unsurprisingly, known as
+_training error_ and _test error_, respectively. With these in hand, we 
+introduce a third quantity that gives us a trivial, but surprisingly useful, 
+inequality: 
 
 $$\text{Test Error} = \text{Training Error} + \text{Generalization Gap}$$
 
@@ -216,7 +290,7 @@ This is a all a bit circular, but it lets us break our overarching goal
 - We want a model with small training error; and
 - We want a model with small generalization gap. 
 
-We can only be confident that we'll have a small test error when these *both* 
+We can only be guaranteed that we'll have a small test error when these *both* 
 of these are true. Again - and just to be clear - having a small training error
 *is important*, but it is only *necessary* and not *sufficient* to have a small
 test error. 
@@ -236,10 +310,10 @@ This is somewhat remarkable: if we knew the exact true model $\beta_*$, our MSE
 would be $\sigma^2$, but our training MSE is less than that. How can we do better
 than the optimal and exactly correct model? **Overfitting** - our OLS fits our
 training data a bit 'too well' and it manages to capture the true signal *and* 
-the noise. Whatever noise is in the data doesn't carry into the test set, so
-we get a bit of overfitting. 
+the noise. Whatever noise is in the data doesn't extend into (generalize to) 
+the test set, so we get a bit of overfitting. 
 
-Even a simple model like OLS is vulnerable to a bit of overfitting. It isn't too
+Even a simple model like OLS is vulnerable to overfitting. It isn't too
 big in this context and our formula above actually lets us see how it behaves: 
 
 - As $n\to\infty$, the amount of overfitting goes down. This is of course the
@@ -282,16 +356,170 @@ an overly simple (low complexity) model is like a person who simply doesn't beli
 anything at all: they are never tricked, but they also can't really understand
 the world. 
 
-Let us now take a quick detour into a flexible _family_ of models and see how
-performance relates to the complexity story. 
 
 [^testerror]: I'm being a bit sloppy here. This is more precisely the 
 *population test error*, not the *test set test error*. 
 
+## Model Families and Estimation
+
+Of course, the story we have told so far skims over a fundamental idea: 
+model _fitting_. If we are given a set of parameters,-or, more generally, a 
+prediction function--we might be able to discuss how well they fit (or overfit) 
+the data, but that's not really the situation we often find ourselves in. 
+In practice, we have some data and are asked to come up with the predictor
+function ourselves. How can we do this? 
+
+Well, this is a _machine_ learning course, so it's a reasonable starting 
+assumption that we want our predictor to be implemented on a (finite-sized)
+computer. Taking a reasonable upper bound for the size of the computer's memory, 
+say 32 GB, this restricts us to an enormous, but technically finite, set of 
+possible models.[^gb] Ignoring resource constraints, we _could_ in theory try
+out all of these models and pick the one that fits our data "best". 
+
+Obviously, this has some practical problems about runtime (and our power bill), 
+but there's also the very real possibility that there's not a single "best" fit.
+We can address both of these possibilities by restricting our attention to a
+much smaller universe of prediction functions than "all possible programs". For
+example, we might restrict our attention to univariate linear regression models,
+parameterized by a single slope (one "double" value, or 64 bits) and a single
+intercept (64 bits again). This gives us 128 bits total, so "only" $2^{128}$ 
+possible lines to check.
+
+This is obviously still deeply impractical, but this restriction allows us to
+use much smarter algorithms than simply "try everything". The mathematical 
+concept that lets us find the "best" predictor efficiently is called _convexity_
+and we will study it later in this course. Furthermore, this set of "all possible
+lines" is small enough that there will almost always be a single "best" line, so
+our problem of finding the best predictor _within the class of simple linear 
+regression models_ is well-posed. 
+
+So restriction to a set of possible models does (at least) two useful things
+for us: 
+
+1) It gives us a fighting-chance of finding the best possible model 
+   _in that category_
+2) It makes it possible to have one (or at least a small-ish number) of 
+   best possible models
+   
+This restriction does even more for us: it can be used to control the size of
+the generalization gap we talked about above. When we start with our "big" class
+of all possible programs, it's clear that there are trillions of programs that
+will fit our training data perfectly but can go totally wild when exposed to new
+data.[^rng] When we instead focus on linear regression, there is an "upper limit"
+of terribleness. If our model was doing reasonably well in the past and 
+our training data resembles our test data, we can feel reasonably confident 
+things won't go off the rails at test time. 
+
+This final idea is _statistical complexity_: if we pick a "reasonable" set of
+models, we will be able to argue that the generalization gap is not too big. 
+So building an ML system is really a two stage process: 
+
+1) We need to select a class of models that is interesting enough to reasonably
+   capture our training data, but not so complex that it could have a huge 
+   generalization gap. 
+2) We use smart algorithms to pick the _best_ model within the model class. 
+
+While we won't rigorously characterize the complexity of model classes
+in this course, it's still helpful to be familiar with the concept in a 
+"know it when you see it" way.[^wain]
+
+[^gb]: A mere $32 = 1024^3 * 8 = 2^{38} = 274,877,906,944$ bits, giving 
+$2^{274877906944}=2^{2^{38}} = 2^{2^{2^{19}}}$ possible programs, but who's 
+counting? 
+
+[^wain]: The book *High-Dimensional Statistics* by Wainwright introduces these
+ideas beautifully, but they are unavoidably a bit technical. 
+
+## Overture
+
+Before we turn to the first model class we'll consider in this class, let's take
+a quite look ahead and what we'll be covering for the next few weeks: 
+
+```{r}
+#| message: false
+#| echo: false
+library(tidyverse)
+get_topic <- function(n){
+    read_csv("../key_dates.csv") |> 
+        filter(`Course Element` == "Class Session") |> 
+        filter(`Item Number` == n) |> 
+        pull(Details) |> 
+        str_extract(".*: [IV]+. (.*)", group=1)
+}
+```
+
+- Week 02: `r get_topic(2)`. We will first review some of the basic linear
+  algebra used throughout this course. Linear algebra is essential to machine
+  learning in several respects: 
+  
+  i) Tabular data is organized as a matrix, the fundamental object of study in 
+     linear algebra.
+  ii) Linear methods (*e.g.*, OLS) are a useful baseline for many different 
+      problems.
+  iii) Most computational math is built from linear algebra tools. Even 
+       non-linear problems are typically solved by repeatedly applying linear
+       algebra techniques to linear approximations (think Taylor series).
+       
+- Week 03: `r get_topic(3)`. Next, we'll take a deep dive into what it means
+  for a ML system to perform _well_. While familiar measures like MSE might
+  make sense in some contexts, their applicability is much less clear when
+  applied to things like LLMs. A key theme here will be _metrical
+  determinism,_[^argmin_blog] the idea that once we settle on what our actual
+  goal is and the way we will be measuring it, the best procedure is often
+  automatically determined. We will also explore the popular MSE loss in more
+  detail, showing how it can be broken into several easily-interpretable terms
+  and relating these terms to model complexity. 
+- Week 04: `r get_topic(4)`. Our last week of foundations will consider the role
+  of computers in ML. We will discuss ways of finding that "best fit" predictor
+  in a given class (mathematical optimization) and the uses and limits of 
+  simulation studies as a way of understanding the usefulness of ML models. 
+- Week 05: `r get_topic(5)`. As we begin our study of supervised learning, we
+  will briefly introduce the idea of _statistical shrinkage_, the idea of 
+  willingly accepting a small systematic error to eliminate the possibility of
+  large random errors. We will explore this in the classic context of mean 
+  estimation before applying shrinkage ideas to more interesting prediction 
+  problems.
+- Week 06: `r get_topic(6)`. We will apply shrinkage to our beloved OLS using
+  two fundamental forms of shrinkage: $\ell_1$ and $\ell_2^2$-penalization. 
+  While mathematically similar, these induce very different behaviors in OLS
+  estimates. We will particularly focus on the role of _sparsity_ and model 
+  selection in high-dimensional problems. 
+- Week 07: `r get_topic(7)`. We will next turn to classification problems, with
+  a focus on generative (probability-based) classifiers. This (hopefully) coincides
+  with Baruch's "Ethics Week" so we will also discuss the perils of (societal)
+  bias in classification contexts. 
+- Week 08: `r get_topic(8)`. We will explore another tradition of classification
+  problems based on geometry (not probability). These models play particularly
+  nicely with non-linear decision boundaries, so we will also introduce methods
+  for turning linear methods into non-linear predictors. (Note that these can
+  be applied to both regression and classification problems.)
+- Week 09: `r get_topic(9)`. Finally, we will consider _ensemble learning_, the
+  practice of building predictors out of several simpler predictors. Ensembling
+  is particularly powerful when applied to flexible but simple models, like
+  decision trees, and this will let us introduce two of the most widely-used
+  "fire and forget" ML models: random forests and `xgboost`. 
+- Week 10: `r get_topic(10)` to Unsupervised Learning. After finishing our 
+  discussion of supervised learning, we will turn to the _unsupervised_ context.
+  Unsupervised learning poses extra challenges around validation and performance
+  measurement, so we will begin with a discussion of the aims (and limits) of
+  unsupervised learning. 
+- Week 11: `r get_topic(11)`. We will cover the important unsupervised task of
+  finding "typical" or "representative" simple structure in data distributions.
+  In certain cases, we can "simplify" data into these patterns, providing methods
+  of dimension reduction. Special emphasis will be placed on the most important
+  statistical dimension reduction technique, PCA. 
+- Week 12: `r get_topic(12)`. TODO
+- Week 13: `r get_topic(13)`. TODO
+
+
+[^argmin_blog]: I picked up this term from Ben Recht's blog, but it is explored
+in more detail in [this paper](https://arxiv.org/abs/2509.04546).
 
 ## Nearest Neighbor Methods
 
-Let's now see how complexity plays out for a very simple classifier, 
+Let us now take a quick detour into a flexible _family_ of models and see how
+performance relates to the complexity story. Specifically, let's look at
+how complexity plays out for a very simple classifier, 
 $K$-Nearest Neighbors (KNN). KNN formalizes the intuition of 
 "similar inputs -> similar outputs." KNN looks at the $K$ most similar points
 in its training data  ("nearest neighbors" if you were to plot the data) and
@@ -694,3 +922,18 @@ the $p/n$ ratio that controls the generalization of OLS
 [^olscmplx]: In OLS, the complexity doesn't make the model 'wigglier' in a normal
 sense - it's still linear after all - but you can think of it as the additional
 complexity of a 3D 'map' (*i.e.*, a to-scale model) vs a standard 2D map. 
+
+
+[^rng]: Consider programs of the form: 
+
+    ```
+if x in TRAINING DATA: 
+    return corresponding y
+else:
+    return SOME RANDOM FIXED VALUE
+    ```
+    
+    In training error, these models are all perfect, but depending on the
+    choice of "else" value, they will have very different test errors. And it's
+    not at all hard to imagine that we can do much better than a single fixed
+    value in the "else" branch. 
