@@ -112,13 +112,16 @@ this work.
 
 Mid-semester tests and solutions will be posted here *after* the exam. 
 
+#### Test 1: Machine Learning Foundations
+
+- [Formula Sheet](./tests/test01/formula_sheet.pdf)
+
 ### Additional Materials
 
 Older notes, homework problems, and exam from prior offerings of this course
 can be found using the `Prior Offerings` tab above. Note that the syllabus
 of this course has changed slightly from semester to semester, so the format
 and content of exams may not map cleanly onto this semester. 
-
 Additional solutions will not be provided if not already posted, but I am 
 happy to discuss individual problems in office hours or on the course 
 discussion board. 
