@@ -20,7 +20,6 @@ PRESENTATION_DAY <- read_csv("key_dates.csv") |>
     pull(Date) |> 
     strftime("%A %B %d, %Y")
 
-
 REPORT_DUE <- read_csv("key_dates.csv") |>
     filter(`Course Element` == "Prediction Competition") |>
     filter(str_detect(Details, "Report")) |> 
@@ -30,8 +29,7 @@ REPORT_DUE <- read_csv("key_dates.csv") |>
 ```
 
 In lieu of a final exam, {{< var course.short >}} has a prediction competition
-worth half of your final grade. Details of this year's competition will be
-announced no later than `r COMPETITION_START`.
+worth half of your final grade. 
 
 ::: {.callout-important title="Use only Provided Information"}
 
@@ -41,6 +39,10 @@ Students found to use data outside instructor-provided files will receive
 a zero on _all_ grades related to the course competition and will likely fail
 the course as a result.
 
+You may read published research about predictors of student success to gain
+*qualitative* background information, but you may not access their data. 
+You will be required to cite all background reading in your final report.
+
 :::
 
 The 200 total points associated with this competition will be apportioned as:
@@ -49,22 +51,453 @@ The 200 total points associated with this competition will be apportioned as:
 - 50 points: Final Presentation
 - 50 points: Final Report
 
+## Overview
+
+## Background
+
+Persuant to the [Every Student Succeeds Act (ESSA) of
+2015](https://en.wikipedia.org/wiki/Every_Student_Succeeds_Act) and its 
+predecessor, the [No Child Left Behind Act (NCLB) of
+2001](https://en.wikipedia.org/wiki/No_Child_Left_Behind_Act), all public 
+schools in New York State are required to administer standardized examinations
+annually to their students. Students' results on these tests are used for a
+variety of purposes, including assessing teacher and school performance, 
+providing additional recognition to high-performing schools, and identifying
+struggling students or subgroups. The 
+[New York State Education Department (NYSED)](https://www.nysed.gov/)
+makes aggregate test results available through its annual 
+["School Report Card"](https://data.nysed.gov/) data
+releases. For this project, you will predict the percentage of students at each 
+school who score in the "Proficient" range (*i.e.*, at or above grade level) on 
+a wide battery of standardized tests during the 2024 testing period. 
+
+New York administers two primary sets of standardized exams:[^alts]
+
+- Grade 3-8 Exams: 
+  - English Language Arts ("ELA") given every year 
+  - Mathematics given every year
+  - Science, typically given only in grade 5 and grade 8
+- [Regents Exams](https://en.wikipedia.org/wiki/New_York_Regents_Examinations) for high
+school students
+
+The Regents exams cover a broader variety of topics and, historically, have been
+a graduation requirement in NYS. For each exam, a "proficiency" level is 
+determined: *e.g.*, if a exam gives scores from "1" to "4", levels "3" and "4"
+may be considered "proficient". Your task is to predict the fraction of students
+who achieve proficiency. 
+
+The organization of public schools in New York State is, like everything in New
+York State, rather confusing. As of the time of writing, NYSED reports: 
+
+- 730 Districts
+- 4,394 Public Schools
+- 373 Charter Schools
+- 215,701 Public School Teachers
+- 2,421,491 Public School Students
+
+in the state. These districts range from very small, *e.g.*, [Newcomb CSD](https://data.nysed.gov/profile.php?instid=800000051865) with
+47 students to very large, *e.g.*, 
+[NYC Public Schools](https://data.nysed.gov/profile.php?instid=7889678368)
+with just under a million students. 
+
+Outside of NYC, public schools are organized into local school districts, which
+typically have (at least) one elementary school, one middle school, and one
+high school.[^small] These districts are further organized into [Boards of
+Cooperative Educational Serices "BOCES"](https://www.boces.org/) which provide
+shared resources to groups of smaller districts.  Local school districts are 
+principally funded by property taxes, with more affluent districts having a 
+larger tax base and providing higher per-student funding levels. Local school
+districts are run by an elected school board, following statewide standards. To
+address differences in funding, NYSED provides supplemental funding to districts
+based on their assessed ["Needs/Resource
+Capacity"](https://p12.nysed.gov/irs/accountability/2011-12/NeedResourceCapacityIndex.pdf),
+though [work is ongoing](https://rockinst.org/wp-content/uploads/2024/12/2024-12-Foundation-Aid-Report.pdf)
+to update and refine the current funding formula. 
+
+Within NYC, public schools are run by the [NYC Department of Education (NYC
+DOE)](https://en.wikipedia.org/wiki/New_York_City_Department_of_Education), 
+under a commissioner and [school
+board](https://en.wikipedia.org/wiki/New_York_City_Panel_for_Educational_Policy)
+appointed by the mayor and borough presidents. NYCDOE is subdivided into 
+[32 geographic school districts](https://www.schools.nyc.gov/docs/default-source/default-document-library/nycdoe-district-map.pdf)
+and two citywide districts providing specialized
+services for students with disabilities or students in alternative education 
+programs.
+
+[^alts]: We are ignoring alternative assessments like the
+[NYSAA](https://www.nysed.gov/state-assessment/new-york-state-alternate-assessment)
+for this competition. 
+
+[^small]: Very small districts may consolidate into two (or even one) school
+serving a wider variety of grades or arrange for their students to be educated
+within a neighboring district. 
+
 ## Data
 
-Data for the course competition will be posted here. 
+You have access to three data files for model building: 
 
-## Team Submissions
+- [School-Level Data](./competition_data/school_covariates.csv)
+- [District-Level Data](./competition_data/district_covariates.csv)
+- [Assessment Scores (Training Data)](./competition_data/scores_training.csv)
 
-Students *may*, but are not required to, work in teams of 2 for this competition.
-Teams will submit one (shared) final presentation and final report and will 
-receive the same grade for **all course elements**. Students will create teams
-*via* Kaggle's team functionality. 
+and a [Test Set](./competition_data/scores_test.csv) on which your model will
+be evaluated. 
 
-Teams may be formed at any point in the competition. Teams will not be allowed
-to dissolve except under truly exceptional circumstances. (Unequal participation
-is sadly not an exceptional circumstance.)
+### School-Level Data
 
-## Prediction Accuracy (100 Points)
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+school_covariates <- read_csv("competition_data/school_covariates.csv", 
+                              show_col_types = FALSE)
+```
+
+The [School-Level Data](./competition_data/school_covariates.csv) contains data
+on `r NROW(school_covariates)` schools throughout New York State. 
+The `r NCOL(school_covariates)` columns of this data set can be broken into 
+6 groups:
+
+- Anonymized Identifiers (`SCHOOL`, `DISTRICT`, `COUNTY`): These eight character
+  IDs encode the identity of the school, the relevant school district, and the
+  county in which the school is located. These identifiers are consistent across
+  all files provided to you, but you will not otherwise be able to 
+  interpret them.
+- District Need Type and Location (`DISTRICT_TYPE`, `REGION`): These provide 
+  basic information about the type of school district (High-Need Urban, 
+  Low-Need, *etc*) based on the N/RC categories and rough location within
+  ten regions of NYS: 
+  
+  ![](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Map_of_New_York_Economic_Regions.svg/1280px-Map_of_New_York_Economic_Regions.svg.png)
+- Grade-Level Enrollment (`N_PUPILS`, `PRE_K`, `K`, `GRADE_NN`). These give the
+  reported enrollments at each grade level from pre-kindergarten to twelfth grade
+  (`GRADE_12`). For reasons that are not entirely clear, these do not always add up
+  to the reported total enrollment (`N_PUPILS`).
+  
+- Student Body Demographics (`PERCENT_MALE`, `PERCENT_FEMALE`, `PERCENT_ENGLISH_LANGUAGE_LEANERS`, `PERCENT_AMERICAN_INDIAN`, `PERCENT_BLACK`, `PERCENT_ASIAN`, `PERCENT_HISPANIC`, `PERCENT_WHITE`, `PERCENT_MULTIRACIAL`, `PERCENT_WITH_DISABILITIES`, `PERCENT_ECONOMICALLY_DISADVANTAGED`, `PERCENT_MIGRANT`, `PERCENT_HOMELESS`, `PERCENT_IN_FOSTER_CARE`, `PERCENT_PARENT_ARMED_FORCES`)
+
+  These demographic indicators should be more or less self-explanatory. Note 
+  that the education department uses a slightly different set of racial and
+  ethnic categories than the more commonly reported census categories. 
+- Student Attendance, and Discipline Rates (`ATTENDANCE_RATE`, `PERCENT_OF_STUDENTS_SUSPENDED`)
+- Teaching Staff (`NUMBER_OF_TEACHERS`, `NUMBER_OF_COUNSELORS`, 
+  `NUMBER_OF_SOCIAL_WORKERS`, `TEACHER_TURNOVER_RATE`)
+  
+  Professional and teaching staff are the single most important 'in-building'
+  contributor to student learning outcomes. While I am not providing you 
+  teacher-level data, I am providing you with raw counts of the number of
+  teachers, school counselors, and social workers assigned to each school. 
+  You can combine this with enrollment data to get a rough estimate of 
+  teacher-pupil ratios. 
+  
+  Additionally, some research suggests that long-tenured teachers have 
+  additional positive impacts on student learning, so I am providing a measure
+  of teacher turnover. (NYSED does not give a detailed description of how this
+  measure is calculated, but higher scores indicate more turnover and 
+  shorter-tenures in the teaching staff.)
+- Class Size by Subject (`LANGUAGE_ARTS_AVERAGE_CLASS_SIZE`, 
+  `MATHEMATICS_AVERAGE_CLASS_SIZE`,  `SCIENCE_AVERAGE_CLASS_SIZE`,
+  `HISTORY_GOVERNMENT_AND_GEOGRAPHY_AVERAGE_CLASS_SIZE`,  
+  `GRADE_1_AVERAGE_CLASS_SIZE`,  `GRADE_2_AVERAGE_CLASS_SIZE`, 
+  `KINDERGARTEN_AVERAGE_CLASS_SIZE`)
+
+  Class size is often considered one of the strongest predictors of student
+  learning outcomes. Here, average class size is reported for different subjects.
+  Note that these columns have many missing (`NA`) values as not all schools
+  offer all subjects, *e.g.*, both elementary schools and high schools have
+  math classes, but only elementary schools have first grade. 
+- Student Family Economics (`PERCENT_FREE_LUNCH`, `PERCENT_REDUCED_LUNCH`)
+
+  These percentages are a measure of the financial status of students' families.
+  Eligibility for free or reduced price school lunches is determined annually
+  by the USDA. See [here](https://www.federalregister.gov/documents/2024/02/20/2024-03355/child-nutrition-programs-income-eligibility-guidelines#p-15) 
+  for the relevant eligibility thresholds for the 2024 school year. 
+  
+- School Funding Levels (`FEDERAL_FUNDING_PER_PUPIL`, `LOCAL_FUNDING_PER_PUPIL`)
+  These amounts (in dollars per student) capture the amount of funding flowing
+  to the school. Note that `LOCAL_FUNDING` includes both funding through local 
+  property taxes (the primary means of funding for most suburban districts) and 
+  funding distributed by New York State to individual districts. 
+  
+A brief overview of this data set follows: 
+
+```{r}
+#| echo: false
+library(skimr)
+skim(school_covariates)
+```
+  
+### District-Level Data
+
+In addition to the school-specific data, I am also providing you with 
+[district-level graduation data](./competition_data/district_covariates.csv). 
+This data is reported over a four-year lookback, so - since we are looking at 
+2024, this is the cohort the entered high school in Fall 2020 (God bless them!).
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+district_covariates <- read_csv("competition_data/district_covariates.csv", 
+                              show_col_types = FALSE)
+```
+
+This data covers `r NROW(district_covariates)` different districts and reports
+the percentage of students achieving `r NCOL(district_covariates)-1` different
+outcomes: 
+
+- `PERCENT_DIPLOMA`
+- `PERCENT_NON_DIPLOMA`
+- `PERCENT_STILL_ENROLLED`
+- `PERCENT_GED`
+- `PERCENT_DROPOUT`
+
+Note that this data is provided on a district-level, not a school level, as 
+elementary and middle schools do not collect this data. 
+
+### Training Set
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+scores_training <- read_csv("competition_data/scores_training.csv", 
+                              show_col_types = FALSE)
+```
+
+A [training set](./competition_data/scores_training.csv) of 
+`r NROW(scores_training)` are provided for you to build your
+models. The target variable for this data set is `PERCENT_PROFICIENT`, which 
+ranges from 0 to 100. Scores here are reported for 
+`r n_distinct(scores_training$SCHOOL)` different schools (`SCHOOL`), 
+`r n_distinct(scores_training$SUBGROUP_NAME)` different subpopulations `SUBGROUP_NAME`, 
+and `r n_distinct(scores_training$ASSESSMENT_NAME)`different standardized 
+assessments (`ASSESSMENT_NAME`). The `SCHOOL` column can be used to connect this
+data with the school-level covariates provided above.
+
+Even on this relatively simple subset of the data, several interesting patterns
+emerge: 
+
+```{r}
+#| echo: false
+ggplot(scores_training, aes(x=PERCENT_PROFICIENT)) + 
+   geom_histogram(bins=30) + 
+   theme_bw() + 
+   xlab("Percent of Students Achieving Proficiency") + 
+   ylab("Number of School-Level Assessments") + 
+   facet_wrap(~SUBGROUP_NAME)
+```
+
+We see here a rough bell curve in the overall population (with several artifacts
+resulting from the 'discreteness' of test scores), systematic underperformance
+of students from economically disadvantaged households, and a slight, but
+statistically significant, overperformance by female students.
+
+The `ASSESSMENT_ID` column is a unique identifier used to identify a unique
+combination of (`SCHOOL`, `SUBGROUP_NAME`, `ASSESSMENT_NAME`). This will be used
+to organize your submissions on Kaggle, but is not of interest otherwise. 
+
+Finally, I also provide you with `N_STUDENTS`, the number of students who took
+each exam.
+
+### Test Set
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+scores_test <- read_csv("competition_data/scores_test.csv", 
+                        show_col_types = FALSE)
+```
+
+Your task is to make predictions on a 
+[test set](./competition_data/scores_test.csv) of `r NROW(scores_test)` 
+assessments. This data is organized like the training set, except the target
+`PERCENT_PROFICIENT` variable is not included. See [below](#example_submission)
+for an example of how to format your predictions on this data set for input to
+Kaggle. 
+
+## Example Predictions {#example_submission}
+
+To submit your predictions, you need to upload them to Kaggle through the web
+interface. A link to register for the course competition will be distributed
+through Brightspace. Note that you must use your **@cuny.edu** email so that
+I can match your Kaggle ID with your student records. 
+
+You will submit your data as a two-column CSV with columns: 
+
+- `ASSESSMENT_ID`
+- `PERCENT_PROFICIENT`
+
+Kaggle will use the `ASSESSMENT_ID` to align your submissions with the test set,
+so your rows do not need to be in the same order as the test set file.
+
+A (comically simple) model would simply use the state average proficiency rates
+for all predictions. In `R`, 
+
+```{r}
+library(tidyverse)
+MEAN_PROFICIENCY <- read_csv(
+   "https://michael-weylandt.com/STA9890/competition_data/scores_training.csv", 
+   show_col_types = FALSE) |> 
+   pull(PERCENT_PROFICIENT) |> 
+   mean()
+
+KAGGLE_SUBMISSION <-  read_csv(
+   "https://michael-weylandt.com/STA9890/competition_data/scores_test.csv", 
+   show_col_types = FALSE) |> 
+   select(ASSESSMENT_ID) |> 
+   mutate(PERCENT_PROFICIENT = MEAN_PROFICIENCY)
+
+write_csv(KAGGLE_SUBMISSION, "intercept_model_for_kaggle_r.csv")
+```
+
+Or, in python, 
+
+```{python}
+import pandas as pd
+
+TRAINING_SET = pd.read_csv(
+   "https://michael-weylandt.com/STA9890/competition_data/scores_training.csv"
+)
+
+TEST_SET = pd.read_csv(
+   "https://michael-weylandt.com/STA9890/competition_data/scores_test.csv"
+)
+
+MEAN_PROFICIENCY =  TRAINING_SET["PERCENT_PROFICIENT"].mean()
+
+TEST_SET[["ASSESSMENT_ID"]].\
+    assign(PERCENT_PROFICIENT=MEAN_PROFICIENCY).\
+    to_csv("intercept_model_for_kaggle_py.csv", 
+           index=False)
+```
+
+A slightly more sophisticated model would use county-level average scores on
+that same standardized test as the predictor. 
+
+```{r}
+library(tidyverse)
+TRAINING_SET <- read_csv(
+   "https://michael-weylandt.com/STA9890/competition_data/scores_training.csv", 
+   show_col_types = FALSE)
+SCHOOLS_INFO <- read_csv(
+   "https://michael-weylandt.com/STA9890/competition_data/school_covariates.csv", 
+   show_col_types = FALSE)
+
+COUNTY_AVERAGES <- inner_join(TRAINING_SET, SCHOOLS_INFO, join_by(SCHOOL)) |> 
+   group_by(COUNTY, SUBGROUP_NAME, ASSESSMENT_NAME) |> 
+   summarize(PERCENT_PROFICIENT = mean(PERCENT_PROFICIENT), 
+             .groups = "drop")
+
+TEST_SET <- read_csv(
+   "https://michael-weylandt.com/STA9890/competition_data/scores_test.csv", 
+   show_col_types = FALSE)
+
+TEST_PREDICTIONS <- inner_join(TEST_SET, SCHOOLS_INFO, join_by(SCHOOL)) |> 
+   select(ASSESSMENT_ID, ASSESSMENT_NAME, COUNTY, SUBGROUP_NAME) |> 
+   left_join(COUNTY_AVERAGES, join_by(COUNTY, SUBGROUP_NAME, ASSESSMENT_NAME)) |>
+   ## Fill in NAs with the statewide average as before
+   mutate(PERCENT_PROFICIENT = coalesce(PERCENT_PROFICIENT, MEAN_PROFICIENCY)) |>
+   select(ASSESSMENT_ID, PERCENT_PROFICIENT)
+
+write_csv(TEST_PREDICTIONS, "county_averages_model_for_kaggle_r.csv")
+```
+
+Again, in python: 
+
+```{python}
+import pandas as pd
+
+TRAINING_SET = pd.read_csv(
+    "https://michael-weylandt.com/STA9890/competition_data/scores_training.csv"
+)
+
+SCHOOLS_INFO = pd.read_csv(
+    "https://michael-weylandt.com/STA9890/competition_data/school_covariates.csv"
+)
+
+COUNTY_AVERAGES = TRAINING_SET.\
+    merge(SCHOOLS_INFO, on="SCHOOL", how="inner").\
+    groupby(["COUNTY", "SUBGROUP_NAME", "ASSESSMENT_NAME"], 
+            as_index=False).\
+    agg(PERCENT_PROFICIENT=("PERCENT_PROFICIENT", "mean"))
+
+TEST_SET = pd.read_csv(
+    "https://michael-weylandt.com/STA9890/competition_data/scores_test.csv"
+)
+
+TEST_PREDICTIONS = TEST_SET.\
+    merge(SCHOOLS_INFO, on="SCHOOL", how="inner").\
+    loc[:, ["ASSESSMENT_ID", "ASSESSMENT_NAME", "COUNTY", "SUBGROUP_NAME"]].\
+    merge(COUNTY_AVERAGES, on=["COUNTY", "SUBGROUP_NAME", "ASSESSMENT_NAME"], how="left")
+
+TEST_PREDICTIONS["PERCENT_PROFICIENT"] = TEST_PREDICTIONS["PERCENT_PROFICIENT"].fillna(MEAN_PROFICIENCY)
+
+TEST_PREDICTIONS[["ASSESSMENT_ID", "PERCENT_PROFICIENT"]].to_csv(
+    "county_averages_model_for_kaggle_py.csv",
+    index=False
+)
+```
+
+```{r}
+#| echo: false
+#| message: false
+
+# Some basic checks of consistency between R, python
+
+# Baseline model
+library(tidyverse)
+TEST_SET <- read_csv(
+    "https://michael-weylandt.com/STA9890/competition_data/scores_test.csv"
+    )
+
+MODEL_1_R <- read_csv("intercept_model_for_kaggle_r.csv")
+MODEL_1_PY <- read_csv("intercept_model_for_kaggle_py.csv")
+
+stopifnot(NROW(TEST_SET) == NROW(MODEL_1_R))
+stopifnot(NROW(TEST_SET) == NROW(MODEL_1_PY))
+
+MODEL_1_DELTA <- inner_join(MODEL_1_R,
+                            MODEL_1_PY, 
+                            join_by(ASSESSMENT_ID), 
+                            suffix = c(".r", ".py")) |> 
+   mutate(DELTA_PREDS = abs(PERCENT_PROFICIENT.r - PERCENT_PROFICIENT.py)) |> 
+   pull(DELTA_PREDS) |>
+   max()
+
+stopifnot(MODEL_1_DELTA < 1e-8)
+
+MODEL_2_R <- read_csv("county_averages_model_for_kaggle_r.csv")
+MODEL_2_PY <- read_csv("county_averages_model_for_kaggle_py.csv")
+
+stopifnot(NROW(TEST_SET) == NROW(MODEL_2_R))
+stopifnot(NROW(TEST_SET) == NROW(MODEL_2_PY))
+
+MODEL_2_DELTA <- inner_join(MODEL_2_R,
+                            MODEL_2_PY, 
+                            join_by(ASSESSMENT_ID), 
+                            suffix = c(".r", ".py")) |> 
+   mutate(DELTA_PREDS = abs(PERCENT_PROFICIENT.r - PERCENT_PROFICIENT.py)) |> 
+   pull(DELTA_PREDS) |>
+   max()
+
+stopifnot(MODEL_2_DELTA < 1e-8)
+```
+
+On this data set, the "intercept" model achieves an MSE of 700.703 on the
+public leaderboard while the "county average" model achieves an MSE of
+453.102.
+
+
+
+## Grading
+
+### Prediction Accuracy (100 Points)
 
 Prediction accuracy will be assessed using *Kaggle Competitions*. I have
 provided Kaggle with a private test set on which your predictions will be
@@ -73,25 +506,39 @@ and a *private leaderboard*. You will be able to see your accuracy on the
 public leaderboard but final scores will be based on *private leaderboard*
 accuracy so *don't overfit*. 
 
-Grades for this portion will be assigned based on your performance relative
-to both an instructor provided baseline and the best score obtained by students.
-The grading formula will be posted when the course competition opens. 
-
 You will be allowed to submit only *two* sets of predictions to Kaggle per day
 so use them wisely. At the end of the competition, you will be able to select
 **two** sets of predictions to be used for your final evaluation (taking the
 better of the two) so track your submissions carefully. 
 
-### Example Prediction
+**Kaggle will close for submissions at 11:55pm on the evening before the
+registrar-determined final exam period for this class.**
 
-An example prediction model will be posted here when the competition begins. 
+#### Grading
 
-To submit your predictions, you need to upload them to Kaggle through the web
-interface. A link to register for the course competition will be distributed
-through Brightspace. Note that you must use your **@cuny.edu** email so that
-I can match your Kaggle ID with your student records. 
+Grades for this portion will be assigned based on your performance relative
+to both the instructor provided baselines (above) and the best score obtained by
+your fellow students.
 
-## Final Presentation (50 Points)
+In particular, the top score in the class will get a score of 100 automatically.
+The second example model given above will get a score of 50. Scores for other
+students will be obtained by linearly interpolating between those two points. 
+
+Formally, scores will be given as: 
+
+$$\text{Your Grade} = 50 * \left(1 + \left(\frac{\text{Baseline MSE} - \text{Your MSE}}{\text{Baseline MSE} - \text{Class Best MSE}}\right)^{\alpha}\right)$$
+where $\alpha \approx 1$ may be tweaked to achieve a desired score 
+distribution.
+
+So, for example, if the baseline MSE is 25, the class best is 5, and your MSE
+is 10, you will get a score of: 
+
+$$50 * \left(1 + \frac{25-10}{25-5}\right) = 87.5$$
+
+If your best MSE underperforms the baseline MSE, a separate interpolation will 
+be used. 
+
+### Final Presentation (50 Points)
 
 During the registrar scheduled final exam period (tentatively 
 `r PRESENTATION_DAY`), each competition unit (either an individual or a team) 
@@ -199,7 +646,7 @@ will automatically receive a score of 50.
 and analysis to identify key features (*e.g.* feature importance rankings or
 variable selection). 
 
-## Final Report (50 Points)
+### Final Report (50 Points)
 
 By `r REPORT_DUE`, each competition unit (either an individual or a team) will
 submit a final report of no more than 10 pages (10-12 point, single- or
@@ -357,3 +804,41 @@ the instructor may deviate as necessary.
    - Unacceptable Reproduction Code. Code cannot reproduce submitted predictions.
    
 :::
+
+At the end of your report, you **must** include a description of the extent to 
+which you used Generative AI tools in this course competition or in preparation
+of your final report. Failure to include an AI disclosure will result in an 
+**automatic 25% penalty.**
+
+*E.g.*, 
+
+::: {.callout-note title="AI Usage Statement" collapse="true"}
+
+No Generative AI tools were used to complete this mini-project. 
+
+:::
+
+or 
+
+::: {.callout-note title="AI Usage Statement" collapse="true"}
+
+GitHub Co-Pilot Pro was used via RStudio integration while 
+completing this project. No other generative AI tools were used. 
+
+:::
+
+
+Recall that Generative AI **may not** be used for idea generation or writing
+your final report. It may only be used for coding assistance and idea generation.
+
+
+### Teams
+
+Students *may*, but are not required to, work in teams of 2 for this competition.
+Teams will submit one (shared) final presentation and final report and will 
+receive the same grade for **all course elements**. Students will create teams
+*via* Kaggle's team functionality. 
+
+Teams may be formed at any point in the competition. Teams will not be allowed
+to dissolve except under truly exceptional circumstances. (Unequal participation
+is sadly not an exceptional circumstance.)

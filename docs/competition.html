@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -68,6 +103,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -135,14 +199,23 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
-  <li><a href="#team-submissions" id="toc-team-submissions" class="nav-link" data-scroll-target="#team-submissions">Team Submissions</a></li>
-  <li><a href="#prediction-accuracy-100-points" id="toc-prediction-accuracy-100-points" class="nav-link" data-scroll-target="#prediction-accuracy-100-points">Prediction Accuracy (100 Points)</a>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
   <ul class="collapse">
-  <li><a href="#example-prediction" id="toc-example-prediction" class="nav-link" data-scroll-target="#example-prediction">Example Prediction</a></li>
+  <li><a href="#school-level-data" id="toc-school-level-data" class="nav-link" data-scroll-target="#school-level-data">School-Level Data</a></li>
+  <li><a href="#district-level-data" id="toc-district-level-data" class="nav-link" data-scroll-target="#district-level-data">District-Level Data</a></li>
+  <li><a href="#training-set" id="toc-training-set" class="nav-link" data-scroll-target="#training-set">Training Set</a></li>
+  <li><a href="#test-set" id="toc-test-set" class="nav-link" data-scroll-target="#test-set">Test Set</a></li>
   </ul></li>
+  <li><a href="#example_submission" id="toc-example_submission" class="nav-link" data-scroll-target="#example_submission">Example Predictions</a></li>
+  <li><a href="#grading" id="toc-grading" class="nav-link" data-scroll-target="#grading">Grading</a>
+  <ul class="collapse">
+  <li><a href="#prediction-accuracy-100-points" id="toc-prediction-accuracy-100-points" class="nav-link" data-scroll-target="#prediction-accuracy-100-points">Prediction Accuracy (100 Points)</a></li>
   <li><a href="#final-presentation-50-points" id="toc-final-presentation-50-points" class="nav-link" data-scroll-target="#final-presentation-50-points">Final Presentation (50 Points)</a></li>
   <li><a href="#final-report-50-points" id="toc-final-report-50-points" class="nav-link" data-scroll-target="#final-report-50-points">Final Report (50 Points)</a></li>
+  <li><a href="#teams" id="toc-teams" class="nav-link" data-scroll-target="#teams">Teams</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/competition.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/competition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -168,7 +241,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>In lieu of a final exam, STA 9890 has a prediction competition worth half of your final grade. Details of this year’s competition will be announced no later than Wednesday February 18, 2026.</p>
+<p>In lieu of a final exam, STA 9890 has a prediction competition worth half of your final grade.</p>
 <div class="callout callout-style-default callout-important callout-titled" title="Use only Provided Information">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -180,6 +253,7 @@ Use only Provided Information
 </div>
 <div class="callout-body-container callout-body">
 <p>You <strong>may not</strong> use any external data beyond what the instructor provides. You will be required to attest to this in your final submission. Students found to use data outside instructor-provided files will receive a zero on <em>all</em> grades related to the course competition and will likely fail the course as a result.</p>
+<p>You may read published research about predictors of student success to gain <em>qualitative</em> background information, but you may not access their data. You will be required to cite all background reading in your final report.</p>
 </div>
 </div>
 <p>The 200 total points associated with this competition will be apportioned as:</p>
@@ -188,28 +262,997 @@ Use only Provided Information
 <li>50 points: Final Presentation</li>
 <li>50 points: Final Report</li>
 </ul>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+</section>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>Persuant to the <a href="https://en.wikipedia.org/wiki/Every_Student_Succeeds_Act">Every Student Succeeds Act (ESSA) of 2015</a> and its predecessor, the <a href="https://en.wikipedia.org/wiki/No_Child_Left_Behind_Act">No Child Left Behind Act (NCLB) of 2001</a>, all public schools in New York State are required to administer standardized examinations annually to their students. Students’ results on these tests are used for a variety of purposes, including assessing teacher and school performance, providing additional recognition to high-performing schools, and identifying struggling students or subgroups. The <a href="https://www.nysed.gov/">New York State Education Department (NYSED)</a> makes aggregate test results available through its annual <a href="https://data.nysed.gov/">“School Report Card”</a> data releases. For this project, you will predict the percentage of students at each school who score in the “Proficient” range (<em>i.e.</em>, at or above grade level) on a wide battery of standardized tests during the 2024 testing period.</p>
+<p>New York administers two primary sets of standardized exams:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<ul>
+<li>Grade 3-8 Exams:
+<ul>
+<li>English Language Arts (“ELA”) given every year</li>
+<li>Mathematics given every year</li>
+<li>Science, typically given only in grade 5 and grade 8</li>
+</ul></li>
+<li><a href="https://en.wikipedia.org/wiki/New_York_Regents_Examinations">Regents Exams</a> for high school students</li>
+</ul>
+<p>The Regents exams cover a broader variety of topics and, historically, have been a graduation requirement in NYS. For each exam, a “proficiency” level is determined: <em>e.g.</em>, if a exam gives scores from “1” to “4”, levels “3” and “4” may be considered “proficient”. Your task is to predict the fraction of students who achieve proficiency.</p>
+<p>The organization of public schools in New York State is, like everything in New York State, rather confusing. As of the time of writing, NYSED reports:</p>
+<ul>
+<li>730 Districts</li>
+<li>4,394 Public Schools</li>
+<li>373 Charter Schools</li>
+<li>215,701 Public School Teachers</li>
+<li>2,421,491 Public School Students</li>
+</ul>
+<p>in the state. These districts range from very small, <em>e.g.</em>, <a href="https://data.nysed.gov/profile.php?instid=800000051865">Newcomb CSD</a> with 47 students to very large, <em>e.g.</em>, <a href="https://data.nysed.gov/profile.php?instid=7889678368">NYC Public Schools</a> with just under a million students.</p>
+<p>Outside of NYC, public schools are organized into local school districts, which typically have (at least) one elementary school, one middle school, and one high school.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> These districts are further organized into <a href="https://www.boces.org/">Boards of Cooperative Educational Serices “BOCES”</a> which provide shared resources to groups of smaller districts. Local school districts are principally funded by property taxes, with more affluent districts having a larger tax base and providing higher per-student funding levels. Local school districts are run by an elected school board, following statewide standards. To address differences in funding, NYSED provides supplemental funding to districts based on their assessed <a href="https://p12.nysed.gov/irs/accountability/2011-12/NeedResourceCapacityIndex.pdf">“Needs/Resource Capacity”</a>, though <a href="https://rockinst.org/wp-content/uploads/2024/12/2024-12-Foundation-Aid-Report.pdf">work is ongoing</a> to update and refine the current funding formula.</p>
+<p>Within NYC, public schools are run by the <a href="https://en.wikipedia.org/wiki/New_York_City_Department_of_Education">NYC Department of Education (NYC DOE)</a>, under a commissioner and <a href="https://en.wikipedia.org/wiki/New_York_City_Panel_for_Educational_Policy">school board</a> appointed by the mayor and borough presidents. NYCDOE is subdivided into <a href="https://www.schools.nyc.gov/docs/default-source/default-document-library/nycdoe-district-map.pdf">32 geographic school districts</a> and two citywide districts providing specialized services for students with disabilities or students in alternative education programs.</p>
+</section>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>Data for the course competition will be posted here.</p>
+<p>You have access to three data files for model building:</p>
+<ul>
+<li><a href="./competition_data/school_covariates.csv">School-Level Data</a></li>
+<li><a href="./competition_data/district_covariates.csv">District-Level Data</a></li>
+<li><a href="./competition_data/scores_training.csv">Assessment Scores (Training Data)</a></li>
+</ul>
+<p>and a <a href="./competition_data/scores_test.csv">Test Set</a> on which your model will be evaluated.</p>
+<section id="school-level-data" class="level3">
+<h3 class="anchored" data-anchor-id="school-level-data">School-Level Data</h3>
+<p>The <a href="./competition_data/school_covariates.csv">School-Level Data</a> contains data on 4754 schools throughout New York State. The 52 columns of this data set can be broken into 6 groups:</p>
+<ul>
+<li><p>Anonymized Identifiers (<code>SCHOOL</code>, <code>DISTRICT</code>, <code>COUNTY</code>): These eight character IDs encode the identity of the school, the relevant school district, and the county in which the school is located. These identifiers are consistent across all files provided to you, but you will not otherwise be able to interpret them.</p></li>
+<li><p>District Need Type and Location (<code>DISTRICT_TYPE</code>, <code>REGION</code>): These provide basic information about the type of school district (High-Need Urban, Low-Need, <em>etc</em>) based on the N/RC categories and rough location within ten regions of NYS:</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Map_of_New_York_Economic_Regions.svg/1280px-Map_of_New_York_Economic_Regions.svg.png" class="img-fluid"></p></li>
+<li><p>Grade-Level Enrollment (<code>N_PUPILS</code>, <code>PRE_K</code>, <code>K</code>, <code>GRADE_NN</code>). These give the reported enrollments at each grade level from pre-kindergarten to twelfth grade (<code>GRADE_12</code>). For reasons that are not entirely clear, these do not always add up to the reported total enrollment (<code>N_PUPILS</code>).</p></li>
+<li><p>Student Body Demographics (<code>PERCENT_MALE</code>, <code>PERCENT_FEMALE</code>, <code>PERCENT_ENGLISH_LANGUAGE_LEANERS</code>, <code>PERCENT_AMERICAN_INDIAN</code>, <code>PERCENT_BLACK</code>, <code>PERCENT_ASIAN</code>, <code>PERCENT_HISPANIC</code>, <code>PERCENT_WHITE</code>, <code>PERCENT_MULTIRACIAL</code>, <code>PERCENT_WITH_DISABILITIES</code>, <code>PERCENT_ECONOMICALLY_DISADVANTAGED</code>, <code>PERCENT_MIGRANT</code>, <code>PERCENT_HOMELESS</code>, <code>PERCENT_IN_FOSTER_CARE</code>, <code>PERCENT_PARENT_ARMED_FORCES</code>)</p>
+<p>These demographic indicators should be more or less self-explanatory. Note that the education department uses a slightly different set of racial and ethnic categories than the more commonly reported census categories.</p></li>
+<li><p>Student Attendance, and Discipline Rates (<code>ATTENDANCE_RATE</code>, <code>PERCENT_OF_STUDENTS_SUSPENDED</code>)</p></li>
+<li><p>Teaching Staff (<code>NUMBER_OF_TEACHERS</code>, <code>NUMBER_OF_COUNSELORS</code>, <code>NUMBER_OF_SOCIAL_WORKERS</code>, <code>TEACHER_TURNOVER_RATE</code>)</p>
+<p>Professional and teaching staff are the single most important ‘in-building’ contributor to student learning outcomes. While I am not providing you teacher-level data, I am providing you with raw counts of the number of teachers, school counselors, and social workers assigned to each school. You can combine this with enrollment data to get a rough estimate of teacher-pupil ratios.</p>
+<p>Additionally, some research suggests that long-tenured teachers have additional positive impacts on student learning, so I am providing a measure of teacher turnover. (NYSED does not give a detailed description of how this measure is calculated, but higher scores indicate more turnover and shorter-tenures in the teaching staff.)</p></li>
+<li><p>Class Size by Subject (<code>LANGUAGE_ARTS_AVERAGE_CLASS_SIZE</code>, <code>MATHEMATICS_AVERAGE_CLASS_SIZE</code>, <code>SCIENCE_AVERAGE_CLASS_SIZE</code>, <code>HISTORY_GOVERNMENT_AND_GEOGRAPHY_AVERAGE_CLASS_SIZE</code>,<br>
+<code>GRADE_1_AVERAGE_CLASS_SIZE</code>, <code>GRADE_2_AVERAGE_CLASS_SIZE</code>, <code>KINDERGARTEN_AVERAGE_CLASS_SIZE</code>)</p>
+<p>Class size is often considered one of the strongest predictors of student learning outcomes. Here, average class size is reported for different subjects. Note that these columns have many missing (<code>NA</code>) values as not all schools offer all subjects, <em>e.g.</em>, both elementary schools and high schools have math classes, but only elementary schools have first grade.</p></li>
+<li><p>Student Family Economics (<code>PERCENT_FREE_LUNCH</code>, <code>PERCENT_REDUCED_LUNCH</code>)</p>
+<p>These percentages are a measure of the financial status of students’ families. Eligibility for free or reduced price school lunches is determined annually by the USDA. See <a href="https://www.federalregister.gov/documents/2024/02/20/2024-03355/child-nutrition-programs-income-eligibility-guidelines#p-15">here</a> for the relevant eligibility thresholds for the 2024 school year.</p></li>
+<li><p>School Funding Levels (<code>FEDERAL_FUNDING_PER_PUPIL</code>, <code>LOCAL_FUNDING_PER_PUPIL</code>) These amounts (in dollars per student) capture the amount of funding flowing to the school. Note that <code>LOCAL_FUNDING</code> includes both funding through local property taxes (the primary means of funding for most suburban districts) and funding distributed by New York State to individual districts.</p></li>
+</ul>
+<p>A brief overview of this data set follows:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">school_covariates</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">4754</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">47</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SCHOOL</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4754</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">DISTRICT</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">721</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">COUNTY</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">DISTRICT_TYPE</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REGION</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 2%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ATTENDANCE_RATE</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">90.56</td>
+<td style="text-align: right;">6.44</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">89.00</td>
+<td style="text-align: right;">92.00</td>
+<td style="text-align: right;">94.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LANGUAGE_ARTS_AVERAGE_CLASS_SIZE</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">16.59</td>
+<td style="text-align: right;">6.19</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13.00</td>
+<td style="text-align: right;">16.50</td>
+<td style="text-align: right;">19.79</td>
+<td style="text-align: right;">108.83</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MATHEMATICS_AVERAGE_CLASS_SIZE</td>
+<td style="text-align: right;">350</td>
+<td style="text-align: right;">0.93</td>
+<td style="text-align: right;">17.30</td>
+<td style="text-align: right;">5.60</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14.00</td>
+<td style="text-align: right;">17.33</td>
+<td style="text-align: right;">20.33</td>
+<td style="text-align: right;">104.50</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SCIENCE_AVERAGE_CLASS_SIZE</td>
+<td style="text-align: right;">668</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">18.87</td>
+<td style="text-align: right;">5.94</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15.67</td>
+<td style="text-align: right;">19.00</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: right;">78.50</td>
+<td style="text-align: left;">▃▇▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HISTORY_GOVERNMENT_AND_GEOGRAPHY_AVERAGE_CLASS_SIZE</td>
+<td style="text-align: right;">3370</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">18.65</td>
+<td style="text-align: right;">6.23</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14.50</td>
+<td style="text-align: right;">18.50</td>
+<td style="text-align: right;">22.50</td>
+<td style="text-align: right;">82.50</td>
+<td style="text-align: left;">▆▇▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GRADE_1_AVERAGE_CLASS_SIZE</td>
+<td style="text-align: right;">3122</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">17.94</td>
+<td style="text-align: right;">6.07</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">18.00</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">110.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRADE_2_AVERAGE_CLASS_SIZE</td>
+<td style="text-align: right;">3132</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">18.31</td>
+<td style="text-align: right;">5.43</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">18.00</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">84.00</td>
+<td style="text-align: left;">▆▇▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">KINDERGARTEN_AVERAGE_CLASS_SIZE</td>
+<td style="text-align: right;">3139</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">17.17</td>
+<td style="text-align: right;">5.56</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14.00</td>
+<td style="text-align: right;">17.00</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">106.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_FREE_LUNCH</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">56.55</td>
+<td style="text-align: right;">27.80</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">34.00</td>
+<td style="text-align: right;">54.00</td>
+<td style="text-align: right;">84.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▃▆▆▅▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_REDUCED_LUNCH</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">2.32</td>
+<td style="text-align: right;">2.17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUMBER_OF_TEACHERS</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">48.91</td>
+<td style="text-align: right;">30.75</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">41.00</td>
+<td style="text-align: right;">57.00</td>
+<td style="text-align: right;">344.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NUMBER_OF_COUNSELORS</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">1.79</td>
+<td style="text-align: right;">2.08</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NUMBER_OF_SOCIAL_WORKERS</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">1.04</td>
+<td style="text-align: right;">1.04</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TEACHER_TURNOVER_RATE</td>
+<td style="text-align: right;">4519</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">38.53</td>
+<td style="text-align: right;">16.42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">27.00</td>
+<td style="text-align: right;">36.00</td>
+<td style="text-align: right;">48.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▂▇▅▂▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_OF_STUDENTS_SUSPENDED</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">3.10</td>
+<td style="text-align: right;">5.19</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">N_PUPILS</td>
+<td style="text-align: right;">220</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">532.13</td>
+<td style="text-align: right;">396.64</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">313.00</td>
+<td style="text-align: right;">432.00</td>
+<td style="text-align: right;">620.75</td>
+<td style="text-align: right;">5810.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FEDERAL_FUNDING_PER_PUPIL</td>
+<td style="text-align: right;">220</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">3455.91</td>
+<td style="text-align: right;">5200.18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1301.25</td>
+<td style="text-align: right;">2895.00</td>
+<td style="text-align: right;">4692.75</td>
+<td style="text-align: right;">293867.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LOCAL_FUNDING_PER_PUPIL</td>
+<td style="text-align: right;">220</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">28917.07</td>
+<td style="text-align: right;">12315.81</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23275.50</td>
+<td style="text-align: right;">26792.50</td>
+<td style="text-align: right;">31529.75</td>
+<td style="text-align: right;">200843.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PRE_K</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">14.81</td>
+<td style="text-align: right;">26.29</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">26.00</td>
+<td style="text-align: right;">247.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">K</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">33.78</td>
+<td style="text-align: right;">41.30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">18.00</td>
+<td style="text-align: right;">60.00</td>
+<td style="text-align: right;">375.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRADE_01</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">36.22</td>
+<td style="text-align: right;">42.98</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">23.00</td>
+<td style="text-align: right;">64.00</td>
+<td style="text-align: right;">322.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GRADE_02</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">37.35</td>
+<td style="text-align: right;">44.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">24.00</td>
+<td style="text-align: right;">66.00</td>
+<td style="text-align: right;">356.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRADE_03</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">37.71</td>
+<td style="text-align: right;">44.95</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">65.00</td>
+<td style="text-align: right;">372.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GRADE_04</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">38.53</td>
+<td style="text-align: right;">47.17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">23.00</td>
+<td style="text-align: right;">68.00</td>
+<td style="text-align: right;">411.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRADE_05</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">38.73</td>
+<td style="text-align: right;">50.71</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">16.00</td>
+<td style="text-align: right;">67.00</td>
+<td style="text-align: right;">622.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GRADE_06</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">39.33</td>
+<td style="text-align: right;">78.39</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">54.00</td>
+<td style="text-align: right;">663.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRADE_07</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">39.81</td>
+<td style="text-align: right;">83.86</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">749.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GRADE_08</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">40.59</td>
+<td style="text-align: right;">85.72</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">52.00</td>
+<td style="text-align: right;">770.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRADE_09</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">44.18</td>
+<td style="text-align: right;">112.27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">36.00</td>
+<td style="text-align: right;">1416.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GRADE_10</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">43.36</td>
+<td style="text-align: right;">110.10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">36.50</td>
+<td style="text-align: right;">1516.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRADE_11</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">41.10</td>
+<td style="text-align: right;">104.82</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">34.00</td>
+<td style="text-align: right;">1550.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GRADE_12</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">40.08</td>
+<td style="text-align: right;">103.14</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">31.00</td>
+<td style="text-align: right;">1469.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_MALE</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">51.36</td>
+<td style="text-align: right;">6.61</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">49.00</td>
+<td style="text-align: right;">51.00</td>
+<td style="text-align: right;">53.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_FEMALE</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">48.60</td>
+<td style="text-align: right;">6.61</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">47.00</td>
+<td style="text-align: right;">49.00</td>
+<td style="text-align: right;">51.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_ENGLISH_LANGUAGE_LEANERS</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">10.42</td>
+<td style="text-align: right;">13.20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_AMERICAN_INDIAN</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">3.35</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">99.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_BLACK</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">16.72</td>
+<td style="text-align: right;">21.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">24.00</td>
+<td style="text-align: right;">93.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_ASIAN</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">7.90</td>
+<td style="text-align: right;">13.07</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">93.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_HISPANIC</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">29.20</td>
+<td style="text-align: right;">25.57</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">47.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▇▃▂▂▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_WHITE</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">41.80</td>
+<td style="text-align: right;">35.36</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">38.00</td>
+<td style="text-align: right;">77.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▇▂▂▃▅</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_MULTIRACIAL</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">3.53</td>
+<td style="text-align: right;">3.30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_WITH_DISABILITIES</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">20.64</td>
+<td style="text-align: right;">12.29</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">18.00</td>
+<td style="text-align: right;">23.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▇▅▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_ECONOMICALLY_DISADVANTAGED</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">60.79</td>
+<td style="text-align: right;">26.96</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">40.00</td>
+<td style="text-align: right;">61.00</td>
+<td style="text-align: right;">87.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: left;">▂▃▆▃▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_MIGRANT</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">13.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_HOMELESS</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">6.68</td>
+<td style="text-align: right;">8.97</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">84.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PERCENT_IN_FOSTER_CARE</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PERCENT_PARENT_ARMED_FORCES</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">2.76</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">80.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
-<section id="team-submissions" class="level2">
-<h2 class="anchored" data-anchor-id="team-submissions">Team Submissions</h2>
-<p>Students <em>may</em>, but are not required to, work in teams of 2 for this competition. Teams will submit one (shared) final presentation and final report and will receive the same grade for <strong>all course elements</strong>. Students will create teams <em>via</em> Kaggle’s team functionality.</p>
-<p>Teams may be formed at any point in the competition. Teams will not be allowed to dissolve except under truly exceptional circumstances. (Unequal participation is sadly not an exceptional circumstance.)</p>
+<section id="district-level-data" class="level3">
+<h3 class="anchored" data-anchor-id="district-level-data">District-Level Data</h3>
+<p>In addition to the school-specific data, I am also providing you with <a href="./competition_data/district_covariates.csv">district-level graduation data</a>. This data is reported over a four-year lookback, so - since we are looking at 2024, this is the cohort the entered high school in Fall 2020 (God bless them!).</p>
+<p>This data covers 674 different districts and reports the percentage of students achieving 5 different outcomes:</p>
+<ul>
+<li><code>PERCENT_DIPLOMA</code></li>
+<li><code>PERCENT_NON_DIPLOMA</code></li>
+<li><code>PERCENT_STILL_ENROLLED</code></li>
+<li><code>PERCENT_GED</code></li>
+<li><code>PERCENT_DROPOUT</code></li>
+</ul>
+<p>Note that this data is provided on a district-level, not a school level, as elementary and middle schools do not collect this data.</p>
 </section>
-<section id="prediction-accuracy-100-points" class="level2">
-<h2 class="anchored" data-anchor-id="prediction-accuracy-100-points">Prediction Accuracy (100 Points)</h2>
-<p>Prediction accuracy will be assessed using <em>Kaggle Competitions</em>. I have provided Kaggle with a private test set on which your predictions will be evaluated. Kaggle will further divide the test set into a <em>public leaderboard</em> and a <em>private leaderboard</em>. You will be able to see your accuracy on the public leaderboard but final scores will be based on <em>private leaderboard</em> accuracy so <em>don’t overfit</em>.</p>
-<p>Grades for this portion will be assigned based on your performance relative to both an instructor provided baseline and the best score obtained by students. The grading formula will be posted when the course competition opens.</p>
-<p>You will be allowed to submit only <em>two</em> sets of predictions to Kaggle per day so use them wisely. At the end of the competition, you will be able to select <strong>two</strong> sets of predictions to be used for your final evaluation (taking the better of the two) so track your submissions carefully.</p>
-<section id="example-prediction" class="level3">
-<h3 class="anchored" data-anchor-id="example-prediction">Example Prediction</h3>
-<p>An example prediction model will be posted here when the competition begins.</p>
+<section id="training-set" class="level3">
+<h3 class="anchored" data-anchor-id="training-set">Training Set</h3>
+<p>A <a href="./competition_data/scores_training.csv">training set</a> of 144921 are provided for you to build your models. The target variable for this data set is <code>PERCENT_PROFICIENT</code>, which ranges from 0 to 100. Scores here are reported for 4469 different schools (<code>SCHOOL</code>), 5 different subpopulations <code>SUBGROUP_NAME</code>, and 32different standardized assessments (<code>ASSESSMENT_NAME</code>). The <code>SCHOOL</code> column can be used to connect this data with the school-level covariates provided above.</p>
+<p>Even on this relatively simple subset of the data, several interesting patterns emerge:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="competition_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see here a rough bell curve in the overall population (with several artifacts resulting from the ‘discreteness’ of test scores), systematic underperformance of students from economically disadvantaged households, and a slight, but statistically significant, overperformance by female students.</p>
+<p>The <code>ASSESSMENT_ID</code> column is a unique identifier used to identify a unique combination of (<code>SCHOOL</code>, <code>SUBGROUP_NAME</code>, <code>ASSESSMENT_NAME</code>). This will be used to organize your submissions on Kaggle, but is not of interest otherwise.</p>
+<p>Finally, I also provide you with <code>N_STUDENTS</code>, the number of students who took each exam.</p>
+</section>
+<section id="test-set" class="level3">
+<h3 class="anchored" data-anchor-id="test-set">Test Set</h3>
+<p>Your task is to make predictions on a <a href="./competition_data/scores_test.csv">test set</a> of 48307 assessments. This data is organized like the training set, except the target <code>PERCENT_PROFICIENT</code> variable is not included. See <a href="#example_submission">below</a> for an example of how to format your predictions on this data set for input to Kaggle.</p>
+</section>
+</section>
+<section id="example_submission" class="level2">
+<h2 class="anchored" data-anchor-id="example_submission">Example Predictions</h2>
 <p>To submit your predictions, you need to upload them to Kaggle through the web interface. A link to register for the course competition will be distributed through Brightspace. Note that you must use your <strong><span class="citation" data-cites="cuny.edu">@cuny.edu</span></strong> email so that I can match your Kaggle ID with your student records.</p>
+<p>You will submit your data as a two-column CSV with columns:</p>
+<ul>
+<li><code>ASSESSMENT_ID</code></li>
+<li><code>PERCENT_PROFICIENT</code></li>
+</ul>
+<p>Kaggle will use the <code>ASSESSMENT_ID</code> to align your submissions with the test set, so your rows do not need to be in the same order as the test set file.</p>
+<p>A (comically simple) model would simply use the state average proficiency rates for all predictions. In <code>R</code>,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>MEAN_PROFICIENCY <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_training.csv"</span>, </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pull</span>(PERCENT_PROFICIENT) <span class="sc">|&gt;</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mean</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>KAGGLE_SUBMISSION <span class="ot">&lt;-</span>  <span class="fu">read_csv</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>   <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_test.csv"</span>, </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(ASSESSMENT_ID) <span class="sc">|&gt;</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">PERCENT_PROFICIENT =</span> MEAN_PROFICIENCY)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(KAGGLE_SUBMISSION, <span class="st">"intercept_model_for_kaggle_r.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Or, in python,</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>TRAINING_SET <span class="op">=</span> pd.read_csv(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_training.csv"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>TEST_SET <span class="op">=</span> pd.read_csv(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>   <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_test.csv"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>MEAN_PROFICIENCY <span class="op">=</span>  TRAINING_SET[<span class="st">"PERCENT_PROFICIENT"</span>].mean()</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>TEST_SET[[<span class="st">"ASSESSMENT_ID"</span>]].<span class="op">\</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    assign(PERCENT_PROFICIENT<span class="op">=</span>MEAN_PROFICIENCY).<span class="op">\</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    to_csv(<span class="st">"intercept_model_for_kaggle_py.csv"</span>, </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>           index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A slightly more sophisticated model would use county-level average scores on that same standardized test as the predictor.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>TRAINING_SET <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>   <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_training.csv"</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>SCHOOLS_INFO <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>   <span class="st">"https://michael-weylandt.com/STA9890/competition_data/school_covariates.csv"</span>, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>COUNTY_AVERAGES <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(TRAINING_SET, SCHOOLS_INFO, <span class="fu">join_by</span>(SCHOOL)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">group_by</span>(COUNTY, SUBGROUP_NAME, ASSESSMENT_NAME) <span class="sc">|&gt;</span> </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">summarize</span>(<span class="at">PERCENT_PROFICIENT =</span> <span class="fu">mean</span>(PERCENT_PROFICIENT), </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>TEST_SET <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>   <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_test.csv"</span>, </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>   <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>TEST_PREDICTIONS <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(TEST_SET, SCHOOLS_INFO, <span class="fu">join_by</span>(SCHOOL)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(ASSESSMENT_ID, ASSESSMENT_NAME, COUNTY, SUBGROUP_NAME) <span class="sc">|&gt;</span> </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>   <span class="fu">left_join</span>(COUNTY_AVERAGES, <span class="fu">join_by</span>(COUNTY, SUBGROUP_NAME, ASSESSMENT_NAME)) <span class="sc">|&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>   <span class="do">## Fill in NAs with the statewide average as before</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">PERCENT_PROFICIENT =</span> <span class="fu">coalesce</span>(PERCENT_PROFICIENT, MEAN_PROFICIENCY)) <span class="sc">|&gt;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(ASSESSMENT_ID, PERCENT_PROFICIENT)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(TEST_PREDICTIONS, <span class="st">"county_averages_model_for_kaggle_r.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Again, in python:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>TRAINING_SET <span class="op">=</span> pd.read_csv(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_training.csv"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>SCHOOLS_INFO <span class="op">=</span> pd.read_csv(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://michael-weylandt.com/STA9890/competition_data/school_covariates.csv"</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>COUNTY_AVERAGES <span class="op">=</span> TRAINING_SET.<span class="op">\</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    merge(SCHOOLS_INFO, on<span class="op">=</span><span class="st">"SCHOOL"</span>, how<span class="op">=</span><span class="st">"inner"</span>).<span class="op">\</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    groupby([<span class="st">"COUNTY"</span>, <span class="st">"SUBGROUP_NAME"</span>, <span class="st">"ASSESSMENT_NAME"</span>], </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            as_index<span class="op">=</span><span class="va">False</span>).<span class="op">\</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    agg(PERCENT_PROFICIENT<span class="op">=</span>(<span class="st">"PERCENT_PROFICIENT"</span>, <span class="st">"mean"</span>))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>TEST_SET <span class="op">=</span> pd.read_csv(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://michael-weylandt.com/STA9890/competition_data/scores_test.csv"</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>TEST_PREDICTIONS <span class="op">=</span> TEST_SET.<span class="op">\</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    merge(SCHOOLS_INFO, on<span class="op">=</span><span class="st">"SCHOOL"</span>, how<span class="op">=</span><span class="st">"inner"</span>).<span class="op">\</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    loc[:, [<span class="st">"ASSESSMENT_ID"</span>, <span class="st">"ASSESSMENT_NAME"</span>, <span class="st">"COUNTY"</span>, <span class="st">"SUBGROUP_NAME"</span>]].<span class="op">\</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    merge(COUNTY_AVERAGES, on<span class="op">=</span>[<span class="st">"COUNTY"</span>, <span class="st">"SUBGROUP_NAME"</span>, <span class="st">"ASSESSMENT_NAME"</span>], how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>TEST_PREDICTIONS[<span class="st">"PERCENT_PROFICIENT"</span>] <span class="op">=</span> TEST_PREDICTIONS[<span class="st">"PERCENT_PROFICIENT"</span>].fillna(MEAN_PROFICIENCY)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>TEST_PREDICTIONS[[<span class="st">"ASSESSMENT_ID"</span>, <span class="st">"PERCENT_PROFICIENT"</span>]].to_csv(</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"county_averages_model_for_kaggle_py.csv"</span>,</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="va">False</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>On this data set, the “intercept” model achieves an MSE of 700.703 on the public leaderboard while the “county average” model achieves an MSE of 453.102.</p>
+</section>
+<section id="grading" class="level2">
+<h2 class="anchored" data-anchor-id="grading">Grading</h2>
+<section id="prediction-accuracy-100-points" class="level3">
+<h3 class="anchored" data-anchor-id="prediction-accuracy-100-points">Prediction Accuracy (100 Points)</h3>
+<p>Prediction accuracy will be assessed using <em>Kaggle Competitions</em>. I have provided Kaggle with a private test set on which your predictions will be evaluated. Kaggle will further divide the test set into a <em>public leaderboard</em> and a <em>private leaderboard</em>. You will be able to see your accuracy on the public leaderboard but final scores will be based on <em>private leaderboard</em> accuracy so <em>don’t overfit</em>.</p>
+<p>You will be allowed to submit only <em>two</em> sets of predictions to Kaggle per day so use them wisely. At the end of the competition, you will be able to select <strong>two</strong> sets of predictions to be used for your final evaluation (taking the better of the two) so track your submissions carefully.</p>
+<p><strong>Kaggle will close for submissions at 11:55pm on the evening before the registrar-determined final exam period for this class.</strong></p>
+<section id="grading-1" class="level4">
+<h4 class="anchored" data-anchor-id="grading-1">Grading</h4>
+<p>Grades for this portion will be assigned based on your performance relative to both the instructor provided baselines (above) and the best score obtained by your fellow students.</p>
+<p>In particular, the top score in the class will get a score of 100 automatically. The second example model given above will get a score of 50. Scores for other students will be obtained by linearly interpolating between those two points.</p>
+<p>Formally, scores will be given as:</p>
+<p><span class="math display">\[\text{Your Grade} = 50 * \left(1 + \left(\frac{\text{Baseline MSE} - \text{Your MSE}}{\text{Baseline MSE} - \text{Class Best MSE}}\right)^{\alpha}\right)\]</span> where <span class="math inline">\(\alpha \approx 1\)</span> may be tweaked to achieve a desired score distribution.</p>
+<p>So, for example, if the baseline MSE is 25, the class best is 5, and your MSE is 10, you will get a score of:</p>
+<p><span class="math display">\[50 * \left(1 + \frac{25-10}{25-5}\right) = 87.5\]</span></p>
+<p>If your best MSE underperforms the baseline MSE, a separate interpolation will be used.</p>
 </section>
 </section>
-<section id="final-presentation-50-points" class="level2">
-<h2 class="anchored" data-anchor-id="final-presentation-50-points">Final Presentation (50 Points)</h2>
+<section id="final-presentation-50-points" class="level3">
+<h3 class="anchored" data-anchor-id="final-presentation-50-points">Final Presentation (50 Points)</h3>
 <p>During the registrar scheduled final exam period (tentatively Wednesday May 20, 2026), each competition unit (either an individual or a team) will give a <strong>6</strong> minute presentation, primarily focused on the <em>models and methods</em> they used to build their predictions. This presentation should include discussion of:</p>
 <ul>
 <li>What ‘off-the-shelf’ models were found to be the most useful?</li>
@@ -257,7 +1300,7 @@ Use only Provided Information
 <td style="text-align: center;">Unacceptable Methodology. Fails to apply any advanced methodology (<em>e.g.</em>, only uses linear regression and/or basic ARMA-type time series models).</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">Feature Engineering and Analysis<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> (5 points)</td>
+<td style="text-align: center;">Feature Engineering and Analysis<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> (5 points)</td>
 <td style="text-align: center;">Excellent FEA. Impressive feature engineering creating significant improvements in predictive performance. Careful analysis of feature importance comparing and contrasting ‘model-specific’ importance and ‘model-agnostic’ importance.</td>
 <td style="text-align: center;">Great FEA. Meaningful feature engineering leading to non-trivial improvements in predictive performance. Analysis of feature importance compared across multiple models.</td>
 <td style="text-align: center;">Solid FEA. Features are treated appropriately, with elementary analysis of feature importance for the model(s) used.</td>
@@ -276,8 +1319,8 @@ Use only Provided Information
 </table>
 <p>Students will also vote on an “Audience Choice” award; the winning presentation will automatically receive a score of 50.</p>
 </section>
-<section id="final-report-50-points" class="level2">
-<h2 class="anchored" data-anchor-id="final-report-50-points">Final Report (50 Points)</h2>
+<section id="final-report-50-points" class="level3">
+<h3 class="anchored" data-anchor-id="final-report-50-points">Final Report (50 Points)</h3>
 <p>By Tuesday May 26, 2026 at 23:59 PM, each competition unit (either an individual or a team) will submit a final report of no more than 10 pages (10-12 point, single- or double-spaced) providing an <em>After-Action Report</em> of their competition performance. This report should focus on three topics:</p>
 <ul>
 <li><ol type="1">
@@ -287,7 +1330,7 @@ Use only Provided Information
 <li>What insights into the underlying data can be gleaned from the model? <em>E.g.</em>, are certain features especially important for making predictions? Or are certain features which you would expect to be important not actually particularly important?</li>
 </ol></li>
 <li><ol start="3" type="1">
-<li>What steps did your team take that were particularly helpful to maximizing predictive performance? Or, what parts of your model development cycle were weak and could be the most improved?<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
+<li>What steps did your team take that were particularly helpful to maximizing predictive performance? Or, what parts of your model development cycle were weak and could be the most improved?<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
 </ol></li>
 </ul>
 <p>Note that this report is not solely focused on predictive performance. Analysis that dives deep into the underlying structure of the data and generates novel insights will score as well (or perhaps even better) than a highly performant but noninterpretable model.</p>
@@ -369,16 +1412,60 @@ Reproducibility Info
 </tr>
 </tbody>
 </table>
+<p>At the end of your report, you <strong>must</strong> include a description of the extent to which you used Generative AI tools in this course competition or in preparation of your final report. Failure to include an AI disclosure will result in an <strong>automatic 25% penalty.</strong></p>
+<p><em>E.g.</em>,</p>
+<div class="callout callout-style-default callout-note callout-titled" title="AI Usage Statement">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+AI Usage Statement
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>No Generative AI tools were used to complete this mini-project.</p>
+</div>
+</div>
+</div>
+<p>or</p>
+<div class="callout callout-style-default callout-note callout-titled" title="AI Usage Statement">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+AI Usage Statement
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>GitHub Co-Pilot Pro was used via RStudio integration while completing this project. No other generative AI tools were used.</p>
+</div>
+</div>
+</div>
+<p>Recall that Generative AI <strong>may not</strong> be used for idea generation or writing your final report. It may only be used for coding assistance and idea generation.</p>
+</section>
+<section id="teams" class="level3">
+<h3 class="anchored" data-anchor-id="teams">Teams</h3>
+<p>Students <em>may</em>, but are not required to, work in teams of 2 for this competition. Teams will submit one (shared) final presentation and final report and will receive the same grade for <strong>all course elements</strong>. Students will create teams <em>via</em> Kaggle’s team functionality.</p>
+<p>Teams may be formed at any point in the competition. Teams will not be allowed to dissolve except under truly exceptional circumstances. (Unequal participation is sadly not an exceptional circumstance.)</p>
 
 
+</section>
 </section>
 
 
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Feature Engineering and Analysis includes ‘classical’ feature engineering and analysis to identify key features (<em>e.g.</em> feature importance rankings or variable selection).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>In this ‘self-evaluation’ section, you are encouraged to be truthful and honest in your reflections. I already know how well you did and you won’t be able to convince me otherwise, so if you made fundamental errors that hindered your performance, I would rather see them discussed honestly (indicating understanding of how you could improve) rather than minimized.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>We are ignoring alternative assessments like the <a href="https://www.nysed.gov/state-assessment/new-york-state-alternate-assessment">NYSAA</a> for this competition.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Very small districts may consolidate into two (or even one) school serving a wider variety of grades or arrange for their students to be educated within a neighboring district.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Feature Engineering and Analysis includes ‘classical’ feature engineering and analysis to identify key features (<em>e.g.</em> feature importance rankings or variable selection).<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In this ‘self-evaluation’ section, you are encouraged to be truthful and honest in your reflections. I already know how well you did and you won’t be able to convince me otherwise, so if you made fundamental errors that hindered your performance, I would rather see them discussed honestly (indicating understanding of how you could improve) rather than minimized.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
