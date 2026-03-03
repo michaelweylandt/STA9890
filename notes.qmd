@@ -115,6 +115,8 @@ Mid-semester tests and solutions will be posted here *after* the exam.
 #### Test 1: Machine Learning Foundations
 
 - [Formula Sheet](./tests/test01/formula_sheet.pdf)
+- [Exam Packet](./tests/test01/exam_packet.pdf)
+- [Solutions](./tests/test01/solutions.qmd)
 
 ### Additional Materials
 
