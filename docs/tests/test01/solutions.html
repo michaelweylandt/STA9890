@@ -586,7 +586,7 @@ Solution
 </div>
 </div>
 </div></li>
-<li><p>Misclassification error seems like a natural loss function for ’= classification, but it is actually quite difficult to work with. Why?</p>
+<li><p>Misclassification error seems like a natural loss function for classification, but it is actually quite difficult to work with. Why?</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solution">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -872,7 +872,7 @@ Solution
 </div>
 <div id="callout-27" class="callout-27-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>We can differentiate the above objective function and set it equal to zero. The objective is quadratic (with a positive definite weight matrix since $y_i^2 &gt; <span class="math inline">\() in the optimization variable (\)</span>$), so convex and the problem has no constraints. Therefore, setting the gradient to zero and solving will guarantee us an optimal solution.</p>
+<p>We can differentiate the above objective function and set it equal to zero. The objective is quadratic (with a positive definite weight matrix since <span class="math inline">\(y_i^2 &gt; 0\)</span>) in the optimization variable (<span class="math inline">\(\bbeta\)</span>), so convex and the problem has no constraints. Therefore, setting the gradient to zero and solving will guarantee us an optimal solution.</p>
 <p><span class="math display">\[\begin{align*}
 \frac{\partial}{\partial \bbeta}\left[\frac{1}{2}(\by - \bX\bbeta)^{\top}\bY^{-2}(\by - \bX\bbeta)\right] &amp;= \bzero \\
 -\bX^{\top}\bY^{-2}(\by - \bX\bbeta) &amp;= \bzero \\
@@ -1001,7 +1001,7 @@ Y = 1 + 2X + 3X^2 + \epsilon
 <span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">rowMeans</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  MSE_OLS  MSE_MSPE 
- 7.090259 10.847992 </code></pre>
+ 6.947296 11.563668 </code></pre>
 </div>
 </div>
 <p>So while the MSE of the MSPE estimator isn’t too bad, the OLS estimator is dominant in (at least this one) this setting.</p>

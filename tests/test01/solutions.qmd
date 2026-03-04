@@ -320,7 +320,7 @@ $$\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\math
     :::
     
     
-04. Misclassification error seems like a natural loss function for '=
+04. Misclassification error seems like a natural loss function for
     classification, but it is actually quite difficult to work with. Why?
 
     ::: {.callout-tip title="Solution" collapse="true"}
@@ -591,7 +591,7 @@ problem are weighted equally.
    
     We can differentiate the above objective function and set it equal to zero. 
     The objective is quadratic (with a positive definite weight matrix since 
-    $y_i^2 > $) in the optimization variable ($\bbeta$), so convex and the 
+    $y_i^2 > 0$) in the optimization variable ($\bbeta$), so convex and the 
     problem has no constraints. Therefore, setting the gradient to zero and
     solving will guarantee us an optimal solution. 
     
