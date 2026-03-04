@@ -13,6 +13,7 @@ Topics:
 - Gradient Methods
 - Stochastic Gradient Methods
 - Adaptivity & Momentum (Brief)
+- Backprop and Automatic Differentiation
 - Law of Large Numbers & Monte Carlo
 
 
@@ -20,3 +21,9 @@ Topics:
 #| include: false
 1+1
 ```
+
+{{< video https://www.youtube.com/watch?v=Ilg3gGewQ5U >}}
+
+{{< video https://www.youtube.com/watch?v=tIeHLnjs5U8 >}}
+
+

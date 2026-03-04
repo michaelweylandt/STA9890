@@ -31,17 +31,7 @@ class_details <- function(n){
 
 - [Instructor Notes](./notes/notes02.html)
 
-The YouTube channel "3Blue1Brown" makes excellent videos explaining
-mathematical concepts. A recent entry discusses gradient descent
-in the context of Neural Networks. At this point in the course, 
-our focus is still on simpler (convex) methods, so not all of this
-will be directly applicable, but it is still a useful summary and
-gives helpful background on how gradient methods remain at the heart
-of all modern ML. 
-
-{{< video https://www.youtube.com/watch?v=IHZwWFHWa-w >}}
-
-You may also find value in 3Blue1Brown videos on [Linear
+You may find value in 3Blue1Brown videos on [Linear
 Algebra](https://www.3blue1brown.com/topics/linear-algebra) and
 on [Probability](https://www.3blue1brown.com/topics/probability). 
 
@@ -67,13 +57,36 @@ this work.
 
 - [Instructor Notes](./notes/notes03.html)
 
+
+
 #### `r class_details(04)` {#week04}
 
 - [Instructor Notes](./notes/notes04.html)
 
+
+The YouTube channel "3Blue1Brown" makes excellent videos explaining
+mathematical concepts. A recent entry discusses gradient descent
+in the context of Neural Networks. At this point in the course, 
+our focus is still on simpler (convex) methods, so not all of this
+will be directly applicable, but it is still a useful summary and
+gives helpful background on how gradient methods remain at the heart
+of all modern ML. 
+
+{{< video https://www.youtube.com/watch?v=IHZwWFHWa-w >}}
+
+
 #### `r class_details(05)` {#week05}
 
 - [Instructor Notes](./notes/notes05.html)
+
+As we move into supervised learning, we will pay special attention to problems
+in which there are *more* features than observations. In a certain sense, these
+problems "live" in $\mathbb{R}^p$ where $p \gg 3$. While, algebraically, this is a space
+we have no trouble working with, our *geometric* intuition about higher-dimensional
+spaces is generally quite terrible. This talk discusses some of the strangeness
+associated with going past the third dimension: 
+
+{{< video https://www.youtube.com/watch?v=fsLh-NYhOoU >}}
 
 #### `r class_details(06)` {#week06}
 
@@ -103,10 +116,14 @@ this work.
 
 - [Instructor Notes](./notes/notes12.html)
 
+
 #### `r class_details(13)` {#week13}
 
 - [Instructor Notes](./notes/notes13.html)
 
+{{< video https://www.youtube.com/watch?v=iv-5mZ_9CPY >}}
+
+[Neural Networks playlist from  `3Blue1Brown`](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 
 ### Tests and Solutions
 
