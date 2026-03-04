@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-01-23">
+<meta name="dcterms.date" content="2026-03-04">
 <title>STA 9890 - Supervised Learning: II. Penalized Regression – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -184,20 +184,28 @@ window.Quarto = {
    
   <ul>
 <li>
-<a href="#mixture-models" id="toc-mixture-models" class="nav-link active" data-scroll-target="#mixture-models">Mixture Models</a>
+<a href="#ridge-regression" id="toc-ridge-regression" class="nav-link active" data-scroll-target="#ridge-regression">Ridge Regression</a>
   <ul class="collapse">
-<li><a href="#inference-from-a-mixture-distribution" id="toc-inference-from-a-mixture-distribution" class="nav-link" data-scroll-target="#inference-from-a-mixture-distribution">Inference from a Mixture Distribution</a></li>
+<li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection">Model Selection</a></li>
   </ul>
 </li>
-  <li><a href="#building-generative-classifiers" id="toc-building-generative-classifiers" class="nav-link" data-scroll-target="#building-generative-classifiers">Building Generative Classifiers</a></li>
   <li>
-<a href="#named-generative-classifiers" id="toc-named-generative-classifiers" class="nav-link" data-scroll-target="#named-generative-classifiers">Named Generative Classifiers</a>
+<a href="#lasso-regression" id="toc-lasso-regression" class="nav-link" data-scroll-target="#lasso-regression">Lasso Regression</a>
   <ul class="collapse">
-<li><a href="#naive-bayes" id="toc-naive-bayes" class="nav-link" data-scroll-target="#naive-bayes">Naive Bayes</a></li>
-  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis">Linear Discriminant Analysis,</a></li>
+<li><a href="#best-subsets" id="toc-best-subsets" class="nav-link" data-scroll-target="#best-subsets">Best Subsets</a></li>
+  <li><a href="#algorithmic-approximations" id="toc-algorithmic-approximations" class="nav-link" data-scroll-target="#algorithmic-approximations">Algorithmic Approximations</a></li>
+  <li><a href="#convex-approximations" id="toc-convex-approximations" class="nav-link" data-scroll-target="#convex-approximations">Convex Approximations</a></li>
   </ul>
 </li>
-  <li><a href="#a-non-standard-example" id="toc-a-non-standard-example" class="nav-link" data-scroll-target="#a-non-standard-example">A Non-Standard Example</a></li>
+  <li>
+<a href="#the-lasso" id="toc-the-lasso" class="nav-link" data-scroll-target="#the-lasso">The Lasso</a>
+  <ul class="collapse">
+<li><a href="#the-value-of-sparsity" id="toc-the-value-of-sparsity" class="nav-link" data-scroll-target="#the-value-of-sparsity">The Value of Sparsity</a></li>
+  <li><a href="#algorithms" id="toc-algorithms" class="nav-link" data-scroll-target="#algorithms">Algorithms</a></li>
+  <li><a href="#glmnet" id="toc-glmnet" class="nav-link" data-scroll-target="#glmnet">glmnet</a></li>
+  <li><a href="#model-selection-1" id="toc-model-selection-1" class="nav-link" data-scroll-target="#model-selection-1">Model Selection</a></li>
+  </ul>
+</li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes06.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes06.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -219,7 +227,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 23, 2026</p>
+      <p class="date">March 4, 2026</p>
     </div>
   </div>
   
@@ -228,27 +236,137 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\P}{\mathbb{P}}\]</span></p>
-<p>This week, we begin our study of classifiers with an analysis of <em>generative</em> classifiers. While many generative classifiers have appeared in the literature, they can essentially all be derived from a standard formula. We will discuss this standard formula first and then turn our attention to specific named instances.</p>
-<section id="mixture-models" class="level2"><h2 class="anchored" data-anchor-id="mixture-models">Mixture Models</h2>
-<p>Recall from <a href="https://michael-weylandt.com/STA9715">STA 9715</a> that a (discrete) mixture model is a distribution of the form:</p>
-<p><span class="math display">\[X \sim \begin{cases} X_1 &amp; Z = 1 \\ X_2 &amp; Z = 2 \\ \dots \\ X_K &amp; Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \mathcal{P}_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)\]</span></p>
-<p>That’s quite a bit to unpack, so let’s take it piece by piece: the random variable <span class="math inline">\(X\)</span> has a <span class="math inline">\(K\)</span>-component <em>mixture</em> distribution if we can sample <span class="math inline">\(X\)</span> by generating <span class="math inline">\(K\)</span> independent random variables <span class="math inline">\(\{X_1, \dots, X_K\}\)</span> (with <em>different</em> distributions) and then selecting one of them at random.</p>
-<p>Let’s look at a concrete version of this: suppose we have a population of male and female basset hounds that is 60% female. The weight of male basset hounds follows a <span class="math inline">\(\mathcal{N}(65, 10)\)</span> distribution while females have weight distributed as <span class="math inline">\(\mathcal{N}(55, 10)\)</span>. The weight of a randomly selected basset can be sampled as</p>
+</header><p><span class="math display">\[\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\V}{\mathbb{V}} \newcommand{\argmin}{\text{arg min}} \newcommand{\K}{\mathbb{K}} \newcommand{\bzero}{\mathbf{0}}\]</span></p>
+<section id="ridge-regression" class="level2"><h2 class="anchored" data-anchor-id="ridge-regression">Ridge Regression</h2>
+<p>In the <a href="../notes/notes05.html">previous set of notes</a>, we saw that <span class="math inline">\((\overline{X}_n)_{[-\beta, \beta]}\)</span> could outperform the naive estimator <span class="math inline">\(\overline{X}_n\)</span> if the true parameter is ‘not too big’.</p>
+<p>Can we extend this idea to regression?</p>
+<p>Recall that we formulated OLS as:</p>
+<p><span class="math display">\[\hat{\bbeta}_{\text{OLS}} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\|\]</span></p>
+<p>We can apply a ‘clamp’ as:</p>
+<p><span class="math display">\[\hat{\bbeta}_{\tau-\text{Clamped}} = \argmin_{\bbeta \in \R: \|\bbeta\| &lt; \tau} \frac{1}{2}\|\by - \bX\bbeta\| = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\| \leq {\tau}\]</span></p>
+<p>Here, we have some choice in measuring the ‘size’ of <span class="math inline">\(\hat{\bbeta}\)</span>: in fact, we can <em>theoretically</em> use any of our <span class="math inline">\(\ell_p\)</span>-norms. As with the squared loss, it turns out to be mathematically easiest to start with the <span class="math inline">\(\ell_2\)</span> (Euclidean) norm. This gives us the so-called <em>ridge regression</em> problem:</p>
+<p><span class="math display">\[\hat{\bbeta}_{\text{Ridge}} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\|_2 \leq {\tau} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\|_2^2 \leq {\tau}^2\]</span></p>
+<p>Before we discuss solving this, let’s confirm it is convex. Recall that for a problem to be convex, it needs to have a convex <em>objective</em> and a convex <em>feasible set</em>. Clearly the objective here is convex - we still have the MSE loss from OLS unchanged. So now we need to convince ourselves that <span class="math inline">\(\|\bbeta\|_2^2 \leq \tau^2\)</span> defines a convex set. We can look at this in 2D first:</p>
+<p><span class="math display">\[\|\bbeta\|_2^2 \leq \tau^2 \implies \beta_1^2 + \beta_2^2 \leq \tau\]</span></p>
+<p>But this is just the equation defining a circle and its interior (in math speak a 2D ‘ball’) so it has to be convex!</p>
+<p>In fact, constraints of the form</p>
+<p><span class="math display">\[\|\bbeta\|_p \leq \tau \Leftrightarrow \|\bbeta\|_p^2 \leq \tau^p\]</span></p>
+<p>are convex for all <span class="math inline">\(\ell_p\)</span> norms (<span class="math inline">\(p \geq 1\)</span>). We will use this fact many times in this course. The sets that this constraint defines are called <span class="math inline">\(\ell_p\)</span> ‘balls’ by analogy with the <span class="math inline">\(\ell_2\)</span> figure, even if they aren’t actually round.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rbasset</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n</span>, size<span class="op">=</span><span class="fl">1</span>, prob<span class="op">=</span><span class="fl">0.6</span><span class="op">)</span> <span class="co"># Z=1 &lt;- Female</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Z</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean<span class="op">=</span><span class="fl">55</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>              <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean<span class="op">=</span><span class="fl">65</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes06_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So our ridge problem</p>
+<p><span class="math display">\[\hat{\bbeta}_{\text{Ridge}} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\|_2^2 \leq {\tau}^2\]</span> is indeed convex.</p>
+<p>While we can solve this without too much trouble (though we need to adjust our basic gradient descent method to avoid going ‘out of bounds’), it turns out to be easier to use an optimization trick known as <em>Lagrange Multipliers</em> to change this to something easier to solve.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Method of Lagrange Multipliers</a> lets us turn <em>constrained</em> optimization problems that look like:</p>
+<p><span class="math display">\[\argmin_x f(x) \text{ such that } g(x) \leq \tau\]</span></p>
+<p>into <em>unconstrained</em> problems like:</p>
+<p><span class="math display">\[\argmin_x f(x) + \lambda g(x)\]</span></p>
+<p>Here, the constant <span class="math inline">\(\lambda\)</span> is known as the Lagrange multiplier. Instead of <em>forcing</em> <span class="math inline">\(g(x)\)</span> to be bounded, we simply <em>penalize</em> any <span class="math inline">\(x\)</span> that makes <span class="math inline">\(g(\cdot)\)</span> large. For large enough penalties (large <span class="math inline">\(\lambda\)</span>), we will eventually force <span class="math inline">\(g(x)\)</span> to be small enough that we satisfy the original constraint. In fact, there is a one-to-one relationship between <span class="math inline">\(\tau\)</span> and <span class="math inline">\(\lambda\)</span>, but it’s usually not possible to work it out in any meaningful useful manner; all we can say is that larger <span class="math inline">\(\lambda\)</span> correspond to smaller <span class="math inline">\(\tau\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pause to Reflect
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Why is this true? Why does small <span class="math inline">\(\tau\)</span> imply large <span class="math inline">\(\lambda\)</span> and <em>vice versa</em>?</p>
+</div>
+</div>
+</div>
+<p>In this form, it’s straightforward to pose ridge regression as:</p>
+<p><span class="math display">\[\argmin_{\beta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2 + \frac{\lambda}{2}\|\bbeta\|_2^2\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pause to Reflect
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Why were we allowed to put an extra <span class="math inline">\(\frac{1}{2}\)</span> in front of the penalty term?</p>
+</div>
+</div>
+</div>
+<p>Since both terms of this expression are differentiable, it is easy to show that the solution to this problem is given by:</p>
+<p><span class="math display">\[\hat{\bbeta}_{\lambda} = (\bX^{\top}\bX + \lambda \bI)^{-1}\bX^{\top}\by\]</span></p>
+<p>To wit:</p>
+<p><span class="math display">\[\begin{align*}
+\bzero &amp;= \frac{\partial}{\partial \bbeta}\left(\frac{1}{2}\|\by - \bX\bbeta\|_2^2 + \frac{\lambda}{2}\|\bbeta\|_2^2\right) \\
+       &amp;= -\bX^{\top}(\by - \bX\bbeta) + \lambda \bbeta \\
+\bX^{\top}\by &amp;= (\bX^{\top}\bX + \lambda \bI)\bbeta \\
+\implies \hat{\beta}_{\text{Ridge}} &amp;= (\bX^{\top}\bX + \lambda \bI)^{-1}\bX^{\top}\by
+\end{align*}\]</span></p>
+<p>There are several important things to note about this expression:</p>
+<ul>
+<li><p>There are actually <em>many</em> ridge regression solutions, one for each value of <span class="math inline">\(\lambda\)</span>. It is a bit improper to refer to “the” ridge regression solution. We will discuss selecting <span class="math inline">\(\lambda\)</span> below.</p></li>
+<li>
+<p>If you are a bit sloppy, this looks something like:</p>
+<p><span class="math display">\[\hat{\beta} \approx \frac{SS_{XY}}{SS_{XX} + \lambda}\]</span></p>
+<p>so we ‘shrink’ the standard OLS solution towards zero, by an amount depending on <span class="math inline">\(\lambda\)</span>. Higher <span class="math inline">\(\lambda\)</span></p>
+</li>
+<li>
+<p>The penalized form (as opposed to the constraint form) allows for <span class="math inline">\(\hat{\beta}\)</span> to be arbitrarily large, <strong>if the data supports it.</strong></p>
+<p>More than that, <span class="math inline">\(\lambda\)</span> gives us an explicit <em>trade-off</em>. When comparing two potential solutions (<span class="math inline">\(\hat{\bbeta}_1, \hat{\bbeta}_2\)</span>), we will prefer <span class="math inline">\(\hat{\bbeta}_1\)</span> if:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{1}{2}\|\by - \bX\bbeta_1\|_2^2 + \frac{\lambda}{2}\|\bbeta_1\|_2^2 &amp; \leq \frac{1}{2}\|\by - \bX\bbeta_2\|_2^2 + \frac{\lambda}{2}\|\bbeta_2\|_2^2 \\
+\|\by - \bX\bbeta_1\|_2^2 - \|\by - \bX\bbeta_2\|_2^2 &amp; \leq \lambda(\|\bbeta_2\|_2^2 - \|\bbeta_1\|_2^2) \\
+\Delta \text{MSE} &amp;\leq \lambda \Delta \text{$\ell_2^2$-Norm}
+\end{align*}\]</span></p>
+<p>That is, we will take a solution with a MSE that is <span class="math inline">\(\lambda\)</span> lower if that lowers the squared-norm of the solution by 1. Here <span class="math inline">\(\lambda\)</span> measures the “price” we are willing to pay (in terms of MSE) for shrinking the norm of <span class="math inline">\(\hat{\bbeta}\)</span>: at larger <span class="math inline">\(\lambda\)</span>, we demand a <em>larger</em> MSE reduction <em>ceteribus paribus</em> to accept a larger <span class="math inline">\(\hat{\bbeta}\)</span>, while at small <span class="math inline">\(\lambda\)</span>, we are willing to take a larger <span class="math inline">\(\hat{\bbeta}\)</span> in exchange for a much smaller decrease in MSE.</p>
+</li>
+<li><p>If we set <span class="math inline">\(\lambda = 0\)</span>, we recover standard OLS. Continuing the ‘price’ discussion above, this is the limit in which we will take a larger <span class="math inline">\(\hat{\bbeta}\)</span> for <em>any</em> decrease in training MSE. This makes sense as we originally built OLS as the ERM for MSE, by definition caring about <em>only</em> MSE reduction and nothing else.</p></li>
+<li><p>Unlike the OLS solution, the ridge regression exists even when <span class="math inline">\(p &gt; n\)</span> because the <span class="math inline">\(+\lambda \bI\)</span> term ensures the ‘denominator’ prefactor is always invertible.</p></li>
+</ul>
+<p>While this isn’t as simple to analyze as some of the expressions we considered above, this looks similar enough to our ‘shrunk’ mean estimator that it’s plausible it will improve on OLS. In fact, you can show that there is always <em>some</em> value of <span class="math inline">\(\lambda\)</span> that guarantees improvement over OLS in expectation. (This is a result known as the “MSE Existence Theorem”)</p>
+<p>To wit,</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">80</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html">chol</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/toeplitz.html">toeplitz</a></span><span class="op">(</span><span class="fl">0.6</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">p</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># Add 'AR(1)' correlation</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="va">Z</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">L</span></span>
+<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">eye</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span>, <span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">calculate_ridge_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">lambda</span>, <span class="va">nreps</span> <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">MSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">nreps</span>, <span class="op">{</span></span>
+<span>        <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="fu">eye</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">beta</span> <span class="op">-</span> <span class="va">beta_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>lambda<span class="op">=</span><span class="va">lambda</span>, MSE<span class="op">=</span><span class="va">MSE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu">rbasset</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 53.06954</code></pre>
-</div>
-</div>
-<p>If we collect the weights of many basset hounds, we see that the resulting distribution is not normally distributed:</p>
-<div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="fu">rbasset</span><span class="op">(</span><span class="fl">10000</span><span class="op">)</span>, breaks<span class="op">=</span><span class="fl">50</span>, main<span class="op">=</span><span class="st">"Distribution of Basset Hound Weights"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span></span>
+<span><span class="va">lambda_grid</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>, length.out<span class="op">=</span><span class="fl">41</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">RIDGE_MSE</span> <span class="op">&lt;-</span> <span class="fu">map</span><span class="op">(</span><span class="va">lambda_grid</span>, <span class="va">calculate_ridge_mse</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">list_rbind</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">OLS_MSE</span> <span class="op">&lt;-</span> <span class="fu">calculate_ridge_mse</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">MSE</span> <span class="co"># Ridge at lambda = 0 =&gt; OLS</span></span>
+<span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">RIDGE_MSE</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">lambda</span>, y<span class="op">=</span><span class="va">MSE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_abline</span><span class="op">(</span>intercept<span class="op">=</span><span class="va">OLS_MSE</span>, slope<span class="op">=</span><span class="fl">0</span>, lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">xlab</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">lambda</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">ylab</span><span class="op">(</span><span class="st">"Estimation Error (MSE)"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Ridge Regularization Improves on OLS"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">scale_x_log10</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="notes06_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
@@ -256,85 +374,140 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>In fact, this is a <em>bimodal</em> distribution with each ‘lump’ representing males or females.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Distributions of this form can often be written more compactly using a ‘convex combination’ notation:</p>
-<p><span class="math display">\[\text{Basset} \sim \frac{2}{5}\mathcal{N}(65, 10) + \frac{3}{5}\mathcal{N}(55, 10)\]</span></p>
-<p>The above notation can be interpreted as specifying a draw from the first distribution with probability <span class="math inline">\(2/5 = 40\%\)</span> and from the second with probability <span class="math inline">\(3/5 = 60\%\)</span>; that is, it’s a particular 2-component mixture of normals.</p>
-<p>In specifying this mixture, the probabilities of each component must be non-negative and must sum to 1; these are exactly the same restrictions we put on a convex combination of points earlier in the course. In fact, the set of mixture distributions can be consider the ‘convex set’ containing all of its individual components.</p>
-<section id="inference-from-a-mixture-distribution" class="level3"><h3 class="anchored" data-anchor-id="inference-from-a-mixture-distribution">Inference from a Mixture Distribution</h3>
-<p>Now suppose you are on a walk and you meet a very friendly 62 pound basset hound. You of course want to pet this marvelous dog, but you need to ask the owner’s permission first: in doing so, should you ask “may I pet him?” or “may I pet her?”</p>
-<p>While the basset hound won’t care if you misgender, you recall that you can use <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem"><em>Bayes’ Rule</em></a> to ‘invert’ the mixture distribution. That is, while the mixture distribution normally goes from sex to weight, Bayes’ rule will let us go from weight back to sex.</p>
-<p>Specifically, in this case, Bayes’ rule tells us:</p>
-<p><span class="math display">\[\P(\text{Female}|\text{Weight=62}) = \frac{\P(\text{Weight=62}|\text{Female})\P(\text{Female})}{\P(\text{Weight=62}|\text{Female})\P(\text{Female}+\P(\text{Weight=62}|\text{Male})\P(\text{Male}))}\]</span></p>
-<p>The math here is a bit nasty numerically, but we can do it in <code>R</code> quite simply:</p>
+<p>Clearly, for smallish <span class="math inline">\(\lambda\)</span>, we are actually outperforming OLS, sometimes by a significant amount! For this problem, the minimum MSE (best estimate) actually seems to occur near <span class="math inline">\(\lambda \approx\)</span> 2.512</p>
+<section id="model-selection" class="level3"><h3 class="anchored" data-anchor-id="model-selection">Model Selection</h3>
+<p>While theory and our experiment above tell us that there is <em>some</em> value of <span class="math inline">\(\lambda\)</span> that beats OLS, how can we actually find it? We can’t do a simulation like above as we had to know <span class="math inline">\(\bbeta_*\)</span> to compute the MSE and the theory is non-constructive. (In particular, we have to know <span class="math inline">\(\bbeta_*\)</span> to compute the bias.)</p>
+<p>Well, we can go back to our overarching goal: we want results that <em>generalize</em> to unseen data. Here, in particular, we want results that <em>predict well</em> on unseen data. So let’s just do that.</p>
+<p>We can split our data into a <em>training</em> set and a <em>validation</em> set. The <em>training</em> set is like we have already seen, used to estimate the regression coefficients <span class="math inline">\(\bbeta_{\text{Ridge}}\)</span>; the <em>validation</em> set may be new. It is used to compute the MSE on ‘pseudo-new’ data and we then can select the best predicting value of <span class="math inline">\(\lambda\)</span>. In this case, this looks something like the following:</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_female</span> <span class="op">&lt;-</span> <span class="fl">0.6</span></span>
-<span><span class="va">p_male</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">-</span><span class="va">p_female</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Continuing with X, beta from above</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p_62_female</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">62</span>, mean<span class="op">=</span><span class="fl">55</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">p_62_male</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="fl">62</span>, mean<span class="op">=</span><span class="fl">65</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">TRAIN_IX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0.8</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span></span>
+<span><span class="va">VALID_IX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, <span class="va">TRAIN_IX</span><span class="op">)</span> <span class="co"># Other elements</span></span>
 <span></span>
-<span><span class="va">p_female_62</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">p_62_female</span> <span class="op">*</span> <span class="va">p_female</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">p_62_female</span> <span class="op">*</span> <span class="va">p_female</span> <span class="op">+</span></span>
-<span>                                           <span class="va">p_62_male</span> <span class="op">*</span> <span class="va">p_male</span><span class="op">)</span></span>
+<span><span class="va">TRAIN_X</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="va">TRAIN_IX</span>, <span class="op">]</span></span>
+<span><span class="va">TRAIN_Y</span> <span class="op">&lt;-</span> <span class="va">y</span><span class="op">[</span><span class="va">TRAIN_IX</span><span class="op">]</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"There is a "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">p_female_62</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"% chance that basset is a female."</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "There is a 16.87% chance that basset is a female."</code></pre>
+<span><span class="va">VALID_X</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="va">VALID_IX</span>, <span class="op">]</span></span>
+<span><span class="va">VALID_Y</span> <span class="op">&lt;-</span> <span class="va">y</span><span class="op">[</span><span class="va">VALID_IX</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">compute_validation_error</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">lambda</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">beta_hat_rr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">TRAIN_X</span><span class="op">)</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="fu">eye</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, </span>
+<span>                         <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">TRAIN_X</span>, <span class="va">TRAIN_Y</span><span class="op">)</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="va">y_pred</span> <span class="op">&lt;-</span> <span class="va">VALID_X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta_hat_rr</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="va">lambda</span>, </span>
+<span>               validation_mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_pred</span> <span class="op">-</span> <span class="va">VALID_Y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">validation_error</span> <span class="op">&lt;-</span> <span class="fu">map</span><span class="op">(</span><span class="va">lambda_grid</span>, <span class="va">compute_validation_error</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">list_rbind</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">validation_error</span>, </span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">lambda</span>, </span>
+<span>           y <span class="op">=</span> <span class="va">validation_mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">xlab</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">lambda</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">ylab</span><span class="op">(</span><span class="st">"MSE on Validation Set"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Hold-Out Tuning of Ridge Regression Regularization Parameter"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">scale_x_log10</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes06_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<p>Given that calculation, you take a chance and ask whether you can pet <em>him</em>.</p>
-<p>What have we done here? We have <em>built</em> a basset-sex classifier from a combination of the population distribution and Bayes’ rule. This is the essence of generative classifiers - <em>if</em> we know the distribution, accurate probabilistic classification is a straightforward application of Bayes’ rule. In practice, we don’t know the distribution <em>a priori</em> and it must be estimated from data. Different generative classifiers essentially are just different ways of estimating the population (mixture) distribution.</p>
-</section></section><section id="building-generative-classifiers" class="level2"><h2 class="anchored" data-anchor-id="building-generative-classifiers">Building Generative Classifiers</h2>
-<p>Let’s formalize our approach for a two-class classifier though the extension to multi-class is simple enough. Given a training set</p>
-<p><span class="math display">\[\mathcal{D}_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\]</span></p>
-<p>we assume <span class="math inline">\(\bX\)</span> follows a two-component mixture where <span class="math inline">\(Y\)</span> is the mixing variable:</p>
-<p><span class="math display">\[\bX | Y=0 \sim \mathcal{P}_0 \text{ and } \bX | Y=1 \sim \mathcal{P}_1\]</span></p>
-<p>Clearly to fully specify this distribution, we need three things:</p>
-<ul>
-<li>To know the distribution of <span class="math inline">\(Y\)</span>
-</li>
-<li>To know the distribution <span class="math inline">\(\mathcal{P}_0\)</span>
-</li>
-<li>To know the distribution <span class="math inline">\(\mathcal{P}_1\)</span>
-</li>
-</ul>
-<p>The distribution of <span class="math inline">\(Y\)</span> is relatively straightforward: since it only takes values <span class="math inline">\(\{0, 1\}\)</span> it <em>must</em> have a Bernoulli distribution and hence the only thing we need to estimate is the probability, <span class="math inline">\(\pi_1\)</span>, that <span class="math inline">\(Y=1\)</span>. The simplest approach to estimating the Bernoulli probability is to simply take the empirical probability from the training data set, <em>i.e.</em>, the fraction of observations where <span class="math inline">\(Y=1\)</span>, but this can also be estimated using knowledge of a broader data set or a different population than the training data. For instance, if a data set is known to overindex on <span class="math inline">\(Y=1\)</span>, <em>e.g.</em>, because it contains patients who self-reported some disease, it may be more appropriate to estimate <span class="math inline">\(p\)</span> based on the population-wide prevalance of the disease. These concerns are typically rather problem specific.</p>
-<p>Estimation of <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> may be more difficult. If the training data is <em>extremely</em> large, we may use a <em>non-parametric</em> estimator, <em>e.g.</em>, a multivariate histogram, but in general we will need to use some sort of restrictive (parametric) model. The most commonly used generative classifiers assume some sort of multivariate normal structure, but you can create ‘custom’ classifiers appropriate to specific domains.</p>
-<p>For now, let us assume <span class="math inline">\(\mathcal{P}_{0}, \mathcal{P}_1\)</span> have been estimated and that they have PDFs <span class="math inline">\(p_0(\cdot), p_1(\cdot)\)</span>. Applying Bayes’ rule as before, with prior (baseline) probabilities <span class="math inline">\(\pi_0, \pi_1 = 1-\pi_0\)</span>, we get the following probabilities</p>
-<p><span class="math display">\[\begin{align*}
-\P(Y = 1 | \bx) &amp;= \frac{\P(\bx | Y = 1)\P(Y=1)}{\P(\bx | Y = 0)\P(Y=0)+\P(\bx | Y = 1)\P(Y=1)} \\
-&amp;= \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1}
-\end{align*}\]</span></p>
-<p>If we are happy with a <em>probabilistic</em> classifier, we are essentially done. If we want a true binary classifier, <em>i.e.</em>, a <span class="math inline">\(\{0, 1\}\)</span> valued ‘point predictor’, we also need to set a classification threshold, <span class="math inline">\(\overline{p}\)</span>, to obtain:</p>
-<p><span class="math display">\[\delta(\bx) = \begin{cases} 0 &amp; \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1} &lt; \overline{p} \\ 1 &amp; \text{ otherwise} \end{cases}\]</span></p>
-<p><span class="math inline">\(\overline{p}\)</span> can be chosen to optimize a relevant performance metric (if you practice good sample splitting hygiene) or via a full decision theoretic analysis, as discussed last week.</p>
-<p>That’s basically it!</p>
-</section><section id="named-generative-classifiers" class="level2"><h2 class="anchored" data-anchor-id="named-generative-classifiers">Named Generative Classifiers</h2>
-<p>As mentioned above, the ‘popular’ generative classifiers are essentially defined by specific multivariate normality assumptions on <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span>. Let us review these in ascending order of complexity.</p>
-<p>Recall that a multivariate normal distribution is uniquely identified by its <em>mean</em> and <em>(co)variance (matrix)</em>, just like a standard univariate normal distribution. When estimating means, we will simply use the class means for each classifier, though James-Stein time estimators could be used for a (likely imperceptible) improvement. Estimation of variances is a harder task: to estimate the full covariance matrix of <span class="math inline">\(p\)</span> random variables (or a random <span class="math inline">\(p\)</span>-vector), we must estimate:</p>
-<ol type="i">
-<li>
-<span class="math inline">\(p\)</span> (marginal) variances and <span class="math inline">\(\frac{p^2-3p}{2}\)</span> correlations; or</li>
-<li>
-<span class="math inline">\(\binom{p}{2} = \frac{p(p-1)}{2}\)</span> covariances</li>
-</ol>
-<p>Making this even harder, we have to deal with the fact that the “variance of the variance”, <em>i.e.</em>, the kurtosis, is typically quite large. While we do not focus on high-dimensional covariance estimation in these notes, it is quite a rich subject: if you want dig further into it, the <a href="http://www.ledoit.net/honey.pdf">Ledoit-Wolf</a> estimator is a good place to start.</p>
-<section id="naive-bayes" class="level3"><h3 class="anchored" data-anchor-id="naive-bayes">Naive Bayes</h3>
-<p>In Naive Bayes, we assume <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> are multivariate normal distributions with no correlation among the features and a common covariance across classes.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This <em>significantly</em> simplifies the covariance estimation problem, since we now have all <span class="math inline">\(n\)</span> samples available to estimate only <span class="math inline">\(p\)</span> variances. Our estimates are given as follows:</p>
-<p><span class="math display">\[\hat{\mu}_0 = \frac{1}{|\mathcal{C}_0|} \sum_{i \in \mathcal{C}_0} \bx_i\]</span></p>
-<p>where <span class="math inline">\(\mathcal{C}_0\)</span> is the set of observations from class 0 and</p>
-<p><span class="math display">\[\hat{\mu}_1 = \frac{1}{|\mathcal{C}_1|} \sum_{i \in \mathcal{C}_1} \bx_i.\]</span> The variance estimates are a bit trickier:</p>
-<p><span class="math display">\[\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\mathcal{C}_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\mathcal{C}_1} (x_{ji} - \hat{\mu}_{1i})^2\right)\]</span> This looks a bit nasty, but it’s not too hard: we take the standard ‘average squared difference’ estimator of the variance, but instead of using the overall mean, we subtract the estimated mean from the relevant class. Note that here we are only estimating <span class="math inline">\(\Sigma_{ii}\)</span>, the diagonal elements, and not a full matrix <span class="math inline">\(\Sigma\)</span>.</p>
-<p>Naive Bayes classifiers are particularly important to the history of ML as they were used for one of the first and most influential spam filters.</p>
-</section><section id="linear-discriminant-analysis" class="level3"><h3 class="anchored" data-anchor-id="linear-discriminant-analysis">Linear Discriminant Analysis,</h3>
-<p>Generalizing a bit, we can relax the assumption that the covariance matrix <span class="math inline">\(\Sigma\)</span> is diagonal and only assume that it is constant across the two classes. Here,</p>
-</section></section><section id="a-non-standard-example" class="level2"><h2 class="anchored" data-anchor-id="a-non-standard-example">A Non-Standard Example</h2>
-<p>Suppose we have</p>
+</div>
+<p>Our results here aren’t quite as definitive as when we knew the true <span class="math inline">\(\bbeta_*\)</span>, but they suggest we want to take <span class="math inline">\(\lambda \approx\)</span> 0.316 which isn’t too far from what we found above.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pause to Reflect
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Does this procedure give an unbiased estimate of the true test error? Why or why not?</p>
+</div>
+</div>
+</div>
+<p>There are some limitations to this basic procedure - randomness and (arguably) inefficient data usage - that we will address later, but this gets us started.</p>
+</section></section><section id="lasso-regression" class="level2"><h2 class="anchored" data-anchor-id="lasso-regression">Lasso Regression</h2>
+<p>Ridge regression is a rather remarkable solution to the problem of ‘inflated’ regression coefficients. But let’s remind ourselves why we find inflated coefficients in the first place.</p>
+<p>A common cause of overly large regression coefficients is correlation among the columns of <span class="math inline">\(\bX\)</span>. For example,</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_beta_sim</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">rho</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">100</span>, <span class="op">{</span></span>
+<span>        <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">n</span><span class="op">)</span></span>
+<span>        <span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html">chol</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/toeplitz.html">toeplitz</a></span><span class="op">(</span><span class="va">rho</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">p</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="va">X</span> <span class="op">&lt;-</span> <span class="va">Z</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">L</span></span>
+<span>        <span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span>        <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span>        </span>
+<span>        <span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">beta_hat</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>beta_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span>,</span>
+<span>               n <span class="op">=</span> <span class="va">n</span>, </span>
+<span>               p <span class="op">=</span> <span class="va">p</span>, </span>
+<span>               rho <span class="op">=</span> <span class="va">rho</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">RHO_GRID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.999</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">BETAS</span> <span class="op">&lt;-</span> <span class="fu">map</span><span class="op">(</span><span class="va">RHO_GRID</span>, <span class="va">max_beta_sim</span>, n <span class="op">=</span> <span class="fl">40</span>, p <span class="op">=</span> <span class="fl">35</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">list_rbind</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">BETAS</span>, </span>
+<span>       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">rho</span>, </span>
+<span>           y <span class="op">=</span> <span class="va">beta_max</span><span class="op">)</span><span class="op">)</span><span class="op">+</span> </span>
+<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">xlab</span><span class="op">(</span><span class="st">"Feature Correlation"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">ylab</span><span class="op">(</span><span class="st">"Maximum Observed Regression Coefficient"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu">geom_abline</span><span class="op">(</span>intercept <span class="op">=</span> <span class="fl">3</span>, color<span class="op">=</span><span class="st">"red4"</span>, lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes06_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This simulation is maybe a bit unfair to OLS since we are taking maxima instead of averages or similar, but the message is certainly clear. As the columns of <span class="math inline">\(\bX\)</span> become highly correlated, we get larger values of <span class="math inline">\(\hat{\beta}\)</span>. Because OLS is unbiased here, this is fundamentally a story of <em>variance</em>: as we have more features,</p>
+<p><span class="math display">\[\V[\hat{\beta}] \propto (\bX^{\top}\bX)^{-1}\]</span></p>
+<p>increases, making it likely that we see increasingly wild values of <span class="math inline">\(\hat{\beta}\)</span>. (Recall that we generated our data so that <span class="math inline">\(\beta_*\)</span> was never larger than 3, as noted in red above.)</p>
+<p>Why does this happen? It’s maybe a bit tricky to explain, but with highly correlated features the model can’t really distinguish them well, so it ‘overreacts’ to noise and produces very large swings (variance) in response to small changes in the training data. Like above, we can hope to tame some of this variance if we take on a bit of bias.</p>
+<p>Another way we might want to ‘calm things down’ and improve on OLS is by having fewer features in our model. This reduces the chance of ‘accidental correlation’ (more features leads to more ‘just because’ correlations) and gives us a more interpretable model overall. (More about interpretability below)</p>
+<section id="best-subsets" class="level3"><h3 class="anchored" data-anchor-id="best-subsets">Best Subsets</h3>
+<p>You have likely already seen some sort of ‘variable selection’ procedures in prior courses: things like <em>forward stepwise</em>, <em>backwards stepwise</em>, or even <em>hybrid stepwise</em>. All of these are trying to get at the idea of only including variables that are ‘worth it’; in other settings, you may also see them used as finding the ‘most valuable’ variables. Let’s use our newfound knowledge of optimization to formalize this.</p>
+<p>The <em>best-subsets</em> problem is defined by:</p>
+<p><span class="math display">\[\argmin_{\beta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2 \text{ such that } \|\bbeta\|_0 \leq k\]</span></p>
+<p>This looks similar to our ridge regression problem, but now we’ve replaced the <span class="math inline">\(\ell_2\)</span>-norm constraint with the <span class="math inline">\(\ell_0\)</span>-‘norm’. Recall that the <span class="math inline">\(\ell_0\)</span>-‘norm’ is the number of non-zero elements in <span class="math inline">\(\bbeta\)</span> and that it’s not a real norm. So this says, find the minimum MSE <span class="math inline">\(\beta\)</span> with at most <span class="math inline">\(k\)</span> non-zero elements. Since more features always reduces (or at least never increases) training MSE, we can assume that this problem will essentially always pick the best <em>combination</em> of <span class="math inline">\(k\)</span> variables.</p>
+<p>Alternatively, in penalized form, we might write:</p>
+<p><span class="math display">\[\argmin_{\beta} \|\by - \bX\bbeta\|_2^2 + \lambda \|\bbeta\|_0\]</span></p>
+<p>Here, we only introduce a new variable if including it lowers our training MSE by <span class="math inline">\(\lambda\)</span>: we’ve implicitly set <span class="math inline">\(\lambda\)</span> as our ‘worth it’ threshold for variables.</p>
+<p>Note that these problems require finding the best <em>combination</em> of variables. The most individually useful variables might not be useful in combination: <em>e.g.</em>, someone’s right shoe size might be very useful for predicting their height, and their left shoe size might be very useful for predicting their height, and their gender might be a little bit useful for predicting their height, but you’ll do better with right shoe and gender than with right and left shoe.</p>
+<p>Because we’re checking all combinations of variables, this is a so-called ‘combinatorial’ optimization problem. These are generally quite <strong>hard</strong> to solve and require specialized algorithms (unlike our general purpose convex optimization algorithms). A naive approach of ‘try all models’ becomes impractical quickly. If we have <span class="math inline">\(p=30\)</span> potential features, that’s <span class="math inline">\(2^{30}\)</span>, or just over a billion, possible models we would need to check. Even if we can check one model every minute, that takes about 2040 <strong>years</strong> to check them all; if we have a computer do the work for us and it’s faster, say 1000 models per minute, we still need over 2 years. And that’s just for 30 features! In realistic problems where <span class="math inline">\(p\)</span> can be in the hundreds or thousands, we have no chance.</p>
+<p>Thankfully, smart people have worked on this problem for us and found that for <span class="math inline">\(p \approx 100 - 1000\)</span>, very fancy software can solve this problem.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> But that still leaves us very far we want to go…</p>
+</section><section id="algorithmic-approximations" class="level3"><h3 class="anchored" data-anchor-id="algorithmic-approximations">Algorithmic Approximations</h3>
+</section><section id="convex-approximations" class="level3"><h3 class="anchored" data-anchor-id="convex-approximations">Convex Approximations</h3>
+</section></section><section id="the-lasso" class="level2"><h2 class="anchored" data-anchor-id="the-lasso">The Lasso</h2>
+<section id="the-value-of-sparsity" class="level3"><h3 class="anchored" data-anchor-id="the-value-of-sparsity">The Value of Sparsity</h3>
+</section><section id="algorithms" class="level3"><h3 class="anchored" data-anchor-id="algorithms">Algorithms</h3>
+</section><section id="glmnet" class="level3"><h3 class="anchored" data-anchor-id="glmnet">glmnet</h3>
+</section><section id="model-selection-1" class="level3"><h3 class="anchored" data-anchor-id="model-selection-1">Model Selection</h3>
+<p>TODO</p>
 
 
-</section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 <ol>
-<li id="fn1"><p>Note that a mixture of normals is not <em>always</em> multimodal (<em>e.g.</em>, if the two means are very close together), but a mixture of normals is a common model for multimodal data.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Sometimes, we go further and assume the standard deviations of each feature are the same: this assumption is typically not made explicitly as such but is done ‘off-camera’ by pre-standardizing features.)<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>“Best subset selection via a modern optimization lens” by Dimitris Bertsimas, Angela King, Rahul Mazumder <em>Annals of Statististics</em> <strong>44(2)</strong>: 813-852 (April 2016). DOI: <a href="https://dx.doi.org/10.1214/15-AOS1388">10.1214/15-AOS1388</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

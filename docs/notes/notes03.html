@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-01-13">
+<meta name="dcterms.date" content="2026-03-04">
 <title>STA 9890 - Fundamentals of ML: III. Accuracy and Loss in ML – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -18,41 +18,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -179,26 +144,8 @@ window.Quarto = {
     </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
-   
-  <ul>
-<li><a href="#estimating-normal-means" id="toc-estimating-normal-means" class="nav-link active" data-scroll-target="#estimating-normal-means">Estimating Normal Means</a></li>
-  <li><a href="#james-stein-estimation-of-multivariate-normal-means" id="toc-james-stein-estimation-of-multivariate-normal-means" class="nav-link" data-scroll-target="#james-stein-estimation-of-multivariate-normal-means">James-Stein Estimation of Multivariate Normal Means</a></li>
-  <li>
-<a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression">Ridge Regression</a>
-  <ul class="collapse">
-<li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection">Model Selection</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#lasso-regression" id="toc-lasso-regression" class="nav-link" data-scroll-target="#lasso-regression">Lasso Regression</a>
-  <ul class="collapse">
-<li><a href="#best-subsets" id="toc-best-subsets" class="nav-link" data-scroll-target="#best-subsets">Best Subsets</a></li>
-  </ul>
-</li>
-  <li><a href="#the-lasso" id="toc-the-lasso" class="nav-link" data-scroll-target="#the-lasso">The Lasso</a></li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes03.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes03.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
@@ -219,7 +166,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 13, 2026</p>
+      <p class="date">March 4, 2026</p>
     </div>
   </div>
   
@@ -229,611 +176,96 @@ window.Quarto = {
 
 
 </header><p><span class="math display">\[\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\V}{\mathbb{V}} \newcommand{\argmin}{\text{arg min}}\]</span></p>
-<p>Last week we showed the following:</p>
+<p>Today:</p>
 <ul>
-<li>OLS can be derived purely as a ‘loss minimization’ problem without reference to specific probabilistic models; this is an instance of the general strategy of <em>empirical risk management</em>
-</li>
-<li>OLS is a <em>convex</em> problem, making it particularly easy to solve even if we don’t use the closed-form solution</li>
-<li>The BLUE property of OLS is perhaps less interesting than it sounds as it requires very strong assumptions on the data generating process which are unlikely to hold in practice</li>
-<li>MSE, the loss we used to pose OLS, can be decomposed as <span class="math inline">\(\text{Bias}^2 + \text{Variance}\)</span>
-</li>
-<li>Because BLUE restricts to <em>unbiased</em> estimators, the MSE of OLS is all variance</li>
+<li>OLS via ERM
+<ul>
+<li>Loss function + Function class</li>
 </ul>
-<p>We begin this week by asking if we can do better than OLS. To keep things simple, we begin by assuming we are under a linear DGP (so no ‘model error’) but that’s only a mathematical niceity. It’s not something you should always assume - in fact, it is really more important to think about how models do on non-linear DGPs. As we will see, it may still be useful to use linear models…</p>
-<p>Because OLS is BLUE under our assumptions, we know that we need to relax one or more of our assumptions to beat it. For now, we will focus on relaxing the U - unbiasedness; non-linear methods come later in this course.</p>
-<p>Recalling our decomposition:</p>
-<p><span class="math display">\[\text{MSE} = \text{Bias}^2 + \text{Variance}\]</span></p>
-<p>Our gambit is that we can find an alternative estimator with a bit more bias, but far less variance. Before we attempt to do so for linear regression, let’s convince ourselves this is possible for a much simpler problem - estimating means.</p>
-<section id="estimating-normal-means" class="level2"><h2 class="anchored" data-anchor-id="estimating-normal-means">Estimating Normal Means</h2>
-<p>Suppose we have data from a distribution <span class="math display">\[X_i \buildrel \text{iid} \over \sim
-\mathcal{N}(\mu, 1)\]</span> for some unknown <span class="math inline">\(\mu\)</span> that we seek to estimate. Quite reasonably, we might use the sample mean <span class="math display">\[\overline{X}_n = \frac{1}{n}\sum_{i=1}^n X_i\]</span> to estimate <span class="math inline">\(\mu\)</span>. Clearly, this is an <em>unbiased</em> estimator and it has variance given by <span class="math inline">\(1/n\)</span>, which isn’t bad. In general, it’s pretty hard to top this.</p>
-<p>We can verify all of this empirically:</p>
-<div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/">purrr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">compute_mse_sample_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mu</span>, <span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="co"># Compute the MSE estimating mu</span></span>
-<span>    <span class="co"># with the sample mean from n samples</span></span>
-<span>    <span class="co"># We repeat this process a large number of times</span></span>
-<span>    <span class="co"># to get the expected MSE</span></span>
-<span>    <span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="op">{</span></span>
-<span>        <span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean<span class="op">=</span><span class="va">mu</span>, sd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
-<span>    <span class="op">}</span><span class="op">)</span></span>
-<span>    </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, </span>
-<span>               mu<span class="op">=</span><span class="va">mu</span>, </span>
-<span>               bias<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span>, </span>
-<span>               variance<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span>, </span>
-<span>               mse<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">MU_GRID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, length.out<span class="op">=</span><span class="fl">501</span><span class="op">)</span></span>
-<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
-<span></span>
-<span><span class="va">SIMRES</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">MU_GRID</span>, <span class="va">compute_mse_sample_mean</span>, n<span class="op">=</span><span class="va">N</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Our bias is essentially always zero:</p>
-<div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">bias</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>slope<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                intercept<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Bias"</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant Zero Bias of Sample Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Similarly, our bias is small, and constant. Specifically, it is around <span class="math inline">\(1/n\)</span> as predicted by standard theory:</p>
-<div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Variance of Sample Mean"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant Variance of Sample Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>As expected, the MSE is the sum of bias and variance, so it’s basically just variance here:</p>
-<div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Sample Mean MSE "</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant MSE of Sample Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
-(`geom_segment()`).</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>So far, it looks like the sample mean is hard to beat. In particular, this curve is But… what if we know, <em>e.g.</em>, that <span class="math inline">\(\mu\)</span> is positive. We might still use the sample mean, but with the additional step that we set it to zero if the sample mean looks negative. That is, our new estimator is <span class="math display">\[\hat{\mu} = (\overline{X}_n)_+ \text{ where } z_+ = \begin{cases} z &amp; z &gt; 0 \\ 0 &amp; z \leq 0 \end{cases}\]</span></p>
-<p>The <span class="math inline">\((\cdot)_+\)</span> operator is known as the <em>positive-part</em>. How does this <span class="math inline">\(\hat{\mu}\)</span> do?</p>
-<div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pospart</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">x</span>, <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="va">compute_mse_positive_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mu</span>, <span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="co"># Compute the MSE estimating mu</span></span>
-<span>    <span class="co"># with the positive part of the sample mean from n samples</span></span>
-<span>    <span class="co"># We repeat this process a large number of times</span></span>
-<span>    <span class="co"># to get the expected MSE</span></span>
-<span>    <span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="op">{</span></span>
-<span>        <span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean<span class="op">=</span><span class="va">mu</span>, sd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span>        <span class="fu">pospart</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="op">}</span><span class="op">)</span></span>
-<span>    </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, </span>
-<span>               mu<span class="op">=</span><span class="va">mu</span>, </span>
-<span>               bias<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span>, </span>
-<span>               variance<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span>, </span>
-<span>               mse<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">SIMRES_POSPART</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">MU_GRID</span>, <span class="va">compute_mse_positive_mean</span>, n<span class="op">=</span><span class="va">N</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES_POSPART</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Positive Part Mean MSE"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant MSE of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Not surprisingly, we do <em>very poorly</em> if we are estimating a negative <span class="math inline">\(\mu\)</span> but we assume it is positive. Let’s zoom in on the area near 0 however.</p>
-<div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">0.5</span>, </span>
-<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Positive Part Mean MSE"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant MSE of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Interesting! For some of these values, we do better than the sample mean.</p>
-<p>In particular, we do better in the following scenario:</p>
-<ul>
-<li>True mean is positive</li>
-<li>Sample mean is negative</li>
-<li>Positive part of sample mean is zero, so closer than pure sample mean</li>
-</ul>
-<p>The probability of step 2 (sample mean is negative) is near zero for large <span class="math inline">\(\mu\)</span>, but for <span class="math inline">\(\mu\)</span> in the neighborhood of zero, it can happen.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Pause to Reflect
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Review Question: As a function of <span class="math inline">\(\mu\)</span>, what is the probability that <span class="math inline">\(\overline{X}_n\)</span> is negative? You can leave your answer in terms of the standard normal CDF <span class="math inline">\(\Phi(\cdot)\)</span>.</p>
-</div>
-</div>
-</div>
-<p>This is pretty cool. We have made an additional assumption and, when that assumption holds, it helps us or, worst case, doesn’t really hurt us much. Of course, when the assumption is wrong (<span class="math inline">\(\mu &lt; 0\)</span>), we do much worse, but we can’t really hold that against <span class="math inline">\((\overline{X}_n)_+\)</span>.</p>
-<p>Looking more closely, we can look at the bias of <span class="math inline">\((\overline{X}_n)_+\)</span>:</p>
-<div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">0.5</span>, </span>
-<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">bias</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Bias"</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Bias of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>We see here that our improvement came at the cost of some bias, particularly in the <span class="math inline">\(\mu \in [0, 1]\)</span> range. But for that bias, we see a good reduction in variance:</p>
-<div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">0.5</span>, </span>
-<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
-<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
-<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
-<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Variance</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Non-Constant Variance of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Here, we see that the variance is less than <span class="math inline">\(1/n\)</span> from <span class="math inline">\(\mu \approx 0.5\)</span> and down. Let’s plot variance and bias against each other:</p>
-<div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allancameron.github.io/geomtextpath/">geomtextpath</a></span><span class="op">)</span></span>
-<span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="fl">0</span>, </span>
-<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">bias</span>, y<span class="op">=</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>       <span class="fu"><a href="https://allancameron.github.io/geomtextpath/reference/geom_textpath.html">geom_textline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">bias</span>, y<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">n</span> <span class="op">-</span> <span class="va">bias</span><span class="op">)</span>,</span>
-<span>                     lty<span class="op">=</span><span class="fl">2</span>, color<span class="op">=</span><span class="st">"red4"</span>, </span>
-<span>                     label<span class="op">=</span><span class="st">"Breakeven"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Bias"</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Variance"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Bias-Variance Tradeoff for Positive Part Sample Mean"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Here, all of the values of <span class="math inline">\(\mu\)</span> corresponding to points <em>below</em> this line are points where the positive part estimator does better than the standard sample mean.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Pause to Reflect
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>See if you can compute the bias and variance of <span class="math inline">\((\overline{X}_n)_+\)</span> in closed form. The <a href="https://math.stackexchange.com/a/3281287">moments of</a> the <a href="https://en.wikipedia.org/wiki/Rectified_Gaussian_distribution">Rectified Normal Distribution</a> may be of use.</p>
-</div>
-</div>
-</div>
-<p>Ok - now let’s start to generalize. Clearly, the first step is to change the ‘positive’ assumption. The easiest generalization is to restrict <span class="math inline">\(\mu\)</span> to an interval <span class="math inline">\([a, b]\)</span>. In this case, it makes sense to replace the positive part operator with a ‘clamp’ operator:</p>
-<p><span class="math display">\[(x)_{[a, b]} = \begin{cases} a &amp; x \leq a \\ x &amp; x\in(a, b) \\ b &amp; x \geq b \end{cases}\]</span></p>
-<p>The positive part operator we applied before is <span class="math inline">\((x)_+ = (x)_{[0, \infty)}\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Pause to Reflect
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Extend the simulation above to characterize the estimation performance (bias and variance) of <span class="math inline">\((\overline{X}_n)_[a, b]\)</span>.</p>
-</div>
-</div>
-</div>
-<p>A particularly useful version of this bound is taking <span class="math inline">\((\overline{X}_n)[-\beta, +\beta]\)</span>; that is, we don’t know the sign of <span class="math inline">\(\mu\)</span>, but we know it is less than <span class="math inline">\(\beta\)</span> in magnitude. This is not an improbable assumption - we often have a good sense of the plausible magnitude of a parameter (Bayesian priors anyone?) - but it feels a bit ‘firm’. Can we relax this sort of assumption? We want <span class="math inline">\(\mu\)</span> to be ‘not too big’, but we’re willing to go big if the data takes us there.</p>
-<p>We can implement this as follows:</p>
-<p><span class="math display">\[\hat{\mu}_{\alpha} = \frac{\overline{X}_n}{1+\alpha}\]</span></p>
-<p>Clearly, setting <span class="math inline">\(\alpha = 0\)</span> gets us back to the standard sample mean. Can this be better than the sample mean? Let’s do the calculations by hand. First we note that <span class="math inline">\(\E[\hat{\mu}_{\alpha}] = \frac{\mu}{1+\alpha}\)</span> giving a bias of <span class="math display">\[\text{Bias} = \E[\hat{\mu}_{\alpha}] - \mu = \mu\left(1 - \frac{1}{1+\alpha}\right) \implies \text{Bias}^2 = \mu^2\left(1 - \frac{1}{1+\alpha}\right)^2\]</span> and</p>
-<p><span class="math display">\[\text{Variance} = \V[\hat{\mu}_{\alpha}] = \frac{1}{(1+\alpha)^2}\V[\overline{X}_n] = \frac{1}{n(1+\alpha)^2}\]</span></p>
-<p>so the total MSE is given by</p>
-<p><span class="math display">\[\begin{align*}
-\text{MSE} &amp;= \E[(\hat{\mu}_{\alpha} - \mu)^2] \\
-           &amp;= \text{Bias}^2 + \text{Variance} \\
-           &amp;= \mu^2\left(1 - \frac{1}{1+\alpha}\right)^2 + \frac{1}{n(1+\alpha)^2}
-\end{align*}\]</span></p>
-<p>For suitable <span class="math inline">\(\alpha, n\)</span> this can be less than the standard MSE of <span class="math inline">\(1/n\)</span>. For instance, at <span class="math inline">\(\mu = 5\)</span> and <span class="math inline">\(n = 10\)</span>,</p>
-<div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">shrunk_mean_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mu</span>, <span class="va">n</span>, <span class="va">alpha</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">mu</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">alpha</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">alpha</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="fu">shrunk_mean_mse</span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">1e-4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.09998025</code></pre>
-</div>
-</div>
-<p>Not great - but an improvement! It’s actually pretty hard to beat the sample mean with an estimator of this form in the univariate case, but it can be incredibly useful in more general settings.</p>
-</section><section id="james-stein-estimation-of-multivariate-normal-means" class="level2"><h2 class="anchored" data-anchor-id="james-stein-estimation-of-multivariate-normal-means">James-Stein Estimation of Multivariate Normal Means</h2>
-<p>TODO</p>
-</section><section id="ridge-regression" class="level2"><h2 class="anchored" data-anchor-id="ridge-regression">Ridge Regression</h2>
-<p>Above, we saw that <span class="math inline">\((\overline{X}_n)_{[-\beta, \beta]}\)</span> could outperform <span class="math inline">\(\overline{X}_n\)</span> if the true parameter is ‘not too big’. Can we extend this idea to regression?</p>
-<p>Recall that we formulated OLS as:</p>
-<p><span class="math display">\[\hat{\bbeta}_{\text{OLS}} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\|\]</span></p>
-<p>We can apply a ‘clamp’ as:</p>
-<p><span class="math display">\[\hat{\bbeta}_{\tau-\text{Clamped}} = \argmin_{\bbeta \in \R: \|\bbeta\| &lt; \tau} \frac{1}{2}\|\by - \bX\bbeta\| = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\| \leq {\tau}\]</span></p>
-<p>Here, we have some choice in measuring the ‘size’ of <span class="math inline">\(\hat{\bbeta}\)</span>: in fact, we can <em>theoretically</em> use any of our <span class="math inline">\(\ell_p\)</span>-norms. As with the squared loss, it turns out to be mathematically easiest to start with the <span class="math inline">\(\ell_2\)</span> (Euclidean) norm. This gives us the <em>ridge regression</em> problem:</p>
-<p><span class="math display">\[\hat{\bbeta}_{\text{Ridge}} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\|_2 \leq {\tau} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\|_2^2 \leq {\tau}^2\]</span></p>
-<p>Before we discuss solving this, let’s confirm it is convex. Recall that for a problem to be convex, it needs to have a convex <em>objective</em> and a convex <em>feasible set</em>. Clearly the objective here is convex - we still have the MSE loss from OLS unchanged. So now we need to convince ourselves that <span class="math inline">\(\|\bbeta\|_2^2 \leq \tau^2\)</span> defines a convex set. We can look at this in 2D first:</p>
-<p><span class="math display">\[\|\bbeta\|_2^2 \leq \tau^2 \implies \beta_1^2 + \beta_2^2 \leq \tau\]</span></p>
-<p>But this is just the equation defining a circle and its interior (in math speak a 2D ‘ball’) so it has to be convex!</p>
-<p>In fact, constraints of the form</p>
-<p><span class="math display">\[\|\bbeta\|_p \leq \tau \Leftrightarrow \|\bbeta\|_p^2 \leq \tau^p\]</span></p>
-<p>are convex for all <span class="math inline">\(\ell_p\)</span> norms (<span class="math inline">\(p \geq 1\)</span>). We will use this fact many times in this course. The sets that this constraint defines are called <span class="math inline">\(\ell_p\)</span> ‘balls’ by analogy with the <span class="math inline">\(\ell_2\)</span> figure.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>So our ridge problem</p>
-<p><span class="math display">\[\hat{\bbeta}_{\text{Ridge}} = \argmin_{\bbeta \in \R} \frac{1}{2}\|\by - \bX\bbeta\| \text{ such that } \|\bbeta\|_2^2 \leq {\tau}^2\]</span> is indeed convex. While we can solve this without too much trouble, it turns out to be easier to use an optimization trick known as <em>Lagrange Multipliers</em> to change this to something easier to solve.</p>
-<p>The <a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Method of Lagrange Multipliers</a> lets us turn <em>constrained</em> optimization problems that look like:</p>
-<p><span class="math display">\[\argmin_x f(x) \text{ such that } g(x) \leq \tau\]</span></p>
-<p>into <em>unconstrained</em> problems like:</p>
-<p><span class="math display">\[\argmin_x f(x) + \lambda g(x)\]</span></p>
-<p>Here, the constant <span class="math inline">\(\lambda\)</span> is known as the Lagrange multiplier. Instead of <em>forcing</em> <span class="math inline">\(g(x)\)</span> to be bounded, we simply <em>penalize</em> any <span class="math inline">\(x\)</span> that makes <span class="math inline">\(g(\cdot)\)</span> large. For large enough penalties (large <span class="math inline">\(\lambda\)</span>), we will eventually force <span class="math inline">\(g(x)\)</span> to be small enough that we satisfy the original constraint. In fact, there is a one-to-one relationship between <span class="math inline">\(\tau\)</span> and <span class="math inline">\(\lambda\)</span>, but it’s usually not possible to work it out in any meaningful useful manner; all we can say is that larger <span class="math inline">\(\lambda\)</span> correspond to smaller <span class="math inline">\(\tau\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Pause to Reflect
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Why is this true? Why does small <span class="math inline">\(\tau\)</span> imply large <span class="math inline">\(\lambda\)</span> and <em>vice versa</em>?</p>
-</div>
-</div>
-</div>
-<p>In this form, it’s straightforward to pose ridge regression as:</p>
-<p><span class="math display">\[\argmin_{\beta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2 + \frac{\lambda}{2}\|\bbeta\|_2^2\]</span></p>
-<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Pause to Reflect
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Why were we allowed to put an extra <span class="math inline">\(\frac{1}{2}\)</span> in front of the penalty term?</p>
-</div>
-</div>
-</div>
-<p>You will show in <a href="../reports/repot01.html">Report #01</a> that the solution to this problem is given by:</p>
-<p><span class="math display">\[\hat{\bbeta}_{\lambda} = (\bX^{\top}\bX + \lambda \bI)^{-1}\bX^{\top}\by\]</span></p>
-<p>There are several important things to note about this expression:</p>
-<ul>
-<li><p>There are actually <em>many</em> ridge regression solutions, one for each value of <span class="math inline">\(\lambda\)</span>. It is a bit improper to refer to “the” ridge regression solution. We will discuss selecting <span class="math inline">\(\lambda\)</span> below.</p></li>
-<li>
-<p>If you are a bit sloppy, this looks something like:</p>
-<p><span class="math display">\[\hat{\beta} \approx \frac{SS_{XY}}{SS_{XX} + \lambda}\]</span></p>
-<p>so we ‘shrink’ the standard OLS solution towards zero, by an amount depending on <span class="math inline">\(\lambda\)</span>.</p>
 </li>
-<li><p>The penalized form (as opposed to the constraint form) allows for <span class="math inline">\(\hat{\beta}\)</span> to be arbitrarily large, if the data supports it.</p></li>
-<li><p>If we set <span class="math inline">\(\lambda = 0\)</span>, we recover standard OLS.</p></li>
-<li><p>Unlike the OLS solution, the ridge regression exists even when <span class="math inline">\(p &gt; n\)</span>.</p></li>
-</ul>
-<p>While this isn’t as simple to analyze as some of the expressions we considered above, this looks similar enough to our ‘shrunk’ mean estimator that it’s plausible it will improve on OLS. In fact, you will show in <a href="../reports/repot01.html">Report #01</a> that there is always <em>some</em> value of <span class="math inline">\(\lambda\)</span> that guarantees improvement over OLS.</p>
-<p>To wit,</p>
-<div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">80</span></span>
-<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">n</span><span class="op">)</span></span>
-<span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html">chol</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/toeplitz.html">toeplitz</a></span><span class="op">(</span><span class="fl">0.6</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">p</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># Add 'AR(1)' correlation</span></span>
-<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="va">Z</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">L</span></span>
-<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">eye</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span>, <span class="va">n</span><span class="op">)</span></span>
-<span><span class="va">calculate_ridge_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">lambda</span>, <span class="va">nreps</span> <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">MSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">nreps</span>, <span class="op">{</span></span>
-<span>        <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span>        <span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="fu">eye</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">beta</span> <span class="op">-</span> <span class="va">beta_hat</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
-<span>    <span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
-<span>    </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>lambda<span class="op">=</span><span class="va">lambda</span>, MSE<span class="op">=</span><span class="va">MSE</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">lambda_grid</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span>, length.out<span class="op">=</span><span class="fl">41</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">RIDGE_MSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">lambda_grid</span>, <span class="va">calculate_ridge_mse</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">OLS_MSE</span> <span class="op">&lt;-</span> <span class="fu">calculate_ridge_mse</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">MSE</span> <span class="co"># Ridge at lambda = 0 =&gt; OLS</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">RIDGE_MSE</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">lambda</span>, y<span class="op">=</span><span class="va">MSE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="va">OLS_MSE</span>, slope<span class="op">=</span><span class="fl">0</span>, lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">lambda</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Estimation Error (MSE)"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Ridge Regularization Improves on OLS"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Clearly, for smallish <span class="math inline">\(\lambda\)</span>, we are actually outperforming OLS, sometimes by a significant amount! For this problem, the minimum MSE (best estimate) actually seems to occur near <span class="math inline">\(\lambda \approx\)</span> 1.585</p>
-<section id="model-selection" class="level3"><h3 class="anchored" data-anchor-id="model-selection">Model Selection</h3>
-<p>While theory and our experiment above tell us that there is <em>some</em> value of <span class="math inline">\(\lambda\)</span> that beats OLS, how can we actually find it? We can’t do a simulation like above as we had to know <span class="math inline">\(\bbeta_*\)</span> to compute the MSE and the theory is non-constructive. (In particular, we have to know <span class="math inline">\(\bbeta_*\)</span> to compute the bias.)</p>
-<p>Well, we can go back to our overarching goal: we want results that <em>generalize</em> to unseen data. Here, in particular, we want results that <em>predict well</em> on unseen data. So let’s just do that.</p>
-<p>We can split our data into a <em>training</em> set and a <em>validation</em> set. The <em>training</em> set is like we have already seen, used to estimate the regression coefficients <span class="math inline">\(\bbeta_{\text{Ridge}}\)</span>; the <em>validation</em> set may be new. It is used to compute the MSE on ‘pseudo-new’ data and we then can select the best predicting value of <span class="math inline">\(\lambda\)</span>. In this case, this looks something like the following:</p>
-<div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Continuing with X, beta from above</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">TRAIN_IX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0.8</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span></span>
-<span><span class="va">VALID_IX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, <span class="va">TRAIN_IX</span><span class="op">)</span> <span class="co"># Other elements</span></span>
-<span></span>
-<span><span class="va">TRAIN_X</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="va">TRAIN_IX</span>, <span class="op">]</span></span>
-<span><span class="va">TRAIN_Y</span> <span class="op">&lt;-</span> <span class="va">y</span><span class="op">[</span><span class="va">TRAIN_IX</span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">VALID_X</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="va">VALID_IX</span>, <span class="op">]</span></span>
-<span><span class="va">VALID_Y</span> <span class="op">&lt;-</span> <span class="va">y</span><span class="op">[</span><span class="va">VALID_IX</span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">compute_validation_error</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">lambda</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">beta_hat_rr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">TRAIN_X</span><span class="op">)</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="fu">eye</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, </span>
-<span>                         <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">TRAIN_X</span>, <span class="va">TRAIN_Y</span><span class="op">)</span><span class="op">)</span></span>
-<span>    </span>
-<span>    <span class="va">y_pred</span> <span class="op">&lt;-</span> <span class="va">VALID_X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta_hat_rr</span></span>
-<span>    </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="va">lambda</span>, </span>
-<span>               validation_mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_pred</span> <span class="op">-</span> <span class="va">VALID_Y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">validation_error</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">lambda_grid</span>, <span class="va">compute_validation_error</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">validation_error</span>, </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lambda</span>, </span>
-<span>           y <span class="op">=</span> <span class="va">validation_mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">lambda</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"MSE on Validation Set"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Hold-Out Tuning of Ridge Regression Regularization Parameter"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Our results here aren’t quite as definitive as when we knew the true <span class="math inline">\(\bbeta_*\)</span>, but they suggest we want to take <span class="math inline">\(\lambda \approx\)</span> 0.316 which isn’t too far from what we found above.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Pause to Reflect
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Does this procedure give an unbiased estimate of the true test error? Why or why not?</p>
-</div>
-</div>
-</div>
-<p>There are some limitations to this basic procedure - randomness and (arguably) inefficient data usage - that we will address later, but this gets us started.</p>
-</section></section><section id="lasso-regression" class="level2"><h2 class="anchored" data-anchor-id="lasso-regression">Lasso Regression</h2>
-<p>Ridge regression is a rather remarkable solution to the problem of ‘inflated’ regression coefficients. But let’s remind ourselves why we find inflated coefficients in the first place.</p>
-<p>A common cause of overly large regression coefficients is correlation among the columns of <span class="math inline">\(\bX\)</span>. For example,</p>
-<div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">max_beta_sim</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">rho</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">100</span>, <span class="op">{</span></span>
-<span>        <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">n</span><span class="op">)</span></span>
-<span>        <span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html">chol</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/toeplitz.html">toeplitz</a></span><span class="op">(</span><span class="va">rho</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">p</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span>        <span class="va">X</span> <span class="op">&lt;-</span> <span class="va">Z</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">L</span></span>
-<span>        <span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span>        <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span>        </span>
-<span>        <span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">beta_hat</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="op">}</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>beta_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span>,</span>
-<span>               n <span class="op">=</span> <span class="va">n</span>, </span>
-<span>               p <span class="op">=</span> <span class="va">p</span>, </span>
-<span>               rho <span class="op">=</span> <span class="va">rho</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">RHO_GRID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.999</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">BETAS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">RHO_GRID</span>, <span class="va">max_beta_sim</span>, n <span class="op">=</span> <span class="fl">40</span>, p <span class="op">=</span> <span class="fl">35</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">BETAS</span>, </span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rho</span>, </span>
-<span>           y <span class="op">=</span> <span class="va">beta_max</span><span class="op">)</span><span class="op">)</span><span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Feature Correlation"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Maximum Observed Regression Coefficient"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept <span class="op">=</span> <span class="fl">3</span>, color<span class="op">=</span><span class="st">"red4"</span>, lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="notes03_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This simulation is maybe a bit unfair to OLS since we are taking maxima instead of averages or similar, but the message is certainly clear. As the columns of <span class="math inline">\(\bX\)</span> become highly correlated, we get larger values of <span class="math inline">\(\hat{\beta}\)</span>. Because OLS is unbiased here, this is fundamentally a story of variance: as we have more features,</p>
-<p><span class="math display">\[\V[\hat{\beta}] \propto (\bX^{\top}\bX)^{-1}\]</span></p>
-<p>increases, making it likely that we see increasingly wild values of <span class="math inline">\(\hat{\beta}\)</span>. (Recall that we generated our data so that <span class="math inline">\(\beta_*\)</span> was never larger than 3, as noted in red above.)</p>
-<p>Why does this happen? It’s maybe a bit tricky to explain, but with highly correlated features the model can’t really distinguish them well, so it ‘overreacts’ to noise and produces very large swings (variance) in response to small changes in the training data. Like above, we can hope to tame some of this variance if we take on a bit of bias.</p>
-<p>Another way we might want to ‘calm things down’ and improve on OLS is by having fewer features in our model. This reduces the chance of ‘accidental correlation’ (more features leads to more ‘just because’ correlations) and gives us a more interpretable model overall. (More about interpretability below)</p>
-<section id="best-subsets" class="level3"><h3 class="anchored" data-anchor-id="best-subsets">Best Subsets</h3>
-<p>You have likely already seen some sort of ‘variable selection’ procedures in prior courses: things like <em>forward stepwise</em>, <em>backwards stepwise</em>, or even <em>hybrid stepwise</em>. All of these are trying to get at the idea of only including variables that are ‘worth it’; in other settings, you may also see them used as finding the ‘most valuable’ variables. Let’s use our newfound knowledge of optimization to formalize this.</p>
-<p>The <em>best-subsets</em> problem is defined by:</p>
-<p><span class="math display">\[\argmin_{\beta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2 \text{ such that } \|\bbeta\|_0 \leq k\]</span></p>
-<p>This looks similar to our ridge regression problem, but now we’ve replaced the <span class="math inline">\(\ell_2\)</span>-norm constraint with the <span class="math inline">\(\ell_0\)</span>-‘norm’. Recall that the <span class="math inline">\(\ell_0\)</span>-‘norm’ is the number of non-zero elements in <span class="math inline">\(\bbeta\)</span> and that it’s not a real norm. So this says, find the minimum MSE <span class="math inline">\(\beta\)</span> with at most <span class="math inline">\(k\)</span> non-zero elements. Since more features always reduces (or at least never increases) training MSE, we can assume that this problem will essentially always pick the best <em>combination</em> of <span class="math inline">\(k\)</span> variables.</p>
-<p>Alternatively, in penalized form, we might write:</p>
-<p><span class="math display">\[\argmin_{\beta} \|\by - \bX\bbeta\|_2^2 + \lambda \|\bbeta\|_0\]</span></p>
-<p>Here, we only introduce a new variable if including it lowers our training MSE by <span class="math inline">\(\lambda\)</span>: we’ve implicitly set <span class="math inline">\(\lambda\)</span> as our ‘worth it’ threshold for variables.</p>
-<p>Note that these problems require finding the best <em>combination</em> of variables. The most individually useful variables might not be useful in combination: <em>e.g.</em>, someone’s right shoe size might be very useful for predicting their height, and their left shoe size might be very useful for predicting their height, and their gender might be a little bit useful for predicting their height, but you’ll do better with right shoe and gender than with right and left shoe.</p>
-<p>Because we’re checking all combinations of variables, this is a so-called ‘combinatorial’ optimization problem. These are generally quite <strong>hard</strong> to solve and require specialized algorithms (unlike our general purpose convex optimization algorithms). A naive approach of ‘try all models’ becomes impractical quickly. If we have <span class="math inline">\(p=30\)</span> potential features, that’s <span class="math inline">\(2^30\)</span>, or just over a billion, possible models we would need to check. Even if we can check one model every minute, that takes about 2040 <strong>years</strong> to check them all; if we have a computer do the work for us and it’s faster, say 1000 models per minute, we still need over 2 years. And that’s just for 30 features! In realistic problems where <span class="math inline">\(p\)</span> can be in the hundreds or thousands, we have no chance.</p>
-<p>Thankfully, smart people have worked on this problem for us and found that for <span class="math inline">\(p \approx 100 - 1000\)</span>, very fancy software can solve this problem.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> But that still leaves us very far we want to go…</p>
-<p>TODO:</p>
+<li>Definitions:
 <ul>
-<li>Stepwise as approximate algorithm</li>
-<li>Convex relaxation</li>
-</ul></section></section><section id="the-lasso" class="level2"><h2 class="anchored" data-anchor-id="the-lasso">The Lasso</h2>
-<p>TODO ### Model Selection TODO</p>
+<li>Error</li>
+<li>Accuracy</li>
+<li>Loss</li>
+<li>Risk</li>
+</ul>
+</li>
+<li>Examples
+<ul>
+<li>Regression
+<ul>
+<li>MSE</li>
+<li>LAD</li>
+<li>MSPE
+<ul>
+<li>Quickly derive WLS</li>
+<li>Quadratic forms and definiteness</li>
+</ul>
+</li>
+<li>Check loss</li>
+</ul>
+</li>
+<li>Classification
+<ul>
+<li>0/1 Accuracy</li>
+<li>TPR, FPR, TNR, FNR</li>
+<li>Composites</li>
+<li>Custom loss functions</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Properties of a good loss function
+<ul>
+<li>Non-negative (bounded?)</li>
+<li>Smooth</li>
+<li>Differentiable</li>
+<li>Convex
+<ul>
+<li>Argument via Taylor under-approximation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Looking at MSE
+<ul>
+<li>Bias, Variance, Irreducible (Bayes) Error</li>
+<li>Estimation vs prediction error</li>
+<li>General message about bias and variance</li>
+<li>BLUE - actually important?</li>
+</ul>
+</li>
+<li>Evaluating loss
+<ul>
+<li>Training/Test</li>
+<li>Sample splitting</li>
+<li>CV</li>
+<li>Boostrapping</li>
+</ul>
+</li>
+<li>Other loss functions
+<ul>
+<li>Soft classification</li>
+<li>Generative models
+<ul>
+<li>Generative models as MLE (min KL)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Last week, we showed that OLS can be derived purely as a ‘loss minimization’ problem, without reference to a specific probabilitsic model. Specifically, we argued that given:</p>
+<ul>
+<li>mean squared error as a loss function</li>
+<li>linear predictors as a function class</li>
+</ul>
+<p>OLS is the natural and unique algorithm to use. This was a special case of <em>empirical risk minimization</em>: minimizing our loss on the training data. This gives us a general principle for building ML systems: once we define the loss, we can just throw it at a sufficiently interesting set of functions and pick the minimizer as our predictor. (We will return to the set of functions at a later point.)</p>
+<p>This suggests that it’s worth spending some time thinking about what makes a <em>good</em> loss function.</p>
 
 
-</section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-<ol>
-<li id="fn1"><p>“Best subset selection via a modern optimization lens” by Dimitris Bertsimas, Angela King, Rahul Mazumder <em>Annals of Statististics</em> <strong>44(2)</strong>: 813-852 (April 2016). DOI: <a href="https://dx.doi.org/10.1214/15-AOS1388">10.1214/15-AOS1388</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+
+</main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -1236,4 +668,4 @@ Pause to Reflect
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes03.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes03.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes03.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes03.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

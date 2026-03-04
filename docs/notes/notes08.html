@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-01-13">
+<meta name="dcterms.date" content="2026-03-04">
 <title>STA 9890 - Supervised Learning: IV. Discriminative Classifiers &amp; Non-Linear Methods – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -18,6 +18,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -148,17 +183,14 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#ensemble-learning" id="toc-ensemble-learning" class="nav-link active" data-scroll-target="#ensemble-learning">Ensemble Learning</a></li>
-  <li><a href="#stacking" id="toc-stacking" class="nav-link" data-scroll-target="#stacking">Stacking</a></li>
-  <li>
-<a href="#resampling" id="toc-resampling" class="nav-link" data-scroll-target="#resampling">Resampling</a>
-  <ul class="collapse">
-<li><a href="#bootstrapping" id="toc-bootstrapping" class="nav-link" data-scroll-target="#bootstrapping">Bootstrapping</a></li>
-  <li><a href="#bootstrap-aggregation-bagging" id="toc-bootstrap-aggregation-bagging" class="nav-link" data-scroll-target="#bootstrap-aggregation-bagging">Bootstrap Aggregation (Bagging)</a></li>
-  <li><a href="#out-of-bag-error" id="toc-out-of-bag-error" class="nav-link" data-scroll-target="#out-of-bag-error">Out of Bag Error</a></li>
-  </ul>
-</li>
-  <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting">Boosting</a></li>
+<li><a href="#why-not-accuracy-maximization" id="toc-why-not-accuracy-maximization" class="nav-link active" data-scroll-target="#why-not-accuracy-maximization">Why Not Accuracy Maximization?</a></li>
+  <li><a href="#ols-for-classification" id="toc-ols-for-classification" class="nav-link" data-scroll-target="#ols-for-classification">OLS for Classification?</a></li>
+  <li><a href="#deriving-logistic-regression" id="toc-deriving-logistic-regression" class="nav-link" data-scroll-target="#deriving-logistic-regression">Deriving Logistic Regression</a></li>
+  <li><a href="#from-model-to-loss-function" id="toc-from-model-to-loss-function" class="nav-link" data-scroll-target="#from-model-to-loss-function">From Model to Loss Function</a></li>
+  <li><a href="#generalized-linear-models" id="toc-generalized-linear-models" class="nav-link" data-scroll-target="#generalized-linear-models">Generalized Linear Models</a></li>
+  <li><a href="#loss-functions-for-classification" id="toc-loss-functions-for-classification" class="nav-link" data-scroll-target="#loss-functions-for-classification">Loss Functions for Classification</a></li>
+  <li><a href="#support-vector-machines" id="toc-support-vector-machines" class="nav-link" data-scroll-target="#support-vector-machines">Support Vector Machines</a></li>
+  <li><a href="#svm-the-geometric-viewpoint" id="toc-svm-the-geometric-viewpoint" class="nav-link" data-scroll-target="#svm-the-geometric-viewpoint">SVM: The Geometric Viewpoint</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes08.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes08.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -180,7 +212,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 13, 2026</p>
+      <p class="date">March 4, 2026</p>
     </div>
   </div>
   
@@ -190,195 +222,352 @@ window.Quarto = {
 
 
 </header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bw}{\mathbf{w}} \newcommand{\P}{\mathbb{P}} \newcommand{\V}{\mathbb{V}} \newcommand{\C}{\mathbb{C}} \newcommand{\E}{\mathbb{E}}\]</span></p>
-<p>To this point, we have created individual models for regression and classification tasks. We have covered regression-type models for low-dimensional settings (GLMs: mainly linear and logistic), generative models for classification (NB, LDA, QDA), purely discriminative models (SVM), and flexible non-parametric models (KNN). Building on these tools, we have developed non-linear extensions (splines and kernels) suitable for the <span class="math inline">\(n \gg p\)</span> setting and regularization techniques (ridge and lasso) necessary for the <span class="math inline">\(p \gg n\)</span> setting.</p>
-<p>In each of these, we have argued that certain models (more precisely, certain estimators) have different amounts of bias and variance and given a rule of thumb that in low-data settings high-bias/low-variance models are preferred while in high-data settings, we should feel free to use low-bias models since the variance will be controlled by the large training set.</p>
-<p>Furthermore, we have discussed the importance of ‘hold-outs’ (test/train splits, cross-validation, <em>etc.</em>) as a tool to avoid overfitting. If we evaluate our models on new data (or at least new to that model), we minimize the chance of ‘regurgitation’ and ensure that our models are learning true(-ish) generalizabile relationships. Importantly, we know that <em>any time</em> we make a selection, it is important to have a new data set for downstream tasks. So:</p>
-<ul>
-<li>If we just want to to train a single pre-specified model with no hyperparameters and use it blindly, we can use all of our data</li>
-<li>If we want to to train a single pre-specified model with no hyperparameters and assess its predictive performance, we need to split our data into two sets (training + test)</li>
-<li>If we want to train a model and select hyperparameters but do not need to assess its predictive performance, we need to split our data into two sets (training + ‘validation’)</li>
-<li>If we want to train a model, select hyperparameters, and provide an unbiased assessment of predictive performance, we need to split our data into three sets (training + validation + test)</li>
-</ul>
-<p>Personally, I find the jargon of these different sets a bit confusing–what is testing and how is it different than validation?–but the ‘new data for each task’ heuristic is easy to apply and generalize.</p>
-<p>Finally, we have noted that - while hold out techniques are an excellent tool for maximizing predictive performance - they aren’t the best to ensure <em>reliability of interpretation</em>. If <em>insights</em> are more important than pure <em>performance</em>, stability techniques are typically a better strategy for tuning hyperparameters.</p>
-<p>For the next two weeks, we are going to go beyond this ‘single model’ paradigm and consider how we might handle scenarios where we have two or more models available for our use. This is the domain of <em>ensemble learning</em> - building models consisting of multiple ‘sub-models’, termed ‘base learners’. Ensemble learning is particularly powerful when applied in conjunction with fast and flexible base learners, so we will also use this as a jumping off point for one more class of models.</p>
-<section id="ensemble-learning" class="level2"><h2 class="anchored" data-anchor-id="ensemble-learning">Ensemble Learning</h2>
-<p>We begin with a discussion of <em>ensemble learning</em>, the task of combining multiple (simpler) models into a ‘super model’ to achieve a task. Ensembles can be used for essentially any ML task, but we will focus on ensemble learning for the two tasks we have focused on to date: regression and classification. (The differences in these two tasks will not really have any bearing on our ‘ensembling’ discussion.)</p>
-<p>Suppose that we want to predict the outcome of some variable <span class="math inline">\(Y\)</span> using two <em>statistically independent</em> predictors <span class="math inline">\(\hat{Y}_1, \hat{Y}_2\)</span>: if <em>arguendo</em> we assume these are unbiased, the MSE of each prediction is simply</p>
+<p>This week we begin to examin <em>discriminative</em> classifiers. Unlike generative classifiers, which attempt to model <span class="math inline">\(\bx\)</span> as a function of <span class="math inline">\(y\)</span> and then use Bayes’ rule to <em>invert</em> that model, discriminative classifiers take the more standard approach of directly modeling <span class="math inline">\(y\)</span> as a function of <span class="math inline">\(\bx\)</span>. This is the approach you have already seen in our various variants of OLS.</p>
+<section id="why-not-accuracy-maximization" class="level2"><h2 class="anchored" data-anchor-id="why-not-accuracy-maximization">Why Not Accuracy Maximization?</h2>
+<p>As we saw in our regression unit, we can pose many interesting estimators as <em>loss minimization</em> problems. For least squares, we primarily focused on mean squared error (MSE) as a loss function, though we also briefly touched on MAE, MAPE, and ‘check’ losses. There is not a single ‘canonical’ loss for the classification setting and different choices of loss will yield different classifiers.</p>
+<p>Before we build our actual first loss, it is worth asking why we can’t use something like classification accuracy as our loss function. Specifically, define <span class="math display">\[\text{Acc}(y, \hat{y}) = \begin{cases} 1 &amp; y = \text{sign}(\hat{y}) \\ 0 &amp; y \neq \text{sign}(\hat{y}) \end{cases}\]</span> Here we consider the case where <span class="math inline">\(\hat{y}\)</span> may be real-valued as a (slight) generalization of probabilistic classification and we use the <span class="math inline">\(\pm 1\)</span> convention for the two classes.</p>
+<p>Fixing <span class="math inline">\(y = 1\)</span>, <span class="math inline">\(\text{Acc}\)</span> has the following shape:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length.out<span class="op">=</span><span class="fl">201</span><span class="op">)</span></span>
+<span><span class="va">acc</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">y_hat</span>, <span class="va">y</span><span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">y_hat</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">y_hat</span>, <span class="fu">acc</span><span class="op">(</span><span class="va">y_hat</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"l"</span>,</span>
+<span>     xlab<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>     ylab<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu">Acc</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, <span class="va">y</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>     main<span class="op">=</span><span class="st">"Accuracy as a Loss Function"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is a terrible loss function! It is both non-convex (can you see why?) and just generally unhelpful. Because it is flat almost everywhere, we have no access to gradient information (useful for fitting) or to any sense of ‘sensitivity’ to our loss. In this scenario, if <span class="math inline">\(y=1\)</span>, both <span class="math inline">\(\hat{y}=0.00001\)</span> and <span class="math inline">\(\hat{y}=0.9999\)</span> have the same accuracy even though the latter is a more ‘confident’ prediction.</p>
+</section><section id="ols-for-classification" class="level2"><h2 class="anchored" data-anchor-id="ols-for-classification">OLS for Classification?</h2>
+<p>So if not accuracy, where else might we get a good loss function? You might first ask if we an use OLS? It works perfectly well for regression and we know it is well-behaved, so what happens if we try it for classification? The answer is … complicated.</p>
+<p>OLS as a <em>loss</em> function for classification is a bit strange, but it turns out to be more-or-less fine. In particular, OLS can be used to evaluate <em>probabilistic</em> classifiers, where it is known as the <em>Brier score</em>. OLS as a <em>predictor</em> can be a bit more problematic: in particular, if we just predict with <span class="math inline">\(\P(y=1) = \bx^{\top}\bbeta\)</span>, we have to deal with the fact that <span class="math inline">\(\hat{y}\)</span> can be <em>far</em> outside a <span class="math inline">\([0, 1]\)</span> range we might want from a probabilistic classifier. In certain limited circumstances, we can assume away this problem (perhaps by putting specific bounds on <span class="math inline">\(\bx\)</span>), but these fixes are fragile. Alternatively, we can try to ‘patch’ this approach and use a classifier like</p>
+<p><span class="math display">\[\P(y=1) = \begin{cases} 1 &amp; \bx^{\top}\bbeta &gt; 1 \\ 0 &amp; \bx^{\top}\bbeta &lt; 0 \\ \bx^{\top}{\bbeta} &amp; \text{ otherwise}\end{cases}\]</span></p>
+<p>Even if this feels a bit unsophisticated, Ttis is not awful, but it still struggles from the ‘long flat region’ problems that accuracy encounters.</p>
+<p>At this point, it’s hopefully clear that it will be a bit hard to ‘hack together’ a suitable loss and that we might benefit from approaching the problem with more theoretical grounding.</p>
+</section><section id="deriving-logistic-regression" class="level2"><h2 class="anchored" data-anchor-id="deriving-logistic-regression">Deriving Logistic Regression</h2>
+<p>While we argued that OLS is well-grounded in MSE alone, we can recall it has additional connections to the Gaussian. These “Gaussian vibes” were not essential to making OLS work, but they were useful in <em>deriving</em> OLS as a sensible procedure. Can we do something similar for classification? That is, can we assume a ‘working model’ to come up with a good loss function and then use it, even if we doubt that the model is ‘correct’?</p>
+<p>As with all leading questions, the answer is of course a resounding yes. We start from the rather banal observation that <span class="math inline">\(y\)</span> must have a Bernoulli distribution conditional on <span class="math inline">\(\bx\)</span>. After all, the Bernoulli is (essentially) the only <span class="math inline">\(\{0, 1\}\)</span> distribution we have to work with. So we really just need a way to model the <span class="math inline">\(p\)</span> parameter of a Bernoulli as a function of <span class="math inline">\(\bx\)</span>. Because we love linear models, we may choose to set <span class="math inline">\(p = \bx^{\top}\bbeta\)</span>, but this gets us back to the range problem we had above.</p>
+<p>Specifically, we require the Bernoulli parameter to take values in <span class="math inline">\([0, 1]\)</span> but our linear predictor <span class="math inline">\(\bx^{\top}\bbeta\)</span> takes values in all of <span class="math inline">\(\R\)</span>. We can fix this with a simple ‘hack’: we need a function that ‘connects’ <span class="math inline">\(\R\)</span> to <span class="math inline">\([0, 1]\)</span>. If we call this function <span class="math inline">\(\mu\)</span>, we then can specify our whole model as <span class="math display">\[y | \bx \sim \text{Bernoulli}(\mu(\bx^{\top}\bbeta))\]</span> and reduce our problem to estimating <span class="math inline">\(\bbeta\)</span>. Where can we get such a function?</p>
+<p>The most common choice is <span class="math display">\[\mu(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}\]</span>, which is known as the <em>logistic</em> or <em>sigmoid</em> function due to its ‘s-like’ shape:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, length.out<span class="op">=</span><span class="fl">201</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">z</span>, <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">z</span><span class="op">)</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"l"</span>, main<span class="op">=</span><span class="st">"Sigmoid Mapping"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>More generally, we can use essentially the CDF of any random variable supported on the real line as a choice of <span class="math inline">\(\mu\)</span>: since CDFs map the support onto the <span class="math inline">\([0, 1]\)</span> range they are perfect for this choice. Unfortunately, most CDFs are a bit unwieldy so this approach, while theoretically satisfying, is not too widely used in practice. If you see it, the most common choice is <span class="math inline">\(\mu(z) = \Phi(z)\)</span>, the normal CDF, resulting in a method known as “probit” regression (after ‘probability integral transform,’ an old-fashioned name for the CDF) or <span class="math display">\[\mu(z) = \frac{\tan^{-1}(z)}{\pi} + \frac{1}{2}\]</span> which gives a method known as “cauchit” regression, since this is the CDF of the standard Cauchy distribution. These choices are far less common than the default sigmoid we used above. Generally, they are only <em>slightly</em> different in practice and far more computationally burdensome and just aren’t really worth it.</p>
+<p>Returning to our default sigmoid, we now have the model <span class="math display">\[ y | \bx \sim \text{Bernoulli}\left(\frac{1}{1+e^{-\bx^{\top}\bbeta}}\right)\]</span> This model is well-posed (in the sense that the distribution ‘fits’ the data and we are guaranteed never to put invalid parameters in) but we don’t yet have a way to use it as a loss function.</p>
+</section><section id="from-model-to-loss-function" class="level2"><h2 class="anchored" data-anchor-id="from-model-to-loss-function">From Model to Loss Function</h2>
+<p>We can build a loss-function by relying on the <em>maximum likelihood</em> principle. The maximum likelihood principle is a core idea of statistics - and one you will explore in much greater detail in other courses - but, in essence, it posits that we should use the (negative) PMF or PDF as our loss function. Specifically, the ML principle says that, if many models could fit our data, we should pick the one that makes our data <em>most probable</em> (as determined by the PMF/PDF).</p>
+<p>Before we work out the ML estimator (MLE) for our classification model, let’s take a brief detour and look at the MLE for (Gaussian) regression. Specifically, if we assume a model <span class="math display">\[y \sim \mathcal{N}(\bx^{\top}\bbeta, \sigma^2)\]</span> for known <span class="math display">\[\sigma^2\]</span>, the PDF of the training point <span class="math inline">\((\bx_1, y_1)\)</span> is</p>
+<p><span class="math display">\[p(y_1 | \bx_1) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_1 - \bx_1^{\top}\bbeta\|_2^2}{2\sigma^2}\right\}\]</span></p>
+<p>If we have a set of <span class="math inline">\(n\)</span> IID training data points, the joint PDF can be obtained by multiplying together PDFs (IID is great!) to get</p>
 <p><span class="math display">\[\begin{align*}
-\text{MSE}_{\hat{Y}_i} &amp;= \E_{Y, \hat{Y}_i}[(Y - \hat{Y}_i)^2] \\
-                       &amp;= \E_{Y, \hat{Y}_i}[(Y - \E[Y] + \E[Y] - \hat{Y}_i)^2] \\
-                       &amp;= \E_{Y, \hat{Y}_i}[(Y - \E[Y])^2 +2(Y - \E[Y])(\E[Y] - \hat{Y}_i)+(\E[Y] - \hat{Y}_i)^2] \\
-                       &amp;= \E_{Y}[(Y - \E[Y])^2 +2\E_{Y, \hat{Y}_i}[(Y - \E[Y])(\E[Y] - \hat{Y}_i)]+\E_{\hat{Y}_i}[(\E[Y] - \hat{Y}_i)^2] \\
-                       &amp;= \sigma_Y^2 + 2\E_{Y}[Y - \E[Y]]\E_{\hat{Y}_i}[\E[Y] - \hat{Y}_i)] + \sigma^2_{\hat{Y}_i} \\
-                       &amp;= \sigma_Y^2 + \sigma^2_{\hat{Y}_i}
+p(\mathcal{D}_{\text{train}}) &amp;= \prod_{i=1}^n p(y_i | \bx_i) \\
+&amp;= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_i - \bx_i^{\top}\bbeta\|_2^2}{2\sigma^2}\right\} \\
+&amp;= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|y_i - \bx_i^{\top}\bbeta\|_2^2\right\} \\
+&amp;= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2\right\} \\
 \end{align*}\]</span></p>
-<p>(Why do the cross terms vanish?) That is, the MSE is simply sum of the ‘irreducible error’ associated with the best possible prediction (<span class="math inline">\(\sigma_Y^2\)</span> against the optimal prediction <span class="math inline">\(\E[Y]\)</span>) and the variance (error) in <span class="math inline">\(\hat{Y}_i\)</span> as an estimator of <span class="math inline">\(\E[Y]\)</span>.</p>
-<p>If <span class="math inline">\(\hat{Y}_1, \hat{Y}_2\)</span> are both predictors of <span class="math inline">\(Y\)</span>, it is natural to ask if we can do better using a <em>combination</em> of the two of them than we can with either separately. Indeed, if we let <span class="math inline">\(\widehat{Y} = \frac{1}{2}(\hat{Y}_1 + \hat{Y}_2)\)</span>, the above analysis tells us:</p>
-<p><span class="math display">\[\begin{align*}
-\text{MSE}_{\widehat{Y}} &amp;= \sigma_Y^2 + \sigma_{\widehat{Y}}^2 \\
-&amp;= \sigma_Y^2 + \mathbb{V}\left[\frac{\hat{Y}_1 + \hat{Y}_2}{2}\right] \\
-&amp;= \sigma_Y^2 + \sigma_{\hat{Y}_1}^2/4 + \sigma_{\hat{Y}_2}^2/4
-\end{align*}\]</span></p>
-<p>How does this compare to the separate predictions? Well, if <span class="math inline">\(\sigma_{\hat{Y}_1} = \sigma_{\hat{Y}_2}\)</span>, then we have clearly reduced our expected MSE by half of the variance error. (By definition, we can’t do anything about the irreducible error.) If, on the other hand, one predictor is much better than the other, say <span class="math inline">\(\sigma_{\hat{Y}_1}^2 = 400 \sigma_{\hat{Y}_2}^2\)</span>, then we have</p>
-<p><span class="math display">\[\begin{align*}
-\text{MSE}_{\hat{Y}_1} &amp;= \sigma_Y^2 + 400 \sigma_{\hat{Y}_2}^2 \\
-\text{MSE}_{\hat{Y}_2} &amp;= \sigma_Y^2 + \sigma_{\hat{Y}_2}^2 \\
-\text{MSE}_{\widehat{Y}} &amp;= \sigma_Y^2 + 100.25 \sigma_{\hat{Y}_2}^2 \\
-\end{align*}\]</span></p>
-<p>So we don’t beat the superior predictor (<span class="math inline">\(Y_2\)</span>), but we comfortably beat the inferior predictor (<span class="math inline">\(Y_1\)</span>). Notably, if we didn’t know which predictor was better and had to select randomly (50/50), we would have an expected MSE of <span class="math inline">\(\sigma_Y^2 + 200\sigma_{\hat{Y}_2}^2\)</span>, so the ‘averaging’ predictor is still better. More generally, if <span class="math inline">\(\hat{Y_1}\)</span> is sometimes better and <span class="math inline">\(\hat{Y_2}\)</span> is better at other times, a suitable averaging strategy will do better <em>in the long run</em> than using a single predictor. (We should pick the averaging weights as a function of the variance of the two approaches and the relatively frequencies of the <span class="math inline">\(\hat{Y}_1\)</span>-better and <span class="math inline">\(\hat{Y}_2\)</span>-better scenarios.)</p>
-<p>This example - simple as it is - gets at the core insight of stacking: if we have several ‘good enough’ models, we can do better - sometimes much better - by using a combination of them. This is not guaranteed - if <span class="math inline">\(\hat{Y}_2\)</span> is always the ‘lower variance’ model, adding in some <span class="math inline">\(\hat{Y}_1\)</span> pretty much always hurts - but we do not expect to have a single ‘dominant’ model. In practice, we typically find ourselves armed with models of similar-enough performance (logistic regression, linear SVMs, RBF Kernel SVMs, RBF Kernel logistic regression) and find that different models perform better on different inputs. <em>E.g.</em>, the ‘linear’ models might do well far from the decision boundary, while the ‘kernelized’ models might improve performance near the decision boundary while suffering from extra ‘wiggliness’ (variance) far from the decision boundary.</p>
-<p>So what can we take away from this discussion?</p>
-<blockquote class="blockquote">
-<p>Low correlation among predictors is helpful. If our base learners give the same predictions at every point, there’s nothing to be gained by combining and comparing them.</p>
-</blockquote>
-<p>Put another way, ensemble learning benefits from a <em>diverse</em> set of base learners. We hope to ‘combine strength’ from different approaches to build an ensemble predictor that is better than any of its individual components.</p>
-<p>The three major ensembling techniques we will cover - stacking, bagging, and boosting - essentially come down to different ways of getting this diversity.</p>
-</section><section id="stacking" class="level2"><h2 class="anchored" data-anchor-id="stacking">Stacking</h2>
-<p>So this is all well and good, but where do we <em>actually get</em> different predictors? Here, we’re going to change notation to <span class="math inline">\(\hat{f}_1, \hat{f}_2, \dots
-\hat{f}_K\)</span> to emphasize that we want to learn a combination of <em>predictors</em> (functions estimated from data), not <em>predictions</em>.</p>
-<p>Well… perhaps the easiest thing to do is to train different models on the same data. Logistic Regression, LDA, and SVMs will likely find <em>similar</em> decision boundaries, but they won’t be exactly the same. Suppose we have</p>
-<ul>
-<li>
-<span class="math inline">\(\hat{f}_{\text{LR}}\)</span>: Logistic Regression (for simplicity, plain and unregularized)</li>
-<li>
-<span class="math inline">\(\hat{f}_{\text{LDA}}\)</span>: Linear Discriminant Analysis</li>
-<li>
-<span class="math inline">\(\hat{f}_{\text{SVM}}\)</span>: A Linear SVM with the default hyperparameter from <code>sklearn</code>
-</li>
-</ul>
-<p>Further, let’s assume that we have the binarized predictions (<span class="math inline">\(\{0, 1\}\)</span>, no soft labels for now) from each model. How can we combine these?</p>
-<p>Perhaps the simplest rule is the ‘majority vote’ rule: if <span class="math inline">\(\hat{f}_{\text{LR}}(\bx) = \hat{f}_{\text{LDA}}(\bx) = 1\)</span> and <span class="math inline">\(\hat{f}_{\text{SVM}}(\bx) = 0\)</span>, then <span class="math inline">\(\hat{f}_{\text{Majority}}(\bx) = 1\)</span>.</p>
-<p>This approach is quite easy to implement, but it treats all the inputs as equally reliable. While this isn’t the <em>worst</em> assumption, we can do better. In particular, what if we <em>learned</em> an optimal set of weights. Specifically, we want to learn a vector of weights <span class="math inline">\(\bw \in \mathbb{R}^3\)</span> to maximize predictive accuracy of the linear combination <span class="math inline">\(w_1 \hat{f}_{\text{LR}} + w_2 \hat{f}_{\text{LDA}} + w_3 \hat{f}_{\text{SVM}}\)</span>. This gives us another classification problem, so let’s use logistic regression to determine the weights:</p>
-<p><span class="math display">\[\hat{\bw} = \text{arg min}_{\bw} \sum_{i=1}^n -y_i \bw^{\top}\hat{\mathbf{f}} + \log(1 + e^{\bw^{\top}\hat{\mathbf{f}}})\]</span> where <span class="math inline">\(\hat{\mathbf{f}}\)</span> is a vector of the three base learner predictions.</p>
-<p>The solution to this problem, <span class="math inline">\(\hat{\bw}\)</span>, gives the <em>stacking weights</em> for our three base learners. Once we have <span class="math inline">\(\hat{\bw}\)</span>, we can make predictions at our our new test point, <span class="math inline">\(\tilde{\bx}\)</span>, by:</p>
-<ol type="1">
-<li>Apply three base learners separately:
-<ul>
-<li><span class="math inline">\(\hat{y}_{\text{LR}} = \hat{f}_{\text{LR}}(\tilde{\bx})\)</span></li>
-<li>
-<span class="math inline">\(\hat{y}_{\text{LDA}} = \hat{f}_{\text{LDA}}(\tilde{\bx})\)</span><br>
-</li>
-<li><span class="math inline">\(\hat{y}_{\text{SVM}} = \hat{f}_{\text{SVM}}(\tilde{\bx})\)</span></li>
-</ul>
-</li>
-<li>Determine the weighted combination:
-<ul>
-<li><span class="math inline">\(\text{Stacking Score} = w_1\hat{y}_{\text{LR}} + w_2\hat{y}_{\text{LDA}}+w_3\hat{y}_{\text{SVM}}\)</span></li>
-</ul>
-</li>
-<li>Make a prediction using the stacking score: <span class="math display">\[\hat{y}_{\text{Ensemble}} = \begin{cases} 1 &amp; \text{ if } \text{Stacking Score} &gt; \theta \\ 0 &amp; \text{ if } \text{ Stacking Scoore} \leq \theta \end{cases}\]</span> where <span class="math inline">\(\theta\)</span> is a threshold chosen to minimize the problem-specific loss. (Alternatively, set <span class="math inline">\(\theta = 0\)</span> and include an intercept term.)</li>
+<p>We could maximize this, but a few minor tweaks make the problem much easier:</p>
+<ol type="i">
+<li>Since all of the action is in an exponential, we might as well maximize the <em>log</em> of the PDF instead of the raw PDF. Since logarithms are a monotonic transformation, this won’t change our minimizer. Similarly, we will also strategically drop some constant terms as they also do not change the minimizer.</li>
+<li>By convention, we like to <em>minimize</em> more than <em>maximize</em>, specifically when dealing with convex approaches, so we will introduce a sign flip.</li>
 </ol>
-<p>We note a few practical points here:</p>
-<ol type="1">
-<li>What data should we use to estimate <span class="math inline">\(\bw\)</span>? This is a new step in our pipeline, so we need a new ‘chunk’ of our data. This split of the data is typically called either a query or validation set, but I tend to describe it as an ‘ensembling’ set to make its purpose clear. Regardless, it serves to give us a new data set to fit our new ensemble model. (If we use the training set used to train each <span class="math inline">\(\hat{f}_i\)</span>, the base learners will look ‘too good’ to the ensemble learning process.)</li>
-<li>Nothing actually requires us to use the binarized predictions. For models that provide soft labels (class probabilities), we can and should use those in the ensemble process (both in training the ensemble weights and in constructing the predictor vectors <span class="math inline">\(\hat{\mathbf{f}}\)</span>). Dropping the probabilities is really just throwing away data.</li>
-<li>We motivated stacking by weighted averages. As such it is common to add additional constraints to the stacking problem to make it look more like averaging. For example, you will often see:
-<ul>
-<li>
-<span class="math inline">\(\bw \geq 0\)</span>: The stacking weights are non-negative. This makes sense if you assume each predictor is generally reasonable.</li>
-<li>
-<span class="math inline">\(\sum w_i = 1\)</span>: The stacking weights sum to 1. Again, a natural generalization of averaging.</li>
-</ul>
-</li>
-<li>When fitting <em>large</em> ensembles (like any large model), it is not uncommon to see ridge or lasso penalties. These are particularly important in ensemble building since the base learners are generally highly correlated.</li>
-<li>Suitably tuned (and that’s a big assumption!) stacking should never do worse than any individual predictor because we can always pick <span class="math inline">\(\bw = (1, 0, 0)\)</span> if the first base learner dominates the others.</li>
-</ol>
-<p>Stacking creates a ‘model of models’ - the turducken of machine learning - and all of the ML tricks we have learned to date can be used in creating this meta-model. Like any modeling step, we have to practice good data hygiene (splitting and hold outs) to make sure we don’t overfit and to generate a good estimate of predictive accuracy, but otherwise it is particularly straightforward.</p>
-<p>Stacking can only take us so far: the value-added of stacking comes from differences between the base learners and, when trained on the same data set, we don’t expect too much diversity among the base learners. In practical settings, stacking is particularly useful when we are given ‘standard’ or ‘baseline’ models for a task that we want to combine without changing the individual models, but we may want to modify our pipeline to explicitly generate more diversity.</p>
-<p>This brings us to our next family of ensembling techniques - resampling methods, the most famous of which is <em>bootstrap aggregation</em> or bagging.</p>
-</section><section id="resampling" class="level2"><h2 class="anchored" data-anchor-id="resampling">Resampling</h2>
-<p>In our discussion above, we argued that diversity of (variance between) base learners was key to ensemble performance. When these base learners are trained on the same training data, we can only get so much variance. Since most of our models are not terrible, they generally pick out the same major patterns in the data.</p>
-<p>So how can we get more variance? We could further split our training data, using a small chunk for each model, but this seems likely to bring about variance problems. If we want to fit large ensembles of 10, 20, or even 100 models, we might wind up using less than 1% of the overal data to train a single model, which is clearly subpar.</p>
-<p>We can get around this problem using <em>sampling</em> or <em>resampling</em> techniques. We can train our esnemble members on randomly selected subsets of our data (or subsets of the features). Because these models have different training sets, they will be more varied. (Typically, this sort of ‘data randomization’ induces more variance than just changing hyperparamters or model families.)</p>
-<p>These randomization schemes have different names:</p>
-<ul>
-<li>Minibatching: training on random subsets of samples (rows)</li>
-<li>Random Subspace Method: training on random subsets of features (columns)</li>
-<li>Minipatching: training on random subsets of samples and features (row and columns)</li>
-</ul>
-<p>If the model is not too sensitive to the sample size (or if we use a high sampling rate), these strategies can work well.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> But we have a bit of a bind here: if we want to use large training sets for each learner, we go back to the overlapping training scenario we were trying to avoid.</p>
-<p>Can we be a bit more creative on our sampling? We want to minimize overlap but also get ‘full sized’ training sets.</p>
-<section id="bootstrapping" class="level3"><h3 class="anchored" data-anchor-id="bootstrapping">Bootstrapping</h3>
-<p>To get around this problem, we rely on a key idea of late 20th century statistics: <strong>the bootstrap.</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Recall the core idea of bootstrapping:</p>
-<ul>
-<li>We have samples <span class="math inline">\(\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\)</span> from an unknown distribution.</li>
-<li>We would like to have more samples from this distribution, but we don’t have the ability to gain more data.</li>
-<li>If our data set is large, we expect that the <em>empirical distribution</em> <span class="math inline">\(\hat{\P}_n\)</span> will be close to the ‘real’ distribution <span class="math inline">\(\P\)</span>. Formally, the law of large numbers (and its fancy variants like Glivenko-Cantelli) guarantees us that <span class="math inline">\(\hat{P}_n \to \P \text{ as } n \to \infty\)</span>.</li>
-<li>Sampling from <span class="math inline">\(\hat{P}_n\)</span> is ‘close’ to sampling from <span class="math inline">\(\P\)</span>
-</li>
-</ul>
-<p>So how can we sample from the empirical distribution <span class="math inline">\(\hat{P}_n\)</span>? We sample <em>with replacement</em>. That is, we pick one of the training points <span class="math inline">\(n\)</span> times <strong>independently</strong> (with no regard for prior selections). Intuitively, this captures the idea of IID sampling - it’s also necessary so we don’t just reproduce the (shuffled) training data.</p>
-<p>This scheme - sampling with replacement - is the essence of <strong>bootstrap sampling</strong>.</p>
-</section><section id="bootstrap-aggregation-bagging" class="level3"><h3 class="anchored" data-anchor-id="bootstrap-aggregation-bagging">Bootstrap Aggregation (Bagging)</h3>
-<p>We can use a similar strategy to generate ‘new’ training data for our base learners:</p>
-<ul>
-<li>Repeat <span class="math inline">\(b=1, \dots, B\)</span> times:
-<ul>
-<li>Sample from the training data <span class="math inline">\(\mathcal{D}_{\text{train}}\)</span> <span class="math inline">\(n\)</span> times <em>with replacement</em> to get a bootstrap set <span class="math inline">\(\tilde{\mathcal{D}_b}\)</span>
-</li>
-<li>Train a base learner <span class="math inline">\(\hat{f}_b\)</span> on <span class="math inline">\(\tilde{\mathcal{D}_b}\)</span>
-</li>
-</ul>
-</li>
-<li>Create the ensemble predictor: <span class="math display">\[\hat{f}(\bx) = \frac{1}{B}\sum_{b=1}^B \hat{f}_b(\bx)\]</span>
-</li>
-</ul>
-<p>This ensembling strategy is called <strong>bootstrap aggregation</strong> or more simply <strong>bagging</strong>.</p>
-<p>So how much diversity / variance can we actually expect from this strategy? It depends on how much overlap we get in our sampling. This is a fun little probability exercise:</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Probability of a Given Sample Being in a Bootstrap Data Set">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Probability of a Given Sample Being in a Bootstrap Data Set
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>In our scenario above, what is the chance that <span class="math inline">\(\bx_1\)</span> is in <span class="math inline">\(\tilde{\mathcal{D}}_b\)</span>?</p>
-<p>For each sample, there is a <span class="math inline">\(1/n\)</span> chance that we select <span class="math inline">\(\bx_1\)</span>, and hence a <span class="math inline">\(1-1/n\)</span> chance that we don’t. If we repeat this process <span class="math inline">\(n\)</span> times, there is a <span class="math inline">\((1-1/n)^n\)</span> chance that we never select <span class="math inline">\(\bx_1\)</span>. For a large data set, this converges to</p>
-<p><span class="math display">\[\lim_{n\to\infty}\left(1-\frac{1}{n}\right)^n = e^{-1} \approx \frac{2}{3}\]</span></p>
-<p>so about <span class="math inline">\(2/3\)</span> of our data is used for each base learner. <em>Unlike</em> straight subsampling, however, this process includes repeats, so we have <span class="math inline">\(n\)</span> samples, guaranteeing us repeats. (A more detailed analysis can show that the <em>number</em> of times a sample appears is asymptotically Poisson.)</p>
-</div>
-</div>
-<p>So how does bagging actually work? We know that we’re always trying to control bias and variance so let’s look at those two terms separately:</p>
-<ul>
-<li>Bias: Because we are fitting the same model <span class="math inline">\(B\)</span> times, there’s really no impact on bias. (<em>E.g.</em>, if we are fitting a linear model, the average of <span class="math inline">\(B\)</span> lines is just another line so whatever approximation error we have is unchanged.)</li>
-<li>Variance: Suppose that the base learners <span class="math inline">\(\hat{f}_i\)</span> have variance <span class="math inline">\(\sigma^2\)</span> and correlation <span class="math inline">\(\rho\)</span>. (These are constant for all <span class="math inline">\(\hat{f}_i, \hat{f}_j\)</span> by the IID sampling structure used). Then the variance of <span class="math inline">\(\hat{f}\)</span> (the bagged average) is given by</li>
-</ul>
 <p><span class="math display">\[\begin{align*}
-\V[\hat{f}] &amp;= \V\left[\frac{1}{B}\sum_b \hat{f}_b\right] \\
-            &amp;= B^{-2}\V\left[\sum_b \hat{f}_b\right] \\
-            &amp;= B^{-2}\left(\sum_{b=1}^B \V[\hat{f}_b] + \sum_{\substack{b, b'=1 \\ b \neq b'}}^B \C[\hat{f}_b, \hat{f}_{b'}]\right)\\
-            &amp;= B^{-2}\left(\sum_{b=1}^B \sigma^2 + \sum_{\substack{b, b'=1 \\ b \neq b'}}^B \rho\sigma^2\right) \\
-            &amp;= B^{-2}\left(B\sigma^2 + (B^2 - B) \rho\sigma^2\right) \\
-            &amp;= B^{-2}\left(B(\rho\sigma^2 + (1-\rho)\sigma^2) + (B^2 - B) \rho\sigma^2\right) \\
-            &amp;= B^{-2}\left(B\rho\sigma^2 + B(1-\rho)\sigma^2) + B^2\rho\sigma^2 - B\rho\sigma^2\right) \\
-            &amp;= B^{-2}\left(B(1-\rho)\sigma^2) + B^2\rho\sigma^2\right) \\
-            &amp;= \rho\sigma^2 + \frac{1}{B}(1-\rho)\sigma^2
+\hat{\bbeta} &amp;= \argmax_{\bbeta} p(\mathcal{D}_{\text{train}}) \\
+             &amp;= \argmax_{\bbeta} \log p(\mathcal{D}_{\text{train}}) \\
+             &amp;= \argmax_{\bbeta} \log\left( (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|\by - \bX\bbeta\|_2^2\right\}\right) \\
+             &amp;= \argmax_{\bbeta} -\frac{n}{2}\log(2\pi\sigma^2) -\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
+             &amp;= \argmin_{\bbeta} \frac{n}{2}\log(2\pi\sigma^2) + \frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
+             &amp;= \argmin_{\bbeta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2
 \end{align*}\]</span></p>
-<p>This is an interesting formula. As always, we can understand it best by taking the extremes:</p>
+<p>Why were we able to do the simplifications in the last line? (You might also recognize the <em>penultimate</em> line as a term used in the AIC of a linear model.)</p>
+<p>This is quite cool! If we assume <span class="math inline">\(\by\)</span> follows a particular Gaussian, we get OLS by applying the general MLE approach. Deeper statistical theory tells us that the MLE is (essentially) optimal, so if our data is not too ‘un-Gaussian’ it makes sense that the Gaussian MLE (OLS) will perform reasonably well. Since many things in this world are Gaussian-ish, OLS is optimal-ish for a large class of interesting problems.</p>
+<p>Returning to our classification problem, we see that if our training data is IID, the MLE can be obtained by minimizing the negative sum of the log PDFs. For space, we often start from this point instead of doing the full set of manipulations from scratch.</p>
+<p>So what is the Bernoulli log PMF? Recall that if <span class="math inline">\(B \sim \text{Bernoulli}(p)\)</span>, its PMF is given by:</p>
+<p><span class="math display">\[\P(B=k) = \begin{cases} p &amp; k=1 \\ 1-p &amp; k = 0 \end{cases}\]</span></p>
+<p>or more compactly,</p>
+<p><span class="math display">\[\P(B = k) = p^k(1-p)^(1-k)\]</span></p>
+<p>Taking logarithms, we have</p>
+<p><span class="math display">\[\log \P(B = k) = k \log p + (1-k) \log(1-p)\]</span></p>
+<p>and hence the negative log-likelihood:</p>
+<p><span class="math display">\[-\log \P(B = k) = -k \log p -(1-k) \log(1-p)\]</span></p>
+<p>From our working model, we take <span class="math inline">\(p = 1/(1+e^{-\bx^{\top}\bbeta})\)</span> so our joint MLE is given by:</p>
+<p><span class="math display">\[\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n -y_i \log\left(1/(1+e^{-\bx_i^{\top}\bbeta})\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right)\]</span></p>
+<p>This is still quite hairy, so let’s simplify it. In the first term, we note that <span class="math inline">\(-\log(1/x) = \log x\)</span> to get:</p>
+<p><span class="math display">\[\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right)\]</span></p>
+<p>For the second term, note that</p>
+<p><span class="math display">\[1-\frac{1}{1+e^{-z}} = \frac{1+e^{-z} - 1}{1+e^{-z}} = \frac{e^{-z}}{1+e^{-z}} \implies \log\left(1-\frac{1}{1+e^{-z}}\right) = -z - \log(1 + e^{-z})\]</span></p>
+<p>so we get:</p>
+<p><span class="math display">\[\begin{align*}
+\hat{\bbeta} &amp;=  \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right) \\
+&amp;= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\left[-\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] \\
+&amp;= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) + (1-y_i)\left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] \\
+&amp;= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) + \left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] -y_i\left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right]\\
+&amp;= \argmin_{\bbeta} \sum_{i=1}^n-y_i \bx_i^{\top}\bbeta + \bx_i^{\top}\bbeta + \log\left(1-e^{-\bx_i^{\top}\bbeta}\right)
+\end{align*}\]</span></p>
+<p>We could work in this form, but it turns out to actually be a bit nicer to ‘invert’ some of the work we did above to get rid of a term. In particular, note</p>
+<p><span class="math display">\[z + \log(1-e^{-z}) = \log(e^z) + \log(1-e^{-z}) = \log(e^z + e^{z-z}) = \log(1 + e^z)\]</span></p>
+<p>which gives us:</p>
+<p><span class="math display">\[\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n-y_i \bx_i^{\top}\bbeta  + \log\left(1+e^{\bx_i^{\top}\bbeta}\right)\]</span></p>
+<p>Wow! Long derivation. And we still can’t actually solve this!</p>
+<p>Unlike OLS, where we could obtain a closed-form solution, we <em>have to use</em> an iterative algorithm here. While we could use <em>gradient</em> descent, we can get to an answer far more rapidly if we use more advanced approaches. Since this is not an optimization course, we’ll instead use some software to solve for us:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Generate data from the logistic model</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">X</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, ncol<span class="op">=</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">P</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n</span>, size<span class="op">=</span><span class="fl">1</span>, prob<span class="op">=</span><span class="va">P</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use optimization software</span></span>
+<span><span class="co"># See https://cvxr.rbind.io/cvxr_examples/cvxr_logistic-regression/ for details</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://cvxr.rbind.io">CVXR</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'CVXR'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    is_vector</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    power</code></pre>
+</div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Variable-class.html">Variable</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">eta</span>  <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span></span>
+<span></span>
+<span><span class="va">objective</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">eta</span> <span class="op">+</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/logistic.html">logistic</a></span><span class="op">(</span><span class="va">eta</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">problem</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">problem</span><span class="op">)</span><span class="op">$</span><span class="fu">getValue</span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: right;">beta_hat</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.9905483</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.9281465</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3.4612802</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-0.0241423</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1049132</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Not too bad, if we compare this to <code>R</code>’s built-in logistic regression function, we see our results basically match:</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fl">0</span>, family<span class="op">=</span><span class="va">binomial</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = y ~ X + 0, family = binomial)
+
+Coefficients:
+   Estimate Std. Error z value Pr(&gt;|z|)    
+X1  0.99055    0.15963   6.205 5.46e-10 ***
+X2  1.92815    0.21914   8.799  &lt; 2e-16 ***
+X3  3.46128    0.32349  10.700  &lt; 2e-16 ***
+X4 -0.02414    0.13704  -0.176    0.860    
+X5  0.10491    0.14700   0.714    0.475    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 693.15  on 500  degrees of freedom
+Residual deviance: 308.34  on 495  degrees of freedom
+AIC: 318.34
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<p>Good match!</p>
+<p>Note that, in the above, we had to use the <code>logistic</code> function built into <code>CVX</code>. If we used <code>log(1+exp(eta))</code>, the solver would not be able to prove that it is convex and would refuse to try to solve. See the <code>CVX</code> documentation for more details.</p>
+<p>We can compute accuracy after defining a ‘decision rule’. Here, let’s just round the predicted probability</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_hat</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta_hat</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">p_hat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_hat</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.86</code></pre>
+</div>
+</div>
+<p>Now that we have this toolkit built up, we can also easily apply ridge and lasso penalization:</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penalty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lasso_problem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span> <span class="op">+</span> <span class="fl">9</span> <span class="op">*</span> <span class="va">penalty</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">beta_hat_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">lasso_problem</span><span class="op">)</span><span class="op">$</span><span class="fu">getValue</span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small"><tbody>
+<tr class="odd">
+<td style="text-align: right;">0.6153998</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.2696632</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.4188283</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0000000</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<p>We got some sparsity, as we would expect with <span class="math inline">\(\ell_1\)</span> penalization.</p>
+</section><section id="generalized-linear-models" class="level2"><h2 class="anchored" data-anchor-id="generalized-linear-models">Generalized Linear Models</h2>
+<p>The approach we took here is a special case of a <em>generalized linear model</em>: generalized linear models (GLMs) consist of three parts:</p>
 <ul>
-<li>
-<span class="math inline">\(B = 1\)</span>: In this case, the variance reduces to <span class="math inline">\(\sigma^2\)</span>, the variance of a single predictor (as we would expect for ‘ensemble of one’).</li>
-<li>
-<span class="math inline">\(B \to \infty\)</span>: The variance decreases to <span class="math inline">\(\rho\sigma^2\)</span>, but no further. Practically, we see diminishing returns in the <span class="math inline">\(B\approx 200-500\)</span> range, which you will see as the default for most software that has a bagging step.</li>
-<li>
-<span class="math inline">\(\rho \to 1\)</span>: As the base learners become more correlated, the variance converges to <span class="math inline">\(\sigma^2\)</span>, the variance of a single predictor. (As we would expect since we have no diversity among base learners.)</li>
-<li>
-<span class="math inline">\(\rho \to 0\)</span>: As the base learners become uncorrelated, the variance converges to <span class="math inline">\(\sigma^2/B\)</span>, the variance of a standard average. (You might ask why not take <span class="math inline">\(B \to \infty\)</span> in this case to have no bias: we really can’t get an infinite number of uncorrelated models, no matter how hard we try, if they are modeling the same underlying DGP)</li>
+<li>A linear model for the ‘core predictor’ <span class="math inline">\(\eta = \bX\bbeta\)</span>;</li>
+<li>A sampling distribution for the data <span class="math inline">\(y \sim \text{Dist}\)</span>; and</li>
+<li>An ‘adaptor’ function<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, <span class="math inline">\(\mu\)</span>, that maps <span class="math inline">\(\eta \in \R\)</span> to the parameter space of <span class="math inline">\(y\)</span>: specifically, we need <span class="math inline">\(\E[y | \bx] = \mu(\bx^{\top}\bbeta)\)</span>.</li>
 </ul>
-<p>So we see we want a flexible (low-bias) base learner that is also going to give us low correlation (and low variance) among the bagged predictors. How can we get such a base learner? We’ll cover this more next week.</p>
-</section><section id="out-of-bag-error" class="level3"><h3 class="anchored" data-anchor-id="out-of-bag-error">Out of Bag Error</h3>
-</section></section><section id="boosting" class="level2"><h2 class="anchored" data-anchor-id="boosting">Boosting</h2>
-<p>Delayed to next week…</p>
+<p>The adaptor function needs to be smooth (for nice optimization properties) and monotonic (or else the interpretation gets too weird), but we otherwise have some flexibility. As noted above, if we pick <span class="math inline">\(\mu\)</span> to be the normal or Cauchy CDFs, we get alternative ‘Bernoulli Regressions’ (probit and cauchit).</p>
+<p>We can generalize the model for <span class="math inline">\(\eta\)</span> by allowing it to be an additive (spline) model or a kernel method. To fit splines, you can use the <code>gam</code> function from the <code>mgcv</code> function.</p>
+<p>Finally, we also have choices in the sampling distribution. While normal and Bernoulli are the most common, you will also sometimes see Poisson and Gamma in the wild. For both of these, the mean is a positive value, so we require an adaptor that maps <span class="math inline">\(\R\)</span> to <span class="math inline">\(\R \geq 0\)</span> and we typically take <span class="math inline">\(\mu(z) = e^z\)</span>.</p>
+<p>A good exercise is to repeat the above analysis for Poisson regression and compare your result (obtained with <code>CVXR</code>) to the Poisson regression built into <code>R</code>.</p>
+</section><section id="loss-functions-for-classification" class="level2"><h2 class="anchored" data-anchor-id="loss-functions-for-classification">Loss Functions for Classification</h2>
+<p>We now have a workable loss function for discriminative classification. Returning to our example from above (changed to <span class="math inline">\(\{0, 1\}\)</span> convention briefly). Let us set <span class="math inline">\(\alpha = y\hat{y}\)</span> and investigate our loss functions as a property of <span class="math inline">\(\alpha\)</span>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length.out<span class="op">=</span><span class="fl">201</span><span class="op">)</span></span>
+<span><span class="va">acc</span>     <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">alpha</span> <span class="op">&lt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">lr_loss</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span><span class="op">*</span><span class="va">alpha</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">alpha</span>, <span class="fu">acc</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"l"</span>,</span>
+<span>     xlab<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>,</span>
+<span>     ylab<span class="op">=</span><span class="st">"Loss"</span>, </span>
+<span>     main<span class="op">=</span><span class="st">"Classification Losses"</span>, </span>
+<span>     ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">alpha</span>, <span class="fu">lr_loss</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, </span>
+<span>       col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"red4"</span><span class="op">)</span>, </span>
+<span>       lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>       legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Accuracy"</span>, <span class="st">"Logistic Regression"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see here that the logistic loss defines a <em>convex surrogate</em> of the underlying accuracy. Just like we used <span class="math inline">\(\ell_1\)</span> as a tractable approximation for best squares, logistic regression can be considered a tractable approximation for accuracy minimization.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>Other useful loss functions can be created using this perspective, perhaps none less important than the <em>hinge loss</em>, which gives rise to a classifier known as the <em>support vector machine</em> (SVM).</p>
+</section><section id="support-vector-machines" class="level2"><h2 class="anchored" data-anchor-id="support-vector-machines">Support Vector Machines</h2>
+<p>In this section, we go back to <span class="math inline">\(\{\pm 1\}\)</span> convention.</p>
+<p>Instead of using a logistic loss, consider a hinge loss of the form</p>
+<p><span class="math display">\[H(y, \hat{y}) = (1 - y\hat{y})_+\]</span></p>
+<p>When <span class="math inline">\(y = \hat{y}=1\)</span> or <span class="math inline">\(y = \hat{y} = 0\)</span>, this is clearly 0 as we would expect from a good loss. What happens for cases where our prediction is wrong or not ‘full force’, say <span class="math inline">\(\hat{y} = 1/2\)</span>.</p>
+<p>Looking ahead, we will use a linear combination of features to create <span class="math inline">\(\hat{y} = \bx^{\top}\bbeta\)</span> yielding:</p>
+<p><span class="math display">\[H(\bbeta) = (1 - y \bx^{\top}\bbeta)_+\]</span></p>
+<p>If <span class="math inline">\(y=1\)</span>, we get zero loss so long as <span class="math inline">\(\bx^{\top}\bbeta &gt; 1\)</span> and a small loss for <span class="math inline">\(0 &lt; \bx^{\top}\bbeta &lt; 1\)</span>. As <span class="math inline">\(\bx^{\top}\bbeta\)</span> crosses zero and goes negative, the loss grows linearly without bound. (Reverse all of this for the case <span class="math inline">\(y = -1\)</span>.) This is an interesting loss function: we cannot make our loss decrease as our predictions become ‘more right’, but our loss continues to increase as our prediction becomes ‘more wrong’.</p>
+<p>Visually, we can draw this on our plot from above:</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length.out<span class="op">=</span><span class="fl">201</span><span class="op">)</span></span>
+<span><span class="va">acc</span>     <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">alpha</span> <span class="op">&lt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">lr_loss</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span><span class="op">*</span><span class="va">alpha</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">hinge_loss</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmax</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">-</span><span class="va">alpha</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">alpha</span>, <span class="fu">acc</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"l"</span>,</span>
+<span>     xlab<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>,</span>
+<span>     ylab<span class="op">=</span><span class="st">"Loss"</span>, </span>
+<span>     main<span class="op">=</span><span class="st">"Classification Losses"</span>, </span>
+<span>     ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">alpha</span>, <span class="fu">lr_loss</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">alpha</span>, <span class="fu">hinge_loss</span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>, col<span class="op">=</span><span class="st">"green4"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, </span>
+<span>       col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"red4"</span>, <span class="st">"green4"</span><span class="op">)</span>, </span>
+<span>       lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>       legend<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Accuracy"</span>, <span class="st">"Logistic Regression"</span>, <span class="st">"Hinge Loss"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is also a pretty nice surrogate loss. In this case, let’s just go ‘straight at it’ to construct a classifier:</p>
+<p><span class="math display">\[\hat{\bbeta} = \argmin \sum_{i=1}^n (1-y_i \bx_i^{\top}\bbeta)_+\]</span></p>
+<p>This classifier is not uniquely defined for many problems (because of the long flat part of the loss), so it is conventional to add a <em>regularization</em> term to the SVM:</p>
+<p><span class="math display">\[\hat{\bbeta} = \argmin \sum_{i=1}^n (1-y_i \bx_i^{\top}\bbeta)_+ + \lambda \|\bbeta\|_2^2\]</span></p>
+<p>We can solve this directly using CVX as follows:</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Generate data from the logistic model and fit an SVM</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">X</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, ncol<span class="op">=</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">P</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n</span>, size<span class="op">=</span><span class="fl">1</span>, prob<span class="op">=</span><span class="va">P</span><span class="op">)</span></span>
+<span><span class="co">## Convert to +/-1 convention</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">y</span> <span class="op">-</span> <span class="fl">1</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://cvxr.rbind.io">CVXR</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Variable-class.html">Variable</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">eta</span>  <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span></span>
+<span></span>
+<span><span class="va">objective</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/pos.html">pos</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">eta</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/norm2.html">norm2</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="va">problem</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">problem</span><span class="op">)</span><span class="op">$</span><span class="fu">getValue</span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using the decision rule <span class="math inline">\(\hat{y} = \text{sign}(\bx^{\top}\bbeta)\)</span>, this gives us good accuracy:</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta_hat</span><span class="op">)</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.884</code></pre>
+</div>
+</div>
+<p>This is comparable to what we got for logistic regression even though:</p>
+<ol type="i">
+<li>the loss function is ‘wrong’ (doesn’t model the DGP)</li>
+<li>we did no tuning of the ridge parameter</li>
+</ol>
+<p>So, all in all, pretty impressive.</p>
+<p>SVMs are a remarkably powerful and general classification technology. Before we move past them, we will now take a second perspective focusing on the <em>geometry</em> of SVMs.</p>
+</section><section id="svm-the-geometric-viewpoint" class="level2"><h2 class="anchored" data-anchor-id="svm-the-geometric-viewpoint">SVM: The Geometric Viewpoint</h2>
 
 
 </section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 <ol>
-<li id="fn1"><p>Most of these methods were actually designed to speed up training/fitting and that remains the main use case for minibatching today (in <em>stochastic gradient descent</em>). We won’t focus too much on implications for speed today.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>If you have seen bootstrapping before, it was likely in the context of estimating the sampling variance of an estimator. (If you haven’t seen this, go look it up - it’s awesome!) Here, we’re using bootstrap sampling to induce some variance, not to estimate variance, but the sampling strategy is the same.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>For historical reasons, this is known as the <em>inverse link</em>, but I prefer to simply think of it as an adaptor and to never use the (forward) link.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>This ‘surrogate loss’ perspective was first discussed in: P.L. Barlett, M.I. Jordan, and J.D. McAuliffe. “Convexity, Classification, and Risk Bounds”. <em>Journal of the American Statistical Association</em> <strong>101(473)</strong>, pp.138-156. 2006. DOI:<a href="https://dx.doi.org/10.1198/016214505000000907">10.1198/016214505000000907</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

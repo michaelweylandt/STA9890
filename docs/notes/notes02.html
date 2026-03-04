@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-01-13">
+<meta name="dcterms.date" content="2026-02-11">
 <title>STA 9890 - Fundamentals of ML: II. Linear Algebra Foundations – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -189,6 +189,11 @@ window.Quarto = {
 <li><a href="#vector-arithmetic" id="toc-vector-arithmetic" class="nav-link" data-scroll-target="#vector-arithmetic">Vector Arithmetic</a></li>
   <li><a href="#vector-length-and-angle" id="toc-vector-length-and-angle" class="nav-link" data-scroll-target="#vector-length-and-angle">Vector Length and Angle</a></li>
   <li><a href="#matrices" id="toc-matrices" class="nav-link" data-scroll-target="#matrices">Matrices</a></li>
+  <li><a href="#matrix-as-linear-function" id="toc-matrix-as-linear-function" class="nav-link" data-scroll-target="#matrix-as-linear-function">Matrix as Linear Function</a></li>
+  <li><a href="#combining-matrices" id="toc-combining-matrices" class="nav-link" data-scroll-target="#combining-matrices">Combining Matrices</a></li>
+  <li><a href="#rotation-orthognal-matrices" id="toc-rotation-orthognal-matrices" class="nav-link" data-scroll-target="#rotation-orthognal-matrices">Rotation / Orthognal Matrices</a></li>
+  <li><a href="#matrix-decompositions" id="toc-matrix-decompositions" class="nav-link" data-scroll-target="#matrix-decompositions">Matrix Decompositions</a></li>
+  <li><a href="#svds-of-important-matrices" id="toc-svds-of-important-matrices" class="nav-link" data-scroll-target="#svds-of-important-matrices">SVDs of Important Matrices</a></li>
   <li><a href="#spectral-properties-of-symmetric-matrices" id="toc-spectral-properties-of-symmetric-matrices" class="nav-link" data-scroll-target="#spectral-properties-of-symmetric-matrices">Spectral Properties of Symmetric Matrices</a></li>
   </ul>
 </li>
@@ -216,7 +221,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 13, 2026</p>
+      <p class="date">February 11, 2026</p>
     </div>
   </div>
   
@@ -225,7 +230,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}}\]</span></p>
+</header><p><span class="math display">\[\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bD}{\mathbf{D}}\]</span></p>
 <section id="linear-algebra-review" class="level2"><h2 class="anchored" data-anchor-id="linear-algebra-review">Linear Algebra Review</h2>
 <p>In mathematics, a <em>vector</em> - random or otherwise - is a fixed-length <em>ordered</em> collection of numbers. When we want to be precise about the size of a vector, we often call it a “tuple”, <em>e.g.</em>, a length-three vector is a “triple”, a length-four vector is a “4-tuple”, a length-five vector is a “5-tuple” <em>etc.</em>.</p>
 <p>So, these are all vectors:</p>
@@ -250,8 +255,8 @@ window.Quarto = {
 <p>Conventionally, vectors are written in bold (if on a computer) or with a little arrow on top (hand written): so a vector called “x” would be denoted <span class="math inline">\(\mathbf{x}\)</span> or <span class="math inline">\(\vec{x}\)</span>. The elements of <span class="math inline">\(\bx\)</span> are denoted by subscripts <span class="math inline">\(\bx = (x_1, x_2, \dots, x_n)\)</span>.</p>
 <section id="vector-arithmetic" class="level3"><h3 class="anchored" data-anchor-id="vector-arithmetic">Vector Arithmetic</h3>
 <p>We have three arithmetic operations we can perform on general vectors. The simplest is <em>scalar multiplication</em>. A <em>scalar</em> is a non-vector number, <em>i.e.</em>, a ‘regular’ number. Scalar multiplication consists of applying the scalar independently to each element of a vector.</p>
-<p><span class="math display">\[\alpha \bx = \alpha(x_1, x_2, \dots, x_n) = (\alpha x_1, \alpha x_2, \dots, \alpha x_n)\]</span></p>
-<p>For example, if <span class="math inline">\(\bx = (3, 4)\)</span> and <span class="math inline">\(\alpha = 2\)</span>, we have <span class="math display">\[\alpha \bx = (6, 8)\]</span></p>
+<p><span class="math display">\[\alpha\, \bx = \alpha\, (x_1, x_2, \dots, x_n) = (\alpha x_1, \alpha x_2, \dots, \alpha x_n)\]</span></p>
+<p>For example, if <span class="math inline">\(\bx = (3, 4)\)</span> and <span class="math inline">\(\alpha = 2\)</span>, we have <span class="math display">\[\alpha\, \bx = (6, 8)\]</span></p>
 <p>Note that the output of scalar multiplication is always a vector of the same length as the input.</p>
 <p>We also have the ability to add vectors. This again is performed element-wise.</p>
 <p><span class="math display">\[\bx + \by = (x_1, \dots, x_n) + (y_1, \dots, y_n) = (x_1 + y_1, \dots, x_n + y_n) \]</span></p>
@@ -302,6 +307,212 @@ window.Quarto = {
 <p><span class="math display">\[ \R^{m \times n} \times \R^{n \times p} \to \R^{m \times p}\]</span></p>
 <p>For purposes of this, you can always think of an <span class="math inline">\(n\)</span>-vector as a <span class="math inline">\(n\)</span>-by-1 “column” matrix, giving us:</p>
 <p><span class="math display">\[\underbrace{\bX}_{\R^{n \times p}} \underbrace{\bbeta}_{\R^p} = \underbrace{\hat{\by}}_{\R^{n \times 1}}\]</span></p>
+</section><section id="matrix-as-linear-function" class="level3"><h3 class="anchored" data-anchor-id="matrix-as-linear-function">Matrix as Linear Function</h3>
+<p>In this set up, notice that <span class="math inline">\(\bX\)</span> plays an interesting role: it takes one vector <span class="math inline">\(\bbeta\)</span> and outputs a different vector <span class="math inline">\(\by\)</span>. Looking at it this way, we can think of <span class="math inline">\(\bX\)</span> as a <em>function</em>:</p>
+<p><span class="math display">\[\bX: \bbeta \in \R^p \to \by \in \R^n\]</span></p>
+<p>This is a bit unnatural from a statistical point of view: we tend to think of the parameters (<span class="math inline">\(\bbeta\)</span>) acting on the data (each <span class="math inline">\(\bx\)</span>) to produce outputs, but mathematically it’s entirely natural.</p>
+<p>To step away from the ‘data’ interpretation, let’s just talk about a general matrix <span class="math inline">\(\bA \in \R^{m \times n}\)</span>. We can (pre-)multiply any <span class="math inline">\(\bw \in \R^{m}\)</span> by <span class="math inline">\(\bA\)</span> to get back a new vector <span class="math inline">\(\bz \in \R^n\)</span>. Symbolically, this is just</p>
+<p><span class="math display">\[\bz = \bA \bw\]</span></p>
+<p>which is much easier to say and to write. The <em>function</em> defined by <span class="math inline">\(\bA\)</span> has several nice properties:</p>
+<ul>
+<li>
+<p>it plays nicely with addition:</p>
+<p><span class="math display">\[\begin{align*}
+\bz_1 &amp;= \bA \bw_1 \\
+\bz_2 &amp;= \bA \bw_2 \\
+\bz_1 + \bz_2 &amp;= \bA\bw_1 + \bA\bw_2 \\
+&amp;= \bA(\bw_1 + \bw_2)
+\end{align*}\]</span></p>
+<p>(Why is this true?)</p>
+</li>
+<li>
+<p>it plays nicely with scalar multiplication:</p>
+<p><span class="math display">\[ \bA(\alpha \bw) = \alpha (\bA \bw)\]</span></p>
+<p>(Again, why is this true?)</p>
+</li>
+</ul>
+<p>Taken together, we say that these properties make <span class="math inline">\(\bA\)</span> a <em>linear</em> function or a <em>linear</em> operator. Note that, in this context, <em>linear</em> is maybe a bit more restrictive than the ‘middle school’ definition. Our properties require “zero-in/ zero-out”: if we take <span class="math inline">\(\alpha = 0\)</span> in the scalar multiplication rule, we have:</p>
+<p><span class="math display">\[\bA(0 \, \bw) = 0\, (\bA \bw) \implies \mathbf{0}_n = \bA \mathbf{0}_m\]</span></p>
+<p>where <span class="math inline">\(\mathbf{0}_{m}, \mathbf{0}_n\)</span> are the all-zero vectors of length <span class="math inline">\(m, n\)</span> respectively. As such, a ‘linear’ function you might have seen before like</p>
+<p><span class="math inline">\(y = 2x + 3\)</span></p>
+<p>is not linear in our sense because it maps <span class="math inline">\(0\)</span> to <span class="math inline">\(3\)</span>, not back to <span class="math inline">\(0\)</span> Linear + constant is called “affine” in advanced mathematics, so middle school ‘linear functions’ are really affine.</p>
+<p>This might feel like a limitation, but true (non-affine) linearity is incredibly useful in mathematical modeling as it <em>guarantees</em> us that rules like “double the input, double the output” or “negate the input, negate the output” will always hold. These types of relationships are so powerful and ubiquituous that this slightly-restrictive is definitely worth using.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>While it is clear that any ‘matrix multiply function’ is a linear function, it actually turns out that any linear function can be written as a matrix multiplication!<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This deep fact is the fundamental reason why linear algebra is such a beautiful and beloved part of mathematics: any linear function can be expressed using a small set of numbers–great for computational work–and any set of numbers arranged in a rectangular array can be understood as a function. By giving simultaneous to ‘data tools’ and ‘function tools’, we have a lot of power at our fingertips.</p>
+</section><section id="combining-matrices" class="level3"><h3 class="anchored" data-anchor-id="combining-matrices">Combining Matrices</h3>
+<p>Given two matrices, how might we combine them? For addition, the answer is relatively obvious: we simply add the corresponding elements together, which we can write symbolically as:</p>
+<p><span class="math display">\[(\bA + \bB)_{ij} = \bA_{ij} + \bB_{ij}\]</span></p>
+<p>This reads as “the <span class="math inline">\((i, j)\)</span> element of the matrix <span class="math inline">\(\bA + \bB\)</span> is the <span class="math inline">\((i, j)\)</span> element of matrix <span class="math inline">\(\bA\)</span> plus the <span class="math inline">\((i, j)\)</span> element of matrix <span class="math inline">\(\bB\)</span>. From this definition it is clear that we can only add together matrices of corresponding dimension.</p>
+<p>This follows from the idea that a matrix is just a set of vectors “squished together” and our rule for vector addition.</p>
+<p>Scalar multiplication again is straightforward and follows from the corresponding vector operation:</p>
+<p><span class="math display">\[(\alpha\, \bA)_{ij} = \alpha\, \bA_{ij}\]</span></p>
+<p>With these, we can define the (additive) identity: that is, the matrix which, when added to another doesn’t change the value, by <span class="math inline">\(\mathbf{0}_{m \times n}\)</span>, the <span class="math inline">\(m \times n\)</span> matrix of all zeros. The additive inverse (the matrix that you add to get back to the additive identity) is just</p>
+<p><span class="math display">\[(-\bA)_{ij} = -(\bA_{ij})\]</span></p>
+<p><em>i.e.</em>, elementwise negation.</p>
+<p>Multiplication is trickier: recall that a matrix <span class="math inline">\(\bA\)</span> also defines a function $f_{}. If we want matrix multiplication to follow normal associativity rules, we need to ensure</p>
+<p><span class="math display">\[\bA(\bB \bx) = (\bA\bB) \bx \quad \text{ for all } \bx, \bA, \bB\]</span></p>
+<p>Achieving this is a little less obvious. First, let’s look at the dimensions, suppose <span class="math inline">\(\bx \in \R^{n}\)</span> and <span class="math inline">\(\bB \in \R^{m \times n}\)</span>. This gives us <span class="math inline">\(\bB\bx \in \R^m\)</span> so the second dimension of <span class="math inline">\(\bA\)</span> must be <span class="math inline">\(m\)</span>. We can actually allow arbitrary size for the first dimension of <span class="math inline">\(\bA\)</span> so we take <span class="math inline">\(\bA \in \R^{l \times m}\)</span>, <span class="math inline">\(\bB \in \R^{m \times n}\)</span>, and <span class="math inline">\(\bx \in \R^n\)</span>. From this we see that <span class="math inline">\(\bA, \bB\)</span> don’t have to be the same dimension (as we required) for addition, only that they <em>conform</em>, <em>i.e.</em>, the number of columns of <span class="math inline">\(\bA\)</span> equals the number of rows of <span class="math inline">\(\bB\)</span>.</p>
+<p>From here, it is possible, albeit cumbersome, to show that</p>
+<p><span class="math display">\[(\bA\bB)_{ij} = \langle \bA_{i\cdot}, \bB_{\cdot j} \rangle = \sum_{k} \bA_{ik}\bB_{kj}\]</span></p>
+<p>Here the <span class="math inline">\(\cdot\)</span> subscript means “take the whole row/column”. This definition is not so simple, but if you take a look at it, you’ll see that it’s really built up from a bunch of vector multiplications, so maybe it’s not too weird.</p>
+<p>Looking at our definition, we note that <span class="math inline">\(\bA\bB\)</span> does not necessarily equal <span class="math inline">\(\bB\bA\)</span>. In fact, it’s entirely possible for <span class="math inline">\(\bB\bA\)</span> to not even exist if the sizes don’t match up.</p>
+<p>A multiplicative identity is not too hard to identify: we call it <span class="math inline">\(\bI\)</span> and it is given by</p>
+<p><span class="math display">\[\bI = \begin{pmatrix} 1 &amp; 0 &amp; 0 &amp; \dots &amp; 0 \\
+                        0 &amp; 1 &amp; 0 &amp; \dots &amp; 0 \\
+                        0 &amp; 0 &amp; 1 &amp; \ddots &amp; 0 \\
+                        0 &amp; 0 &amp; 0 &amp; \dots &amp; 1 \end{pmatrix}\]</span></p>
+<p>That is, <span class="math inline">\(\bI\)</span> is a square matrix with ones on the diagonal and zeros everywhere else. You should be able to convince yourself that <span class="math inline">\(\bI\bx = \bx\)</span> for all <span class="math inline">\(\bx\)</span>: check that you can show this directly (by the definition of matrix multiplication) or conceptually (thinking in terms of functions, what do we need <span class="math inline">\(\bI\)</span> to look like as a “do nothing” function).</p>
+<p>Matrix (multiplicative) inverses are harder to say much about. Given a matrix <span class="math inline">\(\bA\)</span>, we define its inverse as a matrix <span class="math inline">\(\bA^{-1}\)</span> that satisfies <span class="math inline">\(\bA\bA^{-1}=\bA^{-1}\bA = \bI\)</span>. If such a matrix exists, it is unique and so we can justify referring to <span class="math inline">\(\bA^{-1}\)</span>, but we don’t know whether it actually always exists. It’s not easy to just look at a matrix and tell whether it has an inverse, but we will discuss some conditions below.</p>
+<p>The potential non-existence of inverses shouldn’t bother you <em>too much</em> - it’s the matrix equivalent of the fact that <span class="math inline">\(0^{-1}\)</span> isn’t defined for ‘regular’ numbers - but it is an annoying little technical thing we need to be aware of.</p>
+</section><section id="rotation-orthognal-matrices" class="level3"><h3 class="anchored" data-anchor-id="rotation-orthognal-matrices">Rotation / Orthognal Matrices</h3>
+<p>While all linear functions are nice, certain operations are particularly nice and get their own names. One is the concept of ‘rotation’: operations which take a <span class="math inline">\(n\)</span>-vector and return a different <span class="math inline">\(n\)</span>-vector with the same length.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> (No stretching, only turning - hence rotation.) Clearly, these are <em>square</em> matrices since they go from <span class="math inline">\(\R^n\)</span> to <span class="math inline">\(\R^n\)</span> and hence are <span class="math inline">\(n\times n\)</span> matrices. Less obvious is</p>
+<p>A somewhat remarkable fact is that rotation matrices have a very simple inverse: the matrix <em>transpose</em>. That is, the matrix you get by flipping across the diagonal</p>
+<p><span class="math display">\[\bA^{\top}_{ij} = \bA_{ji}.\]</span></p>
+<p>If a matrix satisfies <span class="math inline">\(\bA^{\top}\bA = \bA\bA^{\top} = \bI\)</span>, we refer to it as <em>orthogonal</em>. These orthogonal matrices are the matrix equivalent of the roots of unity (<em>i.e.</em>, roots of <span class="math inline">\(+1\)</span> for numbers: <span class="math inline">\(\pm 1\)</span> for square roots, <span class="math inline">\(1, -0.5 \pm \sqrt{0.75}i\)</span> for cube roots, <em>etc.</em>).</p>
+</section><section id="matrix-decompositions" class="level3"><h3 class="anchored" data-anchor-id="matrix-decompositions">Matrix Decompositions</h3>
+<p>A matrix is a rather complex thing, so we can often understand them better through the use of matrix <em>decompositions</em>: that is, breaking an arbitrary matrix into simpler parts. There are many decompositions that are useful, but the only one we will use regularly in this class is the <em>singular value decomposition</em> or SVD. Given a matrix <span class="math inline">\(\bA \in \R^{m \times n}\)</span>, its SVD is a three factor decomposition</p>
+<p><span class="math display">\[\bA = \bU\bD\bV^{\top}\]</span></p>
+<p>where</p>
+<ul>
+<li>
+<span class="math inline">\(\bU \in \R^{m \times m}\)</span> is an <span class="math inline">\(m \times m\)</span> orthogonal matrix</li>
+<li>
+<span class="math inline">\(\bD\)</span> is an <span class="math inline">\(\R^{\m \times n}\)</span> matrix which is all zeros except on the main diagonal, which is non-negative.</li>
+<li>
+<span class="math inline">\(\bV \in \R^{n \times n}\)</span> is an <span class="math inline">\(n \times n\)</span> orthogonal matrix</li>
+</ul>
+<p>(There are other set ups where we make <span class="math inline">\(\bD\)</span> square and one of <span class="math inline">\(\bU, \bV\)</span> non-square, but this is typically the easiest form to work with).</p>
+<p><em>E.g.</em>, for a random matrix:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">35</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">7</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">A</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]       [,2]       [,3]       [,4]       [,5]
+[1,] -0.73745480 -1.2708067  1.6257197  0.8944260 -1.3686886
+[2,] -0.60664204  0.6533451 -0.6131808 -0.8317054 -0.2820471
+[3,]  1.81383566 -0.1627274 -0.8228885 -1.1183558  1.0298219
+[4,] -1.48202810  0.5964813  0.9506755 -1.1449214 -1.2227628
+[5,]  0.53312615  1.7117503 -1.0916979  0.5610340  0.6516250
+[6,]  0.40723485 -0.3129580  0.3049802  0.2334778 -0.2996826
+[7,]  0.01935135 -0.5164814 -0.7728700 -0.2243080  0.1674461</code></pre>
+</div>
+</div>
+<p>We have an SVD given by:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">U</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]        [,2]         [,3]        [,4]       [,5]        [,6]
+[1,] -0.62092257  0.37401056  0.101326502  0.09528071 0.42981791 -0.51673241
+[2,]  0.04266929 -0.49192152 -0.184849278 -0.30816593 0.44911055 -0.19767685
+[3,]  0.50838197  0.22657056 -0.619513085  0.39638036 0.20344681 -0.31571987
+[4,] -0.41177681 -0.65302072 -0.341123162  0.32583848 0.02059033  0.08010403
+[5,]  0.41228420 -0.30554783  0.645234028  0.23292707 0.36931283 -0.20624745
+[6,] -0.05853148  0.20596482 -0.003412205  0.26744455 0.57545011  0.73348057
+[7,]  0.10591475  0.06766132 -0.197645178 -0.71195901 0.32281097  0.08534652
+            [,7]
+[1,]  0.05890644
+[2,] -0.62151479
+[3,]  0.09071966
+[4,]  0.41788449
+[5,]  0.29521233
+[6,] -0.11609375
+[7,]  0.57163258</code></pre>
+</div>
+</div>
+<p>which satisfies<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/zapsmall.html">zapsmall</a></span><span class="op">(</span><span class="va">U</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">U</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    0    0    0    0    0    0
+[2,]    0    1    0    0    0    0    0
+[3,]    0    0    1    0    0    0    0
+[4,]    0    0    0    1    0    0    0
+[5,]    0    0    0    0    1    0    0
+[6,]    0    0    0    0    0    1    0
+[7,]    0    0    0    0    0    0    1</code></pre>
+</div>
+</div>
+<p>and</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/zapsmall.html">zapsmall</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">U</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">U</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    0    0    0    0    0    0
+[2,]    0    1    0    0    0    0    0
+[3,]    0    0    1    0    0    0    0
+[4,]    0    0    0    1    0    0    0
+[5,]    0    0    0    0    1    0    0
+[6,]    0    0    0    0    0    1    0
+[7,]    0    0    0    0    0    0    1</code></pre>
+</div>
+</div>
+<p>and</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">V</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]       [,2]        [,3]        [,4]        [,5]
+[1,]  0.5291254  0.5101004 -0.12396920  0.54894322  0.37830795
+[2,]  0.2833403 -0.7112069  0.43830005  0.47035042  0.02380176
+[3,] -0.5860898  0.1720723 -0.04566280  0.67649021 -0.40885916
+[4,] -0.1208961  0.4236868  0.88809858 -0.11707743  0.05871449
+[5,]  0.5306859  0.1576798  0.04147911 -0.07801085 -0.82807208</code></pre>
+</div>
+</div>
+<p>satisfying</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/zapsmall.html">zapsmall</a></span><span class="op">(</span><span class="va">V</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">V</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    0    0    0    0
+[2,]    0    1    0    0    0
+[3,]    0    0    1    0    0
+[4,]    0    0    0    1    0
+[5,]    0    0    0    0    1</code></pre>
+</div>
+</div>
+<p>and</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">D</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]     [,2]     [,3]     [,4]      [,5]
+[1,] 4.086775 0.000000 0.000000 0.000000 0.0000000
+[2,] 0.000000 2.594884 0.000000 0.000000 0.0000000
+[3,] 0.000000 0.000000 1.951697 0.000000 0.0000000
+[4,] 0.000000 0.000000 0.000000 1.042117 0.0000000
+[5,] 0.000000 0.000000 0.000000 0.000000 0.4931525
+[6,] 0.000000 0.000000 0.000000 0.000000 0.0000000
+[7,] 0.000000 0.000000 0.000000 0.000000 0.0000000</code></pre>
+</div>
+</div>
+<p>which give us</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span><span class="op">(</span><span class="va">U</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">D</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">V</span><span class="op">)</span>, <span class="va">A</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>The non-zero elements of <span class="math inline">\(\bD\)</span> are known as the <em>singular values</em> of the matrix, hence the name SVD and they are roughly analogous to the absolute value of a standard number (except there are more of them!). In particular, they are non-negative and, when they are zero, we have an issue around division as we discuss below.</p>
+<p>The SVD is a super useful way to ‘break a matrix’ into very simple pieces: multiplication by orthogonal matrices (roughly equivalent to multiplying by 1) two times and multiplying by a non-negative diagonal matrix (essentially, just stretching a vector). The fact that <em>any</em> matrix and hence any linear function can be broken up into “rotate -&gt; stretch -&gt; rotate” is actually quite remarkable.</p>
+</section><section id="svds-of-important-matrices" class="level3"><h3 class="anchored" data-anchor-id="svds-of-important-matrices">SVDs of Important Matrices</h3>
+<p>Let’s talk through the SVD of different matrices: if we start with the all zeros matrix (<span class="math inline">\(\mathbf{0}_{m \times n}\)</span>), it’s clear that the ‘stretch factors’ should all be zero, since the zero matrix sends <em>everything</em> to zero. Hence</p>
+<p><span class="math display">\[\mathbf{0}_{m \times n} = \bU \mathbf{0}_{m \times n} \bV^{\top}\]</span></p>
+<p>where any orthogonal <span class="math inline">\(\bU, \bV\)</span> will work (so the SVD is not unique).</p>
+<p>Similarly, we can look at the SVD of <span class="math inline">\(\bI\)</span>. In this case, we have a square matrix so <span class="math inline">\(\bU, \bV\)</span> must both be <span class="math inline">\(n \times n\)</span> matrices. Since the identity matrix doesn’t change its inputs, its ‘stretch factors’ must all be 1 (no stretching or shrinking) so we get:</p>
+<p><span class="math display">\[\bI = \bU \bI \bV^{\top}\]</span></p>
+<p>To make this hold, it suffices to take <span class="math inline">\(\bU = \bV\)</span> and to recall that these are orthogonal matrices so <span class="math inline">\(\bU \bV^{\top} = \bU\bU^{\top} = \bI\)</span>, as desired. Geometrically this makes sense, a general recipe for “do nothing” (identity) is to rotate, do a “non-stretch” (multiply by 1) and to rotate back to where you started.</p>
+<p>Finally, consider a general matrix <span class="math inline">\(\bA = \bU \bD\bV^{\top}\)</span>. Suppose that <span class="math inline">\(\bA^{-1}\)</span> exists (which it might not) - what would the SVD of <span class="math inline">\(\bA^{-1}\)</span> look like? Well, let’s define <span class="math inline">\(\bA^{-1} = \tilde{\bU}\tilde{\bD}\tilde{\bV}\)</span> as the SVD of <span class="math inline">\(\bA^{-1}\)</span>. We then have:</p>
+<p><span class="math display">\[\bI = \bA\bA^{-1} = \bU\bD\bV^{\top}\tilde{\bU}\tilde{\bD}\tilde{\bV}^{\top}\]</span></p>
+<p>To get terms to start cancelling out, let’s take <span class="math inline">\(\tilde{\bU} = \bV\)</span> (since <span class="math inline">\(\bV^{\top}\bV = \bI\)</span>). Similarly, if we start with <span class="math inline">\(\bI = \bA^{-1}\bA\)</span>, we get <span class="math inline">\(\tilde{\bV} = \bU^{\top}\)</span>. Putting these together, we have the pair of SVDs:</p>
+<p><span class="math display">\[\begin{align*}
+\bA &amp;= \bU \bD \bV^{\top} \\
+\bA^{-1} &amp;= \bV \tilde{\bD} \bU^{\top}
+\end{align*}\]</span></p>
+<p>So now we just need to have <span class="math inline">\(\bD\tilde{\bD}\)</span> cancel (<span class="math inline">\(\bD\tilde{\bD} = \bI\)</span>). This is hard in general, but since <span class="math inline">\(\bD, \tilde{\bD}\)</span> are diagonal matrices, finding the inverse is not hard:</p>
+<p><span class="math display">\[\tilde{\bD}_{ii} = 1/\bD_{ii}\]</span></p>
+<p>Putting these together, we have:</p>
+<p><span class="math display">\[\bA^{-1} = \bV\bD^{-1}\bU^{\top}\]</span></p>
+<p>where <span class="math inline">\(\bD^{-1}\)</span> is found by taking elementwise inverses of <span class="math inline">\(\bD\)</span> on the diagonal and leaving zeros elsewhere. This recipe is quite powerful - and it actually shows us exactly the way in which a matrix can fail to have an inverse. If one or more of the singular values are 0, we have a “divide by zero” problem if we try to compute <span class="math inline">\(\bA^{-1}\)</span> using the SVD of <span class="math inline">\(\bA\)</span>. This is basically the <em>only</em> way that a square matrix can fail to have an inverse: other characterizations you’ll see (zero determinant, degenerate spectrum, <em>etc</em>) are just other ways of saying the same thing.</p>
+<p>Thinking about this SVD/inverse formula using our</p>
 </section><section id="spectral-properties-of-symmetric-matrices" class="level3"><h3 class="anchored" data-anchor-id="spectral-properties-of-symmetric-matrices">Spectral Properties of Symmetric Matrices</h3>
 <p>An important class of matrices we will consider are <em>symmetric</em> matrices, which are just what the name sounds like. These come up in several key places in statistics, none more important than the <em>covariance</em> matrix, typically denoted <span class="math inline">\(\Sigma\)</span>. Recall that the covariance operator <span class="math inline">\(\mathbb{C}\)</span> is symmetric (<span class="math inline">\(\mathbb{C}[X, Y] = \mathbb{C}[Y, X]\)</span>) so the covariance matrix of a random vector turns out to be symmetric as well.</p>
 <p>Another common source of symmetric matrices is when a matrix is multiplied by its transpose: you should convince yourself that <span class="math inline">\(\bX^{\top}\bX \in \R^{p \times p}\)</span> is a symmetric matrix.</p>
@@ -493,9 +704,9 @@ Pause to Reflect
 </section><section id="bias-variance-decomposition" class="level2"><h2 class="anchored" data-anchor-id="bias-variance-decomposition">Bias-Variance Decomposition</h2>
 <p>In <a href="../reports/repot01.html">Report #01</a>, you will show that, under MSE loss, our expected test error can be decomposed as</p>
 <p><span class="math display">\[\text{MSE} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}\]</span></p>
-<p>Let’s show how we can analyze these quantities for a KNN <em>regression</em> problem. Here, we’re using the ‘regression’ version of KNN since it plays nicely with MSE.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Let’s show how we can analyze these quantities for a KNN <em>regression</em> problem. Here, we’re using the ‘regression’ version of KNN since it plays nicely with MSE.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Don't attach the package to avoid weird aliasing issues</span></span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Don't attach the package to avoid weird aliasing issues</span></span>
 <span><span class="va">knn.reg</span> <span class="op">&lt;-</span> <span class="fu">FNN</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/FNN/man/knn.reg.html">knn.reg</a></span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/args.html">args</a></span><span class="op">(</span><span class="va">knn.reg</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -512,7 +723,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>That is, <span class="math inline">\(X\)</span> is uniform on the unit interval and <span class="math inline">\(Y\)</span> is a non-linear function of <span class="math inline">\(X\)</span> plus some Gaussian noise.</p>
 <p>First let’s plot <span class="math inline">\(X\)</span> vs <span class="math inline">\(\E[X]\)</span> - under MSE loss this is our ‘best’ (Bayes-optimal) possible guess.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">yfun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">4</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sinpi</a></span><span class="op">(</span><span class="fl">4</span> <span class="op">*</span> <span class="va">x</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">yfun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">4</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sinpi</a></span><span class="op">(</span><span class="fl">4</span> <span class="op">*</span> <span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span></span>
 <span><span class="va">y_mean</span> <span class="op">&lt;-</span> <span class="fu">yfun</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -522,14 +733,14 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span>     main<span class="op">=</span><span class="st">"True Regression Function"</span>, cex.lab<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>To generate training data from this model, we simply implement the PRNG components:</p>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span> <span class="co"># 25 training points</span></span>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span> <span class="co"># 25 training points</span></span>
 <span><span class="va">y_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, mean<span class="op">=</span><span class="fu">yfun</span><span class="op">(</span><span class="va">x_train</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -540,7 +751,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">x_train</span>, <span class="va">y_train</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -548,7 +759,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>We have some variance of course, but we can still “squint” to get the right shape of our function. Let’s see how KNN looks on this data.</p>
 <p>We start with <span class="math inline">\(K=1\)</span>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">X_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">x_train</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">X_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">x_train</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">plot_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">Y_hat</span> <span class="op">&lt;-</span> <span class="fu">knn.reg</span><span class="op">(</span>train<span class="op">=</span><span class="va">X_train</span>, y<span class="op">=</span><span class="va">y_train</span>, k<span class="op">=</span><span class="fl">1</span>, test<span class="op">=</span><span class="va">plot_grid</span><span class="op">)</span><span class="op">$</span><span class="va">pred</span></span>
 <span></span>
@@ -561,14 +772,14 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">plot_grid</span>, <span class="va">Y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>This is not a great fit - what happens if we repeat this process may times?</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y_mean</span>, type<span class="op">=</span><span class="st">"l"</span>, </span>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y_mean</span>, type<span class="op">=</span><span class="st">"l"</span>, </span>
 <span>     xlab<span class="op">=</span><span class="st">"X"</span>, ylab<span class="op">=</span><span class="st">"E[X]"</span>, </span>
 <span>     cex.lab<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span>
 <span></span>
@@ -581,7 +792,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -589,7 +800,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>Clearly we have some variance!</p>
 <p>If we repeat with a higher value of <span class="math inline">\(K\)</span>, we see far less variance:</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y_mean</span>, type<span class="op">=</span><span class="st">"l"</span>, </span>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y_mean</span>, type<span class="op">=</span><span class="st">"l"</span>, </span>
 <span>     xlab<span class="op">=</span><span class="st">"X"</span>, ylab<span class="op">=</span><span class="st">"E[X]"</span>, </span>
 <span>     cex.lab<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span>
 <span></span>
@@ -602,7 +813,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -610,7 +821,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>How well does KNN do <em>on average</em>?</p>
 <p>That is, if we could repeat this process (infinitely) many times, how well would it recover the true regression function? Let’s try <span class="math inline">\(K=1\)</span> and <span class="math inline">\(K=10\)</span>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y_mean</span>, type<span class="op">=</span><span class="st">"l"</span>, </span>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y_mean</span>, type<span class="op">=</span><span class="st">"l"</span>, </span>
 <span>     xlab<span class="op">=</span><span class="st">"X"</span>, ylab<span class="op">=</span><span class="st">"E[X]"</span>, </span>
 <span>     cex.lab<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span>
 <span></span>
@@ -636,7 +847,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">test_grid</span>, <span class="va">KNN_AVERAGE_PRED_K10</span>, col<span class="op">=</span><span class="st">"blue4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -646,7 +857,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>So which is better? - <span class="math inline">\(K=1\)</span> - High variance, but low bias - <span class="math inline">\(K=10\)</span> - Low variance, but high bias</p>
 <p>We’ll have to look at some test error to see. For now, we’ll generate our test data exactly the same way as we generate our training data:</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">KNN_K1_ERROR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">KNN_K1_ERROR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
 <span>    <span class="va">X_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="va">y_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, mean<span class="op">=</span><span class="fu">yfun</span><span class="op">(</span><span class="va">X_train</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="va">plot_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -682,14 +893,14 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span>      K10_MSE <span class="op">=</span> <span class="va">KNN_K10_MSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       K1_MSE K10_MSE
-[1,] 1.954541 1.46504</code></pre>
+[1,] 1.997453 1.50206</code></pre>
 </div>
 </div>
 <p><span class="math inline">\(K=10\)</span> does better overall!</p>
 <p>But does it do better <em>everywhere</em> or are some parts of the problem better for <span class="math inline">\(K=1\)</span>?</p>
 <p>Now we’ll be systematic in our test data - spacing it equally on the grid and computing ‘pointwise’ MSE:</p>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">KNN_K1_ERROR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">KNN_K1_ERROR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
 <span>    <span class="va">X_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="va">y_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, mean<span class="op">=</span><span class="fu">yfun</span><span class="op">(</span><span class="va">X_train</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    </span>
@@ -724,7 +935,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">KNN_K10_MSE</span>, col<span class="op">=</span><span class="st">"red4"</span>, pch<span class="op">=</span><span class="fl">16</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -744,7 +955,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>Let’s work these out using all the tools we built before.</p>
 <p>First, for the bias: - we already have <span class="math inline">\(\E[y]\)</span> - this is just the <code>yfun</code> we selected - we can compute <span class="math inline">\(\E[\hat{y}]\)</span> by running KNN many times and averaging the result</p>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">KNN_AVERAGE_PRED_K1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
 <span>    <span class="va">X_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="va">y_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, mean<span class="op">=</span><span class="fu">yfun</span><span class="op">(</span><span class="va">X_train</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -756,7 +967,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span>     type<span class="op">=</span><span class="st">"l"</span>, main<span class="op">=</span><span class="st">"Squared Bias of KNN with K=1"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -764,7 +975,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>Not too much bias, but things do go a bit off the rails near the end points.</p>
 <p>Next, we can compute variance pointwise:</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sample_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">KNN_VARIANCE_K1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
 <span>    <span class="va">X_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="va">y_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">25</span>, mean<span class="op">=</span><span class="fu">yfun</span><span class="op">(</span><span class="va">X_train</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -775,7 +986,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span>     type<span class="op">=</span><span class="st">"l"</span>, main<span class="op">=</span><span class="st">"Variance of KNN with K=1"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -783,7 +994,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>For this data at least, the variance term is generally larger than the bias term: this is what we expect with a very flexible (high variance + low bias) model like <span class="math inline">\(1\)</span>-NN.</p>
 <p>Finally, irreducible error is just 0.25 everywhere (recall <span class="math inline">\(y \sim \mathcal{N}(\E[y], 0.25)\)</span>).</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">KNN_IE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">KNN_IE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
 <span>    <span class="va">sample_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="va">X_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">sample_grid</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span>    <span class="va">y_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">sample_grid</span>, mean<span class="op">=</span><span class="fu">yfun</span><span class="op">(</span><span class="va">X_test</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -794,28 +1005,28 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">KNN_IE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Put these together and we see the decomposition in action:</p>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_BIAS_K1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_VARIANCE_K1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_IE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_BIAS_K1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_VARIANCE_K1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_IE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5290861</code></pre>
+<pre><code>[1] 0.5316378</code></pre>
 </div>
 </div>
 <p>as compared to</p>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_K1_MSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">KNN_K1_MSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5242858</code></pre>
+<pre><code>[1] 0.5335582</code></pre>
 </div>
 </div>
 <p>Visually,</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="va">DECOMP_DATA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
 <span>   sample_grid <span class="op">=</span> <span class="va">sample_grid</span>, </span>
@@ -825,7 +1036,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span>   KNN_K1_MSE <span class="op">=</span> <span class="va">KNN_K1_MSE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">sample_grid</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Error<span class="op">=</span><span class="va">value</span>,</span>
-<span>          Type<span class="op">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>          Type<span class="op">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html">case_when</a></span><span class="op">(</span></span>
 <span>            <span class="va">name</span><span class="op">==</span><span class="st">"KNN_K1_BIAS2"</span> <span class="op">~</span> <span class="st">"Bias^2"</span>, </span>
 <span>            <span class="va">name</span><span class="op">==</span><span class="st">"KNN_K1_IE"</span> <span class="op">~</span> <span class="st">"Irreducible Error"</span>, </span>
 <span>            <span class="va">name</span><span class="op">==</span><span class="st">"KNN_K1_VARIANCE"</span> <span class="op">~</span> <span class="st">"Variance"</span>, </span>
@@ -842,7 +1053,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Test Error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -864,8 +1075,8 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>assuming that <span class="math inline">\(\bA\)</span> is invertible. (Here, invertibility is implied by assuming <span class="math inline">\(\bA\)</span> is <strong>strictly</strong> positive-definite.) As usual, we are not quite done here, as we must also check that this is a <em>minimizer</em> and not a maximizer or a saddle point. To do so, we take the <em>second</em> derivative to find</p>
 <p><span class="math display">\[ \frac{\partial}{\partial \bx}\frac{\partial f}{\partial \bx} = \bA\]</span></p>
 <p>In this multivariate context, we need the second derivative, <em>a.k.a</em> the Hessian, to be <em>strictly positive-definite</em> to guarantee that we have found a minimizer and this is indeed exactly what we assumed above. As discussed above, ‘definiteness’ plays the role of sign for many applications of matrix-ness. Here, by assuming strictly positive definite, we are essentially treating the matrix as strictly positive (<span class="math inline">\(&gt;0\)</span>), which is exactly the condition we need to guarantee a minimizer in the scalar case as well.</p>
-<p>Hence, we have that the one minimizer of <span class="math inline">\(f\)</span> is found at <span class="math inline">\(\bx_* = \bA^{-1}\bb\)</span>. Compare this to the scalar case of minimizing a quadratic <span class="math inline">\(\frac{1}{2}ax^2 + bx + c\)</span> with minimizer at <span class="math inline">\(x = -b/a\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<p>The above analysis works well, but it is essentially the only minimization we will be able to do in closed form in this course.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p>Hence, we have that the one minimizer of <span class="math inline">\(f\)</span> is found at <span class="math inline">\(\bx_* = \bA^{-1}\bb\)</span>. Compare this to the scalar case of minimizing a quadratic <span class="math inline">\(\frac{1}{2}ax^2 + bx + c\)</span> with minimizer at <span class="math inline">\(x = -b/a\)</span>.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>The above analysis works well, but it is essentially the only minimization we will be able to do in closed form in this course.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 <p>For other functions, we will need to apply <em>optimization</em>: the mathematical toolkit for finding minimizers (or maximizers) of functions. Fortunately for us, many of the methods we begin this course with fall in the realm of <em>convex optimization</em>, a particularly nice branch of optimization.</p>
 <p><em>Convex</em> Optimization refers to the problem of <em>minimizing</em> <em>convex</em> functions over <em>convex</em> sets. Let’s define both of these:</p>
 <ul>
@@ -878,7 +1089,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -914,12 +1125,12 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 </ul>
 </li>
 </ul>
-<p>Repeated infinitely many times, this will converge to a local, and hence global, minimizer of <span class="math inline">\(f\)</span>. There are <strong>many</strong> variants of this basic idea<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, mostly related to selecting the optimal step size <span class="math inline">\(c\)</span>, but this is the most important algorithm in convex optimization and it is important to understand it deeply.</p>
+<p>Repeated infinitely many times, this will converge to a local, and hence global, minimizer of <span class="math inline">\(f\)</span>. There are <strong>many</strong> variants of this basic idea<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, mostly related to selecting the optimal step size <span class="math inline">\(c\)</span>, but this is the most important algorithm in convex optimization and it is important to understand it deeply.</p>
 <p>We can apply it here to the 3D function <span class="math display">\[f(\bx) = (x_1-2)^2 + (x_2-3)^2 + (x_3 - 4)^2.\]</span> Clearly, we can see that the minimizer has to be at <span class="math inline">\((2, 3, 4)\)</span>, but our algorithm won’t use that fact.</p>
 <p>Before we can implement this algorithm, we need the gradient, which is given by</p>
 <p><span class="math display">\[f(\bx) = \left\|\bx - (2,3,4)^{\top}\right\|_2^2 \implies \nabla f = 2[\bx - (2, 3, 4)^{\top}]\]</span></p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="co"># We want to work exclusively with column vecs</span></span>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="co"># We want to work exclusively with column vecs</span></span>
 <span><span class="va">converged</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fl">0.001</span> <span class="co"># Small step size</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
@@ -945,22 +1156,26 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 </div>
 </div>
 <p>We don’t get the <em>exact</em> minimizer, but we certainly get something ‘close enough’ for our purposes. In <a href="../reports/repot01.html">Report #01</a>, you will use gradient descent and some variants to study the least squares problem.</p>
-<p>Often, we will want to see how the value of <span class="math inline">\(f(\bx_k)\)</span> changes over the course of the optimization. We expect that it will go down monotonically, but it may not be worth continuing the optimization if we have reached a point of ‘diminishing returns.’ You can do this by hand (evaluating <span class="math inline">\(f\)</span> after each update and storing the results), but many optimizers will often track this automatically for you: <em>e.g.</em> <a href="https://www.tensorflow.org/tensorboard">TensorBoard</a>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<p>Often, we will want to see how the value of <span class="math inline">\(f(\bx_k)\)</span> changes over the course of the optimization. We expect that it will go down monotonically, but it may not be worth continuing the optimization if we have reached a point of ‘diminishing returns.’ You can do this by hand (evaluating <span class="math inline">\(f\)</span> after each update and storing the results), but many optimizers will often track this automatically for you: <em>e.g.</em> <a href="https://www.tensorflow.org/tensorboard">TensorBoard</a>.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
 
 
 </section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 <ol>
-<li id="fn1"><p>The Bias-Variance decomposition (and tradeoff) holds approximately for other loss functions, though the math is only this nice for MSE.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Note that we can only minimize this quadratic in the case where <span class="math inline">\(a\)</span> is strictly positive so the parabola is upward facing. This is the scalar equivalent of the strict positive-definiteness condition we put on <span class="math inline">\(\bA\)</span>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>OLS and some basic variants (ridge regression) can be written in this ‘quadratic’ style. Can you see why?<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>For instance, of the <a href="https://pytorch.org/docs/stable/optim.html#algorithms">14 optimization algorithms</a> included in base <code>pytorch</code>, all but one are advanced versions of gradient descent. The exception is <code>LBFGS</code> which attempts to (approximately) use both the gradient and the Hessian (second derivative); computing the Hessian is normally quite expensive, so <code>LBFGS</code> uses some clever tricks to <em>approximate</em> the Hessian.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5">
+<li id="fn1"><p>In addition to the ‘physics’ of it (push twice as hard, go twice as far), we are used to these types of linear type relationships in statistics: if we have some measurements in yards and re-express them in feet by multiplying by three, it’s very useful that the standard deviation is just multipled by 3 without any added terms.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>This is not too hard to show, but the book-keeping is annoying. In essence, given a linear function, we ‘build’ a matrix for it by seeing how it applies to the standard basis vectors and then, by linearity, argue that that matrix has to give the same value as the function for all possible inputs.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I am oversimplifying here: there are also ‘reflections’ that satisfy this requirement (<em>e.g.</em>, a matrix mapping <span class="math inline">\((0, 1)\)</span> to <span class="math inline">\((0, -1)\)</span> but <span class="math inline">\((1, 0)\)</span> to <span class="math inline">\((1,0)\)</span> - this flips across the <span class="math inline">\(y\)</span>-axis but isn’t a “rotation”). This distinction doesn’t really come up in our class and the more general category of “orthogonal” is all we really need anyways.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Computers are not perfectly accurate, so if you do this calculation yourself, you’ll get numbers around <span class="math inline">\(\pm 3 \times 10^{-16}\)</span>. These are basically zero and we can use the <code>zapsmall</code> function to set them to zero.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>The Bias-Variance decomposition (and tradeoff) holds approximately for other loss functions, though the math is only this nice for MSE.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Note that we can only minimize this quadratic in the case where <span class="math inline">\(a\)</span> is strictly positive so the parabola is upward facing. This is the scalar equivalent of the strict positive-definiteness condition we put on <span class="math inline">\(\bA\)</span>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>OLS and some basic variants (ridge regression) can be written in this ‘quadratic’ style. Can you see why?<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>For instance, of the <a href="https://pytorch.org/docs/stable/optim.html#algorithms">14 optimization algorithms</a> included in base <code>pytorch</code>, all but one are advanced versions of gradient descent. The exception is <code>LBFGS</code> which attempts to (approximately) use both the gradient and the Hessian (second derivative); computing the Hessian is normally quite expensive, so <code>LBFGS</code> uses some clever tricks to <em>approximate</em> the Hessian.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9">
 <p>Modern ML toolkits like <code>pytorch</code> or <code>TensorFlow</code> are (at heart) fancy systems to do two things automatically that we did ‘by hand’ in this example:</p>
 <ul>
 <li>Compute gradients via a process known as ‘back-propogation’ or ‘autodiff’</li>
 <li>Implement (fancy) gradient descent</li>
 </ul>
-<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a>
+<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a>
 </li>
 </ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

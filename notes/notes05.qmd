@@ -4,509 +4,538 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\by}{\mathbf{y}} \newcommand{\Ycal}{\mathcal{Y}}$$
 
-As we move into Unit II of this course, we turn our focus to *classification*. 
-
-## A Taxonomy of Classification
-
-Recall from before that we defined _regression_ as the subset of supervised
-learning where the response ($\by$) was a continuous variable, or at least one
-that is appropriate to model as such.[^effective_cont] By contrast, 
-*classification* considers $\by$ to take values in a discrete set. Though this
-restriction may feel limiting, it is actually quite powerful. We consider several
-different forms of classification, based on the *support* of $\by$: 
-
-[^effective_cont]: Consider, *e.g.*, predicting someone's annual tax liability.
-*Technically*, this is *discrete* since tax liabilities are rounded to the nearest
-dollar, but functionally it may as well be continuous. 
-
-- *Binary* classification: in this simplest case, $\by$ takes one of two values,
-  which we conventionally code as $\{0, 1\}$ or $\{-1, +1\}$, depending on which
-  makes the math easier. Note that the actual response need not be these numbers;
-  they are simply a mathematical convenience. 
-  
-  Examples of binary classification include: 
-  
-  - Does an incoming student graduate within the next 6 years or no?
-  - Does a patient have a given disease? 
-  - Is there a dog present in an image? 
-  - Is this applicant qualified for a job? 
-  
-  Note that, in at least two of these, the underlying question is (arguably)
-  not quite so binary, but we may choose to treat it as such. In particular,
-  when assessing onset of a disease, the actual impairment to the patient is 
-  continuous, but it is common in medical practice to "binarize" the outcome. 
-  Any of you with aging family members know that cognitive decline occurs long
-  before it's 'officially' Alzheimer's. Similarly, qualification for a job
-  is perhaps best understood as a continuous (or even purely comparative)
-  quantity "Is A more qualified than B?" but we chooes to binarize it when
-  deciding to whom a job offer should be made. 
-  
-  Recalling your probability theory, there is (essentially) only one distribution
-  on $\{0, 1\}$, the Bernoulli, so this scenario typically has the cleanest and
-  simplest mathematics. 
-  
-- *Multiclass* classification: in this case, $\by$ takes values in a set of 
-  finite and known, but potentially large, set of outcomes, which we will
-  call $\Ycal$. Before about 20 years ago, multiclass problems took 
-  $|\Ycal|$ to be not much larger than 2, *e.g.*, which blood type does
-  a sample match or what language is a text sample written in, but much of the 
-  modern practical success of machine learning comes from the ability to treat 
-  *very large* outcome sets $\Ycal$. 
-  
-  For instance, modern computer vision (CV) has moved beyond far simple binary
-  classification: 
-  
-  {{< video https://www.youtube.com/watch?v=ACmydtFDTGs >}}
-  
-  The famed[`ImageNet`](https://en.wikipedia.org/wiki/ImageNet) benchmark data
-  set has over 20,000 classes (arranged with additional structure) and modern
-  data sets include even more. This can be contrasted with the older 
-  [`MNIST`](https://en.wikipedia.org/wiki/MNIST_database) data set which 
-  collects only ten handwritten digits.
-  
-  Beyond CV, large multiclass classification has also revolutionized text modeling: 
-  when a chatbot generates text, it selects the next word from a large but finite
-  set of English words. 
-  
-  Just like binary classification is rooted in the Bernoulli distribution, 
-  multiclass classification is rooted in the [categorical
-  distribution](https://en.wikipedia.org/wiki/Categorical_distribution). When
-  applied to a large class of outcomes, the categorical distribution becomes a
-  [multinomial](https://en.wikipedia.org/wiki/Multinomial_distribution), 
-  *cf* Bernoulli to binomial, so multiclass classification is also frequently
-  called *multinomial* classification. 
-  
-While our main focus is on *binary* and *multiclass* problems, it is worth noting
-some additional "modes" of classification. 
-
-- *Ordinal* classification: in this case, $\Ycal$ is an _ordered_ set. The most
-  common form of ordinal classification is the ubiquitous 
-  [*Likert scale*](https://en.wikipedia.org/wiki/Likert_scale) which
-  you have certainly encountered any time you have filled out a customer survey:
-  
-  - *Strongly Agree*
-  - *Agree*
-  - *Neutral*
-  - *Disagree*
-  - *Strongly Disagree*
-  
-  In this case, the categories clearly have an order and a ranking, but we can't
-  quite treat them as 'numerical' in the usual sense: *Strongly Agree* is not
-  just *Agree* + *Disagree*. 
-  
-  Proper analysis of *ordinal* data is tricky and often poorly done. 
-  Complexities include the inappropriateness of statisticians' most beloved tool,
-  averaging[^set], and a fundamental 'subjectiveness.' 
-  Another common ordinal classification problem is the assignment of grades
-  (A > B > C ...). In this case, students and professors may agree that 
-  one piece of work may be better than another, but a student may feel their
-  assignment deserves an A while the professor may judge it B work. It is
-  quite difficult to infer each individual's personal threshold for each category
-  without extensive analysis. 
-  
-  We will not discuss ordinal data much in this course as it requires specialized
-  methods. Typically ordinal data is modeled by treating the response as a rounded
-  version of some underlying continuous variable: *e.g.*, when grading hurricanes
-  the classes (Category 1, Category 2, ...) are derived from the underlying
-  continuous variable of wind speed. This 'hidden regression' structure makes
-  analysis of ordinal classification much closer to regression than binary
-  classification. 
-
-[^set]: Even though it doesn't make sense to average ordinal data, University
-administrators are *notorious* for averaging Likert data to evaluate faculty. 
-This is a nigh-universal grievance of numerically-minded faculty, but getting
-universities to change their established procedures to something statistically
-reasonable is only slightly less impossible than drawing blood from a turnip.
-  
-- *Probabilistic* classification: we noted above that binary classification can
-  be thought of as modeling a Bernoulli random variable. If we shift our focus
-  to modeling the Bernoulli parameter (the probability $p \in [0, 1]$) than
-  the outcome ($y \in \{0, 1\}$), we have the paradigm of *probabilistic*
-  classification. 
-  
-  As a general rule, *statistically*-grounded classification methods have
-  a natural probabilistic output built-in while methods coming from the CS 
-  tradition are not inherently probabilistic. Because probabilistic estimates
-  are often quite useful, there exist several [useful
-  methods](https://en.wikipedia.org/wiki/Platt_scaling) to 'bolt-on' 
-  probabilistic outputs to pure binary classifiers. 
-  
-## Metrics of Classification Accuracy
-
-In the regression context, we had a relatively small number of loss functions: 
-
-- Mean Squared Error (MSE): mathematically convenient, easy interpretation, 
-  natural for OLS, optimizes for mean
-- Mean Absolute Error (MAE): mathematically a bit tricky, most practical in many
-  circumstances, gives rise to *robust* regression, optimizes for median
-- Mean Absolute Percent Error (MAPE)
-- Checkmark/Pinball Loss: gives rise to *quantile* estimation
-- Huber loss: interpolates MSE and MAE
-
-By contrast, in the classification context, we have *many* loss functions to 
-work with. To get into them, it's worth thinking back to the formalism of
-*statistical hypothesis testing*. Recall that, in hypothesis testing, we have
-a 2-by-2 table of possible outcomes: 
-
-+--------------+----------------+-----------------+
-|              | **Truth**                        |
-+==============+:==============:+:===============:+
-| **Decision** | **Null**       | **Alternative** |
-+==============+================+=================+
-| **Retain**   | True           | False Negative  |
-| **Null**     | Negative       | (Type II Error) |
-+--------------+----------------+-----------------+
-| **Reject**   | False          | True Positive   |
-| **Null**     | Positive       |                 |
-|              | (Type I Error) |                 |
-+--------------+----------------+-----------------+
-
-: Hypothesis Testing Table
-
-Suppose that we have a large number ($n$) of binary classification points. If we
-let $\hat{y}_i$ be our prediction and $y^*_i$ be the actual outcome, we can
-construct a similar table: 
-
-+----------------+-----------------+--------------------------+
-|                | **Truth** (Second index)                   |
-+================+:===============:+:========================:+
-| **Prediction** | $y_i^* = 0$     | $y_i^* = 1$              |
-| (First Index)  |                 |                          |
-+================+=================+==========================+
-| $\hat{y}_i=0$  | $n_{00}$ True   | $n_{01}$ False Negative  |
-|                | Negatives       | (Type II Errors)         |
-+----------------+-----------------+--------------------------+
-| $\hat{y}_i=1$  | $n_{10}$ False  | $n_{11}$ True Positives  |
-|                | Positives       |                          |
-|                | (Type I Errors) |                          |
-+----------------+-----------------+--------------------------+
-
-: Classification Outcome Table
+$$\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\V}{\mathbb{V}} \newcommand{\argmin}{\text{arg min}} \newcommand{\K}{\mathbb{K}}$$
 
 
-From this structure, we get several useful ideas: 
+We previously showed the following: 
 
-- A *confusion matrix* is a 2x2 (or $K$-by-$K$ for $K$-multiclass problems)
-  table comparing the right answer (here "Truth" on the columns) with our guess
-  (here "Decision" on the rows). A good classifier will have large values 
-  "on diagonal" ($n_{00} + n_{11}$) and small values "off diagonal" 
-  ($n_{01} + n_{10}$)
-- The notion of *true/false* *positive/negatives*. These can be a bit tricky
-  to remember, but the convention is: 
-  
-  - The *noun* (positive/negative) captures the *prediction*
-  - The *adjective* (true/false) assesses the prediction
-  
-  So a "false positive" means that we guessed the positive (+1) class, but that
-  we were wrong and the truth was the negative (-1 or 0) class.
-  
-From this simple count table, we can create _many_ different ratios. I find the
-statistical terminology a bit more intuitive than the ML terminology: 
+- OLS can be derived purely as a 'loss minimization' problem without reference
+  to specific probabilistic models; this is an instance of the general strategy
+  of *empirical risk management*
+- OLS is a *convex* problem, making it particularly easy to solve even if we
+  don't use the closed-form solution
+- The BLUE property of OLS is perhaps less interesting than it sounds as it
+  requires very strong assumptions on the data generating process which are
+  unlikely to hold in practice
+- MSE, the loss we used to pose OLS, can be decomposed as 
+  $\text{Bias}^2 + \text{Variance}$
+- Because BLUE restricts to _unbiased_ estimators, the MSE of OLS is all variance
 
-- True Positive Rate: Of the actual positives ($y^*=1$), what fraction are
-  predicted correctly (truly) positives ($\hat{y} = 1$)? 
-  $\text{TPR} = n_{11}/(n_{01} + n_{11})$
-- False Negative Rate: Of the actual positives ($y^*=1$), what fraction are
-  predicted incorrectly (falsely) as negatives ($\hat{y} = 0$)? 
-  $\text{FNR} = n_{01}/(n_{01} + n_{11})$
-- True Negative Rate: Of the actual negatives ($y^*=0$), what fraction are
-  predicted correctly (truly) as negatives ($\hat{y} = 0$)?  
-  $\text{FNR} = n_{00}/(n_{00} + n_{10})$
-- False Positive Rate: Of the actual negatives ($y^*=0$), what fraction are
-  predicted incorrectly (falsely) as positives ($\hat{y} = 1$)? 
-  $\text{FPR} = n_{10} / (n_{00} + n_{10})$
-  
-These clearly satisfy some useful relationships: 
+We begin this week by asking if we can do better than OLS. To keep things simple,
+we begin by assuming we are under a linear DGP (so no 'model error') but that's
+only a mathematical niceity. It's not something you should always assume - in fact,
+it is really more important to think about how models do on non-linear DGPs. 
+As we will see, it may still be useful to use linear models... 
 
-$$\text{TPR} = 1 - \text{FNR} \Leftrightarrow \text{FNR} = 1 - \text{TPR}$$
+Because OLS is BLUE under our assumptions, we know that we need to relax one
+or more of our assumptions to beat it. For now, we will focus on relaxing the
+U - unbiasedness; non-linear methods come later in this course. 
 
-and 
+Recalling our decomposition: 
 
-$$\text{FPR} = 1 - \text{TNR} \Leftrightarrow \text{TNR} = 1 - \text{FPR}$$
+$$\text{MSE} = \text{Bias}^2 + \text{Variance}$$
 
-In this scenario, we recognize the *false positive rate* as the *size* (or 
-*level*) associated with a statistical test (5% for a 95% confidence test) and
-the true positive rate as the *power*. Again, the statistical definitions can
-help us navigate the confusing terminology here: the confidence of a test,
-and therefore its false positive rate, are defined _assuming the null_ (*i.e.*,
-in a "true" negative scenario). 
+Our gambit is that we can find an alternative estimator with a bit more bias, 
+but far less variance. Before we attempt to do so for linear regression, let's 
+convince ourselves this is possible for a much simpler problem - estimating
+means. 
 
-The "other direction" of rates -- where we condition on the prediction 
-instead of the truth -- are less common, except for the *false discovery rate*: 
+## Estimating Normal Means
 
-$$\text{FDR} = \frac{n_{10}}{n_{10} + n_{11}}$$
+Suppose we have data from a distribution $$X_i \buildrel \text{iid} \over \sim 
+\mathcal{N}(\mu, 1)$$ for some unknown $\mu$ that we seek to estimate. Quite 
+reasonably, we might use the sample mean 
+$$\overline{X}_n = \frac{1}{n}\sum_{i=1}^n X_i$$
+to estimate $\mu$. Clearly, this is an _unbiased_ estimator and it has variance
+given by $1/n$, which isn't bad. In general, it's pretty hard to top this. 
 
-The FDR is commonly used in scientific settings and it answers this question: 
-if a scientist makes $K$ discoveries, what fraction _of those claimed 
-discoveries_ are correct? 
-
-::: {.callout-warning} 
-
-Note that the convention used to define *rates* can be quite confusing
-and is perhaps opposite the convention used to define *counts*. 
-
-To compute the number of *true positives*, we look at predicted 
-positives and count the number of "truths", while to compute
-the *true positive rate*, our denominator is the number of 
-_actual_ positives and we count the fraction of correct predictions. 
-
-To me, the FDR is actually the most clearly named rate; I try to remember
-the definition of FDR and 'work backwards' to FPR since it must be something
-different than FDR.
-
-:::
-
-In ML context, you will commonly hear reference to *precision* and *recall*. 
-With our definitions above, we have
-
-- Precision = $1 - \text{FDR}$
-- Recall = $\text{FNR} = 1 - \text{TPR}$
-
-so, by maximizing precision, we ensure that all of our predicted positives are
-true positives and, by maximizing recall, we ensure that we have no false 
-negatives (that is, we truly identify all of the real positives). 
-
-In the medical context, you may encounter alternative metrics of 
-
-- Sensitivity, equal to TPR
-- Specificity, equal to TNR
-
-This zoo of terms is admittedly quite confusing, but the Wikipedia article
-on [Precision and Recall](https://en.wikipedia.org/wiki/Precision_and_recall#Definition)
-has an excellent table. 
-
-### Combining Metrics
-
-If you look at the 2x2 table above, you can convince yourself that it has 
-two "degrees of freedom:" having a high TPR implies nothing about the TNR 
-(or equivalent metrics). That is, it is possible to have a classifier with
-arbitrarily good TPR (equivalently, small FNR) and terrible TNR (equivalently,
-small FPR). 
-
-In fact, we can construct one trivially: 
-
-$$\hat{f}(\cdot) = 1$$ 
-
-That is, the function that predicts $1$ _always_. This classifier has zero false
-negatives, because it has no negatives whatsoever, but it necessarily has many
-false positives.[^rate] 
-
-Conversely, 
-
-$$\hat{f}(\cdot) = 0$$ 
-
-has no false positives, but many false negatives. 
-
-[^rate]: In this case, the FPR is exactly equal to the negative rate in the 
-population. 
-
-Clearly, we need a 'combination' metric that combines both degrees of freedom
-into a single score. Popular choices include: 
-
-- Accuracy: the fraction of correct predictions ($(n_{00}+n_{11})/n$)
-- Balanced Accuracy: $\frac{\text{TPR} + \text{TNR}}{2}$
-- $F_1$ Score: $2 *(1 - \text{FDR}) / (\text{TPR} - \text{FDR} +1)$
-
-While these choices are popular, none of them are actually all that suitable
-for a real application. To properly evaluate a classifier, we need to know
-the real cost of false positives and false negatives, as well as the population
-base rates, and balance things accordingly. 
-
-For instance, if we are designing a 'baseline' medical diagnostic to be used
-as part of annual physicals, we need to think about what happens with false
-negatives and false positives. 
-
-- If we give a false positive, patients will undergo a better test that costs
-  \$1,000 but gives an accurate answer in all circumstances (a "gold standard").
-- If we give a false negative, patients will leave a condition untreated until
-  it becomes far worse, requiring expensive surgery costing \$50,000. 
-  
-In this case, we might desire a classifier that minimizes $$n_{10} + 50 n_{01}$$,
-not any of the of the 'standard' metrics. Note also that the particular FPR, FNR
-of this classifier will depend on the rate of the condition in the population,
-so we can't actually find the best procedure by looking at FPR, FNR in isolation.
-
-While this *decision-theoretic* approach is optimal, it is often quite difficult
-to characterize in practice. In the example above, for instance, we made the
-choice to only minimize cost, without seeking to minimize suffering. (What if
-the untreated condition is _incredibly_ painful? Should we intervene more often?)
-This sort of decision-making is ultimately very problem-specific and too often
-ignored in the academic literature. In practice, designing (and optimizing)
-the correct loss function is far more relevant to business outcomes than
-finding the best classifier to optimize an irrelevant cost function. 
-procedure requires 
-
-### Trade-Off of Recall and Precision
-
-Our discussion of 'trivial' classifiers that focus on one metric while completely
-ignoring the other may remind you of the way this is typically solved in
-statistical testing procedures. We specify a maximum acceptable false positive
-rate (level or 1 - confidence) and then minimize the false negative rate
-subject to that constraint; in statistical speak, we seek a test with 
-_maximal power_. 
-
-As we have seen with ridge and lasso regression, there is typically a 'knob'
-(hyperparameter) we can pick to tune a particular classifier. It is common to
-apply the classifier at all values of this knob, measure the TPR and TNR at all
-levels, and plot them in a trade-off curve. This curve is, for historical 
-reasons, known as the receiver operating characteristic (ROC)[^roc] curve and
-it looks something like: 
+We can verify all of this empirically: 
 
 ```{r}
 #| message: false
-library(yardstick)
 library(ggplot2)
+library(tidyr)
+library(purrr)
 library(dplyr)
-library(ggplot2)
-library(dplyr)
-# Example from ?roc_curve
-roc_curve(two_class_example, truth, Class1) %>%
-  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
-  geom_path() +
-  geom_abline(lty = 3) +
-  coord_equal() +
-  theme_bw()
 ```
 
-Here we see that, for this particular classifier, increased specificity is
-associated with decreased sensitivity or, in the alternative terms, increased TNR
-is associated with decreased TPR. As illustrated by our example of constant
-predictors above, this is a quite typical trade-off. 
+```{r}
+compute_mse_sample_mean <- function(mu, n){
+    # Compute the MSE estimating mu
+    # with the sample mean from n samples
+    # We repeat this process a large number of times
+    # to get the expected MSE
+    R <- replicate(1000, {
+        X <- rnorm(n, mean=mu, sd=1)
+        mean(X)
+    })
+    
+    data.frame(n=n, 
+               mu=mu, 
+               bias=mean(R - mu), 
+               variance=var(R), 
+               mse=mean((R - mu)^2))
+}
 
-Curves like this can be used in a few ways, none of which are fully satisfying: 
+MU_GRID <- seq(-5, 5, length.out=501)
+N <- 10
 
-- If we have two curves, we can plot their ROCs on the same set of axes. If one
-  classifier is _uniformly_ above the other, it is said to _dominate_ the other
-  and is better for all applications. Sadly, this is rarely the case. 
-- If we have two curves and plot their ROCs, but the ROCs cross, we don't have
-  strong guidance on which model to prefer, but if one is _almost always_ above
-  the other, we will likely still use it. 
+SIMRES <- map(MU_GRID, compute_mse_sample_mean, n=N) |> list_rbind()
+```
 
-A commonly reported metric is the _area under the ROC curve_ (AUC), which ranges
-from 0.0 to 1.0, with higher values being better. This is a bit unsatisfying
-compared to the decision theoretic analysis, but it is an improvement over
-some other metrics as it at least addresses the fact there is a tradeoff. 
+Our bias is essentially always zero: 
 
-::: {.callout-info title="Pause for Reflection"}
+```{r}
+ggplot(SIMRES, aes(x=mu, y=bias)) + 
+    geom_point() + 
+    geom_abline(slope=0, 
+                intercept=0, 
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab(expression("Bias"^2)) + 
+    ggtitle("Constant Zero Bias of Sample Mean Estimator") + 
+    theme_bw()
+```
 
-What does an AUC less than 0.5 imply? If you get an AUC less than 0.5, what 
-should you do? Why is AUC near 0 actually a good thing?
+Similarly, our bias is small, and constant. Specifically, it is around 
+$1/n$ as predicted by standard theory: 
+
+```{r}
+ggplot(SIMRES, aes(x=mu, y=variance)) + 
+    geom_point() + 
+    geom_abline(intercept=1/N, 
+                slope=0,
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab("Variance of Sample Mean") + 
+    ggtitle("Constant Variance of Sample Mean Estimator") + 
+    theme_bw()
+```
+As expected, the MSE is the sum of bias and variance, so it's basically just
+variance here: 
+
+
+```{r}
+ggplot(SIMRES, aes(x=mu, y=mse)) + 
+    geom_point() + 
+    geom_abline(intercept=0, 
+                slope=0, 
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    geom_abline(intercept=1/N, 
+                slope=0,
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab("Sample Mean MSE ") + 
+    ggtitle("Constant MSE of Sample Mean Estimator") + 
+    theme_bw()
+```
+
+So far, it looks like the sample mean is hard to beat. In particular,
+this curve is But... what if we know, *e.g.*, that $\mu$ is positive. We 
+might still use the sample mean, but with the additional step that we set
+it to zero if the sample mean looks negative. That is, our new estimator is
+$$\hat{\mu} = (\overline{X}_n)_+ \text{ where } z_+ = \begin{cases} z & z > 0 \\ 0 & z \leq 0 \end{cases}$$
+
+The $(\cdot)_+$ operator is known as the *positive-part*. How does this 
+$\hat{\mu}$ do? 
+
+```{r}
+pospart <- function(x) ifelse(x > 0, x, 0)
+compute_mse_positive_mean <- function(mu, n){
+    # Compute the MSE estimating mu
+    # with the positive part of the sample mean from n samples
+    # We repeat this process a large number of times
+    # to get the expected MSE
+    R <- replicate(1000, {
+        X <- rnorm(n, mean=mu, sd=1)
+        pospart(mean(X))
+    })
+    
+    data.frame(n=n, 
+               mu=mu, 
+               bias=mean(R - mu), 
+               variance=var(R), 
+               mse=mean((R - mu)^2))
+}
+
+SIMRES_POSPART <- map(MU_GRID, compute_mse_positive_mean, n=N) |> 
+    list_rbind()
+```
+
+
+```{r}
+ggplot(SIMRES_POSPART, aes(x=mu, y=mse)) + 
+    geom_point() + 
+    geom_abline(intercept=0, 
+                slope=0, 
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    geom_abline(intercept=1/N, 
+                slope=0,
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab("Positive Part Mean MSE") + 
+    ggtitle("Constant MSE of Positive Part Mean Estimator") + 
+    theme_bw()
+```
+
+Not surprisingly, we do _very poorly_ if we are estimating a negative $\mu$
+but we assume it is positive. Let's zoom in on the area near 0 however. 
+
+
+```{r}
+SIMRES_POSPART |>
+    filter(mu >= -0.5, 
+           mu <= 1) |>
+ggplot(aes(x=mu, y=mse)) + 
+    geom_point() + 
+    geom_abline(intercept=0, 
+                slope=0, 
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    geom_abline(intercept=1/N, 
+                slope=0,
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab("Positive Part Mean MSE") + 
+    ggtitle("Constant MSE of Positive Part Mean Estimator") + 
+    theme_bw()
+```
+Interesting! For some of these values, we do better than the sample mean. 
+
+In particular, we do better in the following scenario: 
+
+- True mean is positive
+- Sample mean is negative
+- Positive part of sample mean is zero, so closer than pure sample mean
+
+The probability of step 2 (sample mean is negative) is near zero for large
+$\mu$, but for $\mu$ in the neighborhood of zero, it can happen.
+
+
+::: {.callout-note title="Pause to Reflect" collapse="true"}
+
+Review Question: As a function of $\mu$, what is the probability that
+$\overline{X}_n$  is negative? You can leave your answer in terms of the
+standard normal CDF $\Phi(\cdot)$.
 
 :::
 
-[^roc]: Don't confuse this with _Rate of Change_. 
+This is pretty cool. We have made an additional assumption and, when that
+assumption holds, it helps us or, worst case, doesn't really hurt us much. 
+Of course, when the assumption is wrong ($\mu < 0$), we do much worse, but 
+we can't really hold that against $(\overline{X}_n)_+$. 
 
-While the ROC is typically motivated by presence of a 'tuning knob', even
-methods like logistic regression (which have no obvious knobs) have an implicit
-knob we can choose to tune: the _classification threshold_. There is no law of
-nature that says that a predicted probability of 55\% has to correspond to
-a prediction of the positive class. If false positives are very expensive, we
-may want to reduce the fraction of positives predicted and only predict 
-the positive class when the estimated probability is over 80\%. Similarly, 
-if false negatives are very bad, we may want to predict positive even when
-the probability of a positive is in the 40\% range: this is particularly 
-common in medical contexts where the impact of a missed diagnosis is quite
-substantial, so doctors order extra diagnostic work 'just to be sure' even
-if the test does not strongly suggest a disease. 
+Looking more closely, we can look at the bias of $(\overline{X}_n)_+$: 
 
-### Scoring Functions
 
-_Scoring_ functions are loss functions particularly suited for evaluation of 
-probabilistic classifiers. Unlike our confusion-matrix set of metrics, it's less
-clear how we should evaluate probabilistic classifiers. 
 
-It is clear that, if we predict something with 80% probability and it doesn't
-happen, this is a 'worse' mistake than if we only had a 51% probability, but
-how can we measure this formally? 
+```{r}
+SIMRES_POSPART |>
+    filter(mu >= -0.5, 
+           mu <= 1) |>
+ggplot(aes(x=mu, y=bias)) + 
+    geom_point() + 
+    geom_abline(intercept=0, 
+                slope=0, 
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    geom_abline(intercept=1/N, 
+                slope=0,
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab(expression("Bias"^2)) + 
+    ggtitle("Bias of Positive Part Mean Estimator") + 
+    theme_bw()
+```
 
-- Calibration and Tightness
-- Log Scores
+We see here that our improvement came at the cost of some bias, particularly 
+in the $\mu \in [0, 1]$ range. But for that bias, we see a good reduction in
+variance: 
 
-## Types of Classification Methods
+```{r}
+SIMRES_POSPART |>
+    filter(mu >= -0.5, 
+           mu <= 1) |>
+ggplot(aes(x=mu, y=variance)) + 
+    geom_point() + 
+    geom_abline(intercept=1/N, 
+                slope=0,
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab(expression(Variance^2)) + 
+    ggtitle("Non-Constant Variance of Positive Part Mean Estimator") + 
+    theme_bw()
+```
 
-In this course, we will consider two main types of classifiers: 
+Here, we see that the variance is less than $1/n$ from $\mu \approx 0.5$ and 
+down.  Let's plot variance and bias against each other: 
 
-i) Generative classifiers, which attempt to jointly model $(\bX, \by)$ and use
-   probabilistic mathematics (mainly Bayes' Rule) to infer $\by | \bX$ from
-   the joint model. 
-   
-ii) Discriminative classifiers, which directly attempt to estimate the 'boundary'
-    between the classes. 
+```{r}
+#| warning: false
+library(geomtextpath)
+SIMRES_POSPART |>
+    filter(mu >= 0, 
+           mu <= 1) |>
+    ggplot(aes(x=bias, y=variance)) + 
+       geom_point() + 
+       geom_textline(aes(x=bias, y=1/n - bias),
+                     lty=2, color="red4", 
+                     label="Breakeven") + 
+       ylim(c(0, 0.1)) + 
+       theme_bw() + 
+       xlab(expression("Bias"^2)) + 
+       ylab("Variance") + 
+       ggtitle("Bias-Variance Tradeoff for Positive Part Sample Mean")
+```
+Here, all of the values of $\mu$ corresponding to points _below_ this line are
+points where the positive part estimator does better than the standard sample
+mean. 
 
-As you will see, the terminology around these methods is _particularly_ terrible. 
 
-## Building Mutliclass Classifiers from Binary Classifiers
-  
-As we introduce methods, we will typically derive them for the binary
-classification task. If we want to apply them to the multiclass task, how can 
-we extend them? It would be quite cumbersome if we needed _brand new_ methods
-each time. 
+::: {.callout-note title="Pause to Reflect" collapse="true"}
 
-In general, there are two main strategies we might use: 
+See if you can compute the bias and variance of $(\overline{X}_n)_+$ in closed
+form. The [moments of](https://math.stackexchange.com/a/3281287) the 
+[Rectified Normal Distribution](https://en.wikipedia.org/wiki/Rectified_Gaussian_distribution)
+may be of use. 
 
-- One vs Rest
-- Each vs Each
+:::
 
-For simplicity, assume we are predicting $K$ classes. In the "one-vs-rest"
-strategy, we will build $K$ binary classifiers, of the form: 
 
-- Class 1 vs Not Class 1 (*i.e.*, Class 2, 3, 4, $\dots$, $K$)
-- Class 2 vs Not Class 2 (*i.e.*, Class 1, 3, 4, $\dots$, $K$)
-- *etc.*
-- Class $K$ vs Not Class $K$ (*i.e.*, Class 1, 2, 3, $\dots$, $K-1$)
+Ok - now let's start to generalize. Clearly, the first step is to change the
+'positive' assumption. The easiest generalization is to restrict $\mu$ to an
+interval $[a, b]$. In this case, it makes sense to replace the positive part
+operator with a 'clamp' operator: 
 
-To make an actual prediction, we take the *highest* score of each of these
-classifiers. *E.g.*, if $K=3$ for categories "Red", "Green" and "Blue", we
-might predict: 
+$$(x)_{[a, b]} = \begin{cases} a & x \leq a \\ x & x\in(a, b) \\ b & x \geq b \end{cases}$$
 
-- $\mathbb{P}(\text{Red}) = 0.8$ and $\mathbb{P}(\text{Not Red}) = 0.2$
-- $\mathbb{P}(\text{Green}) = 0.4$ and $\mathbb{P}(\text{Not Red}) = 0.6$
-- $\mathbb{P}(\text{Blue}) = 0.2$ and $\mathbb{P}(\text{Not Red}) = 0.8$
+The positive part operator we applied before is $(x)_+ = (x)_{[0, \infty)}$. 
 
-Our final prediction would then be the maximizer, "Red."
 
-This strategy is relatively simple and intuitive, but for very large $K$, 
-the maximum can be far less than 50%, so it may feel a bit funny. (Why is 
-this not an issue for $K=2$?)
+::: {.callout-note title="Pause to Reflect" collapse="true"}
 
-Conversely, in the "each vs each" (sometimes called "one vs one") setting, 
-we train $\binom{K}{2} = K(K-1)/2$ classifiers for every possible _pair_ of
-classes. To get the prediction, we then take a 'majority vote' of the classifiers. 
+Extend the simulation above to characterize the estimation performance (bias and
+variance) of $(\overline{X}_n)_[a, b]$. 
 
-In our $K=3$ example above, we would have three classifiers: 
+:::
 
-- Red vs Blue, which we fit after throwing out the "Green" points
-- Red vs Green, which we fit after throwing out the "Blue" points
-- Green vs Blue, which we fit after throwing out the "Red" points
+A particularly useful version of this bound is taking $(\overline{X}_n)[-\beta, +\beta]$; 
+that is, we don't know the sign of $\mu$, but we know it is less than $\beta$ in
+magnitude. This is not an improbable assumption - we often have a good sense of
+the plausible magnitude of a parameter (Bayesian priors anyone?) - but it feels 
+a bit 'firm'. Can we relax this sort of assumption? We want $\mu$ to be 'not too
+big', but we're willing to go big if the data takes us there. 
 
-If we make predictions for a single point, our binary classifications might be
+We can implement this as follows: 
 
-- Red vs Blue: Red
-- Red vs Green: Red
-- Green vs Blue: Blue
+$$\hat{\mu}_{\alpha} = \frac{\overline{X}_n}{1+\alpha}$$
 
-In this case, we would take a majority vote to get "Red" as our final prediction.
+Clearly, setting $\alpha = 0$ gets us back to the standard sample mean. Can this
+be better than the sample mean? Let's do the calculations by hand. First we note
+that $\E[\hat{\mu}_{\alpha}] = \frac{\mu}{1+\alpha}$ giving a bias of 
+$$\text{Bias} = \E[\hat{\mu}_{\alpha}] - \mu = \mu\left(1 - \frac{1}{1+\alpha}\right) \implies \text{Bias}^2 = \mu^2\left(1 - \frac{1}{1+\alpha}\right)^2$$
+and 
 
-I find this strategy a bit counterintuitive, but it is sometimes faster than
-the one-vs-rest strategy since each individual model is fit to a subset
-of the entire data set.
+$$\text{Variance} = \V[\hat{\mu}_{\alpha}] = \frac{1}{(1+\alpha)^2}\V[\overline{X}_n] = \frac{1}{n(1+\alpha)^2}$$
 
-Certain modern ML strategies, in particular deep neural networks, predict
-the probability of all $K$ classes from a single model. In this case, we 
-typically select the single most probable class as our prediction. 
+so the total MSE is given by 
 
-In applications where there are multiple contenders and the difference
-between them is small, it is common to randomly select a class in
-proportion to its predicted probability. This strategy is one of the things
-that gives ChatGPT its randomness; it usually predicts the *most likely* next
-word, but sometimes it does something a little bit weird.)
 
-Note that it is actually usually pretty hard to make a model that predicts
-a large set of probabilities simultaneously: in particular, it's hard to get
-a vector that sums to one (like probabilities should). To address this, a
-[softmax](https://en.wikipedia.org/wiki/Softmax_function) normalization is
-applied. This is essentially nothing more than i) making sure each predicted
-value is positive; and ii) dividing them all by the sum so they add to 1. 
+$$\begin{align*}
+\text{MSE} &= \E[(\hat{\mu}_{\alpha} - \mu)^2] \\
+           &= \text{Bias}^2 + \text{Variance} \\
+           &= \mu^2\left(1 - \frac{1}{1+\alpha}\right)^2 + \frac{1}{n(1+\alpha)^2}
+\end{align*}$$
 
+For suitable $\alpha, n$ this can be less than the standard MSE of $1/n$. For
+instance, at $\mu = 5$ and $n = 10$, 
+
+```{r}
+shrunk_mean_mse <- function(mu, n, alpha){
+    mu^2 * (1 - 1/(1+alpha))^2 + 1/(n * (1+alpha)^2)
+}
+
+shrunk_mean_mse(5, 10, 1e-4)
+```
+
+Not great - but an improvement! It's actually pretty hard to beat the sample mean
+with an estimator of this form in the univariate case, but it can be incredibly
+useful in more general settings. 
+
+Let's actually take some time and work this out formally in one dimension:
+suppose we have $n$ IID samples from a distribution with mean $\mu$ and variance
+$\sigma^2$. The natural estimator of $\mu$ is the sample mean
+
+$$\hat{\mu} = \frac{1}{n}\sum_{i=1}^n X_i$$
+
+It is easy to see that this estimator is unbiased: 
+
+$$\E[\hat{\mu}] = \E\left[\frac{1}{n}\sum_{i=1}^n X_i\right] = \frac{1}{n}\sum_{i=1}^n \E[X_i] = \frac{1}{n}\sum_{i=1}^n \mu = \mu \text{ for all } \mu$$
+and the variance follows the usual $1/n$ pattern: 
+
+$$\V[\hat{\mu}] = \V\left[\frac{1}{n}\sum_{i=1}^n X_i\right] = \frac{1}{n^2}\sum_{i=1}^n \V[X_i] = \frac{1}{n^2}\sum_{i=1}^n \sigma^2 = \frac{\sigma^2}{n} \text{ for all } \sigma^2, n$$
+
+so the MSE associated with this estimator is: 
+
+$$\text{MSE}(\hat{\mu}) = \text{Bias}^2 + \text{Variance} = \frac{\sigma^2}{n}$$
+
+Let's compare this to a 'scaled' estimator 
+
+$$\hat{\mu}_{\alpha} = \alpha \hat{\mu} = \frac{\alpha}{n}\sum_{i=1}^n $$
+This estimator is no longer unbiased: 
+
+$$\text{Bias}(\hat{\mu}_{\alpha}) = \E[\hat{\mu}_{\alpha}] - \mu = \E[\alpha\hat{\mu}] - \mu = \alpha\E[\hat{\mu}] - \mu = \alpha \mu - \mu = \mu(1-\alpha) \neq 0$$
+
+The variance is 
+
+$$\V[\hat{\mu}_{\alpha}] = \V[\alpha \hat{\mu}] = \alpha^2 \V[\hat{\mu}] = \frac{\alpha^2\sigma^2}{n}$$
+
+These two expressions are interesting: the (squared) bias has clearly increased 
+above our initial value of 0, but the variance has gone down by a factor of 
+$1 - \alpha^2$. Is there a range of values where this represents an MSE-improvement?
+
+$$\begin{align*}
+\text{MSE}(\hat{\mu}_{\alpha}) &= \text{Bias}(\hat{\mu}_{\alpha})^2 + \V[\hat{\mu}_{\alpha}] \\
+&= \mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n}
+\end{align*}$$
+
+This is a quadratic in $\alpha$ (and upward facing / convex), so we know it will
+have a unique minimizer. It is unclear whether that minimizer is actually at
+$\alpha = 1$ (the 'normal' sample mean). 
+
+Let's take the derivative and set it equal to 0: 
+$$\begin{align*}
+\frac{\partial}{\partial \alpha}\text{MSE}(\hat{\mu}_{\alpha})
+&= \frac{\partial}{\partial \alpha}\left[\mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n}\right] \\
+0 &= -2\mu^2(1-\alpha) + \frac{2\alpha\sigma^2}{n} \\
+  &= -\mu^2 +\alpha\left(\frac{\sigma^2}{n} + \mu^2\right) \\
+\implies \alpha_* &= \frac{\mu^2}{\mu^2 + \sigma^2/n}
+\end{align*}$$
+
+You can substitute this back into the MSE formula from above to get the
+MSE at $\alpha^*$ or recall a basic set of facts about univariate quadratics: 
+
+$$\begin{align*}
+f(x) &= ax^2 + bx + c \\
+\implies x_* &= -\frac{b}{2a} \tag{Minimizer} \\
+f(x_*) &= c - \frac{b^2}{4a} \tag{Minimum}
+\end{align*}$$
+
+If we expand the MSE expression into this form: 
+
+$$\begin{align*}
+\text{MSE}(\hat{\mu}_{\alpha}) &= \mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n} \\
+&= \mu^2 - 2\mu^2\alpha + \mu^2\alpha^2 + \frac{\alpha^2\sigma^2}{n} \\
+&= \underbrace{\left(\mu^2 + \frac{\sigma^2}{n}\right)}_a\alpha^2 -\underbrace{2\mu^2}_b \alpha + \underbrace{\mu^2}_c
+\end{align*}$$
+
+so we have a minimum possible MSE of: 
+
+$$\begin{align*}
+\text{MSE}^* &= c - \frac{b^2}{4a}  \\
+&= \mu^2 - \frac{(-2\mu^2)^2}{4\left(\mu^2 + \frac{\sigma^2}{n}\right)} \\
+&= \mu^2 - \frac{4\mu^4}{4(\mu^2 + \sigma^2/n)} \\
+&= \mu^2 - \frac{\mu^4}{\mu^2 + \sigma^2/n} \\
+&= \mu^2 - \frac{\mu^2}{\mu^{-2}(\mu^2 + \sigma^2/n)} \\
+&= \mu^2 - \frac{\mu^2}{1 + (\sigma/\mu)^2/n} \\
+&= \mu^2\left(1-\frac{\mu^2}{1 + (\sigma/\mu)^2/n}\right)
+\end{align*}$$
+
+Whew! That was a lot of algebra. Let's do a quick check to make sure this
+actually holds. Without loss of generality, let's take $\sigma^2 = 1$ and 
+$n = 4$ and vary $\mu$: 
+
+```{r}
+MU_GRID <- seq(-3, 3, length.out=201)
+
+SIM_RESULTS <- map(MU_GRID, \(mu){
+  replicate(1000, {
+    n <- 4
+    sd <- 1
+    X <- rnorm(n=n, mean=mu, sd=sd)
+    mu_hat <- mean(X)
+    
+    alpha_star <- mu^2/(mu^2 + sd^2/length(X))
+    
+    mu_hat_alpha <- alpha_star * mu_hat
+    
+    data.frame(mu=mu, 
+               n=n, 
+               sigma=sqrt(sd), 
+               alpha_shrink = alpha_star, 
+               alpha_no_shrink = 1, 
+               mu_hat_shrink = mu_hat_alpha, 
+               mu_hat_no_shrink = mu_hat, 
+               theory_mse_shrink = mu^2  - mu^4 / (mu^2 + sd^2/n),
+               theory_mse_no_shrink = sd^2/n)
+  }, simplify=FALSE) |> bind_rows()
+}) |> bind_rows()
+
+SIM_RESULTS |> 
+    mutate(err_shrink = mu_hat_shrink - mu, 
+           err_no_shrink = mu_hat_no_shrink - mu,
+           err2_shrink = err_shrink^2, 
+           err2_no_shrink = err_no_shrink^2) |>
+    group_by(mu) |> 
+    mutate(var_shrink = var(err_shrink), 
+           var_no_shrink = var(err_no_shrink)) |>
+    select(-mu_hat_shrink, -mu_hat_no_shrink, -n, -sigma) |>
+    summarize(across(everything(), mean)) |>
+    pivot_longer(cols=-mu, 
+                 names_to="metric", 
+                 values_to="value") |>
+    mutate(scaling = !str_detect(metric, "no_shrink"), 
+           facet_name = case_when(
+               str_detect(metric, "var") ~ "Variance", 
+               str_detect(metric, "alpha") ~ "Scale Factor", 
+               str_detect(metric, "theory") ~ "Theoretical MSE", 
+               str_detect(metric, "err2") ~ "Observed MSE", 
+               str_detect(metric, "err") ~ "Bias"
+           )) |>
+    group_by(scaling, facet_name) |>
+    mutate(value_smooth = runmed(value, k=9, endrule="constant")) |>
+    ggplot(aes(x=mu, color=scaling)) + 
+    geom_point(aes(y=value), alpha=0.2) + 
+    geom_line(aes(y=value_smooth)) + 
+    theme_bw() + 
+    theme(legend.position="bottom") + 
+    xlab(expression(mu)) + 
+    facet_wrap(~facet_name, scales="free_y") + 
+    scale_color_brewer(type="qual", 
+                       palette=2,
+                       name="Scale Factor Applied")
+```
+
+Lots of interesting things here: 
+
+- Both the theoretical and the actual MSE of the unscaled (plain sample mean)
+  estimator are basically constant and does not depend on $\mu$. (Fluctuations
+  in observed MSE are due to sample randomness.) This makes sense as the sample 
+  mean is location invariant. 
+
+TODO
+
+## James-Stein Estimation of Multivariate Normal Means
+
+TODO

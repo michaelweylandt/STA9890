@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-01-23">
+<meta name="dcterms.date" content="2026-03-04">
 <title>STA 9890 - Supervised Learning: I. Regularization &amp; Shrinkage – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -183,17 +183,8 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#a-taxonomy-of-classification" id="toc-a-taxonomy-of-classification" class="nav-link active" data-scroll-target="#a-taxonomy-of-classification">A Taxonomy of Classification</a></li>
-  <li>
-<a href="#metrics-of-classification-accuracy" id="toc-metrics-of-classification-accuracy" class="nav-link" data-scroll-target="#metrics-of-classification-accuracy">Metrics of Classification Accuracy</a>
-  <ul class="collapse">
-<li><a href="#combining-metrics" id="toc-combining-metrics" class="nav-link" data-scroll-target="#combining-metrics">Combining Metrics</a></li>
-  <li><a href="#trade-off-of-recall-and-precision" id="toc-trade-off-of-recall-and-precision" class="nav-link" data-scroll-target="#trade-off-of-recall-and-precision">Trade-Off of Recall and Precision</a></li>
-  <li><a href="#scoring-functions" id="toc-scoring-functions" class="nav-link" data-scroll-target="#scoring-functions">Scoring Functions</a></li>
-  </ul>
-</li>
-  <li><a href="#types-of-classification-methods" id="toc-types-of-classification-methods" class="nav-link" data-scroll-target="#types-of-classification-methods">Types of Classification Methods</a></li>
-  <li><a href="#building-mutliclass-classifiers-from-binary-classifiers" id="toc-building-mutliclass-classifiers-from-binary-classifiers" class="nav-link" data-scroll-target="#building-mutliclass-classifiers-from-binary-classifiers">Building Mutliclass Classifiers from Binary Classifiers</a></li>
+<li><a href="#estimating-normal-means" id="toc-estimating-normal-means" class="nav-link active" data-scroll-target="#estimating-normal-means">Estimating Normal Means</a></li>
+  <li><a href="#james-stein-estimation-of-multivariate-normal-means" id="toc-james-stein-estimation-of-multivariate-normal-means" class="nav-link" data-scroll-target="#james-stein-estimation-of-multivariate-normal-means">James-Stein Estimation of Multivariate Normal Means</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes05.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes05.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -215,7 +206,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 23, 2026</p>
+      <p class="date">March 4, 2026</p>
     </div>
   </div>
   
@@ -224,320 +215,482 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\by}{\mathbf{y}} \newcommand{\Ycal}{\mathcal{Y}}\]</span></p>
-<p>As we move into Unit II of this course, we turn our focus to <em>classification</em>.</p>
-<section id="a-taxonomy-of-classification" class="level2"><h2 class="anchored" data-anchor-id="a-taxonomy-of-classification">A Taxonomy of Classification</h2>
-<p>Recall from before that we defined <em>regression</em> as the subset of supervised learning where the response (<span class="math inline">\(\by\)</span>) was a continuous variable, or at least one that is appropriate to model as such.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> By contrast, <em>classification</em> considers <span class="math inline">\(\by\)</span> to take values in a discrete set. Though this restriction may feel limiting, it is actually quite powerful. We consider several different forms of classification, based on the <em>support</em> of <span class="math inline">\(\by\)</span>:</p>
+</header><p><span class="math display">\[\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\V}{\mathbb{V}} \newcommand{\argmin}{\text{arg min}} \newcommand{\K}{\mathbb{K}}\]</span></p>
+<p>We previously showed the following:</p>
 <ul>
-<li>
-<p><em>Binary</em> classification: in this simplest case, <span class="math inline">\(\by\)</span> takes one of two values, which we conventionally code as <span class="math inline">\(\{0, 1\}\)</span> or <span class="math inline">\(\{-1, +1\}\)</span>, depending on which makes the math easier. Note that the actual response need not be these numbers; they are simply a mathematical convenience.</p>
-<p>Examples of binary classification include:</p>
-<ul>
-<li>Does an incoming student graduate within the next 6 years or no?</li>
-<li>Does a patient have a given disease?</li>
-<li>Is there a dog present in an image?</li>
-<li>Is this applicant qualified for a job?</li>
+<li>OLS can be derived purely as a ‘loss minimization’ problem without reference to specific probabilistic models; this is an instance of the general strategy of <em>empirical risk management</em>
+</li>
+<li>OLS is a <em>convex</em> problem, making it particularly easy to solve even if we don’t use the closed-form solution</li>
+<li>The BLUE property of OLS is perhaps less interesting than it sounds as it requires very strong assumptions on the data generating process which are unlikely to hold in practice</li>
+<li>MSE, the loss we used to pose OLS, can be decomposed as <span class="math inline">\(\text{Bias}^2 + \text{Variance}\)</span>
+</li>
+<li>Because BLUE restricts to <em>unbiased</em> estimators, the MSE of OLS is all variance</li>
 </ul>
-<p>Note that, in at least two of these, the underlying question is (arguably) not quite so binary, but we may choose to treat it as such. In particular, when assessing onset of a disease, the actual impairment to the patient is continuous, but it is common in medical practice to “binarize” the outcome. Any of you with aging family members know that cognitive decline occurs long before it’s ‘officially’ Alzheimer’s. Similarly, qualification for a job is perhaps best understood as a continuous (or even purely comparative) quantity “Is A more qualified than B?” but we chooes to binarize it when deciding to whom a job offer should be made.</p>
-<p>Recalling your probability theory, there is (essentially) only one distribution on <span class="math inline">\(\{0, 1\}\)</span>, the Bernoulli, so this scenario typically has the cleanest and simplest mathematics.</p>
-</li>
-<li>
-<p><em>Multiclass</em> classification: in this case, <span class="math inline">\(\by\)</span> takes values in a set of finite and known, but potentially large, set of outcomes, which we will call <span class="math inline">\(\Ycal\)</span>. Before about 20 years ago, multiclass problems took <span class="math inline">\(|\Ycal|\)</span> to be not much larger than 2, <em>e.g.</em>, which blood type does a sample match or what language is a text sample written in, but much of the modern practical success of machine learning comes from the ability to treat <em>very large</em> outcome sets <span class="math inline">\(\Ycal\)</span>.</p>
-<p>For instance, modern computer vision (CV) has moved beyond far simple binary classification:</p>
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/ACmydtFDTGs" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-<p>The famed<a href="https://en.wikipedia.org/wiki/ImageNet"><code>ImageNet</code></a> benchmark data set has over 20,000 classes (arranged with additional structure) and modern data sets include even more. This can be contrasted with the older <a href="https://en.wikipedia.org/wiki/MNIST_database"><code>MNIST</code></a> data set which collects only ten handwritten digits.</p>
-<p>Beyond CV, large multiclass classification has also revolutionized text modeling: when a chatbot generates text, it selects the next word from a large but finite set of English words.</p>
-<p>Just like binary classification is rooted in the Bernoulli distribution, multiclass classification is rooted in the <a href="https://en.wikipedia.org/wiki/Categorical_distribution">categorical distribution</a>. When applied to a large class of outcomes, the categorical distribution becomes a <a href="https://en.wikipedia.org/wiki/Multinomial_distribution">multinomial</a>, <em>cf</em> Bernoulli to binomial, so multiclass classification is also frequently called <em>multinomial</em> classification.</p>
-</li>
-</ul>
-<p>While our main focus is on <em>binary</em> and <em>multiclass</em> problems, it is worth noting some additional “modes” of classification.</p>
-<ul>
-<li>
-<p><em>Ordinal</em> classification: in this case, <span class="math inline">\(\Ycal\)</span> is an <em>ordered</em> set. The most common form of ordinal classification is the ubiquitous <a href="https://en.wikipedia.org/wiki/Likert_scale"><em>Likert scale</em></a> which you have certainly encountered any time you have filled out a customer survey:</p>
-<ul>
-<li><em>Strongly Agree</em></li>
-<li><em>Agree</em></li>
-<li><em>Neutral</em></li>
-<li><em>Disagree</em></li>
-<li><em>Strongly Disagree</em></li>
-</ul>
-<p>In this case, the categories clearly have an order and a ranking, but we can’t quite treat them as ‘numerical’ in the usual sense: <em>Strongly Agree</em> is not just <em>Agree</em> + <em>Disagree</em>.</p>
-<p>Proper analysis of <em>ordinal</em> data is tricky and often poorly done. Complexities include the inappropriateness of statisticians’ most beloved tool, averaging<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and a fundamental ‘subjectiveness.’ Another common ordinal classification problem is the assignment of grades (A &gt; B &gt; C …). In this case, students and professors may agree that one piece of work may be better than another, but a student may feel their assignment deserves an A while the professor may judge it B work. It is quite difficult to infer each individual’s personal threshold for each category without extensive analysis.</p>
-<p>We will not discuss ordinal data much in this course as it requires specialized methods. Typically ordinal data is modeled by treating the response as a rounded version of some underlying continuous variable: <em>e.g.</em>, when grading hurricanes the classes (Category 1, Category 2, …) are derived from the underlying continuous variable of wind speed. This ‘hidden regression’ structure makes analysis of ordinal classification much closer to regression than binary classification.</p>
-</li>
-</ul>
-<ul>
-<li>
-<p><em>Probabilistic</em> classification: we noted above that binary classification can be thought of as modeling a Bernoulli random variable. If we shift our focus to modeling the Bernoulli parameter (the probability <span class="math inline">\(p \in [0, 1]\)</span>) than the outcome (<span class="math inline">\(y \in \{0, 1\}\)</span>), we have the paradigm of <em>probabilistic</em> classification.</p>
-<p>As a general rule, <em>statistically</em>-grounded classification methods have a natural probabilistic output built-in while methods coming from the CS tradition are not inherently probabilistic. Because probabilistic estimates are often quite useful, there exist several <a href="https://en.wikipedia.org/wiki/Platt_scaling">useful methods</a> to ‘bolt-on’ probabilistic outputs to pure binary classifiers.</p>
-</li>
-</ul></section><section id="metrics-of-classification-accuracy" class="level2"><h2 class="anchored" data-anchor-id="metrics-of-classification-accuracy">Metrics of Classification Accuracy</h2>
-<p>In the regression context, we had a relatively small number of loss functions:</p>
-<ul>
-<li>Mean Squared Error (MSE): mathematically convenient, easy interpretation, natural for OLS, optimizes for mean</li>
-<li>Mean Absolute Error (MAE): mathematically a bit tricky, most practical in many circumstances, gives rise to <em>robust</em> regression, optimizes for median</li>
-<li>Mean Absolute Percent Error (MAPE)</li>
-<li>Checkmark/Pinball Loss: gives rise to <em>quantile</em> estimation</li>
-<li>Huber loss: interpolates MSE and MAE</li>
-</ul>
-<p>By contrast, in the classification context, we have <em>many</em> loss functions to work with. To get into them, it’s worth thinking back to the formalism of <em>statistical hypothesis testing</em>. Recall that, in hypothesis testing, we have a 2-by-2 table of possible outcomes:</p>
-<table class="caption-top table">
-<caption>Hypothesis Testing Table</caption>
-<colgroup>
-<col style="width: 20%">
-<col style="width: 23%">
-<col style="width: 25%">
-</colgroup>
-<thead><tr class="header">
-<th></th>
-<th colspan="2" style="text-align: center;"><strong>Truth</strong></th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><strong>Decision</strong></td>
-<td style="text-align: center;"><strong>Null</strong></td>
-<td style="text-align: center;"><strong>Alternative</strong></td>
-</tr>
-<tr class="even">
-<td>
-<strong>Retain</strong> <strong>Null</strong>
-</td>
-<td style="text-align: center;">True Negative</td>
-<td style="text-align: center;">False Negative (Type II Error)</td>
-</tr>
-<tr class="odd">
-<td>
-<strong>Reject</strong> <strong>Null</strong>
-</td>
-<td style="text-align: center;">False Positive (Type I Error)</td>
-<td style="text-align: center;">True Positive</td>
-</tr>
-</tbody>
-</table>
-<p>Suppose that we have a large number (<span class="math inline">\(n\)</span>) of binary classification points. If we let <span class="math inline">\(\hat{y}_i\)</span> be our prediction and <span class="math inline">\(y^*_i\)</span> be the actual outcome, we can construct a similar table:</p>
-<table class="caption-top table">
-<caption>Classification Outcome Table</caption>
-<colgroup>
-<col style="width: 23%">
-<col style="width: 25%">
-<col style="width: 37%">
-</colgroup>
-<thead><tr class="header">
-<th></th>
-<th colspan="2" style="text-align: center;">
-<strong>Truth</strong> (Second index)</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>
-<strong>Prediction</strong> (First Index)</td>
-<td style="text-align: center;"><span class="math inline">\(y_i^* = 0\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(y_i^* = 1\)</span></td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(\hat{y}_i=0\)</span></td>
-<td style="text-align: center;">
-<span class="math inline">\(n_{00}\)</span> True Negatives</td>
-<td style="text-align: center;">
-<span class="math inline">\(n_{01}\)</span> False Negative (Type II Errors)</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(\hat{y}_i=1\)</span></td>
-<td style="text-align: center;">
-<span class="math inline">\(n_{10}\)</span> False Positives (Type I Errors)</td>
-<td style="text-align: center;">
-<span class="math inline">\(n_{11}\)</span> True Positives</td>
-</tr>
-</tbody>
-</table>
-<p>From this structure, we get several useful ideas:</p>
-<ul>
-<li><p>A <em>confusion matrix</em> is a 2x2 (or <span class="math inline">\(K\)</span>-by-<span class="math inline">\(K\)</span> for <span class="math inline">\(K\)</span>-multiclass problems) table comparing the right answer (here “Truth” on the columns) with our guess (here “Decision” on the rows). A good classifier will have large values “on diagonal” (<span class="math inline">\(n_{00} + n_{11}\)</span>) and small values “off diagonal” (<span class="math inline">\(n_{01} + n_{10}\)</span>)</p></li>
-<li>
-<p>The notion of <em>true/false</em> <em>positive/negatives</em>. These can be a bit tricky to remember, but the convention is:</p>
-<ul>
-<li>The <em>noun</em> (positive/negative) captures the <em>prediction</em>
-</li>
-<li>The <em>adjective</em> (true/false) assesses the prediction</li>
-</ul>
-<p>So a “false positive” means that we guessed the positive (+1) class, but that we were wrong and the truth was the negative (-1 or 0) class.</p>
-</li>
-</ul>
-<p>From this simple count table, we can create <em>many</em> different ratios. I find the statistical terminology a bit more intuitive than the ML terminology:</p>
-<ul>
-<li>True Positive Rate: Of the actual positives (<span class="math inline">\(y^*=1\)</span>), what fraction are predicted correctly (truly) positives (<span class="math inline">\(\hat{y} = 1\)</span>)? <span class="math inline">\(\text{TPR} = n_{11}/(n_{01} + n_{11})\)</span>
-</li>
-<li>False Negative Rate: Of the actual positives (<span class="math inline">\(y^*=1\)</span>), what fraction are predicted incorrectly (falsely) as negatives (<span class="math inline">\(\hat{y} = 0\)</span>)? <span class="math inline">\(\text{FNR} = n_{01}/(n_{01} + n_{11})\)</span>
-</li>
-<li>True Negative Rate: Of the actual negatives (<span class="math inline">\(y^*=0\)</span>), what fraction are predicted correctly (truly) as negatives (<span class="math inline">\(\hat{y} = 0\)</span>)?<br><span class="math inline">\(\text{FNR} = n_{00}/(n_{00} + n_{10})\)</span>
-</li>
-<li>False Positive Rate: Of the actual negatives (<span class="math inline">\(y^*=0\)</span>), what fraction are predicted incorrectly (falsely) as positives (<span class="math inline">\(\hat{y} = 1\)</span>)? <span class="math inline">\(\text{FPR} = n_{10} / (n_{00} + n_{10})\)</span>
-</li>
-</ul>
-<p>These clearly satisfy some useful relationships:</p>
-<p><span class="math display">\[\text{TPR} = 1 - \text{FNR} \Leftrightarrow \text{FNR} = 1 - \text{TPR}\]</span></p>
-<p>and</p>
-<p><span class="math display">\[\text{FPR} = 1 - \text{TNR} \Leftrightarrow \text{TNR} = 1 - \text{FPR}\]</span></p>
-<p>In this scenario, we recognize the <em>false positive rate</em> as the <em>size</em> (or <em>level</em>) associated with a statistical test (5% for a 95% confidence test) and the true positive rate as the <em>power</em>. Again, the statistical definitions can help us navigate the confusing terminology here: the confidence of a test, and therefore its false positive rate, are defined <em>assuming the null</em> (<em>i.e.</em>, in a “true” negative scenario).</p>
-<p>The “other direction” of rates – where we condition on the prediction instead of the truth – are less common, except for the <em>false discovery rate</em>:</p>
-<p><span class="math display">\[\text{FDR} = \frac{n_{10}}{n_{10} + n_{11}}\]</span></p>
-<p>The FDR is commonly used in scientific settings and it answers this question: if a scientist makes <span class="math inline">\(K\)</span> discoveries, what fraction <em>of those claimed discoveries</em> are correct?</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Note that the convention used to define <em>rates</em> can be quite confusing and is perhaps opposite the convention used to define <em>counts</em>.</p>
-<p>To compute the number of <em>true positives</em>, we look at predicted positives and count the number of “truths”, while to compute the <em>true positive rate</em>, our denominator is the number of <em>actual</em> positives and we count the fraction of correct predictions.</p>
-<p>To me, the FDR is actually the most clearly named rate; I try to remember the definition of FDR and ‘work backwards’ to FPR since it must be something different than FDR.</p>
-</div>
-</div>
-<p>In ML context, you will commonly hear reference to <em>precision</em> and <em>recall</em>. With our definitions above, we have</p>
-<ul>
-<li>Precision = <span class="math inline">\(1 - \text{FDR}\)</span>
-</li>
-<li>Recall = <span class="math inline">\(\text{FNR} = 1 - \text{TPR}\)</span>
-</li>
-</ul>
-<p>so, by maximizing precision, we ensure that all of our predicted positives are true positives and, by maximizing recall, we ensure that we have no false negatives (that is, we truly identify all of the real positives).</p>
-<p>In the medical context, you may encounter alternative metrics of</p>
-<ul>
-<li>Sensitivity, equal to TPR</li>
-<li>Specificity, equal to TNR</li>
-</ul>
-<p>This zoo of terms is admittedly quite confusing, but the Wikipedia article on <a href="https://en.wikipedia.org/wiki/Precision_and_recall#Definition">Precision and Recall</a> has an excellent table.</p>
-<section id="combining-metrics" class="level3"><h3 class="anchored" data-anchor-id="combining-metrics">Combining Metrics</h3>
-<p>If you look at the 2x2 table above, you can convince yourself that it has two “degrees of freedom:” having a high TPR implies nothing about the TNR (or equivalent metrics). That is, it is possible to have a classifier with arbitrarily good TPR (equivalently, small FNR) and terrible TNR (equivalently, small FPR).</p>
-<p>In fact, we can construct one trivially:</p>
-<p><span class="math display">\[\hat{f}(\cdot) = 1\]</span></p>
-<p>That is, the function that predicts <span class="math inline">\(1\)</span> <em>always</em>. This classifier has zero false negatives, because it has no negatives whatsoever, but it necessarily has many false positives.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<p>Conversely,</p>
-<p><span class="math display">\[\hat{f}(\cdot) = 0\]</span></p>
-<p>has no false positives, but many false negatives.</p>
-<p>Clearly, we need a ‘combination’ metric that combines both degrees of freedom into a single score. Popular choices include:</p>
-<ul>
-<li>Accuracy: the fraction of correct predictions (<span class="math inline">\((n_{00}+n_{11})/n\)</span>)</li>
-<li>Balanced Accuracy: <span class="math inline">\(\frac{\text{TPR} + \text{TNR}}{2}\)</span>
-</li>
-<li>
-<span class="math inline">\(F_1\)</span> Score: <span class="math inline">\(2 *(1 - \text{FDR}) / (\text{TPR} - \text{FDR} +1)\)</span>
-</li>
-</ul>
-<p>While these choices are popular, none of them are actually all that suitable for a real application. To properly evaluate a classifier, we need to know the real cost of false positives and false negatives, as well as the population base rates, and balance things accordingly.</p>
-<p>For instance, if we are designing a ‘baseline’ medical diagnostic to be used as part of annual physicals, we need to think about what happens with false negatives and false positives.</p>
-<ul>
-<li>If we give a false positive, patients will undergo a better test that costs $1,000 but gives an accurate answer in all circumstances (a “gold standard”).</li>
-<li>If we give a false negative, patients will leave a condition untreated until it becomes far worse, requiring expensive surgery costing $50,000.</li>
-</ul>
-<p>In this case, we might desire a classifier that minimizes <span class="math display">\[n_{10} + 50 n_{01}\]</span>, not any of the of the ‘standard’ metrics. Note also that the particular FPR, FNR of this classifier will depend on the rate of the condition in the population, so we can’t actually find the best procedure by looking at FPR, FNR in isolation.</p>
-<p>While this <em>decision-theoretic</em> approach is optimal, it is often quite difficult to characterize in practice. In the example above, for instance, we made the choice to only minimize cost, without seeking to minimize suffering. (What if the untreated condition is <em>incredibly</em> painful? Should we intervene more often?) This sort of decision-making is ultimately very problem-specific and too often ignored in the academic literature. In practice, designing (and optimizing) the correct loss function is far more relevant to business outcomes than finding the best classifier to optimize an irrelevant cost function. procedure requires</p>
-</section><section id="trade-off-of-recall-and-precision" class="level3"><h3 class="anchored" data-anchor-id="trade-off-of-recall-and-precision">Trade-Off of Recall and Precision</h3>
-<p>Our discussion of ‘trivial’ classifiers that focus on one metric while completely ignoring the other may remind you of the way this is typically solved in statistical testing procedures. We specify a maximum acceptable false positive rate (level or 1 - confidence) and then minimize the false negative rate subject to that constraint; in statistical speak, we seek a test with <em>maximal power</em>.</p>
-<p>As we have seen with ridge and lasso regression, there is typically a ‘knob’ (hyperparameter) we can pick to tune a particular classifier. It is common to apply the classifier at all values of this knob, measure the TPR and TNR at all levels, and plot them in a trade-off curve. This curve is, for historical reasons, known as the receiver operating characteristic (ROC)<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> curve and it looks something like:</p>
+<p>We begin this week by asking if we can do better than OLS. To keep things simple, we begin by assuming we are under a linear DGP (so no ‘model error’) but that’s only a mathematical niceity. It’s not something you should always assume - in fact, it is really more important to think about how models do on non-linear DGPs. As we will see, it may still be useful to use linear models…</p>
+<p>Because OLS is BLUE under our assumptions, we know that we need to relax one or more of our assumptions to beat it. For now, we will focus on relaxing the U - unbiasedness; non-linear methods come later in this course.</p>
+<p>Recalling our decomposition:</p>
+<p><span class="math display">\[\text{MSE} = \text{Bias}^2 + \text{Variance}\]</span></p>
+<p>Our gambit is that we can find an alternative estimator with a bit more bias, but far less variance. Before we attempt to do so for linear regression, let’s convince ourselves this is possible for a much simpler problem - estimating means.</p>
+<section id="estimating-normal-means" class="level2"><h2 class="anchored" data-anchor-id="estimating-normal-means">Estimating Normal Means</h2>
+<p>Suppose we have data from a distribution <span class="math display">\[X_i \buildrel \text{iid} \over \sim
+\mathcal{N}(\mu, 1)\]</span> for some unknown <span class="math inline">\(\mu\)</span> that we seek to estimate. Quite reasonably, we might use the sample mean <span class="math display">\[\overline{X}_n = \frac{1}{n}\sum_{i=1}^n X_i\]</span> to estimate <span class="math inline">\(\mu\)</span>. Clearly, this is an <em>unbiased</em> estimator and it has variance given by <span class="math inline">\(1/n\)</span>, which isn’t bad. In general, it’s pretty hard to top this.</p>
+<p>We can verify all of this empirically:</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/yardstick">yardstick</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co"># Example from ?roc_curve</span></span>
-<span><span class="fu"><a href="https://yardstick.tidymodels.org/reference/roc_curve.html">roc_curve</a></span><span class="op">(</span><span class="va">two_class_example</span>, <span class="va">truth</span>, <span class="va">Class1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">specificity</span>, y <span class="op">=</span> <span class="va">sensitivity</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/">purrr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">compute_mse_sample_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mu</span>, <span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="co"># Compute the MSE estimating mu</span></span>
+<span>    <span class="co"># with the sample mean from n samples</span></span>
+<span>    <span class="co"># We repeat this process a large number of times</span></span>
+<span>    <span class="co"># to get the expected MSE</span></span>
+<span>    <span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="op">{</span></span>
+<span>        <span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean<span class="op">=</span><span class="va">mu</span>, sd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, </span>
+<span>               mu<span class="op">=</span><span class="va">mu</span>, </span>
+<span>               bias<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span>, </span>
+<span>               variance<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span>, </span>
+<span>               mse<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">MU_GRID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, length.out<span class="op">=</span><span class="fl">501</span><span class="op">)</span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span></span>
+<span><span class="va">SIMRES</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">MU_GRID</span>, <span class="va">compute_mse_sample_mean</span>, n<span class="op">=</span><span class="va">N</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Our bias is essentially always zero:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">bias</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>slope<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                intercept<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Bias"</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant Zero Bias of Sample Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Here we see that, for this particular classifier, increased specificity is associated with decreased sensitivity or, in the alternative terms, increased TNR is associated with decreased TPR. As illustrated by our example of constant predictors above, this is a quite typical trade-off.</p>
-<p>Curves like this can be used in a few ways, none of which are fully satisfying:</p>
-<ul>
-<li>If we have two curves, we can plot their ROCs on the same set of axes. If one classifier is <em>uniformly</em> above the other, it is said to <em>dominate</em> the other and is better for all applications. Sadly, this is rarely the case.</li>
-<li>If we have two curves and plot their ROCs, but the ROCs cross, we don’t have strong guidance on which model to prefer, but if one is <em>almost always</em> above the other, we will likely still use it.</li>
-</ul>
-<p>A commonly reported metric is the <em>area under the ROC curve</em> (AUC), which ranges from 0.0 to 1.0, with higher values being better. This is a bit unsatisfying compared to the decision theoretic analysis, but it is an improvement over some other metrics as it at least addresses the fact there is a tradeoff.</p>
-<div class="callout-info" title="Pause for Reflection">
-<p>What does an AUC less than 0.5 imply? If you get an AUC less than 0.5, what should you do? Why is AUC near 0 actually a good thing?</p>
+<p>Similarly, our bias is small, and constant. Specifically, it is around <span class="math inline">\(1/n\)</span> as predicted by standard theory:</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Variance of Sample Mean"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant Variance of Sample Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<p>While the ROC is typically motivated by presence of a ‘tuning knob’, even methods like logistic regression (which have no obvious knobs) have an implicit knob we can choose to tune: the <em>classification threshold</em>. There is no law of nature that says that a predicted probability of 55% has to correspond to a prediction of the positive class. If false positives are very expensive, we may want to reduce the fraction of positives predicted and only predict the positive class when the estimated probability is over 80%. Similarly, if false negatives are very bad, we may want to predict positive even when the probability of a positive is in the 40% range: this is particularly common in medical contexts where the impact of a missed diagnosis is quite substantial, so doctors order extra diagnostic work ‘just to be sure’ even if the test does not strongly suggest a disease.</p>
-</section><section id="scoring-functions" class="level3"><h3 class="anchored" data-anchor-id="scoring-functions">Scoring Functions</h3>
-<p><em>Scoring</em> functions are loss functions particularly suited for evaluation of probabilistic classifiers. Unlike our confusion-matrix set of metrics, it’s less clear how we should evaluate probabilistic classifiers.</p>
-<p>It is clear that, if we predict something with 80% probability and it doesn’t happen, this is a ‘worse’ mistake than if we only had a 51% probability, but how can we measure this formally?</p>
+</div>
+</div>
+<p>As expected, the MSE is the sum of bias and variance, so it’s basically just variance here:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Sample Mean MSE "</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant MSE of Sample Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_segment()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So far, it looks like the sample mean is hard to beat. In particular, this curve is But… what if we know, <em>e.g.</em>, that <span class="math inline">\(\mu\)</span> is positive. We might still use the sample mean, but with the additional step that we set it to zero if the sample mean looks negative. That is, our new estimator is <span class="math display">\[\hat{\mu} = (\overline{X}_n)_+ \text{ where } z_+ = \begin{cases} z &amp; z &gt; 0 \\ 0 &amp; z \leq 0 \end{cases}\]</span></p>
+<p>The <span class="math inline">\((\cdot)_+\)</span> operator is known as the <em>positive-part</em>. How does this <span class="math inline">\(\hat{\mu}\)</span> do?</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pospart</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">x</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">compute_mse_positive_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mu</span>, <span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="co"># Compute the MSE estimating mu</span></span>
+<span>    <span class="co"># with the positive part of the sample mean from n samples</span></span>
+<span>    <span class="co"># We repeat this process a large number of times</span></span>
+<span>    <span class="co"># to get the expected MSE</span></span>
+<span>    <span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="op">{</span></span>
+<span>        <span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean<span class="op">=</span><span class="va">mu</span>, sd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="fu">pospart</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, </span>
+<span>               mu<span class="op">=</span><span class="va">mu</span>, </span>
+<span>               bias<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span>, </span>
+<span>               variance<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span>, </span>
+<span>               mse<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">R</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">SIMRES_POSPART</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">MU_GRID</span>, <span class="va">compute_mse_positive_mean</span>, n<span class="op">=</span><span class="va">N</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">SIMRES_POSPART</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Positive Part Mean MSE"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant MSE of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Not surprisingly, we do <em>very poorly</em> if we are estimating a negative <span class="math inline">\(\mu\)</span> but we assume it is positive. Let’s zoom in on the area near 0 however.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">0.5</span>, </span>
+<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Positive Part Mean MSE"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Constant MSE of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interesting! For some of these values, we do better than the sample mean.</p>
+<p>In particular, we do better in the following scenario:</p>
 <ul>
-<li>Calibration and Tightness</li>
-<li>Log Scores</li>
-</ul></section></section><section id="types-of-classification-methods" class="level2"><h2 class="anchored" data-anchor-id="types-of-classification-methods">Types of Classification Methods</h2>
-<p>In this course, we will consider two main types of classifiers:</p>
-<ol type="i">
-<li><p>Generative classifiers, which attempt to jointly model <span class="math inline">\((\bX, \by)\)</span> and use probabilistic mathematics (mainly Bayes’ Rule) to infer <span class="math inline">\(\by | \bX\)</span> from the joint model.</p></li>
-<li><p>Discriminative classifiers, which directly attempt to estimate the ‘boundary’ between the classes.</p></li>
-</ol>
-<p>As you will see, the terminology around these methods is <em>particularly</em> terrible.</p>
-</section><section id="building-mutliclass-classifiers-from-binary-classifiers" class="level2"><h2 class="anchored" data-anchor-id="building-mutliclass-classifiers-from-binary-classifiers">Building Mutliclass Classifiers from Binary Classifiers</h2>
-<p>As we introduce methods, we will typically derive them for the binary classification task. If we want to apply them to the multiclass task, how can we extend them? It would be quite cumbersome if we needed <em>brand new</em> methods each time.</p>
-<p>In general, there are two main strategies we might use:</p>
-<ul>
-<li>One vs Rest</li>
-<li>Each vs Each</li>
+<li>True mean is positive</li>
+<li>Sample mean is negative</li>
+<li>Positive part of sample mean is zero, so closer than pure sample mean</li>
 </ul>
-<p>For simplicity, assume we are predicting <span class="math inline">\(K\)</span> classes. In the “one-vs-rest” strategy, we will build <span class="math inline">\(K\)</span> binary classifiers, of the form:</p>
+<p>The probability of step 2 (sample mean is negative) is near zero for large <span class="math inline">\(\mu\)</span>, but for <span class="math inline">\(\mu\)</span> in the neighborhood of zero, it can happen.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pause to Reflect
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Review Question: As a function of <span class="math inline">\(\mu\)</span>, what is the probability that <span class="math inline">\(\overline{X}_n\)</span> is negative? You can leave your answer in terms of the standard normal CDF <span class="math inline">\(\Phi(\cdot)\)</span>.</p>
+</div>
+</div>
+</div>
+<p>This is pretty cool. We have made an additional assumption and, when that assumption holds, it helps us or, worst case, doesn’t really hurt us much. Of course, when the assumption is wrong (<span class="math inline">\(\mu &lt; 0\)</span>), we do much worse, but we can’t really hold that against <span class="math inline">\((\overline{X}_n)_+\)</span>.</p>
+<p>Looking more closely, we can look at the bias of <span class="math inline">\((\overline{X}_n)_+\)</span>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">0.5</span>, </span>
+<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">bias</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>, </span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Bias"</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Bias of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We see here that our improvement came at the cost of some bias, particularly in the <span class="math inline">\(\mu \in [0, 1]\)</span> range. But for that bias, we see a good reduction in variance:</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">0.5</span>, </span>
+<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, y<span class="op">=</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>intercept<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">N</span>, </span>
+<span>                slope<span class="op">=</span><span class="fl">0</span>,</span>
+<span>                color<span class="op">=</span><span class="st">"black"</span>, </span>
+<span>                lwd<span class="op">=</span><span class="fl">2</span>, </span>
+<span>                lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"True Parameter:"</span> <span class="op">~</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Variance</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Non-Constant Variance of Positive Part Mean Estimator"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, we see that the variance is less than <span class="math inline">\(1/n\)</span> from <span class="math inline">\(\mu \approx 0.5\)</span> and down. Let’s plot variance and bias against each other:</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allancameron.github.io/geomtextpath/">geomtextpath</a></span><span class="op">)</span></span>
+<span><span class="va">SIMRES_POSPART</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;=</span> <span class="fl">0</span>, </span>
+<span>           <span class="va">mu</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">bias</span>, y<span class="op">=</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>       <span class="fu"><a href="https://allancameron.github.io/geomtextpath/reference/geom_textpath.html">geom_textline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">bias</span>, y<span class="op">=</span><span class="fl">1</span><span class="op">/</span><span class="va">n</span> <span class="op">-</span> <span class="va">bias</span><span class="op">)</span>,</span>
+<span>                     lty<span class="op">=</span><span class="fl">2</span>, color<span class="op">=</span><span class="st">"red4"</span>, </span>
+<span>                     label<span class="op">=</span><span class="st">"Breakeven"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Bias"</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Variance"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Bias-Variance Tradeoff for Positive Part Sample Mean"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, all of the values of <span class="math inline">\(\mu\)</span> corresponding to points <em>below</em> this line are points where the positive part estimator does better than the standard sample mean.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pause to Reflect
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>See if you can compute the bias and variance of <span class="math inline">\((\overline{X}_n)_+\)</span> in closed form. The <a href="https://math.stackexchange.com/a/3281287">moments of</a> the <a href="https://en.wikipedia.org/wiki/Rectified_Gaussian_distribution">Rectified Normal Distribution</a> may be of use.</p>
+</div>
+</div>
+</div>
+<p>Ok - now let’s start to generalize. Clearly, the first step is to change the ‘positive’ assumption. The easiest generalization is to restrict <span class="math inline">\(\mu\)</span> to an interval <span class="math inline">\([a, b]\)</span>. In this case, it makes sense to replace the positive part operator with a ‘clamp’ operator:</p>
+<p><span class="math display">\[(x)_{[a, b]} = \begin{cases} a &amp; x \leq a \\ x &amp; x\in(a, b) \\ b &amp; x \geq b \end{cases}\]</span></p>
+<p>The positive part operator we applied before is <span class="math inline">\((x)_+ = (x)_{[0, \infty)}\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pause to Reflect
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Extend the simulation above to characterize the estimation performance (bias and variance) of <span class="math inline">\((\overline{X}_n)_[a, b]\)</span>.</p>
+</div>
+</div>
+</div>
+<p>A particularly useful version of this bound is taking <span class="math inline">\((\overline{X}_n)[-\beta, +\beta]\)</span>; that is, we don’t know the sign of <span class="math inline">\(\mu\)</span>, but we know it is less than <span class="math inline">\(\beta\)</span> in magnitude. This is not an improbable assumption - we often have a good sense of the plausible magnitude of a parameter (Bayesian priors anyone?) - but it feels a bit ‘firm’. Can we relax this sort of assumption? We want <span class="math inline">\(\mu\)</span> to be ‘not too big’, but we’re willing to go big if the data takes us there.</p>
+<p>We can implement this as follows:</p>
+<p><span class="math display">\[\hat{\mu}_{\alpha} = \frac{\overline{X}_n}{1+\alpha}\]</span></p>
+<p>Clearly, setting <span class="math inline">\(\alpha = 0\)</span> gets us back to the standard sample mean. Can this be better than the sample mean? Let’s do the calculations by hand. First we note that <span class="math inline">\(\E[\hat{\mu}_{\alpha}] = \frac{\mu}{1+\alpha}\)</span> giving a bias of <span class="math display">\[\text{Bias} = \E[\hat{\mu}_{\alpha}] - \mu = \mu\left(1 - \frac{1}{1+\alpha}\right) \implies \text{Bias}^2 = \mu^2\left(1 - \frac{1}{1+\alpha}\right)^2\]</span> and</p>
+<p><span class="math display">\[\text{Variance} = \V[\hat{\mu}_{\alpha}] = \frac{1}{(1+\alpha)^2}\V[\overline{X}_n] = \frac{1}{n(1+\alpha)^2}\]</span></p>
+<p>so the total MSE is given by</p>
+<p><span class="math display">\[\begin{align*}
+\text{MSE} &amp;= \E[(\hat{\mu}_{\alpha} - \mu)^2] \\
+           &amp;= \text{Bias}^2 + \text{Variance} \\
+           &amp;= \mu^2\left(1 - \frac{1}{1+\alpha}\right)^2 + \frac{1}{n(1+\alpha)^2}
+\end{align*}\]</span></p>
+<p>For suitable <span class="math inline">\(\alpha, n\)</span> this can be less than the standard MSE of <span class="math inline">\(1/n\)</span>. For instance, at <span class="math inline">\(\mu = 5\)</span> and <span class="math inline">\(n = 10\)</span>,</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">shrunk_mean_mse</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mu</span>, <span class="va">n</span>, <span class="va">alpha</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">mu</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">alpha</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">alpha</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">shrunk_mean_mse</span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">1e-4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.09998025</code></pre>
+</div>
+</div>
+<p>Not great - but an improvement! It’s actually pretty hard to beat the sample mean with an estimator of this form in the univariate case, but it can be incredibly useful in more general settings.</p>
+<p>Let’s actually take some time and work this out formally in one dimension: suppose we have <span class="math inline">\(n\)</span> IID samples from a distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>. The natural estimator of <span class="math inline">\(\mu\)</span> is the sample mean</p>
+<p><span class="math display">\[\hat{\mu} = \frac{1}{n}\sum_{i=1}^n X_i\]</span></p>
+<p>It is easy to see that this estimator is unbiased:</p>
+<p><span class="math display">\[\E[\hat{\mu}] = \E\left[\frac{1}{n}\sum_{i=1}^n X_i\right] = \frac{1}{n}\sum_{i=1}^n \E[X_i] = \frac{1}{n}\sum_{i=1}^n \mu = \mu \text{ for all } \mu\]</span> and the variance follows the usual <span class="math inline">\(1/n\)</span> pattern:</p>
+<p><span class="math display">\[\V[\hat{\mu}] = \V\left[\frac{1}{n}\sum_{i=1}^n X_i\right] = \frac{1}{n^2}\sum_{i=1}^n \V[X_i] = \frac{1}{n^2}\sum_{i=1}^n \sigma^2 = \frac{\sigma^2}{n} \text{ for all } \sigma^2, n\]</span></p>
+<p>so the MSE associated with this estimator is:</p>
+<p><span class="math display">\[\text{MSE}(\hat{\mu}) = \text{Bias}^2 + \text{Variance} = \frac{\sigma^2}{n}\]</span></p>
+<p>Let’s compare this to a ‘scaled’ estimator</p>
+<p><span class="math display">\[\hat{\mu}_{\alpha} = \alpha \hat{\mu} = \frac{\alpha}{n}\sum_{i=1}^n \]</span> This estimator is no longer unbiased:</p>
+<p><span class="math display">\[\text{Bias}(\hat{\mu}_{\alpha}) = \E[\hat{\mu}_{\alpha}] - \mu = \E[\alpha\hat{\mu}] - \mu = \alpha\E[\hat{\mu}] - \mu = \alpha \mu - \mu = \mu(1-\alpha) \neq 0\]</span></p>
+<p>The variance is</p>
+<p><span class="math display">\[\V[\hat{\mu}_{\alpha}] = \V[\alpha \hat{\mu}] = \alpha^2 \V[\hat{\mu}] = \frac{\alpha^2\sigma^2}{n}\]</span></p>
+<p>These two expressions are interesting: the (squared) bias has clearly increased above our initial value of 0, but the variance has gone down by a factor of <span class="math inline">\(1 - \alpha^2\)</span>. Is there a range of values where this represents an MSE-improvement?</p>
+<p><span class="math display">\[\begin{align*}
+\text{MSE}(\hat{\mu}_{\alpha}) &amp;= \text{Bias}(\hat{\mu}_{\alpha})^2 + \V[\hat{\mu}_{\alpha}] \\
+&amp;= \mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n}
+\end{align*}\]</span></p>
+<p>This is a quadratic in <span class="math inline">\(\alpha\)</span> (and upward facing / convex), so we know it will have a unique minimizer. It is unclear whether that minimizer is actually at <span class="math inline">\(\alpha = 1\)</span> (the ‘normal’ sample mean).</p>
+<p>Let’s take the derivative and set it equal to 0: <span class="math display">\[\begin{align*}
+\frac{\partial}{\partial \alpha}\text{MSE}(\hat{\mu}_{\alpha})
+&amp;= \frac{\partial}{\partial \alpha}\left[\mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n}\right] \\
+0 &amp;= -2\mu^2(1-\alpha) + \frac{2\alpha\sigma^2}{n} \\
+  &amp;= -\mu^2 +\alpha\left(\frac{\sigma^2}{n} + \mu^2\right) \\
+\implies \alpha_* &amp;= \frac{\mu^2}{\mu^2 + \sigma^2/n}
+\end{align*}\]</span></p>
+<p>You can substitute this back into the MSE formula from above to get the MSE at <span class="math inline">\(\alpha^*\)</span> or recall a basic set of facts about univariate quadratics:</p>
+<p><span class="math display">\[\begin{align*}
+f(x) &amp;= ax^2 + bx + c \\
+\implies x_* &amp;= -\frac{b}{2a} \tag{Minimizer} \\
+f(x_*) &amp;= c - \frac{b^2}{4a} \tag{Minimum}
+\end{align*}\]</span></p>
+<p>If we expand the MSE expression into this form:</p>
+<p><span class="math display">\[\begin{align*}
+\text{MSE}(\hat{\mu}_{\alpha}) &amp;= \mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n} \\
+&amp;= \mu^2 - 2\mu^2\alpha + \mu^2\alpha^2 + \frac{\alpha^2\sigma^2}{n} \\
+&amp;= \underbrace{\left(\mu^2 + \frac{\sigma^2}{n}\right)}_a\alpha^2 -\underbrace{2\mu^2}_b \alpha + \underbrace{\mu^2}_c
+\end{align*}\]</span></p>
+<p>so we have a minimum possible MSE of:</p>
+<p><span class="math display">\[\begin{align*}
+\text{MSE}^* &amp;= c - \frac{b^2}{4a}  \\
+&amp;= \mu^2 - \frac{(-2\mu^2)^2}{4\left(\mu^2 + \frac{\sigma^2}{n}\right)} \\
+&amp;= \mu^2 - \frac{4\mu^4}{4(\mu^2 + \sigma^2/n)} \\
+&amp;= \mu^2 - \frac{\mu^4}{\mu^2 + \sigma^2/n} \\
+&amp;= \mu^2 - \frac{\mu^2}{\mu^{-2}(\mu^2 + \sigma^2/n)} \\
+&amp;= \mu^2 - \frac{\mu^2}{1 + (\sigma/\mu)^2/n} \\
+&amp;= \mu^2\left(1-\frac{\mu^2}{1 + (\sigma/\mu)^2/n}\right)
+\end{align*}\]</span></p>
+<p>Whew! That was a lot of algebra. Let’s do a quick check to make sure this actually holds. Without loss of generality, let’s take <span class="math inline">\(\sigma^2 = 1\)</span> and <span class="math inline">\(n = 4\)</span> and vary <span class="math inline">\(\mu\)</span>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">MU_GRID</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length.out<span class="op">=</span><span class="fl">201</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">SIM_RESULTS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">MU_GRID</span>, \<span class="op">(</span><span class="va">mu</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="op">{</span></span>
+<span>    <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
+<span>    <span class="va">sd</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span>    <span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, mean<span class="op">=</span><span class="va">mu</span>, sd<span class="op">=</span><span class="va">sd</span><span class="op">)</span></span>
+<span>    <span class="va">mu_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="va">alpha_star</span> <span class="op">&lt;-</span> <span class="va">mu</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="op">(</span><span class="va">mu</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">sd</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="va">mu_hat_alpha</span> <span class="op">&lt;-</span> <span class="va">alpha_star</span> <span class="op">*</span> <span class="va">mu_hat</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>mu<span class="op">=</span><span class="va">mu</span>, </span>
+<span>               n<span class="op">=</span><span class="va">n</span>, </span>
+<span>               sigma<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">sd</span><span class="op">)</span>, </span>
+<span>               alpha_shrink <span class="op">=</span> <span class="va">alpha_star</span>, </span>
+<span>               alpha_no_shrink <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>               mu_hat_shrink <span class="op">=</span> <span class="va">mu_hat_alpha</span>, </span>
+<span>               mu_hat_no_shrink <span class="op">=</span> <span class="va">mu_hat</span>, </span>
+<span>               theory_mse_shrink <span class="op">=</span> <span class="va">mu</span><span class="op">^</span><span class="fl">2</span>  <span class="op">-</span> <span class="va">mu</span><span class="op">^</span><span class="fl">4</span> <span class="op">/</span> <span class="op">(</span><span class="va">mu</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">sd</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>               theory_mse_no_shrink <span class="op">=</span> <span class="va">sd</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="va">n</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, simplify<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">SIM_RESULTS</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>err_shrink <span class="op">=</span> <span class="va">mu_hat_shrink</span> <span class="op">-</span> <span class="va">mu</span>, </span>
+<span>           err_no_shrink <span class="op">=</span> <span class="va">mu_hat_no_shrink</span> <span class="op">-</span> <span class="va">mu</span>,</span>
+<span>           err2_shrink <span class="op">=</span> <span class="va">err_shrink</span><span class="op">^</span><span class="fl">2</span>, </span>
+<span>           err2_no_shrink <span class="op">=</span> <span class="va">err_no_shrink</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>var_shrink <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">err_shrink</span><span class="op">)</span>, </span>
+<span>           var_no_shrink <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">err_no_shrink</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">mu_hat_shrink</span>, <span class="op">-</span><span class="va">mu_hat_no_shrink</span>, <span class="op">-</span><span class="va">n</span>, <span class="op">-</span><span class="va">sigma</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols<span class="op">=</span><span class="op">-</span><span class="va">mu</span>, </span>
+<span>                 names_to<span class="op">=</span><span class="st">"metric"</span>, </span>
+<span>                 values_to<span class="op">=</span><span class="st">"value"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>scaling <span class="op">=</span> <span class="op">!</span><span class="fu">str_detect</span><span class="op">(</span><span class="va">metric</span>, <span class="st">"no_shrink"</span><span class="op">)</span>, </span>
+<span>           facet_name <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html">case_when</a></span><span class="op">(</span></span>
+<span>               <span class="fu">str_detect</span><span class="op">(</span><span class="va">metric</span>, <span class="st">"var"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Variance"</span>, </span>
+<span>               <span class="fu">str_detect</span><span class="op">(</span><span class="va">metric</span>, <span class="st">"alpha"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Scale Factor"</span>, </span>
+<span>               <span class="fu">str_detect</span><span class="op">(</span><span class="va">metric</span>, <span class="st">"theory"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Theoretical MSE"</span>, </span>
+<span>               <span class="fu">str_detect</span><span class="op">(</span><span class="va">metric</span>, <span class="st">"err2"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Observed MSE"</span>, </span>
+<span>               <span class="fu">str_detect</span><span class="op">(</span><span class="va">metric</span>, <span class="st">"err"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Bias"</span></span>
+<span>           <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">scaling</span>, <span class="va">facet_name</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>value_smooth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/runmed.html">runmed</a></span><span class="op">(</span><span class="va">value</span>, k<span class="op">=</span><span class="fl">9</span>, endrule<span class="op">=</span><span class="st">"constant"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mu</span>, color<span class="op">=</span><span class="va">scaling</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">value</span><span class="op">)</span>, alpha<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">value_smooth</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">facet_name</span>, scales<span class="op">=</span><span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"qual"</span>, </span>
+<span>                       palette<span class="op">=</span><span class="fl">2</span>,</span>
+<span>                       name<span class="op">=</span><span class="st">"Scale Factor Applied"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes05_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Lots of interesting things here:</p>
 <ul>
-<li>Class 1 vs Not Class 1 (<em>i.e.</em>, Class 2, 3, 4, <span class="math inline">\(\dots\)</span>, <span class="math inline">\(K\)</span>)</li>
-<li>Class 2 vs Not Class 2 (<em>i.e.</em>, Class 1, 3, 4, <span class="math inline">\(\dots\)</span>, <span class="math inline">\(K\)</span>)</li>
-<li><em>etc.</em></li>
-<li>Class <span class="math inline">\(K\)</span> vs Not Class <span class="math inline">\(K\)</span> (<em>i.e.</em>, Class 1, 2, 3, <span class="math inline">\(\dots\)</span>, <span class="math inline">\(K-1\)</span>)</li>
+<li>Both the theoretical and the actual MSE of the unscaled (plain sample mean) estimator are basically constant and does not depend on <span class="math inline">\(\mu\)</span>. (Fluctuations in observed MSE are due to sample randomness.) This makes sense as the sample mean is location invariant.</li>
 </ul>
-<p>To make an actual prediction, we take the <em>highest</em> score of each of these classifiers. <em>E.g.</em>, if <span class="math inline">\(K=3\)</span> for categories “Red”, “Green” and “Blue”, we might predict:</p>
-<ul>
-<li>
-<span class="math inline">\(\mathbb{P}(\text{Red}) = 0.8\)</span> and <span class="math inline">\(\mathbb{P}(\text{Not Red}) = 0.2\)</span>
-</li>
-<li>
-<span class="math inline">\(\mathbb{P}(\text{Green}) = 0.4\)</span> and <span class="math inline">\(\mathbb{P}(\text{Not Red}) = 0.6\)</span>
-</li>
-<li>
-<span class="math inline">\(\mathbb{P}(\text{Blue}) = 0.2\)</span> and <span class="math inline">\(\mathbb{P}(\text{Not Red}) = 0.8\)</span>
-</li>
-</ul>
-<p>Our final prediction would then be the maximizer, “Red.”</p>
-<p>This strategy is relatively simple and intuitive, but for very large <span class="math inline">\(K\)</span>, the maximum can be far less than 50%, so it may feel a bit funny. (Why is this not an issue for <span class="math inline">\(K=2\)</span>?)</p>
-<p>Conversely, in the “each vs each” (sometimes called “one vs one”) setting, we train <span class="math inline">\(\binom{K}{2} = K(K-1)/2\)</span> classifiers for every possible <em>pair</em> of classes. To get the prediction, we then take a ‘majority vote’ of the classifiers.</p>
-<p>In our <span class="math inline">\(K=3\)</span> example above, we would have three classifiers:</p>
-<ul>
-<li>Red vs Blue, which we fit after throwing out the “Green” points</li>
-<li>Red vs Green, which we fit after throwing out the “Blue” points</li>
-<li>Green vs Blue, which we fit after throwing out the “Red” points</li>
-</ul>
-<p>If we make predictions for a single point, our binary classifications might be</p>
-<ul>
-<li>Red vs Blue: Red</li>
-<li>Red vs Green: Red</li>
-<li>Green vs Blue: Blue</li>
-</ul>
-<p>In this case, we would take a majority vote to get “Red” as our final prediction.</p>
-<p>I find this strategy a bit counterintuitive, but it is sometimes faster than the one-vs-rest strategy since each individual model is fit to a subset of the entire data set.</p>
-<p>Certain modern ML strategies, in particular deep neural networks, predict the probability of all <span class="math inline">\(K\)</span> classes from a single model. In this case, we typically select the single most probable class as our prediction.</p>
-<p>In applications where there are multiple contenders and the difference between them is small, it is common to randomly select a class in proportion to its predicted probability. This strategy is one of the things that gives ChatGPT its randomness; it usually predicts the <em>most likely</em> next word, but sometimes it does something a little bit weird.)</p>
-<p>Note that it is actually usually pretty hard to make a model that predicts a large set of probabilities simultaneously: in particular, it’s hard to get a vector that sums to one (like probabilities should). To address this, a <a href="https://en.wikipedia.org/wiki/Softmax_function">softmax</a> normalization is applied. This is essentially nothing more than i) making sure each predicted value is positive; and ii) dividing them all by the sum so they add to 1.</p>
+<p>TODO</p>
+</section><section id="james-stein-estimation-of-multivariate-normal-means" class="level2"><h2 class="anchored" data-anchor-id="james-stein-estimation-of-multivariate-normal-means">James-Stein Estimation of Multivariate Normal Means</h2>
+<p>TODO</p>
 
 
-</section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-<ol>
-<li id="fn1"><p>Consider, <em>e.g.</em>, predicting someone’s annual tax liability. <em>Technically</em>, this is <em>discrete</em> since tax liabilities are rounded to the nearest dollar, but functionally it may as well be continuous.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Even though it doesn’t make sense to average ordinal data, University administrators are <em>notorious</em> for averaging Likert data to evaluate faculty. This is a nigh-universal grievance of numerically-minded faculty, but getting universities to change their established procedures to something statistically reasonable is only slightly less impossible than drawing blood from a turnip.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>In this case, the FPR is exactly equal to the negative rate in the population.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Don’t confuse this with <em>Rate of Change</em>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();

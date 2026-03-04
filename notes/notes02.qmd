@@ -4,7 +4,7 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}}$$
+$$\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bD}{\mathbf{D}}$$
 ```{r}
 #| include: false
 set.seed(9890)
@@ -68,10 +68,10 @@ The simplest is _scalar multiplication_. A _scalar_ is a non-vector number,
 *i.e.*, a 'regular' number. Scalar multiplication consists of applying the
 scalar independently to each element of a vector. 
 
-$$\alpha \bx = \alpha(x_1, x_2, \dots, x_n) = (\alpha x_1, \alpha x_2, \dots, \alpha x_n)$$
+$$\alpha\, \bx = \alpha\, (x_1, x_2, \dots, x_n) = (\alpha x_1, \alpha x_2, \dots, \alpha x_n)$$
 
 For example, if $\bx = (3, 4)$ and $\alpha = 2$, we have
-$$\alpha \bx = (6, 8)$$
+$$\alpha\, \bx = (6, 8)$$
 
 Note that the output of scalar multiplication is always a vector of the
 same length as the input. 
@@ -194,6 +194,347 @@ For purposes of this, you can always think of an $n$-vector as a $n$-by-1
 
 $$\underbrace{\bX}_{\R^{n \times p}} \underbrace{\bbeta}_{\R^p} = \underbrace{\hat{\by}}_{\R^{n \times 1}}$$
 
+### Matrix as Linear Function
+
+In this set up, notice that $\bX$ plays an interesting role: it takes one vector
+$\bbeta$ and outputs a different vector $\by$. Looking at it this way, we can 
+think of $\bX$ as a _function_: 
+
+$$\bX: \bbeta \in \R^p \to \by \in \R^n$$
+
+This is a bit unnatural from a statistical point of view: we tend to think of
+the parameters ($\bbeta$) acting on the data (each $\bx$) to produce outputs,
+but mathematically it's entirely natural. 
+
+To step away from the 'data' interpretation, let's just talk about a general
+matrix $\bA \in \R^{m \times n}$. We can (pre-)multiply any $\bw \in \R^{m}$ by
+$\bA$ to get back a new vector $\bz \in \R^n$. Symbolically, this is just
+
+$$\bz = \bA \bw$$
+
+which is much easier to say and to write. The _function_ defined by $\bA$ has
+several nice properties: 
+
+- it plays nicely with addition: 
+
+  $$\begin{align*}
+  \bz_1 &= \bA \bw_1 \\
+  \bz_2 &= \bA \bw_2 \\
+  \bz_1 + \bz_2 &= \bA\bw_1 + \bA\bw_2 \\
+  &= \bA(\bw_1 + \bw_2)
+  \end{align*}$$
+  
+  (Why is this true?)
+- it plays nicely with scalar multiplication: 
+
+  $$ \bA(\alpha \bw) = \alpha (\bA \bw)$$
+  
+  (Again, why is this true?)
+  
+Taken together, we say that these properties make $\bA$ a _linear_ function or
+a _linear_ operator. Note that, in this context, _linear_ is maybe a bit more
+restrictive than the 'middle school' definition. Our properties require "zero-in/
+zero-out": if we take $\alpha = 0$ in the scalar multiplication rule, we have: 
+
+$$\bA(0 \, \bw) = 0\, (\bA \bw) \implies \mathbf{0}_n = \bA \mathbf{0}_m$$
+
+where $\mathbf{0}_{m}, \mathbf{0}_n$ are the all-zero vectors of length $m, n$
+respectively. As such, a 'linear' function you might have seen before like
+
+$y = 2x + 3$ 
+
+is not linear in our sense because it maps $0$ to $3$, not back to $0$ 
+Linear + constant is called "affine" in advanced mathematics, so middle school
+'linear functions' are really affine.
+
+This might feel like a limitation, but true (non-affine) linearity is incredibly
+useful in mathematical modeling as it _guarantees_ us that rules like "double the
+input, double the output" or "negate the input, negate the output" will always
+hold. These types of relationships are so powerful and ubiquituous that this
+slightly-restrictive is definitely worth using.[^var]
+
+[^var]: In addition to the 'physics' of it (push twice as hard, go twice as far),
+we are used to these types of linear type relationships in statistics: if we 
+have some measurements in yards and re-express them in feet by multiplying by 
+three, it's very useful that the standard deviation is just multipled by 3
+without any added terms. 
+
+While it is clear that any 'matrix multiply function' is a linear function, it
+actually turns out that any linear function can be written as a matrix 
+multiplication![^rev] This deep fact is the fundamental reason why linear algebra
+is such a beautiful and beloved part of mathematics: any linear function can be
+expressed using a small set of numbers--great for computational work--and any
+set of numbers arranged in a rectangular array can be understood as a function.
+By giving simultaneous to 'data tools' and 'function tools', we have a lot of
+power at our fingertips. 
+
+[^rev]: This is not too hard to show, but the book-keeping is annoying. In 
+essence, given a linear function, we 'build' a matrix for it by seeing how it
+applies to the standard basis vectors and then, by linearity, argue that that
+matrix has to give the same value as the function for all possible inputs. 
+
+### Combining Matrices
+
+Given two matrices, how might we combine them? For addition, the answer is
+relatively obvious: we simply add the corresponding elements together, which
+we can write symbolically as: 
+
+$$(\bA + \bB)_{ij} = \bA_{ij} + \bB_{ij}$$
+
+This reads as "the $(i, j)$ element of the matrix $\bA + \bB$ is the $(i, j)$ element
+of matrix $\bA$ plus the $(i, j)$ element of matrix $\bB$. From this definition 
+it is clear that we can only add together matrices of corresponding dimension. 
+
+This follows from the idea that a matrix is just a set of vectors "squished 
+together" and our rule for vector addition. 
+
+Scalar multiplication again is straightforward and follows from the corresponding
+vector operation: 
+
+$$(\alpha\, \bA)_{ij} = \alpha\, \bA_{ij}$$
+
+With these, we can define the (additive) identity: that is, the matrix which, 
+when added to another doesn't change the value, by $\mathbf{0}_{m \times n}$, 
+the $m \times n$ matrix of all zeros. The additive inverse (the matrix that
+you add to get back to the additive identity) is just 
+
+$$(-\bA)_{ij} = -(\bA_{ij})$$
+
+*i.e.*, elementwise negation. 
+
+Multiplication is trickier: recall that a matrix $\bA$ also defines a function
+$f_{\bA}. If we want matrix multiplication to follow normal associativity rules,
+we need to ensure
+
+$$\bA(\bB \bx) = (\bA\bB) \bx \quad \text{ for all } \bx, \bA, \bB$$
+
+Achieving this is a little less obvious. First, let's look at the dimensions, 
+suppose $\bx \in \R^{n}$ and $\bB \in \R^{m \times n}$. This gives us 
+$\bB\bx \in \R^m$ so the second dimension of $\bA$ must be $m$. We can actually
+allow arbitrary size for the first dimension of $\bA$ so we take 
+$\bA \in \R^{l \times m}$, $\bB \in \R^{m \times n}$, and $\bx \in \R^n$. 
+From this we see that $\bA, \bB$ don't have to be the same dimension (as we 
+required) for addition, only that they _conform_, *i.e.*, the number of columns
+of $\bA$ equals the number of rows of $\bB$. 
+
+From here, it is possible, albeit cumbersome, to show that
+
+$$(\bA\bB)_{ij} = \langle \bA_{i\cdot}, \bB_{\cdot j} \rangle = \sum_{k} \bA_{ik}\bB_{kj}$$
+
+Here the $\cdot$ subscript means "take the whole row/column". This definition
+is not so simple, but if you take a look at it, you'll see that it's really built
+up from a bunch of vector multiplications, so maybe it's not too weird. 
+
+Looking at our definition, we note that $\bA\bB$ does not necessarily equal 
+$\bB\bA$. In fact, it's entirely possible for $\bB\bA$ to not even exist if
+the sizes don't match up. 
+
+A multiplicative identity is not too hard to identify: we call it $\bI$ and it
+is given by 
+
+$$\bI = \begin{pmatrix} 1 & 0 & 0 & \dots & 0 \\
+                        0 & 1 & 0 & \dots & 0 \\
+                        0 & 0 & 1 & \ddots & 0 \\
+                        0 & 0 & 0 & \dots & 1 \end{pmatrix}$$
+                        
+That is, $\bI$ is a square matrix with ones on the diagonal and zeros everywhere
+else. You should be able to convince yourself that $\bI\bx = \bx$ for all
+$\bx$: check that you can show this directly (by the definition of matrix
+multiplication) or conceptually (thinking in terms of functions, what do we need
+$\bI$ to look like as a "do nothing" function). 
+
+Matrix (multiplicative) inverses are harder to say much about. Given a matrix
+$\bA$, we define its inverse as a matrix $\bA^{-1}$ that satisfies
+$\bA\bA^{-1}=\bA^{-1}\bA = \bI$. If such a matrix exists, it is unique and so
+we can justify referring to $\bA^{-1}$, but we don't know whether it actually 
+always exists. It's not easy to just look at a matrix and tell whether it has
+an inverse, but we will discuss some conditions below. 
+
+The potential non-existence of inverses shouldn't bother you _too much_ - it's 
+the matrix equivalent of the fact that $0^{-1}$ isn't defined for 'regular' 
+numbers - but it is an annoying little technical thing we need to be aware of. 
+
+### Rotation / Orthognal Matrices
+
+While all linear functions are nice, certain operations are particularly nice
+and get their own names. One is the concept of 'rotation': operations which 
+take a $n$-vector  and return a different $n$-vector with the same length.[^rot]
+(No stretching, only turning - hence rotation.) Clearly, these are _square_ 
+matrices since they go from $\R^n$ to $\R^n$ and hence are $n\times n$ matrices.
+Less obvious is 
+
+[^rot]: I am oversimplifying here: there are also 'reflections' that satisfy
+this requirement (*e.g.*, a matrix mapping $(0, 1)$ to $(0, -1)$ but 
+$(1, 0)$ to $(1,0)$ - this flips across the $y$-axis but isn't a "rotation"). 
+This distinction doesn't really come up in our class and the more general 
+category of "orthogonal" is all we really need anyways.
+
+A somewhat remarkable fact is that rotation matrices have a very simple inverse:
+the matrix _transpose_. That is, the matrix you get by flipping across the diagonal
+
+$$\bA^{\top}_{ij} = \bA_{ji}.$$
+
+If a matrix satisfies $\bA^{\top}\bA = \bA\bA^{\top} = \bI$, we refer to it as
+_orthogonal_. These orthogonal matrices are the matrix equivalent of the roots
+of unity (*i.e.*, roots of $+1$ for numbers: $\pm 1$ for square roots, 
+$1, -0.5 \pm \sqrt{0.75}i$ for cube roots, *etc.*). 
+
+### Matrix Decompositions
+
+A matrix is a rather complex thing, so we can often understand them better
+through the use of matrix _decompositions_: that is, breaking an arbitrary
+matrix into simpler parts. There are many decompositions that are useful, but 
+the only one we will use regularly in this class is the 
+_singular value decomposition_ or SVD. Given a matrix $\bA \in \R^{m \times n}$, 
+its SVD is a three factor decomposition 
+
+$$\bA = \bU\bD\bV^{\top}$$
+
+where 
+
+- $\bU \in \R^{m \times m}$ is an $m \times m$ orthogonal matrix
+- $\bD$ is an $\R^{\m \times n}$ matrix which is all zeros except on the
+  main diagonal, which is non-negative. 
+- $\bV \in \R^{n \times n}$ is an $n \times n$ orthogonal matrix
+
+(There are other set ups where we make $\bD$ square and one of $\bU, \bV$ 
+non-square, but this is typically the easiest form to work with). 
+
+*E.g.*, for a random matrix: 
+
+```{r}
+A <- matrix(rnorm(35), nrow=7, ncol=5)
+A
+```
+
+We have an SVD given by: 
+
+```{r}
+#| echo: false
+SVD <- svd(A, nu=dim(A)[1], nv=dim(A)[2])
+
+U <- SVD$u
+V <- SVD$v
+D <- diag(SVD$d, nrow=NROW(A), ncol=NCOL(A))
+```
+
+```{r}
+U
+```
+
+which satisfies[^zapsmall]:
+
+[^zapsmall]: Computers are not perfectly accurate, so if you do this calculation
+yourself, you'll get numbers around $\pm 3 \times 10^{-16}$. These are basically
+zero and we can use the `zapsmall` function to set them to zero. 
+
+```{r}
+zapsmall(U %*% t(U))
+```
+
+and 
+
+```{r}
+zapsmall(t(U) %*% U)
+```
+
+and 
+
+```{r}
+V
+```
+
+satisfying
+
+```{r}
+zapsmall(V %*% t(V))
+```
+
+and
+
+```{r}
+D
+```
+
+which give us
+
+```{r}
+all.equal(U %*% D %*% t(V), A)
+```
+
+The non-zero elements of $\bD$ are known as the _singular values_ of the matrix,
+hence the name SVD and they are roughly analogous to the absolute value
+of a standard number (except there are more of them!). In particular, they are
+non-negative and, when they are zero, we have an issue around division as we
+discuss below. 
+
+The SVD is a super useful way to 'break a matrix' into very simple pieces: 
+multiplication by orthogonal matrices (roughly equivalent to multiplying by 1)
+two times and multiplying by a non-negative diagonal matrix (essentially, just
+stretching a vector). The fact that _any_ matrix and hence any linear function
+can be broken up into "rotate -> stretch -> rotate" is actually quite remarkable.
+
+### SVDs of Important Matrices
+
+Let's talk through the SVD of different matrices: if we start with the all
+zeros matrix ($\mathbf{0}_{m \times n}$), it's clear that the 'stretch factors'
+should all be zero, since the zero matrix sends _everything_ to zero. Hence
+
+$$\mathbf{0}_{m \times n} = \bU \mathbf{0}_{m \times n} \bV^{\top}$$
+
+where any orthogonal $\bU, \bV$ will work (so the SVD is not unique). 
+
+Similarly, we can look at the SVD of $\bI$. In this case, we have a square matrix
+so $\bU, \bV$ must both be $n \times n$ matrices. Since the identity matrix 
+doesn't change its inputs, its 'stretch factors' must all be 1 (no stretching
+or shrinking) so we get: 
+
+$$\bI = \bU \bI \bV^{\top}$$
+
+To make this hold, it suffices to take $\bU = \bV$ and to recall that these
+are orthogonal matrices so $\bU \bV^{\top} = \bU\bU^{\top} = \bI$, as desired.
+Geometrically this makes sense, a general recipe for "do nothing" (identity) is
+to rotate, do a "non-stretch" (multiply by 1) and to rotate back to where you
+started. 
+
+Finally, consider a general matrix $\bA = \bU \bD\bV^{\top}$. Suppose that
+$\bA^{-1}$  exists (which it might not) - what would the SVD of $\bA^{-1}$ look 
+like? Well, let's define $\bA^{-1} = \tilde{\bU}\tilde{\bD}\tilde{\bV}$ as
+the SVD of $\bA^{-1}$. We then have: 
+
+$$\bI = \bA\bA^{-1} = \bU\bD\bV^{\top}\tilde{\bU}\tilde{\bD}\tilde{\bV}^{\top}$$
+
+To get terms to start cancelling out, let's take $\tilde{\bU} = \bV$ 
+(since $\bV^{\top}\bV = \bI$). Similarly, if we start with $\bI = \bA^{-1}\bA$, 
+we get $\tilde{\bV} = \bU^{\top}$. Putting these together, we have the 
+pair of SVDs: 
+
+$$\begin{align*}
+\bA &= \bU \bD \bV^{\top} \\
+\bA^{-1} &= \bV \tilde{\bD} \bU^{\top}
+\end{align*}$$
+
+So now we just need to have $\bD\tilde{\bD}$ cancel ($\bD\tilde{\bD} = \bI$). 
+This is hard in general, but since $\bD, \tilde{\bD}$ are diagonal matrices,
+finding the inverse is not hard: 
+
+$$\tilde{\bD}_{ii} = 1/\bD_{ii}$$
+
+Putting these together, we have: 
+
+$$\bA^{-1} = \bV\bD^{-1}\bU^{\top}$$
+
+where $\bD^{-1}$ is found by taking elementwise inverses of $\bD$ on the diagonal
+and leaving zeros elsewhere. This recipe is quite powerful - and it actually 
+shows us exactly the way in which a matrix can fail to have an inverse. If 
+one or more of the singular values are 0, we have a "divide by zero" problem if
+we try to compute $\bA^{-1}$ using the SVD of $\bA$. This is basically the 
+_only_ way that a square matrix can fail to have an inverse: other 
+characterizations you'll see (zero determinant, degenerate spectrum, *etc*) are 
+just other ways of saying the same thing. 
+
+Thinking about this SVD/inverse formula using our 
+
 ### Spectral Properties of Symmetric Matrices
 
 An important class of matrices we will consider are _symmetric_ matrices, which
@@ -206,9 +547,6 @@ vector turns out to be symmetric as well.
 Another common source of symmetric matrices is when a matrix is multiplied by
 its transpose: you should convince yourself that 
 $\bX^{\top}\bX \in \R^{p \times p}$ is a symmetric matrix. 
-
-
-
 
 
 

@@ -6,401 +6,505 @@ date: "Last Updated `r Sys.Date()`"
 
 $$\newcommand{\R}{\mathbb{R}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bw}{\mathbf{w}} \newcommand{\P}{\mathbb{P}} \newcommand{\V}{\mathbb{V}} \newcommand{\C}{\mathbb{C}} \newcommand{\E}{\mathbb{E}}$$
 
+This week we begin to examin _discriminative_ classifiers. Unlike
+generative classifiers, which attempt to model $\bx$ as a function
+of $y$ and then use Bayes' rule to _invert_ that model, 
+discriminative classifiers take the more standard approach of 
+directly modeling $y$ as a function of $\bx$. This is the
+approach you have already seen in our various variants of OLS. 
+
+
+## Why Not Accuracy Maximization? 
+
+As we saw in our regression unit, we can pose many interesting
+estimators as _loss minimization_ problems. For least squares, we
+primarily focused on mean squared error (MSE) as a loss function,
+though we also briefly touched on MAE, MAPE, and 'check' losses.
+There is not a single 'canonical' loss for the classification
+setting and different choices of loss will yield different
+classifiers. 
+
+Before we build our actual first loss, it is worth asking
+why we can't use something like classification accuracy as our loss
+function. Specifically, define
+$$\text{Acc}(y, \hat{y}) = \begin{cases} 1 & y = \text{sign}(\hat{y}) \\ 0 & y \neq \text{sign}(\hat{y}) \end{cases}$$
+Here we consider the case where $\hat{y}$ may be real-valued 
+as a (slight) generalization of probabilistic classification and
+we use the $\pm 1$ convention for the two classes. 
+
+Fixing $y = 1$, $\text{Acc}$ has the following shape: 
+
+```{r}
+y_hat <- seq(-3, 3, length.out=201)
+acc <- function(y_hat, y=1) sign(y_hat) == sign(y)
+
+plot(y_hat, acc(y_hat), type="l",
+     xlab=expression(hat(y)),
+     ylab=expression(Acc(hat(y), y==1)), 
+     main="Accuracy as a Loss Function")
+```
+This is a terrible loss function! It is both non-convex (can you see
+why?) and just generally unhelpful. Because it is flat almost
+everywhere, we have no access to gradient information (useful for
+fitting) or to any sense of 'sensitivity' to our loss. In this
+scenario, if $y=1$, both $\hat{y}=0.00001$ and $\hat{y}=0.9999$
+have the same accuracy even though the latter is a more 'confident'
+prediction. 
+
+## OLS for Classification?
+
+So if not accuracy, where else might we get a good loss function?
+You might first ask if we an use OLS? It works perfectly well for 
+regression and we know it is well-behaved, so what happens if we
+try it for classification? The answer is ... complicated. 
+
+OLS as a _loss_ function for classification is a bit strange, but
+it turns out to be more-or-less fine. In particular, OLS can be
+used to evaluate _probabilistic_ classifiers, where it is known
+as the _Brier score_. OLS as a _predictor_ can be a bit more 
+problematic: in particular, if we just predict with 
+$\P(y=1) = \bx^{\top}\bbeta$, we have to deal with the fact that
+$\hat{y}$ can be _far_ outside a $[0, 1]$ range we might want
+from a probabilistic classifier. In certain limited circumstances, 
+we can assume away this problem (perhaps by putting specific
+bounds on $\bx$), but these fixes are fragile. Alternatively, 
+we can try to 'patch' this approach and use a classifier
+like 
+
+$$\P(y=1) = \begin{cases} 1 & \bx^{\top}\bbeta > 1 \\ 0 & \bx^{\top}\bbeta < 0 \\ \bx^{\top}{\bbeta} & \text{ otherwise}\end{cases}$$
+
+Even if this feels a bit unsophisticated, Ttis is not awful, 
+but it still struggles from the 'long flat region' problems that
+accuracy encounters. 
+
+At this point, it's hopefully clear that it will be a bit hard to
+'hack together' a suitable loss and that we might benefit from
+approaching the problem with more theoretical grounding. 
+
+## Deriving Logistic Regression
+
+While we argued that OLS is well-grounded in MSE alone, we can
+recall it has additional connections to the Gaussian. These
+"Gaussian vibes" were not essential to making OLS work, but 
+they were useful in _deriving_ OLS as a sensible procedure. 
+Can we do something similar for classification? That is, can we 
+assume a 'working model' to come up with a good loss function
+and then use it, even if we doubt that the model is 'correct'? 
+
+As with all leading questions, the answer is of course a resounding
+yes. We start from the rather banal observation that $y$ must have
+a Bernoulli distribution conditional on $\bx$. After all, the
+Bernoulli is (essentially) the only $\{0, 1\}$ distribution we
+have to work with. So we really just need a way to model
+the $p$ parameter of a Bernoulli as a function of $\bx$. Because
+we love linear models, we may choose to set $p = \bx^{\top}\bbeta$,
+but this gets us back to the range problem we had above. 
+
+Specifically, we require the Bernoulli parameter to take values in
+$[0, 1]$ but our linear predictor $\bx^{\top}\bbeta$ takes values
+in all of $\R$. We can fix this with a simple 'hack': we need a 
+function that 'connects' $\R$ to $[0, 1]$. If we call this function
+$\mu$, we then can specify our whole model as $$y | \bx \sim \text{Bernoulli}(\mu(\bx^{\top}\bbeta))$$ and reduce our problem
+to estimating $\bbeta$. Where can we get such a function? 
+
+The most common choice is $$\mu(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}$$, which is known as the _logistic_ or
+_sigmoid_ function due to its 's-like' shape: 
+
+```{r}
+z <- seq(-5, 5, length.out=201)
+plot(z, 1/(1+exp(-z)), type="l", main="Sigmoid Mapping")
+```
+More generally, we can use essentially the CDF of any random
+variable supported on the real line as a choice of $\mu$: since
+CDFs map the support onto the $[0, 1]$ range they are perfect 
+for this choice. Unfortunately, most CDFs are a bit unwieldy
+so this approach, while theoretically satisfying, is not too widely
+used in practice. If you see it, the most common choice is 
+$\mu(z) = \Phi(z)$, the normal CDF, resulting in a method known as
+"probit" regression (after 'probability integral transform,' an
+old-fashioned name for the CDF) or 
+$$\mu(z) = \frac{\tan^{-1}(z)}{\pi} + \frac{1}{2}$$
+which gives a method known as "cauchit" regression, since
+this is the CDF of the standard Cauchy distribution. These
+choices are far less common than the default sigmoid we used
+above. Generally, they are only _slightly_ different in practice
+and far more computationally burdensome and just aren't really worth
+it. 
+
+Returning to our default sigmoid, we now have the model 
+$$ y | \bx \sim \text{Bernoulli}\left(\frac{1}{1+e^{-\bx^{\top}\bbeta}}\right)$$
+This model is well-posed (in the sense that the distribution 'fits'
+the data and we are guaranteed never to put invalid parameters in)
+but we don't yet have a way to use it as a loss function. 
+
+## From Model to Loss Function
+
+We can build a loss-function by relying on the _maximum likelihood_
+principle. The maximum likelihood principle is a core idea of
+statistics - and one you will explore in much greater detail in other
+courses - but, in essence, it posits that we should use the
+(negative) PMF or PDF as our loss function. Specifically, the ML
+principle says that, if many models could fit our data, we should
+pick the one that makes our data _most probable_ (as determined
+by the PMF/PDF). 
+
+Before we work out the ML estimator (MLE) for our classification 
+model,  let's take a brief detour and look at the MLE for 
+(Gaussian) regression. Specifically, if we assume a model 
+$$y \sim \mathcal{N}(\bx^{\top}\bbeta, \sigma^2)$$ for known 
+$$\sigma^2$$, the PDF of the training point $(\bx_1, y_1)$ is
+
+$$p(y_1 | \bx_1) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_1 - \bx_1^{\top}\bbeta\|_2^2}{2\sigma^2}\right\}$$
+
+If we have a set of $n$ IID training data points, the joint PDF can
+be obtained by multiplying together PDFs (IID is great!) to get
+
+$$\begin{align*}
+p(\mathcal{D}_{\text{train}}) &= \prod_{i=1}^n p(y_i | \bx_i) \\
+&= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_i - \bx_i^{\top}\bbeta\|_2^2}{2\sigma^2}\right\} \\
+&= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|y_i - \bx_i^{\top}\bbeta\|_2^2\right\} \\
+&= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2\right\} \\
+\end{align*}$$
+
+We could maximize this, but a few minor tweaks make the problem
+much easier: 
+
+i) Since all of the action is in an exponential, we might as well
+   maximize the _log_ of the PDF instead of the raw PDF. Since 
+   logarithms are a monotonic transformation, this won't change
+   our minimizer. Similarly, we will also strategically drop
+   some constant terms as they also do not change the minimizer. 
+ii) By convention, we like to _minimize_ more than _maximize_, 
+    specifically when dealing with convex approaches, so we 
+    will introduce a sign flip.
+    
+$$\begin{align*}
+\hat{\bbeta} &= \argmax_{\bbeta} p(\mathcal{D}_{\text{train}}) \\
+             &= \argmax_{\bbeta} \log p(\mathcal{D}_{\text{train}}) \\
+             &= \argmax_{\bbeta} \log\left( (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|\by - \bX\bbeta\|_2^2\right\}\right) \\
+             &= \argmax_{\bbeta} -\frac{n}{2}\log(2\pi\sigma^2) -\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
+             &= \argmin_{\bbeta} \frac{n}{2}\log(2\pi\sigma^2) + \frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
+             &= \argmin_{\bbeta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2
+\end{align*}$$
+
+Why were we able to do the simplifications in the last line? (You
+might also recognize the _penultimate_ line as a term used in the AIC
+of a linear model.)
+
+This is quite cool! If we assume $\by$ follows a particular 
+Gaussian, we get OLS by applying the general MLE approach. Deeper
+statistical theory tells us that the MLE is (essentially) optimal,
+so if our data is not too 'un-Gaussian' it makes sense that the 
+Gaussian MLE (OLS) will perform reasonably well. Since many things
+in this world are Gaussian-ish, OLS is optimal-ish for a large
+class of interesting problems. 
+
+Returning to our classification problem, we see that if our 
+training data is IID, the MLE can be obtained by minimizing
+the negative sum of the log PDFs. For space, we often start from 
+this point instead of doing the full set of manipulations from scratch.
+
+So what is the Bernoulli log PMF? Recall that if $B \sim \text{Bernoulli}(p)$, its PMF is given by: 
+
+$$\P(B=k) = \begin{cases} p & k=1 \\ 1-p & k = 0 \end{cases}$$
+
+or more compactly, 
+
+$$\P(B = k) = p^k(1-p)^(1-k)$$
+
+Taking logarithms, we have
+
+$$\log \P(B = k) = k \log p + (1-k) \log(1-p)$$
+
+and hence the negative log-likelihood: 
+
+$$-\log \P(B = k) = -k \log p -(1-k) \log(1-p)$$
+
+
+From our working model, we take $p = 1/(1+e^{-\bx^{\top}\bbeta})$ so our joint
+MLE is given by: 
+
+$$\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n -y_i \log\left(1/(1+e^{-\bx_i^{\top}\bbeta})\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right)$$
+
+This is still quite hairy, so let's simplify it. In the first term, we note
+that $-\log(1/x) = \log x$ to get: 
+
+$$\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right)$$
+
+For the second term, note that
+
+$$1-\frac{1}{1+e^{-z}} = \frac{1+e^{-z} - 1}{1+e^{-z}} = \frac{e^{-z}}{1+e^{-z}} \implies \log\left(1-\frac{1}{1+e^{-z}}\right) = -z - \log(1 + e^{-z})$$
+
+so we get: 
+
+$$\begin{align*}
+\hat{\bbeta} &=  \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right) \\
+&= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\left[-\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] \\
+&= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) + (1-y_i)\left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] \\
+&= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) + \left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] -y_i\left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right]\\
+&= \argmin_{\bbeta} \sum_{i=1}^n-y_i \bx_i^{\top}\bbeta + \bx_i^{\top}\bbeta + \log\left(1-e^{-\bx_i^{\top}\bbeta}\right)
+\end{align*}$$
+
+We could work in this form, but it turns out to actually be a bit nicer to 
+'invert' some of the work we did above to get rid of a term. In particular, 
+note
+
+$$z + \log(1-e^{-z}) = \log(e^z) + \log(1-e^{-z}) = \log(e^z + e^{z-z}) = \log(1 + e^z)$$
+
+which gives us: 
+
+$$\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n-y_i \bx_i^{\top}\bbeta  + \log\left(1+e^{\bx_i^{\top}\bbeta}\right)$$
+
+Wow! Long derivation. And we still can't actually solve this!
+
+Unlike OLS, where we could obtain a closed-form solution, we *have to use* 
+an iterative algorithm here. While we could use _gradient_ descent, we can
+get to an answer far more rapidly if we use more advanced approaches. Since
+this is not an optimization course, we'll instead use some software to solve
+for us: 
+
+```{r}
+# Generate data from the logistic model
+n <- 500
+p <- 5
+X    <- matrix(rnorm(n * p), ncol=p)
+beta <- c(1, 2, 3, 0, 0)
+
+P <- 1/(1+exp(-X %*% beta))
+y <- rbinom(n, size=1, prob=P)
+
+# Use optimization software
+# See https://cvxr.rbind.io/cvxr_examples/cvxr_logistic-regression/ for details
+library(CVXR)
+
+beta <- Variable(p)
+eta  <- X %*% beta
+
+objective <- sum(- y * eta + logistic(eta))
+problem   <- Problem(Minimize(objective))
+
+beta_hat <- solve(problem)$getValue(beta)
+```
+
+```{r}
+#| echo: false
+knitr::kable(beta_hat, col.names="beta_hat")
+```
+
+Not too bad, if we compare this to `R`'s built-in logistic regression function, 
+we see our results basically match: 
+
+```{r}
+summary(glm(y ~ X + 0, family=binomial))
+```
+Good match! 
+
+Note that, in the above, we had to use the `logistic` function built into `CVX`.
+If we used `log(1+exp(eta))`, the solver would not be able to prove that it is
+convex and would refuse to try to solve. See the `CVX` documentation for more 
+details.
+
+We can compute accuracy after defining a 'decision rule'. Here, let's
+just round the predicted probability
+
+```{r}
+p_hat <- 1/(1 + exp(-X %*% beta_hat))
+y_hat <- round(p_hat)
+
+mean(y_hat == y)
+```
+
+Now that we have this toolkit built up, we can also easily apply ridge and lasso
+penalization: 
+
+```{r}
+penalty <- sum(abs(beta))
+
+lasso_problem <- Problem(Minimize(objective + 9 * penalty))
+beta_hat_lasso <- solve(lasso_problem)$getValue(beta)
+```
+
+```{r}
+#| echo: false
+knitr::kable(beta_hat_lasso)
+```
+
+We got some sparsity, as we would expect with $\ell_1$ penalization. 
+
+## Generalized Linear Models
+
+The approach we took here is a special case of a _generalized linear model_: 
+generalized linear models (GLMs) consist of three parts: 
+
+- A linear model for the 'core predictor' $\eta = \bX\bbeta$; 
+- A sampling distribution for the data $y \sim \text{Dist}$; and
+- An 'adaptor' function[^link], $\mu$, that maps $\eta \in \R$ to the parameter 
+  space of $y$: specifically, we need $\E[y | \bx] = \mu(\bx^{\top}\bbeta)$.
+  
+The adaptor function needs to be smooth (for nice optimization properties) and
+monotonic (or else the interpretation gets too weird), but we otherwise have some
+flexibility. As noted above, if we pick $\mu$ to be the normal or Cauchy CDFs, we
+get alternative 'Bernoulli Regressions' (probit and cauchit). 
+
+We can generalize the model for $\eta$ by allowing it to be an additive (spline)
+model or a kernel method. To fit splines, you can use the `gam` function
+from the `mgcv` function. 
+
+Finally, we also have choices in the sampling distribution. While normal and
+Bernoulli are the most common, you will also sometimes see Poisson and Gamma
+in the wild. For both of these, the mean is a positive value, so we require
+an adaptor that maps $\R$ to $\R \geq 0$ and we typically take $\mu(z) = e^z$. 
+
+A good exercise is to repeat the above analysis for Poisson regression and compare
+your result (obtained with `CVXR`) to the Poisson regression built into `R`. 
+
+## Loss Functions for Classification
+
+We now have a workable loss function for discriminative classification.
+Returning to our example from above 
+(changed to $\{0, 1\}$ convention briefly). Let us set 
+$\alpha = y\hat{y}$ and investigate our loss functions as a property
+of $\alpha$: 
+
+```{r}
+alpha <- seq(-3, 3, length.out=201)
+acc     <- function(alpha) ifelse(alpha < 0, 1, 0)
+lr_loss <- function(alpha) log(1 + exp(-2*alpha))
+
+plot(alpha, acc(alpha), type="l",
+     xlab=expression(alpha),
+     ylab="Loss", 
+     main="Classification Losses", 
+     ylim=c(0, 5))
+lines(alpha, lr_loss(alpha), col="red4")
+legend("topright", 
+       col=c("black", "red4"), 
+       lwd=2, 
+       legend=c("Accuracy", "Logistic Regression"))
+```
+
+We see here that the logistic loss defines a _convex surrogate_ of the 
+underlying accuracy. Just like we used $\ell_1$ as a tractable
+approximation for best squares, logistic regression can be considered
+a tractable approximation for accuracy minimization.[^persp]
+
+Other useful loss functions can be created using this perspective, 
+perhaps none less important than the *hinge loss*, which gives rise
+to a classifier known as the *support vector machine* (SVM). 
+
+## Support Vector Machines
+
+In this section, we go back to $\{\pm 1\}$ convention. 
+
+Instead of using a logistic loss, consider a hinge loss of the form
+
+$$H(y, \hat{y}) = (1 - y\hat{y})_+$$
+
+When $y = \hat{y}=1$ or $y = \hat{y} = 0$, this is clearly 0 as we
+would expect from a good loss. What happens for cases where our 
+prediction is wrong or not 'full force', say $\hat{y} = 1/2$. 
+
+Looking ahead, we will use a linear combination of features to create
+$\hat{y} = \bx^{\top}\bbeta$ yielding:
+
+$$H(\bbeta) = (1 - y \bx^{\top}\bbeta)_+$$
+
+If $y=1$, we get zero loss so long as $\bx^{\top}\bbeta > 1$ and a 
+small loss for $0 < \bx^{\top}\bbeta < 1$. As $\bx^{\top}\bbeta$
+crosses zero and goes negative, the loss grows linearly without
+bound. (Reverse all of this for the case $y = -1$.) This is an
+interesting loss function: we cannot make our loss decrease
+as our predictions become 'more right', but our loss continues
+to increase as our prediction becomes 'more wrong'.
+
+Visually, we can draw this on our plot from above: 
+
+```{r}
+alpha <- seq(-3, 3, length.out=201)
+acc     <- function(alpha) ifelse(alpha < 0, 1, 0)
+lr_loss <- function(alpha) log(1 + exp(-2*alpha))
+hinge_loss <- function(alpha) pmax(0, 1-alpha)
+
+plot(alpha, acc(alpha), type="l",
+     xlab=expression(alpha),
+     ylab="Loss", 
+     main="Classification Losses", 
+     ylim=c(0, 5))
+lines(alpha, lr_loss(alpha), col="red4")
+lines(alpha, hinge_loss(alpha), col="green4")
+legend("topright", 
+       col=c("black", "red4", "green4"), 
+       lwd=2, 
+       legend=c("Accuracy", "Logistic Regression", "Hinge Loss"))
+```
+
+This is also a pretty nice surrogate loss. In this case, let's just
+go 'straight at it' to construct a classifier: 
+
+$$\hat{\bbeta} = \argmin \sum_{i=1}^n (1-y_i \bx_i^{\top}\bbeta)_+$$
+
+This classifier is not uniquely defined for many problems (because of
+the long flat part of the loss), so it is conventional to add a 
+_regularization_ term to the SVM: 
+
+$$\hat{\bbeta} = \argmin \sum_{i=1}^n (1-y_i \bx_i^{\top}\bbeta)_+ + \lambda \|\bbeta\|_2^2$$
+
+We can solve this directly using CVX as follows: 
+
+```{r}
+# Generate data from the logistic model and fit an SVM
+n <- 500
+p <- 5
+X    <- matrix(rnorm(n * p), ncol=p)
+beta <- c(1, 2, 3, 0, 0)
+
+P <- 1/(1+exp(-X %*% beta))
+y <- rbinom(n, size=1, prob=P)
+## Convert to +/-1 convention
+y <- 2 * y - 1
+
+library(CVXR)
+
+beta <- Variable(p)
+eta  <- X %*% beta
+
+objective <- sum(pos(1 - y * eta)) + 0.5 * norm2(beta)^2
+problem   <- Problem(Minimize(objective))
+
+beta_hat <- solve(problem)$getValue(beta)
+```
+
+Using the decision rule $\hat{y} = \text{sign}(\bx^{\top}\bbeta)$, this
+gives us good accuracy: 
+
+```{r}
+mean(sign(X %*% beta_hat) == y)
+```
+
+This is comparable to what we got for logistic regression even
+though: 
+
+i) the loss function is 'wrong' (doesn't model the DGP)
+ii) we did no tuning of the ridge parameter
+
+So, all in all, pretty impressive. 
+
+SVMs are a remarkably powerful and general classification technology.
+Before we move past them, we will now take a second perspective
+focusing on the _geometry_ of SVMs. 
+
+## SVM: The Geometric Viewpoint
+  
+[^link]: For historical reasons, this is known as the _inverse link_, but I prefer
+to simply think of it as an adaptor and to never use the (forward) link. 
+
+[^persp]: This 'surrogate loss' perspective was first discussed in: 
+P.L. Barlett, M.I. Jordan, and J.D. McAuliffe. "Convexity, Classification, and Risk Bounds". *Journal of the American Statistical
+Association* **101(473)**, pp.138-156. 2006. DOI:[10.1198/016214505000000907](https://dx.doi.org/10.1198/016214505000000907)
+
+
 ```{r}
 #| include: false
 TRUE # To ensure knitr activates
 ```
 
-To this point, we have created individual models for regression and
-classification tasks. We have covered regression-type models for
-low-dimensional settings (GLMs: mainly linear and logistic), generative
-models for classification (NB, LDA, QDA), purely discriminative models
-(SVM), and flexible non-parametric models (KNN). Building on these tools,
-we have developed non-linear extensions (splines and kernels) suitable
-for the $n \gg p$ setting and regularization techniques (ridge and lasso)
-necessary for the $p \gg n$ setting. 
-
-In each of these, we have argued that certain models (more precisely,
-certain estimators) have different amounts of bias and variance and
-given a rule of thumb that in low-data settings high-bias/low-variance
-models are preferred while in high-data settings, we should feel free
-to use low-bias models since the variance will be controlled by the
-large training set. 
-
-Furthermore, we have discussed the importance of 'hold-outs' (test/train
-splits, cross-validation, *etc.*) as a tool to avoid overfitting. If we
-evaluate our models on new data (or at least new to that model), we 
-minimize the chance of 'regurgitation' and ensure that our models are 
-learning true(-ish) generalizabile relationships. Importantly, we know
-that _any time_ we make a selection, it is important to have a new data
-set for downstream tasks. So: 
-
-- If we just want to to train a single pre-specified model with no 
-  hyperparameters and use it blindly, we can use all of our data
-- If we want to to train a single pre-specified model with no 
-  hyperparameters and assess its predictive performance, we need to
-  split our data into two sets (training + test)
-- If we want to train a model and select hyperparameters but do not
-  need to assess its predictive performance, we need to split our
-  data into two sets (training + 'validation')
-- If we want to train a model, select hyperparameters, and provide
-  an unbiased assessment of predictive performance, we need to split 
-  our data into three sets (training + validation + test)
-  
-Personally, I find the jargon of these different sets a bit confusing--what
-is testing and how is it different than validation?--but the 'new data
-for each task' heuristic is easy to apply and generalize. 
-
-Finally, we have noted that - while hold out techniques are an excellent tool
-for maximizing predictive performance - they aren't the best to ensure 
-*reliability of interpretation*. If *insights* are more important than pure
-*performance*, stability techniques are typically a better strategy for 
-tuning hyperparameters. 
-
-For the next two weeks, we are going to go beyond this 'single model' 
-paradigm and consider how we might handle scenarios where we have two
-or more models available for our use. This is the domain of *ensemble 
-learning* - building models consisting of multiple 'sub-models', termed
-'base learners'. Ensemble learning is particularly powerful when 
-applied in conjunction with fast and flexible base learners, so we will
-also use this as a jumping off point for one more class of models. 
-
-## Ensemble Learning
-
-We begin with a discussion of *ensemble learning*, the task of combining
-multiple (simpler) models into a 'super model' to achieve a task. 
-Ensembles can be used for essentially any ML task, but we will focus on 
-ensemble learning for the two tasks we have focused on to date: regression
-and classification. (The differences in these two tasks will not really
-have any bearing on our 'ensembling' discussion.)
-
-Suppose that we want to predict the outcome of some variable $Y$ using
-two *statistically independent* predictors $\hat{Y}_1, \hat{Y}_2$: if
-*arguendo* we assume these are unbiased, the MSE of each prediction
-is simply
-
-$$\begin{align*}
-\text{MSE}_{\hat{Y}_i} &= \E_{Y, \hat{Y}_i}[(Y - \hat{Y}_i)^2] \\
-                       &= \E_{Y, \hat{Y}_i}[(Y - \E[Y] + \E[Y] - \hat{Y}_i)^2] \\
-                       &= \E_{Y, \hat{Y}_i}[(Y - \E[Y])^2 +2(Y - \E[Y])(\E[Y] - \hat{Y}_i)+(\E[Y] - \hat{Y}_i)^2] \\
-                       &= \E_{Y}[(Y - \E[Y])^2 +2\E_{Y, \hat{Y}_i}[(Y - \E[Y])(\E[Y] - \hat{Y}_i)]+\E_{\hat{Y}_i}[(\E[Y] - \hat{Y}_i)^2] \\
-                       &= \sigma_Y^2 + 2\E_{Y}[Y - \E[Y]]\E_{\hat{Y}_i}[\E[Y] - \hat{Y}_i)] + \sigma^2_{\hat{Y}_i} \\
-                       &= \sigma_Y^2 + \sigma^2_{\hat{Y}_i}
-\end{align*}$$
-
-(Why do the cross terms vanish?) That is, the MSE is simply sum of the 
-'irreducible error' associated with the best possible prediction ($\sigma_Y^2$
-against the optimal prediction $\E[Y]$) and the variance (error) in $\hat{Y}_i$
-as an estimator of $\E[Y]$.
-
-If $\hat{Y}_1, \hat{Y}_2$ are both predictors of $Y$, it is natural to ask
-if we can do better using a *combination* of the two of them than we can with
-either separately. Indeed, if we let $\widehat{Y} = \frac{1}{2}(\hat{Y}_1 + \hat{Y}_2)$, the above analysis tells us: 
-
-$$\begin{align*}
-\text{MSE}_{\widehat{Y}} &= \sigma_Y^2 + \sigma_{\widehat{Y}}^2 \\
-&= \sigma_Y^2 + \mathbb{V}\left[\frac{\hat{Y}_1 + \hat{Y}_2}{2}\right] \\
-&= \sigma_Y^2 + \sigma_{\hat{Y}_1}^2/4 + \sigma_{\hat{Y}_2}^2/4
-\end{align*}$$
-
-How does this compare to the separate predictions? Well, if 
-$\sigma_{\hat{Y}_1} = \sigma_{\hat{Y}_2}$, then we have clearly reduced our 
-expected MSE by half of the variance error. (By definition, we can't do anything
-about the irreducible error.) If, on the other hand, one predictor is much
-better than the other, say $\sigma_{\hat{Y}_1}^2 = 400 \sigma_{\hat{Y}_2}^2$,
-then we have
-
-$$\begin{align*}
-\text{MSE}_{\hat{Y}_1} &= \sigma_Y^2 + 400 \sigma_{\hat{Y}_2}^2 \\
-\text{MSE}_{\hat{Y}_2} &= \sigma_Y^2 + \sigma_{\hat{Y}_2}^2 \\
-\text{MSE}_{\widehat{Y}} &= \sigma_Y^2 + 100.25 \sigma_{\hat{Y}_2}^2 \\
-\end{align*}$$
-
-So we don't beat the superior predictor ($Y_2$), but we comfortably beat the
-inferior predictor ($Y_1$). Notably, if we didn't know which predictor
-was better and had to select randomly (50/50), we would have an expected
-MSE of $\sigma_Y^2 + 200\sigma_{\hat{Y}_2}^2$, so the 'averaging' predictor
-is still better. More generally, if $\hat{Y_1}$ is sometimes better and
-$\hat{Y_2}$ is better at other times, a suitable averaging strategy will 
-do better  *in the long run* than using a single predictor. (We should pick
-the averaging weights as a function of the variance of the two approaches and
-the relatively frequencies of the $\hat{Y}_1$-better and $\hat{Y}_2$-better
-scenarios.)
-
-This example - simple as it is - gets at the core insight of stacking: if we
-have several 'good enough' models, we can do better - sometimes much better -
-by using a combination of them. This is not guaranteed - if $\hat{Y}_2$ is 
-always the 'lower variance' model, adding in some $\hat{Y}_1$ pretty much
-always hurts - but we do not expect to have a single 'dominant' model. In 
-practice, we typically find ourselves armed with models of similar-enough
-performance (logistic regression, linear SVMs, RBF Kernel SVMs, RBF Kernel 
-logistic regression) and find that different models perform better on different
-inputs. *E.g.*, the 'linear' models might do well far from the decision boundary,
-while the 'kernelized' models might improve performance near the decision
-boundary while suffering from extra 'wiggliness' (variance) far from the 
-decision boundary. 
-
-So what can we take away from this discussion? 
-
-> Low correlation among predictors is helpful. If our base learners give
-  the same predictions at every point, there's nothing to be gained by 
-  combining and comparing them. 
-
-Put another way, ensemble learning benefits from a *diverse* set of base 
-learners. We hope to 'combine strength' from different approaches to build
-an ensemble predictor that is better than any of its individual components.
-
-The three major ensembling techniques we will cover - stacking, bagging, and 
-boosting - essentially come down to different ways of getting this diversity.
-
-## Stacking
-
-So this is all well and good, but where do we *actually get* different 
-predictors? Here, we're going to change notation to $\hat{f}_1, \hat{f}_2, \dots
-\hat{f}_K$ to emphasize that we want to learn a combination of _predictors_ 
-(functions estimated from data), not _predictions_. 
-
-Well... perhaps the easiest thing to do is to train different models on the
-same data. Logistic Regression, LDA, and SVMs will likely find _similar_ 
-decision boundaries, but they won't be exactly the same. Suppose we have
-
-- $\hat{f}_{\text{LR}}$: Logistic Regression (for simplicity, plain and
-  unregularized)
-- $\hat{f}_{\text{LDA}}$: Linear Discriminant Analysis
-- $\hat{f}_{\text{SVM}}$: A Linear SVM with the default hyperparameter 
-  from `sklearn`
-  
-Further, let's assume that we have the binarized predictions ($\{0, 1\}$, no
-soft labels for now) from each model. How can we combine these? 
-
-Perhaps the simplest rule is the 'majority vote' rule: if $\hat{f}_{\text{LR}}(\bx) = \hat{f}_{\text{LDA}}(\bx) = 1$ and $\hat{f}_{\text{SVM}}(\bx) = 0$, then $\hat{f}_{\text{Majority}}(\bx) = 1$. 
-
-This approach is quite easy to implement, but it treats all the inputs as
-equally reliable. While this isn't the _worst_ assumption, we can do better.
-In particular, what if we _learned_ an optimal set of weights. Specifically, 
-we want to learn a vector of weights $\bw \in \mathbb{R}^3$ to maximize
-predictive accuracy of the linear combination $w_1 \hat{f}_{\text{LR}} + w_2 \hat{f}_{\text{LDA}} + w_3 \hat{f}_{\text{SVM}}$. This gives us another
-classification problem, so let's use logistic regression to determine the weights:
-
-$$\hat{\bw} = \text{arg min}_{\bw} \sum_{i=1}^n -y_i \bw^{\top}\hat{\mathbf{f}} + \log(1 + e^{\bw^{\top}\hat{\mathbf{f}}})$$
-where $\hat{\mathbf{f}}$ is a vector of the three base learner predictions.
-
-The solution to this problem, $\hat{\bw}$, gives the _stacking weights_
-for our three base learners. Once we have $\hat{\bw}$, we can make
-predictions at our our new test point, $\tilde{\bx}$, by: 
-
-1. Apply three base learners separately: 
-   - $\hat{y}_{\text{LR}} = \hat{f}_{\text{LR}}(\tilde{\bx})$
-   - $\hat{y}_{\text{LDA}} = \hat{f}_{\text{LDA}}(\tilde{\bx})$   
-   - $\hat{y}_{\text{SVM}} = \hat{f}_{\text{SVM}}(\tilde{\bx})$
-2. Determine the weighted combination: 
-   - $\text{Stacking Score} = w_1\hat{y}_{\text{LR}} + w_2\hat{y}_{\text{LDA}}+w_3\hat{y}_{\text{SVM}}$
-3. Make a prediction using the stacking score: 
-   $$\hat{y}_{\text{Ensemble}} = \begin{cases} 1 & \text{ if } \text{Stacking Score} > \theta \\ 0 & \text{ if } \text{ Stacking Scoore} \leq \theta \end{cases}$$
-   where $\theta$ is a threshold chosen to minimize the problem-specific loss.
-   (Alternatively, set $\theta = 0$ and include an intercept term.)
-   
-We note a few practical points here: 
-
-1. What data should we use to estimate $\bw$? This is a new step in our pipeline,
-   so we need a new 'chunk' of our data. This split of the data is typically
-   called either a query or validation set, but I tend to describe it as an
-   'ensembling' set to make its purpose clear. Regardless, it serves to 
-   give us a new data set to fit our new ensemble model. (If we use the
-   training set used to train each $\hat{f}_i$, the base learners will look
-   'too good' to the ensemble learning process.)
-2. Nothing actually requires us to use the binarized predictions. For models
-   that provide soft labels (class probabilities), we can and should use those
-   in the ensemble process (both in training the ensemble weights and in
-   constructing the predictor vectors $\hat{\mathbf{f}}$). Dropping the
-   probabilities is really just throwing away data. 
-3. We motivated stacking by weighted averages. As such it is common to add
-   additional constraints to the stacking problem to make it look more like
-   averaging. For example, you will often see: 
-   - $\bw \geq 0$: The stacking weights are non-negative. This makes sense
-     if you assume each predictor is generally reasonable. 
-   - $\sum w_i = 1$: The stacking weights sum to 1. Again, a natural
-     generalization of averaging. 
-4. When fitting *large* ensembles (like any large model), it is not uncommon
-   to see ridge or lasso penalties. These are particularly important in ensemble
-   building since the base learners are generally highly correlated. 
-5. Suitably tuned (and that's a big assumption!) stacking should never do worse
-   than any individual predictor because we can always pick $\bw = (1, 0, 0)$ 
-   if the first base learner dominates the others. 
-   
-Stacking creates a 'model of models' - the turducken of machine learning - and 
-all of the ML tricks we have learned to date can be used in creating this
-meta-model. Like any modeling step, we have to practice good data hygiene
-(splitting and hold outs) to make sure we don't overfit and to generate a good
-estimate of predictive accuracy, but otherwise it is particularly straightforward.
-
-Stacking can only take us so far: the value-added of stacking comes from 
-differences between the base learners and, when trained on the same data set,
-we don't expect too much diversity among the base learners. In practical settings,
-stacking is particularly useful when we are given 'standard' or 'baseline' models
-for a task that we want to combine without changing the individual models, but
-we may want to modify our pipeline to explicitly generate more diversity. 
-
-This brings us to our next family of ensembling techniques - resampling methods,
-the most famous of which is *bootstrap aggregation* or bagging. 
-
-## Resampling
-
-In our discussion above, we argued that diversity of (variance between) base 
-learners was key to ensemble performance. When these base learners are trained
-on the same training data, we can only get so much variance. Since most of our
-models are not terrible, they generally pick out the same major patterns in
-the data. 
-
-So how can we get more variance? We could further split our training data, using
-a small chunk for each model, but this seems likely to bring about variance
-problems. If we want to fit large ensembles of 10, 20, or even 100 models, we
-might wind up using less than 1% of the overal data to train a single model,
-which is clearly subpar. 
-
-We can get around this problem using _sampling_ or _resampling_ techniques.
-We can train our esnemble members on randomly selected subsets of our data 
-(or subsets of the features). Because these models have different training sets,
-they will be more varied. (Typically, this sort of 'data randomization' induces
-more variance than just changing hyperparamters or model families.) 
-
-These randomization schemes have different names: 
-
-- Minibatching: training on random subsets of samples (rows)
-- Random Subspace Method: training on random subsets of features (columns)
-- Minipatching: training on random subsets of samples and features 
-  (row and columns)
-  
-If the model is not too sensitive to the sample size (or if we use a high
-sampling rate), these strategies can work well.[^sampling] But we have a bit
-of a bind here: if we want to use large training sets for each learner, we go
-back to the overlapping training scenario we were trying to avoid. 
-
-Can we be a bit more creative on our sampling? We want to minimize overlap
-but also get 'full sized' training sets. 
-
-[^sampling]: Most of these methods were actually designed to speed up 
-training/fitting and that remains the main use case for minibatching today
-(in *stochastic gradient descent*). We won't focus too much on implications for
-speed today. 
-
-
-### Bootstrapping
-
-To get around this problem, we rely on a key idea of late 20th century 
-statistics: **the bootstrap.**[^bootstrap] 
-Recall the core idea of bootstrapping: 
-
-- We have samples $\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$ from
-  an unknown distribution. 
-- We would like to have more samples from this distribution, but we don't have
-  the ability to gain more data. 
-- If our data set is large, we expect that the _empirical distribution_
-  $\hat{\P}_n$ will be close to the 'real' distribution $\P$. Formally, the law
-  of large numbers (and its fancy variants like Glivenko-Cantelli) guarantees
-  us that $\hat{P}_n \to \P \text{ as } n \to \infty$. 
-- Sampling from $\hat{P}_n$ is 'close' to sampling from $\P$
-
-So how can we sample from the empirical distribution $\hat{P}_n$? We sample
-_with replacement_. That is, we pick one of the training points $n$ times 
-**independently** (with no regard for prior selections). Intuitively, this
-captures the idea of IID sampling - it's also necessary so we don't just 
-reproduce the (shuffled) training data. 
-
-This scheme - sampling with replacement - is the essence of 
-**bootstrap sampling**. 
-
-### Bootstrap Aggregation (Bagging)
-
-We can use a similar strategy to generate 'new' training data for our base
-learners: 
-
-- Repeat $b=1, \dots, B$ times: 
-  - Sample from the training data $\mathcal{D}_{\text{train}}$ $n$ times 
-    *with replacement* to get a bootstrap set $\tilde{\mathcal{D}_b}$
-  - Train a base learner $\hat{f}_b$ on $\tilde{\mathcal{D}_b}$
-- Create the ensemble predictor: 
-  $$\hat{f}(\bx) = \frac{1}{B}\sum_{b=1}^B \hat{f}_b(\bx)$$
-  
-This ensembling strategy is called **bootstrap aggregation** or more simply
-**bagging**. 
-
-So how much diversity / variance can we actually expect from this strategy? It
-depends on how much overlap we get in our sampling. This is a fun little
-probability exercise: 
-
-::: {.callout-tip title="Probability of a Given Sample Being in a Bootstrap Data Set"}
-
-In our scenario above, what is the chance that $\bx_1$ is in
-$\tilde{\mathcal{D}}_b$? 
-
-For each sample, there is a $1/n$ chance that we select $\bx_1$, and hence
-a $1-1/n$ chance that we don't. If we repeat this process $n$ times, there is
-a $(1-1/n)^n$ chance that we never select $\bx_1$. For a large data set, 
-this converges to
-
-$$\lim_{n\to\infty}\left(1-\frac{1}{n}\right)^n = e^{-1} \approx \frac{2}{3}$$
-
-so about $2/3$ of our data is used for each base learner. _Unlike_ straight
-subsampling, however, this process includes repeats, so we have $n$ samples, 
-guaranteeing us repeats. (A more detailed analysis can show that the _number_ 
-of times a sample appears is asymptotically Poisson.)
-
-:::
-
-So how does bagging actually work? We know that we're always trying to control
-bias and variance so let's look at those two terms separately: 
-
-- Bias: Because we are fitting the same model $B$ times, there's really no
-  impact on bias. (*E.g.*, if we are fitting a linear model, the average of
-  $B$ lines is just another line so whatever approximation error we have is
-  unchanged.)
-- Variance: Suppose that the base learners $\hat{f}_i$ have variance $\sigma^2$
-  and correlation $\rho$. (These are constant for all $\hat{f}_i, \hat{f}_j$ by
-  the IID sampling structure used). Then the variance of $\hat{f}$ (the bagged 
-  average) is given by 
-  
-$$\begin{align*}
-\V[\hat{f}] &= \V\left[\frac{1}{B}\sum_b \hat{f}_b\right] \\
-            &= B^{-2}\V\left[\sum_b \hat{f}_b\right] \\
-            &= B^{-2}\left(\sum_{b=1}^B \V[\hat{f}_b] + \sum_{\substack{b, b'=1 \\ b \neq b'}}^B \C[\hat{f}_b, \hat{f}_{b'}]\right)\\
-            &= B^{-2}\left(\sum_{b=1}^B \sigma^2 + \sum_{\substack{b, b'=1 \\ b \neq b'}}^B \rho\sigma^2\right) \\
-            &= B^{-2}\left(B\sigma^2 + (B^2 - B) \rho\sigma^2\right) \\ 
-            &= B^{-2}\left(B(\rho\sigma^2 + (1-\rho)\sigma^2) + (B^2 - B) \rho\sigma^2\right) \\ 
-            &= B^{-2}\left(B\rho\sigma^2 + B(1-\rho)\sigma^2) + B^2\rho\sigma^2 - B\rho\sigma^2\right) \\ 
-            &= B^{-2}\left(B(1-\rho)\sigma^2) + B^2\rho\sigma^2\right) \\ 
-            &= \rho\sigma^2 + \frac{1}{B}(1-\rho)\sigma^2
-\end{align*}$$
-
-This is an interesting formula. As always, we can understand it best by taking
-the extremes: 
-
-- $B = 1$: In this case, the variance reduces to $\sigma^2$, the variance of a 
-  single predictor (as we would expect for 'ensemble of one'). 
-- $B \to \infty$: The variance decreases to $\rho\sigma^2$, but no further. 
-  Practically, we see diminishing returns in the $B\approx 200-500$ range, which
-  you will see as the default for most software that has a bagging step. 
-- $\rho \to 1$: As the base learners become more correlated, the variance
-  converges to $\sigma^2$, the variance of a single predictor. (As we would
-  expect since we have no diversity among base learners.)
-- $\rho \to 0$: As the base learners become uncorrelated, the variance converges
-  to $\sigma^2/B$, the variance of a standard average. (You might ask why not
-  take $B \to \infty$ in this case to have no bias: we really can't get an 
-  infinite number of uncorrelated models, no matter how hard we try, if they are
-  modeling the same underlying DGP)
-  
-So we see we want a flexible (low-bias) base learner that is also going to give
-us low correlation (and low variance) among the bagged predictors. How can we
-get such a base learner? We'll cover this more next week. 
-
-[^bootstrap]: If you have seen bootstrapping before, it was likely in the
-context of estimating the sampling variance of an estimator. (If you haven't
-seen this, go look it up - it's awesome!) Here, we're using bootstrap sampling
-to induce some variance, not to estimate variance, but the sampling strategy
-is the same. 
-
-### Out of Bag Error
-
-## Boosting
-
-Delayed to next week...
