@@ -6,7 +6,7 @@ date: "Last Updated `r Sys.Date()`"
 
 $$\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\P}{\mathbb{P}}\newcommand{\R}{\mathbb{R}} \newcommand{\by}{\mathbf{y}}\newcommand{\argmax}{\text{arg\,max}}\newcommand{\argmin}{\text{arg\,min}}$$
 
-This week we begin to examin _discriminative_ classifiers. Unlike
+This week we begin to examine _discriminative_ classifiers. Unlike
 generative classifiers, which attempt to model $\bx$ as a function
 of $y$ and then use Bayes' rule to _invert_ that model, 
 discriminative classifiers take the more standard approach of 
