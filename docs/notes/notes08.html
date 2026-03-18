@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-03-04">
+<meta name="dcterms.date" content="2026-03-18">
 <title>STA 9890 - Supervised Learning: IV. Discriminative Classifiers &amp; Non-Linear Methods – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -183,14 +183,53 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#why-not-accuracy-maximization" id="toc-why-not-accuracy-maximization" class="nav-link active" data-scroll-target="#why-not-accuracy-maximization">Why Not Accuracy Maximization?</a></li>
+<li>
+<a href="#discriminative-classifiers" id="toc-discriminative-classifiers" class="nav-link active" data-scroll-target="#discriminative-classifiers">Discriminative Classifiers</a>
+  <ul class="collapse">
+<li><a href="#why-not-accuracy-maximization" id="toc-why-not-accuracy-maximization" class="nav-link" data-scroll-target="#why-not-accuracy-maximization">Why Not Accuracy Maximization?</a></li>
   <li><a href="#ols-for-classification" id="toc-ols-for-classification" class="nav-link" data-scroll-target="#ols-for-classification">OLS for Classification?</a></li>
-  <li><a href="#deriving-logistic-regression" id="toc-deriving-logistic-regression" class="nav-link" data-scroll-target="#deriving-logistic-regression">Deriving Logistic Regression</a></li>
-  <li><a href="#from-model-to-loss-function" id="toc-from-model-to-loss-function" class="nav-link" data-scroll-target="#from-model-to-loss-function">From Model to Loss Function</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#deriving-logistic-regression" id="toc-deriving-logistic-regression" class="nav-link" data-scroll-target="#deriving-logistic-regression">Deriving Logistic Regression</a>
+  <ul class="collapse">
+<li><a href="#from-model-to-loss-function" id="toc-from-model-to-loss-function" class="nav-link" data-scroll-target="#from-model-to-loss-function">From Model to Loss Function</a></li>
   <li><a href="#generalized-linear-models" id="toc-generalized-linear-models" class="nav-link" data-scroll-target="#generalized-linear-models">Generalized Linear Models</a></li>
-  <li><a href="#loss-functions-for-classification" id="toc-loss-functions-for-classification" class="nav-link" data-scroll-target="#loss-functions-for-classification">Loss Functions for Classification</a></li>
-  <li><a href="#support-vector-machines" id="toc-support-vector-machines" class="nav-link" data-scroll-target="#support-vector-machines">Support Vector Machines</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#loss-functions-for-classification" id="toc-loss-functions-for-classification" class="nav-link" data-scroll-target="#loss-functions-for-classification">Loss Functions for Classification</a>
+  <ul class="collapse">
+<li><a href="#support-vector-machines" id="toc-support-vector-machines" class="nav-link" data-scroll-target="#support-vector-machines">Support Vector Machines</a></li>
   <li><a href="#svm-the-geometric-viewpoint" id="toc-svm-the-geometric-viewpoint" class="nav-link" data-scroll-target="#svm-the-geometric-viewpoint">SVM: The Geometric Viewpoint</a></li>
+  </ul>
+</li>
+  <li><a href="#non-linear-regression" id="toc-non-linear-regression" class="nav-link" data-scroll-target="#non-linear-regression">Non-Linear Regression</a></li>
+  <li>
+<a href="#non-linearity-via-linear-combination-of-non-linear-parts" id="toc-non-linearity-via-linear-combination-of-non-linear-parts" class="nav-link" data-scroll-target="#non-linearity-via-linear-combination-of-non-linear-parts">Non-Linearity via Linear Combination of Non-Linear Parts</a>
+  <ul class="collapse">
+<li><a href="#polynomial-expansion" id="toc-polynomial-expansion" class="nav-link" data-scroll-target="#polynomial-expansion">Polynomial Expansion</a></li>
+  <li><a href="#spline-regression-additive-models" id="toc-spline-regression-additive-models" class="nav-link" data-scroll-target="#spline-regression-additive-models">Spline Regression (Additive Models)</a></li>
+  <li><a href="#splines" id="toc-splines" class="nav-link" data-scroll-target="#splines">Splines</a></li>
+  <li><a href="#ell_1-filtering" id="toc-ell_1-filtering" class="nav-link" data-scroll-target="#ell_1-filtering"><span class="math inline">\(\ell_1\)</span>-Filtering</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#kernel-methods" id="toc-kernel-methods" class="nav-link" data-scroll-target="#kernel-methods">Kernel Methods</a>
+  <ul class="collapse">
+<li><a href="#manual-feature-expansion" id="toc-manual-feature-expansion" class="nav-link" data-scroll-target="#manual-feature-expansion">Manual feature expansion</a></li>
+  <li><a href="#ridge-without-coefficients" id="toc-ridge-without-coefficients" class="nav-link" data-scroll-target="#ridge-without-coefficients">Ridge without coefficients</a></li>
+  <li><a href="#kernel-trick" id="toc-kernel-trick" class="nav-link" data-scroll-target="#kernel-trick">Kernel Trick</a></li>
+  </ul>
+</li>
+  <li><a href="#trade-offs-between-linear-and-non-linear-methods" id="toc-trade-offs-between-linear-and-non-linear-methods" class="nav-link" data-scroll-target="#trade-offs-between-linear-and-non-linear-methods">Trade-Offs between Linear and Non-Linear Methods</a></li>
+  <li>
+<a href="#other-topics-in-regression" id="toc-other-topics-in-regression" class="nav-link" data-scroll-target="#other-topics-in-regression">Other Topics in Regression</a>
+  <ul class="collapse">
+<li><a href="#alternative-loss-functions" id="toc-alternative-loss-functions" class="nav-link" data-scroll-target="#alternative-loss-functions">Alternative Loss Functions</a></li>
+  <li><a href="#multi-task-regression" id="toc-multi-task-regression" class="nav-link" data-scroll-target="#multi-task-regression">Multi-Task Regression</a></li>
+  </ul>
+</li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes08.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes08.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -212,7 +251,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 4, 2026</p>
+      <p class="date">March 18, 2026</p>
     </div>
   </div>
   
@@ -222,8 +261,9 @@ window.Quarto = {
 
 
 </header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bw}{\mathbf{w}} \newcommand{\P}{\mathbb{P}} \newcommand{\V}{\mathbb{V}} \newcommand{\C}{\mathbb{C}} \newcommand{\E}{\mathbb{E}}\]</span></p>
-<p>This week we begin to examin <em>discriminative</em> classifiers. Unlike generative classifiers, which attempt to model <span class="math inline">\(\bx\)</span> as a function of <span class="math inline">\(y\)</span> and then use Bayes’ rule to <em>invert</em> that model, discriminative classifiers take the more standard approach of directly modeling <span class="math inline">\(y\)</span> as a function of <span class="math inline">\(\bx\)</span>. This is the approach you have already seen in our various variants of OLS.</p>
-<section id="why-not-accuracy-maximization" class="level2"><h2 class="anchored" data-anchor-id="why-not-accuracy-maximization">Why Not Accuracy Maximization?</h2>
+<section id="discriminative-classifiers" class="level2"><h2 class="anchored" data-anchor-id="discriminative-classifiers">Discriminative Classifiers</h2>
+<p>This week we begin to examine <em>discriminative</em> classifiers. Unlike generative classifiers, which attempt to model <span class="math inline">\(\bx\)</span> as a function of <span class="math inline">\(y\)</span> and then use Bayes’ rule to <em>invert</em> that model, discriminative classifiers take the more standard approach of directly modeling <span class="math inline">\(y\)</span> as a function of <span class="math inline">\(\bx\)</span>. This is the approach you have already seen in our various variants of OLS.</p>
+<section id="why-not-accuracy-maximization" class="level3"><h3 class="anchored" data-anchor-id="why-not-accuracy-maximization">Why Not Accuracy Maximization?</h3>
 <p>As we saw in our regression unit, we can pose many interesting estimators as <em>loss minimization</em> problems. For least squares, we primarily focused on mean squared error (MSE) as a loss function, though we also briefly touched on MAE, MAPE, and ‘check’ losses. There is not a single ‘canonical’ loss for the classification setting and different choices of loss will yield different classifiers.</p>
 <p>Before we build our actual first loss, it is worth asking why we can’t use something like classification accuracy as our loss function. Specifically, define <span class="math display">\[\text{Acc}(y, \hat{y}) = \begin{cases} 1 &amp; y = \text{sign}(\hat{y}) \\ 0 &amp; y \neq \text{sign}(\hat{y}) \end{cases}\]</span> Here we consider the case where <span class="math inline">\(\hat{y}\)</span> may be real-valued as a (slight) generalization of probabilistic classification and we use the <span class="math inline">\(\pm 1\)</span> convention for the two classes.</p>
 <p>Fixing <span class="math inline">\(y = 1\)</span>, <span class="math inline">\(\text{Acc}\)</span> has the following shape:</p>
@@ -243,13 +283,13 @@ window.Quarto = {
 </div>
 </div>
 <p>This is a terrible loss function! It is both non-convex (can you see why?) and just generally unhelpful. Because it is flat almost everywhere, we have no access to gradient information (useful for fitting) or to any sense of ‘sensitivity’ to our loss. In this scenario, if <span class="math inline">\(y=1\)</span>, both <span class="math inline">\(\hat{y}=0.00001\)</span> and <span class="math inline">\(\hat{y}=0.9999\)</span> have the same accuracy even though the latter is a more ‘confident’ prediction.</p>
-</section><section id="ols-for-classification" class="level2"><h2 class="anchored" data-anchor-id="ols-for-classification">OLS for Classification?</h2>
+</section><section id="ols-for-classification" class="level3"><h3 class="anchored" data-anchor-id="ols-for-classification">OLS for Classification?</h3>
 <p>So if not accuracy, where else might we get a good loss function? You might first ask if we an use OLS? It works perfectly well for regression and we know it is well-behaved, so what happens if we try it for classification? The answer is … complicated.</p>
 <p>OLS as a <em>loss</em> function for classification is a bit strange, but it turns out to be more-or-less fine. In particular, OLS can be used to evaluate <em>probabilistic</em> classifiers, where it is known as the <em>Brier score</em>. OLS as a <em>predictor</em> can be a bit more problematic: in particular, if we just predict with <span class="math inline">\(\P(y=1) = \bx^{\top}\bbeta\)</span>, we have to deal with the fact that <span class="math inline">\(\hat{y}\)</span> can be <em>far</em> outside a <span class="math inline">\([0, 1]\)</span> range we might want from a probabilistic classifier. In certain limited circumstances, we can assume away this problem (perhaps by putting specific bounds on <span class="math inline">\(\bx\)</span>), but these fixes are fragile. Alternatively, we can try to ‘patch’ this approach and use a classifier like</p>
 <p><span class="math display">\[\P(y=1) = \begin{cases} 1 &amp; \bx^{\top}\bbeta &gt; 1 \\ 0 &amp; \bx^{\top}\bbeta &lt; 0 \\ \bx^{\top}{\bbeta} &amp; \text{ otherwise}\end{cases}\]</span></p>
-<p>Even if this feels a bit unsophisticated, Ttis is not awful, but it still struggles from the ‘long flat region’ problems that accuracy encounters.</p>
+<p>Even if this feels a bit unsophisticated, ii is not awful, but it still struggles from the ‘long flat region’ problems that accuracy encounters.</p>
 <p>At this point, it’s hopefully clear that it will be a bit hard to ‘hack together’ a suitable loss and that we might benefit from approaching the problem with more theoretical grounding.</p>
-</section><section id="deriving-logistic-regression" class="level2"><h2 class="anchored" data-anchor-id="deriving-logistic-regression">Deriving Logistic Regression</h2>
+</section></section><section id="deriving-logistic-regression" class="level2"><h2 class="anchored" data-anchor-id="deriving-logistic-regression">Deriving Logistic Regression</h2>
 <p>While we argued that OLS is well-grounded in MSE alone, we can recall it has additional connections to the Gaussian. These “Gaussian vibes” were not essential to making OLS work, but they were useful in <em>deriving</em> OLS as a sensible procedure. Can we do something similar for classification? That is, can we assume a ‘working model’ to come up with a good loss function and then use it, even if we doubt that the model is ‘correct’?</p>
 <p>As with all leading questions, the answer is of course a resounding yes. We start from the rather banal observation that <span class="math inline">\(y\)</span> must have a Bernoulli distribution conditional on <span class="math inline">\(\bx\)</span>. After all, the Bernoulli is (essentially) the only <span class="math inline">\(\{0, 1\}\)</span> distribution we have to work with. So we really just need a way to model the <span class="math inline">\(p\)</span> parameter of a Bernoulli as a function of <span class="math inline">\(\bx\)</span>. Because we love linear models, we may choose to set <span class="math inline">\(p = \bx^{\top}\bbeta\)</span>, but this gets us back to the range problem we had above.</p>
 <p>Specifically, we require the Bernoulli parameter to take values in <span class="math inline">\([0, 1]\)</span> but our linear predictor <span class="math inline">\(\bx^{\top}\bbeta\)</span> takes values in all of <span class="math inline">\(\R\)</span>. We can fix this with a simple ‘hack’: we need a function that ‘connects’ <span class="math inline">\(\R\)</span> to <span class="math inline">\([0, 1]\)</span>. If we call this function <span class="math inline">\(\mu\)</span>, we then can specify our whole model as <span class="math display">\[y | \bx \sim \text{Bernoulli}(\mu(\bx^{\top}\bbeta))\]</span> and reduce our problem to estimating <span class="math inline">\(\bbeta\)</span>. Where can we get such a function?</p>
@@ -266,7 +306,7 @@ window.Quarto = {
 </div>
 <p>More generally, we can use essentially the CDF of any random variable supported on the real line as a choice of <span class="math inline">\(\mu\)</span>: since CDFs map the support onto the <span class="math inline">\([0, 1]\)</span> range they are perfect for this choice. Unfortunately, most CDFs are a bit unwieldy so this approach, while theoretically satisfying, is not too widely used in practice. If you see it, the most common choice is <span class="math inline">\(\mu(z) = \Phi(z)\)</span>, the normal CDF, resulting in a method known as “probit” regression (after ‘probability integral transform,’ an old-fashioned name for the CDF) or <span class="math display">\[\mu(z) = \frac{\tan^{-1}(z)}{\pi} + \frac{1}{2}\]</span> which gives a method known as “cauchit” regression, since this is the CDF of the standard Cauchy distribution. These choices are far less common than the default sigmoid we used above. Generally, they are only <em>slightly</em> different in practice and far more computationally burdensome and just aren’t really worth it.</p>
 <p>Returning to our default sigmoid, we now have the model <span class="math display">\[ y | \bx \sim \text{Bernoulli}\left(\frac{1}{1+e^{-\bx^{\top}\bbeta}}\right)\]</span> This model is well-posed (in the sense that the distribution ‘fits’ the data and we are guaranteed never to put invalid parameters in) but we don’t yet have a way to use it as a loss function.</p>
-</section><section id="from-model-to-loss-function" class="level2"><h2 class="anchored" data-anchor-id="from-model-to-loss-function">From Model to Loss Function</h2>
+<section id="from-model-to-loss-function" class="level3"><h3 class="anchored" data-anchor-id="from-model-to-loss-function">From Model to Loss Function</h3>
 <p>We can build a loss-function by relying on the <em>maximum likelihood</em> principle. The maximum likelihood principle is a core idea of statistics - and one you will explore in much greater detail in other courses - but, in essence, it posits that we should use the (negative) PMF or PDF as our loss function. Specifically, the ML principle says that, if many models could fit our data, we should pick the one that makes our data <em>most probable</em> (as determined by the PMF/PDF).</p>
 <p>Before we work out the ML estimator (MLE) for our classification model, let’s take a brief detour and look at the MLE for (Gaussian) regression. Specifically, if we assume a model <span class="math display">\[y \sim \mathcal{N}(\bx^{\top}\bbeta, \sigma^2)\]</span> for known <span class="math display">\[\sigma^2\]</span>, the PDF of the training point <span class="math inline">\((\bx_1, y_1)\)</span> is</p>
 <p><span class="math display">\[p(y_1 | \bx_1) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_1 - \bx_1^{\top}\bbeta\|_2^2}{2\sigma^2}\right\}\]</span></p>
@@ -364,19 +404,19 @@ Attaching package: 'CVXR'</code></pre>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.9905483</td>
+<td style="text-align: right;">0.9423086</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1.9281465</td>
+<td style="text-align: right;">1.7300202</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">3.4612802</td>
+<td style="text-align: right;">2.5555691</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">-0.0241423</td>
+<td style="text-align: right;">0.1551342</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">0.1049132</td>
+<td style="text-align: right;">-0.0979510</td>
 </tr>
 </tbody>
 </table>
@@ -392,19 +432,19 @@ glm(formula = y ~ X + 0, family = binomial)
 
 Coefficients:
    Estimate Std. Error z value Pr(&gt;|z|)    
-X1  0.99055    0.15963   6.205 5.46e-10 ***
-X2  1.92815    0.21914   8.799  &lt; 2e-16 ***
-X3  3.46128    0.32349  10.700  &lt; 2e-16 ***
-X4 -0.02414    0.13704  -0.176    0.860    
-X5  0.10491    0.14700   0.714    0.475    
+X1  0.94231    0.15656   6.019 1.76e-09 ***
+X2  1.73002    0.19117   9.050  &lt; 2e-16 ***
+X3  2.55557    0.24270  10.530  &lt; 2e-16 ***
+X4  0.15513    0.11928   1.301    0.193    
+X5 -0.09795    0.13096  -0.748    0.454    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
     Null deviance: 693.15  on 500  degrees of freedom
-Residual deviance: 308.34  on 495  degrees of freedom
-AIC: 318.34
+Residual deviance: 347.02  on 495  degrees of freedom
+AIC: 357.02
 
 Number of Fisher Scoring iterations: 6</code></pre>
 </div>
@@ -418,7 +458,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_hat</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.86</code></pre>
+<pre><code>[1] 0.834</code></pre>
 </div>
 </div>
 <p>Now that we have this toolkit built up, we can also easily apply ridge and lasso penalization:</p>
@@ -432,16 +472,16 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small"><tbody>
 <tr class="odd">
-<td style="text-align: right;">0.6153998</td>
+<td style="text-align: right;">0.6015245</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1.2696632</td>
+<td style="text-align: right;">1.2511809</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2.4188283</td>
+<td style="text-align: right;">1.8856581</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">0.0000000</td>
+<td style="text-align: right;">0.0254976</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">0.0000000</td>
@@ -450,7 +490,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 </div>
 </div>
 <p>We got some sparsity, as we would expect with <span class="math inline">\(\ell_1\)</span> penalization.</p>
-</section><section id="generalized-linear-models" class="level2"><h2 class="anchored" data-anchor-id="generalized-linear-models">Generalized Linear Models</h2>
+</section><section id="generalized-linear-models" class="level3"><h3 class="anchored" data-anchor-id="generalized-linear-models">Generalized Linear Models</h3>
 <p>The approach we took here is a special case of a <em>generalized linear model</em>: generalized linear models (GLMs) consist of three parts:</p>
 <ul>
 <li>A linear model for the ‘core predictor’ <span class="math inline">\(\eta = \bX\bbeta\)</span>;</li>
@@ -461,7 +501,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>We can generalize the model for <span class="math inline">\(\eta\)</span> by allowing it to be an additive (spline) model or a kernel method. To fit splines, you can use the <code>gam</code> function from the <code>mgcv</code> function.</p>
 <p>Finally, we also have choices in the sampling distribution. While normal and Bernoulli are the most common, you will also sometimes see Poisson and Gamma in the wild. For both of these, the mean is a positive value, so we require an adaptor that maps <span class="math inline">\(\R\)</span> to <span class="math inline">\(\R \geq 0\)</span> and we typically take <span class="math inline">\(\mu(z) = e^z\)</span>.</p>
 <p>A good exercise is to repeat the above analysis for Poisson regression and compare your result (obtained with <code>CVXR</code>) to the Poisson regression built into <code>R</code>.</p>
-</section><section id="loss-functions-for-classification" class="level2"><h2 class="anchored" data-anchor-id="loss-functions-for-classification">Loss Functions for Classification</h2>
+</section></section><section id="loss-functions-for-classification" class="level2"><h2 class="anchored" data-anchor-id="loss-functions-for-classification">Loss Functions for Classification</h2>
 <p>We now have a workable loss function for discriminative classification. Returning to our example from above (changed to <span class="math inline">\(\{0, 1\}\)</span> convention briefly). Let us set <span class="math inline">\(\alpha = y\hat{y}\)</span> and investigate our loss functions as a property of <span class="math inline">\(\alpha\)</span>:</p>
 <div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">3</span>, length.out<span class="op">=</span><span class="fl">201</span><span class="op">)</span></span>
@@ -487,7 +527,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 </div>
 <p>We see here that the logistic loss defines a <em>convex surrogate</em> of the underlying accuracy. Just like we used <span class="math inline">\(\ell_1\)</span> as a tractable approximation for best squares, logistic regression can be considered a tractable approximation for accuracy minimization.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>Other useful loss functions can be created using this perspective, perhaps none less important than the <em>hinge loss</em>, which gives rise to a classifier known as the <em>support vector machine</em> (SVM).</p>
-</section><section id="support-vector-machines" class="level2"><h2 class="anchored" data-anchor-id="support-vector-machines">Support Vector Machines</h2>
+<section id="support-vector-machines" class="level3"><h3 class="anchored" data-anchor-id="support-vector-machines">Support Vector Machines</h3>
 <p>In this section, we go back to <span class="math inline">\(\{\pm 1\}\)</span> convention.</p>
 <p>Instead of using a logistic loss, consider a hinge loss of the form</p>
 <p><span class="math display">\[H(y, \hat{y}) = (1 - y\hat{y})_+\]</span></p>
@@ -551,7 +591,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta_hat</span><span class="op">)</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.884</code></pre>
+<pre><code>[1] 0.87</code></pre>
 </div>
 </div>
 <p>This is comparable to what we got for logistic regression even though:</p>
@@ -561,13 +601,695 @@ Number of Fisher Scoring iterations: 6</code></pre>
 </ol>
 <p>So, all in all, pretty impressive.</p>
 <p>SVMs are a remarkably powerful and general classification technology. Before we move past them, we will now take a second perspective focusing on the <em>geometry</em> of SVMs.</p>
-</section><section id="svm-the-geometric-viewpoint" class="level2"><h2 class="anchored" data-anchor-id="svm-the-geometric-viewpoint">SVM: The Geometric Viewpoint</h2>
+</section><section id="svm-the-geometric-viewpoint" class="level3"><h3 class="anchored" data-anchor-id="svm-the-geometric-viewpoint">SVM: The Geometric Viewpoint</h3>
+</section></section><section id="non-linear-regression" class="level2"><h2 class="anchored" data-anchor-id="non-linear-regression">Non-Linear Regression</h2>
+<p>We have now developed a variety of tools for linear regression and for linear classification. These work well - particularly in low SNR (high dimension / low sample size) scenarios - but they have a necessarily limited capacity. When we have lots of training data, how can we go further? By using <em>non-linear</em> methods of course!</p>
+<p>In this section we introduce several methods for non-linear regression. We also pause to consider <em>when</em> non-linear methods can actually be expected to outperform linear methods.</p>
+<p>Also note that we are arguably being a bit ‘sloppy’ about what we mean by ‘linear’ methods. For purposes of these notes, we define a ‘linear’ method as one where the fitted model has a linear response to changes in the inputs; formally, one where</p>
+<p><span class="math display">\[\frac{\partial y}{\partial x_i} = \beta_i \text{ (a constant) for all } i \in \{1, \dots, p\}\]</span></p>
+<p>This definition includes things like best-subsets and lasso regression, which are not linear functions of <span class="math inline">\(\by\)</span>, but excludes things like polynomial regression.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> In the above definition, each <span class="math inline">\(\beta_i\)</span> is essentially a regression coefficient, and values of <span class="math inline">\(i\)</span> where <span class="math inline">\(\beta_i = 0\)</span> are non-selected variables if we are using a sparse method.</p>
+</section><section id="non-linearity-via-linear-combination-of-non-linear-parts" class="level2"><h2 class="anchored" data-anchor-id="non-linearity-via-linear-combination-of-non-linear-parts">Non-Linearity via Linear Combination of Non-Linear Parts</h2>
+<p>We have spent the previous few weeks developing a set of tools for building <em>linear</em> models of <span class="math inline">\(\by\)</span>. Specifically, we have sought ways to approximate <span class="math inline">\(\E[y | \bx]\)</span> as a weighted sum of each <span class="math inline">\(x_i\)</span>:</p>
+<p><span class="math display">\[ \E[y | \bx] \approx \langle \bx, \hat{\bbeta} \rangle = \sum_{i=1}^p x_i \hat{\beta}_i\]</span></p>
+<p>For situations where the relationship is nearly (or even truly) linear, this approximation can be quite useful and good estimates of the <span class="math inline">\(\beta_i\)</span> coefficients can lead to accurate estimates of <span class="math inline">\(\E[y | \bx]\)</span>, and ultimately accurate prediction of test set response <span class="math inline">\(\by\)</span>. Using the bias-variance decomposition, we have seen that it is often worthwhile to accept a bit of bias in estimation of each <span class="math inline">\(\beta_i\)</span> if it is compensated by a worthwhile reduction in the variance of <span class="math inline">\(\beta_i\)</span>.</p>
+<p>We can further refine this equality by decomposing bias a bit further:</p>
+<p><span class="math display">\[\text{MSE} = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2\]</span></p>
+<p>Here, we have decomposed <span class="math inline">\(\text{Bias}^2\)</span> into two terms:</p>
+<ul>
+<li>
+<span class="math inline">\(\text{Model Bias}^2\)</span>: a measure of the <em>systematic</em> error arising from use of a linear model to predict a non-linear DGP</li>
+<li>
+<span class="math inline">\(\text{Estimation Bias}^2\)</span>: a measure of the <em>systematic</em> error arising from use of a regularized estimation procedure which exhibits shrinkage</li>
+</ul>
+<p>Put another way, “Model Bias” results from use of a linear model when something non-linear should be used, while “Estimation Bias” arises from the use of a biased method (like ridge regression) instead of something nominally unbiased like OLS. For the previous two weeks, we have mainly focused on linear models for linear DGPs, so model bias has been zero. If we expand our gaze to non-linear DGPs, we have to deal with model bias a bit more directly. As with estimation bias, it is frequently worthwhile to accept model bias to reduce variance; see more discussion below.</p>
+<section id="polynomial-expansion" class="level3"><h3 class="anchored" data-anchor-id="polynomial-expansion">Polynomial Expansion</h3>
+<p>You have likely already seen polynomial expansion (or polynomial regression) in previous courses. Essentially, PE fits a low(-ish)-order polynomial instead of a line to data. More formally, let <span class="math inline">\(f(\bx) \equiv \E[y|\bx]\)</span> be the regression function (best possible predictor) that week seek to approximate from noisy observations. Standard linear regression essentially seeks to fit a first-order Taylor approximation of <span class="math inline">\(f\)</span> around some point <span class="math inline">\(\overline{\bx}\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+f(\bx) &amp;\approx f(\overline{\bx}) + \nabla_f(\bx_0)^{\top}(\bx - \overline{\bx}) \\
+       &amp;= f(\overline{\bx}) + \sum_{i=1}^p \left. \frac{\partial f}{\partial x_i}\right|_{x = \overline{x}_i}(x_i - \overline{x}_i)
+\end{align*}\]</span></p>
+<p>If we rearrange this a bit, we get</p>
+<p><span class="math display">\[\begin{align*}
+f(\bx) &amp;\approx f(\overline{\bx}) + \sum_{i=1}^p \left. \frac{\partial f}{\partial x_i}\right|_{x = \overline{x}_i}(x_i - \overline{x}_i) \\
+&amp;= \underbrace{\left(f(\overline{\bx}) - \sum_{i=1}^p \left.\frac{\partial f}{\partial x_i}\right|_{x_i=\overline{x}_i}\overline{x}_i\right)}_{=\beta_0} + \sum_{i=1}^p \underbrace{\left.\frac{\partial f}{\partial x_i}\right|_{x_i=\overline{x}_i}}_{=\beta_i} x_i\\
+&amp;= \beta_0 + \sum_{i=1}^p x_i \beta_i
+\end{align*}\]</span></p>
+<p>so we see that the regression coefficients are more-or-less the (suitably-averaged) partial derivatives of <span class="math inline">\(f\)</span> while the intercept is the value of <span class="math inline">\(f\)</span> at the center of our expansion (<span class="math inline">\(f(\overline{\bx})\)</span>) plus some differential adjustments. Note that, if the variables <span class="math inline">\(\bX\)</span> are centered so that <span class="math inline">\(\E[\bX] = \mathbf{0}\)</span>, the intercept is exactly the average value of <span class="math inline">\(f\)</span>, as we would expect.</p>
+<p>Clearly, this linear approximation will do better in the situations where Taylor expansions generally perform better: when i) the derivative of <span class="math inline">\(f\)</span> is roughly constant and ii) the higher order terms are small. This makes sense: if <span class="math inline">\(f\)</span> is very-close-to-linear, there is minimal loss from fitting a linear approximation to <span class="math inline">\(f\)</span>; if <span class="math inline">\(f\)</span> is very non-linear, however, a linear approximation can only be be so good, and we are saddled with significant model bias.</p>
+<p>If we want to mitigate some of that model bias, we can choose to use a higher-order Taylor series. If we examine a second order Taylor series, we get a similar approximation as before, where <span class="math inline">\(\mathcal{H}\)</span> denotes the <em>Hessian</em> matrix of second derivatives:</p>
+<p><span class="math display">\[\begin{align*}
+f(\bx) &amp;\approx f(\overline{\bx}) + \nabla_f(\bx_0)^{\top}(\bx - \overline{\bx}) + \frac{1}{2}(\bx - \overline{\bx})^{\top}\mathcal{H}_f(\overline{\bx})(\bx - \overline{\bx})^{\top}
+\end{align*}\]</span></p>
+<p>After some rearrangement this becomes:</p>
+<p><span class="math display">\[f(\bx) \approx \beta_0 + \sum_{i=1}^p \frac{\partial f}{\partial x_i} x_i +\sum_{i=1}^p \frac{\partial^2 f}{\partial x_i^2} x_i^2 +  \sum_{\substack{i, j = 1 \\i \neq j}}^p \frac{\partial^2 f}{\partial x_i \partial x_j} x_ix_j\]</span></p>
+<p>We recognize the constant term (intercept) and first order terms (linear slopes) from before, but now we have added two types:</p>
+<ul>
+<li>Second order terms (<span class="math inline">\(x_i^2\)</span>): these capture higher order non-linearities in a single variable. For example, if <span class="math inline">\(y = x^2\)</span>, then the ‘true fit’ really lies in the second order term <span class="math inline">\(\partial^2f / \partial x^2 = 2\)</span> instead of any linear approximation</li>
+<li>Cross terms (<span class="math inline">\(x_ix_j\)</span>): these capture non-linear (non-additive) multi-variate relationships between features. You may have seen these before as <em>interaction</em> terms.</li>
+</ul>
+<p>Rules of thumb vary as to which set of terms are more important. Historically, statisticians have tended to put in the interaction (cross) terms first, though this is far from universal practice. In particular, when dealing with ‘binary’ variables, the higher order term is unhelpful: if a feature is <span class="math inline">\(0/1\)</span> (did the patient receive the drug or not?), adding a squared term has no effect since <span class="math inline">\(0^2 = 0\)</span> and <span class="math inline">\(1^2 = 1\)</span>.</p>
+<p>Regardless, this is why we sometimes use ‘polynomial expansion’ of our original variables. We are trying to capture the higher-order (non-linear) terms of the Taylor approximation.</p>
+<p>It is worth thinking about what happens when we add higher-order terms to our model. In particular, note that we i) pick up some correlation among features; and ii) we will generally have more variance since we have more features. In practice, the correlation isn’t too much of a problem and the actual polynomials fit by, <em>e.g.</em>, <code>poly</code> in <code>R</code> are modified to remove correlation. The variance however can be a more significant problem.</p>
+<p>Let’s see this in action. Let’s first consider fitting polynomial regression to a simple (univariate) non-linear function: <span class="math inline">\(f(x) = \sqrt{|x|^3 + 5} * \cos(x)\)</span></p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span> <span class="op">+</span> <span class="fl">5</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, from<span class="op">=</span><span class="fl">1</span>, to<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is not <em>too</em> non-linear. It’s still very smooth (<em>analytic</em> in the jargon) and should be relatively easy to fit. Let’s also generate some noisy observations of this function.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
+<span><span class="co"># Linear regression doesn't care about the order of our data, but plotting does</span></span>
+<span><span class="co"># so sorting gives better visuals</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">2</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="va">Ey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span> <span class="op">+</span> <span class="fl">5</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">Ey</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">x_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, length.out<span class="op">=</span><span class="fl">501</span><span class="op">)</span></span>
+<span><span class="va">Ey_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x_grid</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span> <span class="op">+</span> <span class="fl">5</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">x_grid</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can now fit some linear models to this data (shown in color): we use R’s built-in <code>poly</code> function to automatically create the polynomials we seek. You can think of <code>poly(x, k)</code> as creating <code>k</code> features <span class="math inline">\(x^1, x^2,
+\dots, x^k\)</span> but it actually does something a bit more subtle under the hood to make model fitting a bit more numerically stable.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">k</span><span class="op">)</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="va">yhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">yhat</span>, col<span class="op">=</span><span class="va">k</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"bottomleft"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"True Regression Function"</span>, </span>
+<span>         <span class="st">"First Order (Linear) Fit"</span>,</span>
+<span>         <span class="st">"Second Order (Quadratic) Fit"</span>, </span>
+<span>         <span class="st">"Third Order (Cubic) Fit"</span>, </span>
+<span>         <span class="st">"Fourth Order (Quartic) Fit"</span>,</span>
+<span>         <span class="st">"Fifth Order (Quintic) Fit"</span><span class="op">)</span>, </span>
+<span>       col<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, lty<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Clearly, as we increase the order of the polynomial, we get a better (in-sample) fit. This makes sense: we know that more features gives us a better fit all else being equal, so what’s the issue?</p>
+<p>As usual, the issue occurs for extrapolation. You can actually see some issues already beginning to manifest at the ends of our prediction intervals: the higher-order polynomials go radically different directions as we extrapolate and even the ‘best fit’ (quintic) looks like it’s going to be too steep as we go further.</p>
+<p>Let’s expand the prediction region for these fits:</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">15</span>, length.out<span class="op">=</span><span class="fl">501</span><span class="op">)</span></span>
+<span><span class="va">Ey_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x_pred</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span> <span class="op">+</span> <span class="fl">5</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">x_pred</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x_pred</span>, <span class="va">Ey_pred</span>, type<span class="op">=</span><span class="st">"l"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">k</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">yhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x_pred</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_pred</span>, <span class="va">yhat</span>, col<span class="op">=</span><span class="va">k</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"bottomleft"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"True Regression Function"</span>, </span>
+<span>         <span class="st">"First Order (Linear) Fit"</span>,</span>
+<span>         <span class="st">"Second Order (Quadratic) Fit"</span>, </span>
+<span>         <span class="st">"Third Order (Cubic) Fit"</span>, </span>
+<span>         <span class="st">"Fourth Order (Quartic) Fit"</span>,</span>
+<span>         <span class="st">"Fifth Order (Quintic) Fit"</span><span class="op">)</span>, </span>
+<span>       col<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, lty<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There’s some problems!</p>
+<p>To be fair, it is a bit unreasonable to expect these models to perform too well outside of our original sampling area. What’s more worrying is that the extrapolations don’t just miss the curves of the true regression function, they actually create their own even more intense wiggles.</p>
+<p>We can also manifest this without extrapolation by fitting very high-order polynomials:</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">9</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">x</span>, degree<span class="op">=</span><span class="fl">10</span> <span class="op">+</span> <span class="va">k</span>, raw<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">yhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">x</span>, degree<span class="op">=</span><span class="fl">14</span> <span class="op">+</span> <span class="va">k</span>, raw<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">yhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">yhat</span>, col<span class="op">=</span><span class="va">k</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note that we have to use <code>raw=TRUE</code> here to avoid <code>R</code> complaining about having too-high a degree in the polynomial. (<code>R</code> gives an error about “unique points” but the real issue is one about matrix rank, not ties in <code>x</code>.) I’m also surpressing some warnings here about a sub-standard fit.</p>
+<p>So how can we address this ‘over-wiggliness’?</p>
+<p>As we discussed last time, we need to use a different set of functions: one that is smooth (like polynomials), but not too-high order. It would also be really nice if we could get something ‘adaptive’ - allowing for more wiggliness where we have more data (and we need more wiggliness) and less wiggliness where we don’t have enough data (fall-back to linearity). ### Local Linear Models</p>
+<p>One way to do this is the idea of “local linear (polynomial) models.” Instead of fitting a single (global) line, we can fit different lines in different parts of our data: that way, we can get an upward line when the true (non-linear) relationship is increasing and a downward line when the true relationship is decreasing. Or at least that’s the hope!</p>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Divide our data into five 'buckets' and fit sub-models</span></span>
+<span><span class="co"># This works because we've already sorted our data</span></span>
+<span><span class="co"># (What would happen if we hadn't?)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">xk</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="op">(</span><span class="fl">5</span> <span class="op">*</span> <span class="va">k</span> <span class="op">-</span> <span class="fl">4</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fl">5</span><span class="op">*</span><span class="va">k</span><span class="op">)</span><span class="op">]</span></span>
+<span>    <span class="va">yk</span> <span class="op">&lt;-</span> <span class="va">y</span><span class="op">[</span><span class="op">(</span><span class="fl">5</span> <span class="op">*</span> <span class="va">k</span> <span class="op">-</span> <span class="fl">4</span><span class="op">)</span><span class="op">:</span><span class="op">(</span><span class="fl">5</span><span class="op">*</span><span class="va">k</span><span class="op">)</span><span class="op">]</span></span>
+<span>    <span class="va">mk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">yk</span> <span class="op">~</span> <span class="va">xk</span><span class="op">)</span></span>
+<span>    <span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mk</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">xk</span>, <span class="va">y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Definitely some rough edges here - particularly in the areas between our buckets, but we’re on a good path. The <code>locfit</code> package will help us with the details:</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">locfit</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>locfit 1.5-9.12      2025-03-05</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'locfit'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    none</code></pre>
+</div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/locfit/man/locfit.html">locfit</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/locfit/man/lp.html">lp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimation type: Local Regression 
+
+Call:
+locfit(formula = y ~ lp(x))
+
+Number of data points:  25 
+Independent variables:  x 
+Evaluation structure: Rectangular Tree 
+Number of evaluation points:  5 
+Degree of fit:  2 
+Fitted Degrees of Freedom:  5.297 </code></pre>
+</div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Not perfect, but pretty nice compared to what we had before.</p>
+<p>You can also see a discussion of the “degrees of freedom” in the model output. This is not exactly the DoF you learned in earlier classes, but it’s sort of “morally equivalent.” This local fit is about as flexible as a 4th degree polynomial would be for this problem. Even though this model is made out of quadratics, it’s more flexible than a single quadratic. But we avoid the extreme variability associated with a polynomial of that high order. Win-win!</p>
+<p>We can tweak some parameters of the local fit to get different responses: the big ones are the degree (<code>deg</code>) and the number of neighbors to use.</p>
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="op">?</span><span class="va">lp</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/locfit/man/locfit.html">locfit</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/locfit/man/lp.html">lp</a></span><span class="op">(</span><span class="va">x</span>, deg<span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimation type: Local Regression 
+
+Call:
+locfit(formula = y ~ lp(x, deg = 4))
+
+Number of data points:  25 
+Independent variables:  x 
+Evaluation structure: Rectangular Tree 
+Number of evaluation points:  5 
+Degree of fit:  4 
+Fitted Degrees of Freedom:  6.62 </code></pre>
+</div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Pretty nice. If we ‘turn down’ the number of neighbors used:</p>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/locfit/man/locfit.html">locfit</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/locfit/man/lp.html">lp</a></span><span class="op">(</span><span class="va">x</span>, nn<span class="op">=</span><span class="fl">0.2</span>, deg<span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimation type: Local Regression 
+
+Call:
+locfit(formula = y ~ lp(x, nn = 0.2, deg = 4))
+
+Number of data points:  25 
+Independent variables:  x 
+Evaluation structure: Rectangular Tree 
+Number of evaluation points:  28 
+Degree of fit:  4 
+Fitted Degrees of Freedom:  21.991 </code></pre>
+</div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Too far - super crazy! But not entirely unexpected - we know that <span class="math inline">\(K\)</span>-Nearest Neighbors for small <span class="math inline">\(K\)</span> has a huge variance.</p>
+<p>Too far!</p>
+<p>The <code>loess</code> function in base <code>R</code> does this very nicely as well without requiring additional packages. For practical work, it’s a very nice tool for univariate modeling.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/loess.html">loess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+loess(formula = y ~ x)
+
+Number of Observations: 25 
+Equivalent Number of Parameters: 4.6 
+Residual Standard Error: 4.437 
+Trace of smoother matrix: 5.05  (exact)
+
+Control settings:
+  span     :  0.75 
+  degree   :  2 
+  family   :  gaussian
+  surface  :  interpolate     cell = 0.2
+  normalize:  TRUE
+ parametric:  FALSE
+drop.square:  FALSE </code></pre>
+</div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="spline-regression-additive-models" class="level3"><h3 class="anchored" data-anchor-id="spline-regression-additive-models">Spline Regression (Additive Models)</h3>
+</section><section id="splines" class="level3"><h3 class="anchored" data-anchor-id="splines">Splines</h3>
+<p>We can generalize this idea a bit using splines. Splines are functions that solve a penalized approximation problem:</p>
+<p><span class="math display">\[\hat{f} = \text{arg min}_{f} \frac{1}{2n} \|y - f(x)\|_2^2 + \lambda \int |f''(x)|^2 \text{d}x\]</span></p>
+<p>Here we are saying we’ll take <em>any function</em> (not just a polynomial) that achieves the optimal trade-off between data fit (first / loss term) and not being too rough (second / penalty term).</p>
+<p>Why is this the right penalty to use? In essence, we are trying to penalize ‘deviation from linearity’ and since linear functions have second derivative 0 (by definition) the integral of the second derivative gives us a measure of non-linearity.</p>
+<p>In some remarkable work, <a href="https://en.wikipedia.org/wiki/Grace_Wahba">Grace Wahba</a> and co-authors showed that the solutions to that optimization problem are piecewise polynomials with a few additional constraints - these functions are <em>splines</em>. In addition to piecewise polynomialness, splines also guarantee:</p>
+<ul>
+<li>continuity of the function and its derivatives</li>
+<li>linearity outside the range of data fit (‘natural splines’)</li>
+</ul>
+<p>Because splines not only match the value of the function at the knots (places where the ‘pieces’ match up) but also the derivatives, they are very smooth indeed.</p>
+<p>Stepping back, splines are just a different sort of feature engineering. Instead of using polynomial basis functions (<span class="math inline">\(x^1, x^2, \dots, x^k\)</span>), splines use a much smoother basis and hence give smoother results, avoiding the ‘wiggles’ problem we saw above.</p>
+<p><code>R</code> provides the basic tools for spline fitting in the <code>splines</code> package. For real work, you almost surely want to use the advanced functionality of the <code>mgcv</code> package. For more on splines and models using them (‘additive models’), see <a href="https://noamross.github.io/gams-in-r-course/">this online course</a>.</p>
+<p>We can see that individual splines are quite nice little functions and usually are only non-zero on small regions:</p>
+<div class="cell">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nsx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span><span class="op">(</span><span class="va">x_grid</span>, df<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="co"># The natural spline basis</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">nsx</span>, <span class="fl">1</span>, <span class="va">max</span><span class="op">)</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">nsx</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"n"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">nsx</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span>, col<span class="op">=</span><span class="va">i</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can use linear combinations of these ‘bumps’ to fit non-linear functions, including our example from above:</p>
+<div class="cell">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>(This basically matches what we had before with <span class="math inline">\(\text{DoF} \approx 4.7\)</span>, but you can get different answers by messing with the <code>df</code> parameter here.)</p>
+<p>Our predicted response is actually the sum of the individual spline effects:</p>
+<div class="cell">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span><span class="op">(</span><span class="va">x_grid</span>, df<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, col<span class="op">=</span><span class="va">i</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If we were able to sum up the colored lines, we would get the black line back.</p>
+<p>We can also see that natural splines give smooth predictions outside the range of the original data:</p>
+<div class="cell">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">y_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_pred</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x_pred</span>, <span class="va">Ey_pred</span>, type<span class="op">=</span><span class="st">"l"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_pred</span>, <span class="va">y_pred</span>, col<span class="op">=</span><span class="st">"red4"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Admittedly, not ideal, but it will do. In particular, note that outside of the ‘data region’, we fall back on a nice comfortable</p>
+<p>(You can repeat this process with the slightly more common <span class="math inline">\(b\)</span>-splines, but the differences aren’t huge.)</p>
+<div class="cell">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">x_grid</span>, df<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, col<span class="op">=</span><span class="va">i</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">y_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">y_pred</span>, col<span class="op">=</span><span class="st">"red4"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For a ‘full-strength’ version of spline fitting, you can use the <code>mgcv</code> package:</p>
+<div class="cell">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: nlme</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'nlme'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    collapse</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is mgcv 1.9-3. For overview type 'help("mgcv-package")'.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'mgcv'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:locfit':
+
+    lp</code></pre>
+</div>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: gaussian 
+Link function: identity 
+
+Formula:
+y ~ s(x)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)  -1.5601     0.6347  -2.458   0.0251 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Approximate significance of smooth terms:
+       edf Ref.df     F p-value    
+s(x) 7.068  8.085 46.97  &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+R-sq.(adj) =   0.94   Deviance explained = 95.8%
+GCV = 14.872  Scale est. = 10.072    n = 25</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">x_grid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">y_hat</span>, col<span class="op">=</span><span class="st">"red4"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes08_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Run <code><a href="https://rdrr.io/pkg/mgcv/man/s.html">?s</a></code> to see the <em>many</em> features of the <code>mgcv</code> package. <code>mgcv</code> also includes several specialized splines (<em>e.g.</em> periodic) which you may find useful in some problems.</p>
+<p>Splines are not normally consider a ‘machine learning’ tool but they are <em>incredibly</em> useful in applied statistics work. (The two methods you will rely on most from this class are spline regression and random forests.)</p>
+</section><section id="ell_1-filtering" class="level3"><h3 class="anchored" data-anchor-id="ell_1-filtering">
+<span class="math inline">\(\ell_1\)</span>-Filtering</h3>
+</section></section><section id="kernel-methods" class="level2"><h2 class="anchored" data-anchor-id="kernel-methods">Kernel Methods</h2>
+<section id="manual-feature-expansion" class="level3"><h3 class="anchored" data-anchor-id="manual-feature-expansion">Manual feature expansion</h3>
+<p>We can think of feature expansion as mapping our data to a higher-dimensional space <span class="math inline">\(\Phi: \R^p \to \R^P\)</span> and fitting a linear model there. As we have seen above, splines and their kin provide a useful way of constructing the mapping <span class="math inline">\(\Phi\)</span>, but we are still constrained to work with a fairly restricted type of problem.</p>
+<p>Can we generalize this formally to more interesting maps <span class="math inline">\(\Phi(\cdot)\)</span>? Yes - via kernel methods!</p>
+</section><section id="ridge-without-coefficients" class="level3"><h3 class="anchored" data-anchor-id="ridge-without-coefficients">Ridge without coefficients</h3>
+<p>Before introducing kernel methods formally, let’s look back to ridge regression. We showed that the ridge solution is given by</p>
+<p><span class="math display">\[\hat{\beta}_{\text{Ridge}} = (\bX^T\bX + \lambda \bI)^{-1}(\bX^T\by)\]</span></p>
+<p>Some nifty linear algebra will let us rewrite this as</p>
+<p><span class="math display">\[\hat{\beta}_{\text{Ridge}} = \lambda^{-1}\bX^T(\bX\bX^{\top}/\lambda + \bI)^{-1}\by = \bX^{\top}(\bX\bX^{\top}+\lambda \bI)^{-1}\by\]</span></p>
+<p>You can prove this using the <a href="https://en.wikipedia.org/wiki/Woodbury_matrix_identity">Woodbury Matrix Identity</a> or we can just check it for a single data set and trust that it generalizes:</p>
+<div class="cell">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span> </span>
+<span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">n</span>, ncol<span class="op">=</span><span class="va">p</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">Ey</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">X</span><span class="op">[</span>,<span class="fl">3</span><span class="op">]</span><span class="op">^</span><span class="fl">3</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">4</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span>,<span class="fl">5</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">Ey</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span><span class="va">eye</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">p</span>, <span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">beta_hat_ridge</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="fu">eye</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">beta_hat_ridge_alt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">tcrossprod</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="fu">eye</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">y</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">beta_hat_ridge</span>, <span class="va">beta_hat_ridge_alt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             [,1]         [,2]
+[1,]  1.351056802  1.351056802
+[2,] -0.111244862 -0.111244862
+[3,]  0.556938757  0.556938757
+[4,]  0.008133683  0.008133683
+[5,] -0.351430994 -0.351430994</code></pre>
+</div>
+</div>
+<p>So they are the same! But why did we do this?</p>
+<p>It is sometimes a bit more computationally efficient if we have to invert an <span class="math inline">\(n \times n\)</span> matrix instead of a <span class="math inline">\(p \times p\)</span> matrix, but there are faster methods if we’re really interested in speed.</p>
+<p>Note that, if we want to make a ridge regression <em>prediction</em> now for a new <span class="math inline">\(\tilde{\bx}\)</span>, we just need to compute:</p>
+<p><span class="math display">\[\newcommand{\bx}{\mathbf{x}}\begin{align*}
+\hat{\beta}_{\text{Ridge}}^T\tilde{\bx} &amp;= \left[\bX^{\top}(\bX\bX^{\top}+\lambda \bI)^{-1}\by\right]^T\tilde{\bx} \\
+&amp;= \left[\by^T(\bX\bX^{\top}+\lambda \bI)^{-T}\bX\right]\tilde{\bx} \\
+&amp;= \by^T(\bX\bX^{\top}+\lambda \bI)^{-1} \bX\tilde{\bx}
+\end{align*}\]</span></p>
+<p>Intuitively, recall that the inner product of two vectors measures the angle between them and can, up to some scaling, be used as a ‘similarity’ measure. This result essentially says that our prediction on a new data set is a weighted average of the training data, with weights based on similarity of the new point with the training data. This is not a crazy structure…</p>
+<p>If we look closer, we see that we <strong>only</strong> need to compute products of the form <span class="math inline">\(\bx_1\bx_2\)</span> to make this work. This is where the magic of kernels lies.</p>
+</section><section id="kernel-trick" class="level3"><h3 class="anchored" data-anchor-id="kernel-trick">Kernel Trick</h3>
+<p>Earlier, we considered non-linear regression by <em>feature expansion</em>, where we replaced <span class="math inline">\(\bX\)</span> by <span class="math inline">\(\Phi(\bX)\)</span>, where <span class="math inline">\(\Phi: \R^p \to \R^P\)</span> maps to a higher-dimensional space (applied row-wise). We can use this mapping in our new ridge formula to get our non-linear predictions as</p>
+<p><span class="math display">\[\begin{align*}
+\hat{y}(\tilde{\bx}) &amp;= \by^T(\Phi(\bX)\Phi(\bX)^{\top}+\lambda \bI)^{-1} \Phi(\bX)\Phi(\tilde{\bx})
+\end{align*}\]</span></p>
+<p>Longer, but not necessarily better. If <span class="math inline">\(P\)</span> is very large, computing with <span class="math inline">\(\Phi(X)\)</span> can be <em>incredibly</em> expensive.</p>
+<p>It turns out, however, that we never need to actually form <span class="math inline">\(\Phi(X)\)</span>, we only need <span class="math inline">\(\kappa(\bx_1, \bx_2) = \Phi(\bx_1)^T\Phi(\bx_2)\)</span>. If we can compute <span class="math inline">\(\kappa\)</span> directly, we never need to work with <span class="math inline">\(\Phi\)</span>.</p>
+<p>Functions that allow this are called (Mercer) kernels and they are just a little bit magical.</p>
+<p>If we let <span class="math inline">\(\K = \Phi(X)\Phi(X)^{\top}\)</span> be defined by <span class="math inline">\(\K_{ij} = \kappa(\bx_i, \bx_j)\)</span>, then we can write our feature-augmented ridge regression as:</p>
+<p><span class="math display">\[\hat{y}(\tilde{\bx}) = \by^T(\K+\lambda \bI)^{-1} \kappa(\bX, \tilde{\bx})\]</span></p>
+<p>If we break this apart, we see that our predictions at the new point <span class="math inline">\(\tilde{\bx}\)</span> are essentially just weighted averages of our original observations <span class="math inline">\(\by\)</span>, weighted by the similarity between the new point and our training points <span class="math inline">\(\kappa(\bX, \cdot)\)</span>. This intuition is super important and we’ll dig into it further below.</p>
+<p>Let’s try out <em>Kernel(ized) Ridge Regression</em>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">kernlab</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'kernlab'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:CVXR':
+
+    size</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    cross</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ggplot2':
+
+    alpha</code></pre>
+</div>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Define a kernel function - we'll spell this out below.</span></span>
+<span><span class="va">rbf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/kernlab/man/dots.html">rbfdot</a></span><span class="op">(</span>sigma <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## calculate kernel matrix</span></span>
+<span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/kernlab/man/kernelMatrix.html">kernelMatrix</a></span><span class="op">(</span><span class="va">rbf</span>, <span class="va">X</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100 100</code></pre>
+</div>
+</div>
+<p>Note that this is a <span class="math inline">\(n \times n\)</span> matrix - not a <span class="math inline">\(p \times p\)</span> matrix!</p>
+<p>We can now use this to make predictions:</p>
+<div class="cell">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">krr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">lambda</span><span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">K</span> <span class="op">+</span> <span class="va">lambda</span> <span class="op">*</span> <span class="fu">eye</span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/kernlab/man/kernelMatrix.html">kernelMatrix</a></span><span class="op">(</span><span class="va">rbf</span>, <span class="va">X</span>, <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">krr_MSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fu">krr</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">krr_MSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4982136</code></pre>
+</div>
+</div>
+<p>This is <em>better</em> than the OLS MSE:</p>
+<div class="cell">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5714302</code></pre>
+</div>
+</div>
+<p>Why? How is this not a contradiction of everything said before.</p>
+<p>But how do we actually <em>do</em> kernel multiplication?</p>
+<p>There are <em>many</em> kernel functions in the world. The most common are defined by:</p>
+<ul>
+<li>
+<span class="math inline">\(\kappa(\bx_1, \bx_2) = \bx_1^{\top}\bx_2\)</span>. This is the linear kernel, equivalent to non-kernel methods</li>
+<li>
+<span class="math inline">\(\kappa(\bx_1, \bx_2) = (\bx_1^{\top}\bx_2 + c)^d\)</span>. This is the <em>polynomial kernel</em>, equivalent to fitting polynomial regression up to degree <span class="math inline">\(d\)</span> with all cross products. (The role of <span class="math inline">\(c\)</span> is tricky, but it essentially controls the relative weight of the higher and lower order terms)</li>
+<li>
+<span class="math inline">\(\kappa(\bx_1, \bx_2) = e^{-\sigma^2\|\bx_1 - \bx_2\|^2}\)</span>. This is the <em>squared exponential</em> or <em>radial basis function</em> (RBF) kernel; it is very popular in spatial statistics, where it is closely related to a method known as <a href="https://en.wikipedia.org/wiki/Kriging">kriging</a>.</li>
+</ul>
+<p>While the first two kernels give us a natural <span class="math inline">\(\Phi(\cdot)\)</span> mapping, the <span class="math inline">\(\Phi(\cdot)\)</span> for the RBF kernel is actually <em>infinite dimensional</em>: it lets us fit function classes we could not fit without the kernel trick.</p>
+<p>For even more kernels, see:</p>
+<ul>
+<li><a href="https://www.cs.toronto.edu/~duvenaud/cookbook/">David Duvenaud’s Kernel Cookbook</a></li>
+<li><a href="http://gaussianprocess.org/gpml/chapters/RW.pdf">GPML Section 4.2.1</a></li>
+</ul>
+<p>Much of our current understanding of deep learning is based on specialized kernel methods:</p>
+<ul>
+<li>The <a href="https://en.wikipedia.org/wiki/Neural_tangent_kernel">Neural Tangent Kernel</a>
+</li>
+<li><a href="https://papers.nips.cc/paper_files/paper/2009/hash/5751ec3e9a4feab575962e78e006250d-Abstract.html">Kernel Methods for Deep Learning</a></li>
+<li>
+<a href="https://arxiv.org/abs/2012.00152">Gradient Descent as a Kernel Machine</a> (This paper is a bit controversial)</li>
+</ul>
+<p><a href="https://rajatvd.github.io/NTK/">This blog</a> is a particularly nice (but still somewhat technical) introduction to the Neural Tangent Kernel and its relationship to neural networks.</p>
+<p>Spline theory has also found use to explain ReLU (piecewise linear activation) neural networks:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1805.06576">Mad Max: Spline Insights into Deep Learning</a></li>
+<li><a href="https://jmlr.csail.mit.edu/papers/v22/20-583.html">Representer Theorems for Neural Networks and Ridge Splines</a></li>
+</ul>
+<p>We can also <em>kernelize</em> some of the other methods we’ve studied in this course.</p>
+<p>Notably, we can kernelize <span class="math inline">\(K\)</span>-Nearest Neighbors to get “KKNN” if we modify the definition of distance used to be “kernel-ish.” We first recall that we can write distances solely in terms of inner products:</p>
+<p><span class="math display">\[\begin{align*}
+\|\bx_1 - \bx_2\|_2^2 &amp;= (\bx_1 - \bx_2)^T(\bx_1 - \bx_2) \\
+&amp;= \bx_1^T\bx_1 - \bx_2^T\bx_1 - \bx_1^T\bx_2 + \bx_2^T\bx_2 \\
+&amp;= \bx_1^T\bx_1  - 2\bx_1^T\bx_2 + \bx_2^T\bx_2 \\
+\implies \text{Kernel Distances} &amp;= \kappa(\bx_1, \bx_1) - 2\kappa(\bx_1, \bx_2) + \kappa(\bx_2, \bx_2)
+\end{align*}\]</span></p>
+<p>If we compute distances this way for a given <span class="math inline">\(\kappa\)</span>, we get kernel KNN. This is particularly nice when we have kernels that capture specific behaviors (<em>e.g.</em>, periodic or embedded categorical) that we can’t really treat as Euclidean.</p>
+</section></section><section id="trade-offs-between-linear-and-non-linear-methods" class="level2"><h2 class="anchored" data-anchor-id="trade-offs-between-linear-and-non-linear-methods">Trade-Offs between Linear and Non-Linear Methods</h2>
+<p>Having developed some tools for non-linear regression, let’s step back and ask whether they are worthwhile. Recall our error decomposition:</p>
+<p><span class="math display">\[\text{MSE} = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2\]</span></p>
+<p>We have already discussed how tools like ridge and lasso let us remove variance at the cost of (estimation) bias.</p>
+<p>We argued that this was a worthwhile trade when the problem had a lot of ‘innate’ variance, either from having large noise variance (<span class="math inline">\(\V[\epsilon] \gg 0\)</span>) or from having many features. In particular, use of some sort of shrinkage (ridge or lasso penalization) was essential in the ‘high-dimensional’ case (<span class="math inline">\(p &gt; n\)</span>) where OLS had so much variance that it was not even uniquely defined. We also argued that, as we got more and more data (<span class="math inline">\(n \to \infty\)</span>), the variance took care of itself in the usual statistical way.</p>
+<p>These lessons generalize to the non-linear vs linear debate as well. Choosing to use a linear model is itself a variance reducing choice - there are ‘more’ curves than lines in some sense. If we restrict our attention to linear models only, we are potentially accepting some Model Bias, again with a hope of reducing variance to get overall better performance. As such, the same intuition as above applies: linear models are preferred when variance is the primary concern, either from noisy data or from small data; as we get more data, variance decreases naturally, so going to non-linear models reduces bias, giving overall smaller error.</p>
+<p>In the non-linear context, the ‘estimation bias / variance’ trade-off remains, but modern tools like <code>mgcv</code> essentially handle this automatically for us. It is of course still there, but <code>mgcv</code> has some <a href="https://doi.org/10.1080/01621459.2016.1180986">nifty auto-tuning</a> built-in.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+</section><section id="other-topics-in-regression" class="level2"><h2 class="anchored" data-anchor-id="other-topics-in-regression">Other Topics in Regression</h2>
+<section id="alternative-loss-functions" class="level3"><h3 class="anchored" data-anchor-id="alternative-loss-functions">Alternative Loss Functions</h3>
+<p>For most of this class, we have used MSE as our loss function, building on a foundation of least squares.</p>
+<p>Squared (<span class="math inline">\(\ell_2^2\)</span>) error is a bit interesting: as an error gets <em>larger</em>, it counts even more. This makes OLS/MSE methods sensitive to outliers (in the same way the mean is), but it also implies that OLS won’t work too hard to “over-minimize” small errors.</p>
+<p>We can consider some other loss functions: - <span class="math inline">\(\ell_1\)</span> error (absolute difference): robust to outliers, fits to the conditional <em>median</em> instead of of the conditional <em>mean</em>.</p>
+<p>The resulting <em>Median Absolute Deviation</em> (MAD) regression no longer has a closed form, but can be solved quickly using tools like <code>CVX.</code></p>
+<ul>
+<li>
+<p>Huber loss: a blend of <span class="math inline">\(\ell_2\)</span> and <span class="math inline">\(\ell_1\)</span> error, which uses <span class="math inline">\(\ell_2\)</span> for small errors and <span class="math inline">\(\ell_1\)</span> for big errors. <span class="math display">\[\text{HL}_{\delta}(x) = \begin{cases} \frac{1}{2}x^2 &amp; |x| &lt; \delta \\ \delta * (|x| - \delta/2) &amp; |x| \geq \delta \end{cases}\]</span></p>
+<p>This is still convex, so we can solve it with <code>CVX.</code></p>
+</li>
+<li><p><span class="math inline">\(\epsilon\)</span>-insensitive: <span class="math display">\[L_{\epsilon}(x) = (|x| - \epsilon)_+ = \begin{cases} 0 &amp; |x| &lt; \epsilon \\ |x| - \epsilon &amp; |x| \geq \epsilon \end{cases}\]</span> This captures the idea of “close enough is good enough” with “close enough” being defined by <span class="math inline">\(\epsilon\)</span>. It’s a bit unnatural statistically, but relates to an important classification method we’ll cover in a few weeks.</p></li>
+</ul></section><section id="multi-task-regression" class="level3"><h3 class="anchored" data-anchor-id="multi-task-regression">Multi-Task Regression</h3>
+<p>In some contexts, we may want to perform <em>multiple regressions</em> at the same time. That is, we have a <em>vector</em> of responses for each observation. The OLS generalization is straightforward: <span class="math display">\[\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\bB}{\mathbf{B}}\newcommand{\bY}{\mathbf{Y}}\argmin_{\bB} \frac{1}{2}\|\bY - \bX\bB\|_F^2 \implies \hat{\bB} = (\bX^T\bX)^{-1}\bX^T\bY\]</span> so we essentially just fit different OLS models for each element of the response. This is not super interesting.</p>
+<p>Multi-task regression becomes interesting if we want to add structure to <span class="math inline">\(\bB\)</span>: a particularly common requirement is to select the <em>same set of features</em> for each of the regression targets. We do this using a group lasso on <em>each row</em> of <span class="math inline">\(\bB\)</span>: under this structure, if we select a feature for one part of the response, we’ll use it for every part. (Can you see why?)</p>
+<p><span class="math display">\[\argmin_{\bB} \frac{1}{2}\|\bY - \bX\bB\|_F^2 + \lambda \sum_{j=1}^p \|\bB_{j\cdot}\|_2\]</span></p>
+<p>Another common requirement is for <span class="math inline">\(\bB\)</span> to be “low-rank” but we won’t consider that here. If you want to look into it, keywords are “nuclear-norm regularized.”</p>
+<section id="weights-and-generalization" class="level4"><h4 class="anchored" data-anchor-id="weights-and-generalization">Weights and generalization</h4>
+<ul>
+<li><p>WLS loss: <span class="math inline">\(\newcommand{\bW}{\mathbf{W}}(\by - \bX\bbeta)^T\bW(\by - \bX\bbeta)\)</span> for known diagonal <span class="math inline">\(\bW\)</span>. Weight samples based on their variance (higher variance gets smaller weights)</p></li>
+<li>
+<p>Weighted lasso: <span class="math inline">\(+\lambda\sum_{j=1}^p w_j|\beta_j|\)</span>. Higher weights are less likely to be selected</p>
+<p>Basis of ‘adaptive’ lasso methods (not discussed)</p>
+</li>
+<li>
+<p>Generalized ridge: <span class="math inline">\(+\frac{\lambda}{2}\bbeta^T\Omega\beta\)</span></p>
+<p>Used to ‘smooth’ <span class="math inline">\(\hat{\beta}\)</span> - useful for ridge analogue of fused lasso</p>
+</li>
+</ul>
 
 
-</section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</section></section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 <ol>
 <li id="fn1"><p>For historical reasons, this is known as the <em>inverse link</em>, but I prefer to simply think of it as an adaptor and to never use the (forward) link.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>This ‘surrogate loss’ perspective was first discussed in: P.L. Barlett, M.I. Jordan, and J.D. McAuliffe. “Convexity, Classification, and Risk Bounds”. <em>Journal of the American Statistical Association</em> <strong>101(473)</strong>, pp.138-156. 2006. DOI:<a href="https://dx.doi.org/10.1198/016214505000000907">10.1198/016214505000000907</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>In other classes, you may have been taught that polynomial regression is a linear model. It is definitely linear in the sense that that class would have used (linear in <span class="math inline">\(\by\)</span>) but we’re using a different sense here. The core insight of that analysis - that a non-linear function can be expressed as a linear combination of non-linear parts - will appear several times in these notes.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In Python, the <code>statsmodels</code> package also implements <a href="https://www.statsmodels.org/dev/examples/notebooks/generated/lowess.html">LOESS fits</a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>If you want to go much deeper into the practical use of additive (spline) models, Simon Wood’s book <a href="https://www.routledge.com/Generalized-Additive-Models-An-Introduction-with-R-Second-Edition/Wood/p/book/9781498728331">Generalized Additive Models</a> is fantastic.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

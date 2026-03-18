@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-03-04">
+<meta name="dcterms.date" content="2026-03-18">
 <title>STA 9890 - Supervised Learning: II. Penalized Regression – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -227,7 +227,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 4, 2026</p>
+      <p class="date">March 18, 2026</p>
     </div>
   </div>
   
@@ -374,7 +374,7 @@ Pause to Reflect
 </div>
 </div>
 </div>
-<p>Clearly, for smallish <span class="math inline">\(\lambda\)</span>, we are actually outperforming OLS, sometimes by a significant amount! For this problem, the minimum MSE (best estimate) actually seems to occur near <span class="math inline">\(\lambda \approx\)</span> 2.512</p>
+<p>Clearly, for smallish <span class="math inline">\(\lambda\)</span>, we are actually outperforming OLS, sometimes by a significant amount! For this problem, the minimum MSE (best estimate) actually seems to occur near <span class="math inline">\(\lambda \approx\)</span> 1.259</p>
 <section id="model-selection" class="level3"><h3 class="anchored" data-anchor-id="model-selection">Model Selection</h3>
 <p>While theory and our experiment above tell us that there is <em>some</em> value of <span class="math inline">\(\lambda\)</span> that beats OLS, how can we actually find it? We can’t do a simulation like above as we had to know <span class="math inline">\(\bbeta_*\)</span> to compute the MSE and the theory is non-constructive. (In particular, we have to know <span class="math inline">\(\bbeta_*\)</span> to compute the bias.)</p>
 <p>Well, we can go back to our overarching goal: we want results that <em>generalize</em> to unseen data. Here, in particular, we want results that <em>predict well</em> on unseen data. So let’s just do that.</p>
@@ -420,7 +420,7 @@ Pause to Reflect
 </div>
 </div>
 </div>
-<p>Our results here aren’t quite as definitive as when we knew the true <span class="math inline">\(\bbeta_*\)</span>, but they suggest we want to take <span class="math inline">\(\lambda \approx\)</span> 0.316 which isn’t too far from what we found above.</p>
+<p>Our results here aren’t quite as definitive as when we knew the true <span class="math inline">\(\bbeta_*\)</span>, but they suggest we want to take <span class="math inline">\(\lambda \approx\)</span> 0.02 which isn’t too far from what we found above.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
