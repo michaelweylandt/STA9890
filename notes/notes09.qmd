@@ -4,7 +4,7 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\bx}{\mathbf{x}} \newcommand{\bb}{\mathbf{b}}\newcommand{\by}{\mathbf{y}}$$
+{{< include _latex_defines.qmd >}}
 
 To this point, we have created individual models for regression and
 classification tasks. We have covered regression-type models for

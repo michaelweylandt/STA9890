@@ -4,13 +4,10 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\P}{\mathbb{P}}\newcommand{\R}{\mathbb{R}} \newcommand{\by}{\mathbf{y}}\newcommand{\argmax}{\text{arg\,max}}\newcommand{\argmin}{\text{arg\,min}}$$
+{{< include _latex_defines.qmd >}}
 
-
-$$\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\P}{\mathbb{P}}$$
-
-
-As we move into Unit II of this course, we turn our focus to *classification*. 
+Having (temporarily) finished our discussion of regression, we now turn our 
+focus to *classification*. 
 
 ## A Taxonomy of Classification
 

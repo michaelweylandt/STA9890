@@ -4,6 +4,9 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
+
+{{< include _latex_defines.qmd >}}
+
 ```{r}
 #| include: false
 TRUE # To ensure knitr activates

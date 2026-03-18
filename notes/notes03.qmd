@@ -4,7 +4,8 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\V}{\mathbb{V}} \newcommand{\argmin}{\text{arg min}}$$
+
+{{< include _latex_defines.qmd >}}
 
 Today: 
 
@@ -70,3 +71,52 @@ _good_ loss function.
 #| include: false
 1+1
 ```
+
+## Bias-Variance Decomposition
+
+
+Mathematically, we have observations of the form $Y = f_*(X) + \epsilon$ where $f_*$ is some unknown function (the "true regression function"). Since we are estimating the best approximant in a set of functions (*e.g.*, the best possible line), let's call that $\tilde{f}$ and our estimate thereof as $\hat{f}$. To summarize: 
+
+$$\begin{align*}
+f_* &= \text{True Regression Function - Fixed} \\
+\tilde{f} &= \text{Best Possible Guess - Fixed} \\
+\hat{f} &= \text{Actual Guess Given Limited Data - Random}
+\end{align*}$$
+
+Note that, in average over training sets, $\mathbb{E}[\hat{f}] = \tilde{f}$, but  $\mathbb{E}[\hat{f}] \neq f_*$. The systematic error between $f_*$ and 
+$\tilde{f}$ is not due to data-randomness. 
+
+Working these all out, we need to look into the expected error taking expectation over the (random) training data $\mathcal{D}$ and the random noise in the test observation, $\epsilon$: 
+
+$$\begin{align*}
+\mathbb{E}_{\mathcal{D}, \epsilon}[(Y - \hat{Y})^2] &= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) + \epsilon - \hat{f}(x))^2] \\
+&= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x) + \epsilon)^2] \\
+&= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x))^2 + 2\epsilon(f(x) - \hat{f}(x))+ \epsilon^2] \\ \\
+&= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x))^2] + 2\mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon(f(x) - \hat{f}(x))]+ \mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon^2] \\ \\
+&= \underbrace{\mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2]}_{\text{No Dependence on $\epsilon$}} + 2\underbrace{\mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon(f(x) - \hat{f}(x))]}_{\text{Product of Two Independent Terms}}+ \underbrace{\mathbb{E}_{ \epsilon}[\epsilon^2]}_{\text{No Dependence on $\mathcal{D}$}} \\ 
+&= \mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] + 2\underbrace{\mathbb{E}_{\epsilon}[\epsilon]}_{\text{No Dependence on $\mathcal{D}$}} * \underbrace{\mathbb{E}_{\mathcal{D}}(f(x) - \hat{f}(x))]}_{\text{No Dependence on $\epsilon$}}+ \mathbb{E}_{ \epsilon}[\epsilon^2] \\ 
+&= \mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] + 2 * 0 *\mathbb{E}_{\mathcal{D}}(f(x) - \hat{f}(x))]+ \underbrace{\sigma^2}_{\text{Irreducible Error}} \\ 
+\end{align*}$$
+
+So now let's just take apart that first term. Note that, per above, the only random thing left is $\hat{f}$:
+
+$$\begin{align*}
+\mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] &= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x) + \tilde{f}(x) - \hat{f}(x))^2] \\
+&= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x))^2 +2(f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))  +(\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x))^2]+2\mathbb{E}_{\mathcal{D}}[((f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))]  +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))\mathbb{E}_{\mathcal{D}}[(\tilde{f}(x) - \hat{f}(x))]  +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))(\hat{f}(x) - \hat{f}(x)) +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x)) * 0 +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\hat{f}(x) - \tilde{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\hat{f}(x) - \mathbb{E}[\hat{f}](x))^2]  \\
+&= \text{Bias}^2 + \text{Variance}
+\end{align*}$$
+
+Putting everything together, we have
+
+$$\begin{align*}
+\mathbb{E}_{\mathcal{D}, \epsilon}[(Y - \hat{Y})^2] = \text{Bias}^2 + \text{Variance} + \sigma^2\end{align*}$$
+
+So the 'two term' formula is just the second derivation for the MSE of $f - \hat{f}$, while the three-term formula is a combination of the two and gives the MSE for $Y - \hat{Y}$ .
+

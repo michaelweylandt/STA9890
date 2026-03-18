@@ -4,7 +4,7 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\R}{\mathbb{R}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bw}{\mathbf{w}} \newcommand{\P}{\mathbb{P}} \newcommand{\V}{\mathbb{V}} \newcommand{\C}{\mathbb{C}} \newcommand{\E}{\mathbb{E}}$$
+{{< include _latex_defines.qmd >}}
 
 ## Discriminative Classifiers
 
@@ -1085,7 +1085,7 @@ methods if we're really interested in speed.
 Note that, if we want to make a ridge regression _prediction_ now for a new
 $\tilde{\bx}$, we just need to compute: 
 
-$$\newcommand{\bx}{\mathbf{x}}\begin{align*}
+$$\begin{align*}
 \hat{\beta}_{\text{Ridge}}^T\tilde{\bx} &= \left[\bX^{\top}(\bX\bX^{\top}+\lambda \bI)^{-1}\by\right]^T\tilde{\bx} \\
 &= \left[\by^T(\bX\bX^{\top}+\lambda \bI)^{-T}\bX\right]\tilde{\bx} \\
 &= \by^T(\bX\bX^{\top}+\lambda \bI)^{-1} \bX\tilde{\bx}
@@ -1288,7 +1288,7 @@ $$\text{HL}_{\delta}(x) = \begin{cases} \frac{1}{2}x^2 & |x| < \delta \\ \delta 
 ### Multi-Task Regression
 
 In some contexts, we may want to perform _multiple regressions_ at the same time. That is, we have a _vector_ of responses for each observation. The OLS generalization is straightforward: 
-$$\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\bB}{\mathbf{B}}\newcommand{\bY}{\mathbf{Y}}\argmin_{\bB} \frac{1}{2}\|\bY - \bX\bB\|_F^2 \implies \hat{\bB} = (\bX^T\bX)^{-1}\bX^T\bY$$
+$$\argmin_{\bB} \frac{1}{2}\|\bY - \bX\bB\|_F^2 \implies \hat{\bB} = (\bX^T\bX)^{-1}\bX^T\bY$$
 so we essentially just fit different OLS models for each element of the response. This is not super interesting. 
 
 Multi-task regression becomes interesting if we want to add structure to $\bB$: a particularly common requirement is to select the _same set of features_ for each of the regression targets. We do this using a group lasso on _each row_ of $\bB$: under this structure, if we select a feature for one part of the response, we'll use it for every part. (Can you see why?)
@@ -1299,7 +1299,7 @@ Another common requirement is for $\bB$ to be "low-rank" but we won't consider t
 
 #### Weights and generalization
 
-- WLS loss: $\newcommand{\bW}{\mathbf{W}}(\by - \bX\bbeta)^T\bW(\by - \bX\bbeta)$ for known diagonal $\bW$. 
+- WLS loss: $(\by - \bX\bbeta)^T\bW(\by - \bX\bbeta)$ for known diagonal $\bW$. 
   Weight samples based on their variance (higher variance gets smaller weights)
 - Weighted lasso: $+\lambda\sum_{j=1}^p w_j|\beta_j|$. 
   Higher weights are less likely to be selected

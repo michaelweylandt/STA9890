@@ -241,9 +241,8 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\P}{\mathbb{P}}\newcommand{\R}{\mathbb{R}} \newcommand{\by}{\mathbf{y}}\newcommand{\argmax}{\text{arg\,max}}\newcommand{\argmin}{\text{arg\,min}}\]</span></p>
-<p><span class="math display">\[\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\P}{\mathbb{P}}\]</span></p>
-<p>As we move into Unit II of this course, we turn our focus to <em>classification</em>.</p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \]</span></p>
+<p>Having (temporarily) finished our discussion of regression, we now turn our focus to <em>classification</em>.</p>
 <section id="a-taxonomy-of-classification" class="level2"><h2 class="anchored" data-anchor-id="a-taxonomy-of-classification">A Taxonomy of Classification</h2>
 <p>Recall from before that we defined <em>regression</em> as the subset of supervised learning where the response (<span class="math inline">\(\by\)</span>) was a continuous variable, or at least one that is appropriate to model as such.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> By contrast, <em>classification</em> considers <span class="math inline">\(\by\)</span> to take values in a discrete set. Though this restriction may feel limiting, it is actually quite powerful. We consider several different forms of classification, based on the <em>support</em> of <span class="math inline">\(\by\)</span>:</p>
 <ul>
@@ -562,7 +561,7 @@ Warning
 <span><span class="op">}</span></span>
 <span><span class="fu">rbasset</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 73.37091</code></pre>
+<pre><code>[1] 65.77403</code></pre>
 </div>
 </div>
 <p>If we collect the weights of many basset hounds, we see that the resulting distribution is not normally distributed:</p>

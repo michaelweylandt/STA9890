@@ -260,7 +260,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bw}{\mathbf{w}} \newcommand{\P}{\mathbb{P}} \newcommand{\V}{\mathbb{V}} \newcommand{\C}{\mathbb{C}} \newcommand{\E}{\mathbb{E}}\]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \]</span></p>
 <section id="discriminative-classifiers" class="level2"><h2 class="anchored" data-anchor-id="discriminative-classifiers">Discriminative Classifiers</h2>
 <p>This week we begin to examine <em>discriminative</em> classifiers. Unlike generative classifiers, which attempt to model <span class="math inline">\(\bx\)</span> as a function of <span class="math inline">\(y\)</span> and then use Bayes’ rule to <em>invert</em> that model, discriminative classifiers take the more standard approach of directly modeling <span class="math inline">\(y\)</span> as a function of <span class="math inline">\(\bx\)</span>. This is the approach you have already seen in our various variants of OLS.</p>
 <section id="why-not-accuracy-maximization" class="level3"><h3 class="anchored" data-anchor-id="why-not-accuracy-maximization">Why Not Accuracy Maximization?</h3>
@@ -404,19 +404,19 @@ Attaching package: 'CVXR'</code></pre>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.9423086</td>
+<td style="text-align: right;">0.8519181</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1.7300202</td>
+<td style="text-align: right;">1.7769173</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2.5555691</td>
+<td style="text-align: right;">2.8098149</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">0.1551342</td>
+<td style="text-align: right;">-0.2796373</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">-0.0979510</td>
+<td style="text-align: right;">0.0841412</td>
 </tr>
 </tbody>
 </table>
@@ -432,19 +432,19 @@ glm(formula = y ~ X + 0, family = binomial)
 
 Coefficients:
    Estimate Std. Error z value Pr(&gt;|z|)    
-X1  0.94231    0.15656   6.019 1.76e-09 ***
-X2  1.73002    0.19117   9.050  &lt; 2e-16 ***
-X3  2.55557    0.24270  10.530  &lt; 2e-16 ***
-X4  0.15513    0.11928   1.301    0.193    
-X5 -0.09795    0.13096  -0.748    0.454    
+X1  0.85192    0.14814   5.751 8.88e-09 ***
+X2  1.77692    0.20814   8.537  &lt; 2e-16 ***
+X3  2.80981    0.27402  10.254  &lt; 2e-16 ***
+X4 -0.27964    0.13797  -2.027   0.0427 *  
+X5  0.08414    0.13505   0.623   0.5333    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
     Null deviance: 693.15  on 500  degrees of freedom
-Residual deviance: 347.02  on 495  degrees of freedom
-AIC: 357.02
+Residual deviance: 345.18  on 495  degrees of freedom
+AIC: 355.18
 
 Number of Fisher Scoring iterations: 6</code></pre>
 </div>
@@ -458,7 +458,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_hat</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.834</code></pre>
+<pre><code>[1] 0.826</code></pre>
 </div>
 </div>
 <p>Now that we have this toolkit built up, we can also easily apply ridge and lasso penalization:</p>
@@ -472,16 +472,16 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small"><tbody>
 <tr class="odd">
-<td style="text-align: right;">0.6015245</td>
+<td style="text-align: right;">0.5400921</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1.2511809</td>
+<td style="text-align: right;">1.1934817</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1.8856581</td>
+<td style="text-align: right;">2.0219363</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">0.0254976</td>
+<td style="text-align: right;">-0.0928926</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">0.0000000</td>
@@ -591,7 +591,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta_hat</span><span class="op">)</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.87</code></pre>
+<pre><code>[1] 0.876</code></pre>
 </div>
 </div>
 <p>This is comparable to what we got for logistic regression even though:</p>
@@ -815,9 +815,9 @@ locfit(formula = y ~ lp(x))
 Number of data points:  25 
 Independent variables:  x 
 Evaluation structure: Rectangular Tree 
-Number of evaluation points:  5 
+Number of evaluation points:  7 
 Degree of fit:  2 
-Fitted Degrees of Freedom:  5.297 </code></pre>
+Fitted Degrees of Freedom:  5.155 </code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
@@ -848,9 +848,9 @@ locfit(formula = y ~ lp(x, deg = 4))
 Number of data points:  25 
 Independent variables:  x 
 Evaluation structure: Rectangular Tree 
-Number of evaluation points:  5 
+Number of evaluation points:  7 
 Degree of fit:  4 
-Fitted Degrees of Freedom:  6.62 </code></pre>
+Fitted Degrees of Freedom:  6.946 </code></pre>
 </div>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
@@ -876,9 +876,9 @@ locfit(formula = y ~ lp(x, nn = 0.2, deg = 4))
 Number of data points:  25 
 Independent variables:  x 
 Evaluation structure: Rectangular Tree 
-Number of evaluation points:  28 
+Number of evaluation points:  24 
 Degree of fit:  4 
-Fitted Degrees of Freedom:  21.991 </code></pre>
+Fitted Degrees of Freedom:  18.18 </code></pre>
 </div>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
@@ -902,9 +902,9 @@ Fitted Degrees of Freedom:  21.991 </code></pre>
 loess(formula = y ~ x)
 
 Number of Observations: 25 
-Equivalent Number of Parameters: 4.6 
-Residual Standard Error: 4.437 
-Trace of smoother matrix: 5.05  (exact)
+Equivalent Number of Parameters: 4.82 
+Residual Standard Error: 3.38 
+Trace of smoother matrix: 5.3  (exact)
 
 Control settings:
   span     :  0.75 
@@ -1064,19 +1064,19 @@ Formula:
 y ~ s(x)
 
 Parametric coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)  
-(Intercept)  -1.5601     0.6347  -2.458   0.0251 *
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -1.9341     0.4725  -4.093 0.000706 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
-       edf Ref.df     F p-value    
-s(x) 7.068  8.085 46.97  &lt;2e-16 ***
+      edf Ref.df     F p-value    
+s(x) 6.33   7.42 101.9  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =   0.94   Deviance explained = 95.8%
-GCV = 14.872  Scale est. = 10.072    n = 25</code></pre>
+R-sq.(adj) =  0.969   Deviance explained = 97.8%
+GCV = 7.8977  Scale est. = 5.5822    n = 25</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1124,18 +1124,18 @@ GCV = 14.872  Scale est. = 10.072    n = 25</code></pre>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">beta_hat_ridge</span>, <span class="va">beta_hat_ridge_alt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>             [,1]         [,2]
-[1,]  1.351056802  1.351056802
-[2,] -0.111244862 -0.111244862
-[3,]  0.556938757  0.556938757
-[4,]  0.008133683  0.008133683
-[5,] -0.351430994 -0.351430994</code></pre>
+<pre><code>            [,1]        [,2]
+[1,]  1.18446568  1.18446568
+[2,] -0.38728736 -0.38728736
+[3,]  0.22174487  0.22174487
+[4,]  0.01735201  0.01735201
+[5,]  0.38681774  0.38681774</code></pre>
 </div>
 </div>
 <p>So they are the same! But why did we do this?</p>
 <p>It is sometimes a bit more computationally efficient if we have to invert an <span class="math inline">\(n \times n\)</span> matrix instead of a <span class="math inline">\(p \times p\)</span> matrix, but there are faster methods if we’re really interested in speed.</p>
 <p>Note that, if we want to make a ridge regression <em>prediction</em> now for a new <span class="math inline">\(\tilde{\bx}\)</span>, we just need to compute:</p>
-<p><span class="math display">\[\newcommand{\bx}{\mathbf{x}}\begin{align*}
+<p><span class="math display">\[\begin{align*}
 \hat{\beta}_{\text{Ridge}}^T\tilde{\bx} &amp;= \left[\bX^{\top}(\bX\bX^{\top}+\lambda \bI)^{-1}\by\right]^T\tilde{\bx} \\
 &amp;= \left[\by^T(\bX\bX^{\top}+\lambda \bI)^{-T}\bX\right]\tilde{\bx} \\
 &amp;= \by^T(\bX\bX^{\top}+\lambda \bI)^{-1} \bX\tilde{\bx}
@@ -1195,14 +1195,14 @@ Attaching package: 'kernlab'</code></pre>
 <span><span class="va">krr_MSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fu">krr</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">krr_MSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4982136</code></pre>
+<pre><code>[1] 0.4917154</code></pre>
 </div>
 </div>
 <p>This is <em>better</em> than the OLS MSE:</p>
 <div class="cell">
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5714302</code></pre>
+<pre><code>[1] 0.4929981</code></pre>
 </div>
 </div>
 <p>Why? How is this not a contradiction of everything said before.</p>
@@ -1265,13 +1265,13 @@ Attaching package: 'kernlab'</code></pre>
 </li>
 <li><p><span class="math inline">\(\epsilon\)</span>-insensitive: <span class="math display">\[L_{\epsilon}(x) = (|x| - \epsilon)_+ = \begin{cases} 0 &amp; |x| &lt; \epsilon \\ |x| - \epsilon &amp; |x| \geq \epsilon \end{cases}\]</span> This captures the idea of “close enough is good enough” with “close enough” being defined by <span class="math inline">\(\epsilon\)</span>. It’s a bit unnatural statistically, but relates to an important classification method we’ll cover in a few weeks.</p></li>
 </ul></section><section id="multi-task-regression" class="level3"><h3 class="anchored" data-anchor-id="multi-task-regression">Multi-Task Regression</h3>
-<p>In some contexts, we may want to perform <em>multiple regressions</em> at the same time. That is, we have a <em>vector</em> of responses for each observation. The OLS generalization is straightforward: <span class="math display">\[\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\bB}{\mathbf{B}}\newcommand{\bY}{\mathbf{Y}}\argmin_{\bB} \frac{1}{2}\|\bY - \bX\bB\|_F^2 \implies \hat{\bB} = (\bX^T\bX)^{-1}\bX^T\bY\]</span> so we essentially just fit different OLS models for each element of the response. This is not super interesting.</p>
+<p>In some contexts, we may want to perform <em>multiple regressions</em> at the same time. That is, we have a <em>vector</em> of responses for each observation. The OLS generalization is straightforward: <span class="math display">\[\argmin_{\bB} \frac{1}{2}\|\bY - \bX\bB\|_F^2 \implies \hat{\bB} = (\bX^T\bX)^{-1}\bX^T\bY\]</span> so we essentially just fit different OLS models for each element of the response. This is not super interesting.</p>
 <p>Multi-task regression becomes interesting if we want to add structure to <span class="math inline">\(\bB\)</span>: a particularly common requirement is to select the <em>same set of features</em> for each of the regression targets. We do this using a group lasso on <em>each row</em> of <span class="math inline">\(\bB\)</span>: under this structure, if we select a feature for one part of the response, we’ll use it for every part. (Can you see why?)</p>
 <p><span class="math display">\[\argmin_{\bB} \frac{1}{2}\|\bY - \bX\bB\|_F^2 + \lambda \sum_{j=1}^p \|\bB_{j\cdot}\|_2\]</span></p>
 <p>Another common requirement is for <span class="math inline">\(\bB\)</span> to be “low-rank” but we won’t consider that here. If you want to look into it, keywords are “nuclear-norm regularized.”</p>
 <section id="weights-and-generalization" class="level4"><h4 class="anchored" data-anchor-id="weights-and-generalization">Weights and generalization</h4>
 <ul>
-<li><p>WLS loss: <span class="math inline">\(\newcommand{\bW}{\mathbf{W}}(\by - \bX\bbeta)^T\bW(\by - \bX\bbeta)\)</span> for known diagonal <span class="math inline">\(\bW\)</span>. Weight samples based on their variance (higher variance gets smaller weights)</p></li>
+<li><p>WLS loss: <span class="math inline">\((\by - \bX\bbeta)^T\bW(\by - \bX\bbeta)\)</span> for known diagonal <span class="math inline">\(\bW\)</span>. Weight samples based on their variance (higher variance gets smaller weights)</p></li>
 <li>
 <p>Weighted lasso: <span class="math inline">\(+\lambda\sum_{j=1}^p w_j|\beta_j|\)</span>. Higher weights are less likely to be selected</p>
 <p>Basis of ‘adaptive’ lasso methods (not discussed)</p>
