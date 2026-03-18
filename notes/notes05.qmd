@@ -32,7 +32,7 @@ U - unbiasedness; non-linear methods come later in this course.
 
 Recalling our decomposition: 
 
-$$\text{MSE} = \text{Bias}^2 + \text{Variance}$$
+$$\MSE = \text{Bias}^2 + \text{Variance}$$
 
 Our gambit is that we can find an alternative estimator with a bit more bias, 
 but far less variance. Before we attempt to do so for linear regression, let's 
@@ -42,7 +42,7 @@ means.
 ## Estimating Normal Means
 
 Suppose we have data from a distribution $$X_i \buildrel \text{iid} \over \sim 
-\mathcal{N}(\mu, 1)$$ for some unknown $\mu$ that we seek to estimate. Quite 
+\Ncal(\mu, 1)$$ for some unknown $\mu$ that we seek to estimate. Quite 
 reasonably, we might use the sample mean 
 $$\overline{X}_n = \frac{1}{n}\sum_{i=1}^n X_i$$
 to estimate $\mu$. Clearly, this is an _unbiased_ estimator and it has variance
@@ -361,7 +361,7 @@ so the total MSE is given by
 
 
 $$\begin{align*}
-\text{MSE} &= \E[(\hat{\mu}_{\alpha} - \mu)^2] \\
+\MSE &= \E[(\hat{\mu}_{\alpha} - \mu)^2] \\
            &= \text{Bias}^2 + \text{Variance} \\
            &= \mu^2\left(1 - \frac{1}{1+\alpha}\right)^2 + \frac{1}{n(1+\alpha)^2}
 \end{align*}$$
@@ -396,7 +396,7 @@ $$\V[\hat{\mu}] = \V\left[\frac{1}{n}\sum_{i=1}^n X_i\right] = \frac{1}{n^2}\sum
 
 so the MSE associated with this estimator is: 
 
-$$\text{MSE}(\hat{\mu}) = \text{Bias}^2 + \text{Variance} = \frac{\sigma^2}{n}$$
+$$\MSE(\hat{\mu}) = \text{Bias}^2 + \text{Variance} = \frac{\sigma^2}{n}$$
 
 Let's compare this to a 'scaled' estimator 
 
@@ -414,7 +414,7 @@ above our initial value of 0, but the variance has gone down by a factor of
 $1 - \alpha^2$. Is there a range of values where this represents an MSE-improvement?
 
 $$\begin{align*}
-\text{MSE}(\hat{\mu}_{\alpha}) &= \text{Bias}(\hat{\mu}_{\alpha})^2 + \V[\hat{\mu}_{\alpha}] \\
+\MSE(\hat{\mu}_{\alpha}) &= \text{Bias}(\hat{\mu}_{\alpha})^2 + \V[\hat{\mu}_{\alpha}] \\
 &= \mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n}
 \end{align*}$$
 
@@ -424,7 +424,7 @@ $\alpha = 1$ (the 'normal' sample mean).
 
 Let's take the derivative and set it equal to 0: 
 $$\begin{align*}
-\frac{\partial}{\partial \alpha}\text{MSE}(\hat{\mu}_{\alpha})
+\frac{\partial}{\partial \alpha}\MSE(\hat{\mu}_{\alpha})
 &= \frac{\partial}{\partial \alpha}\left[\mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n}\right] \\
 0 &= -2\mu^2(1-\alpha) + \frac{2\alpha\sigma^2}{n} \\
   &= -\mu^2 +\alpha\left(\frac{\sigma^2}{n} + \mu^2\right) \\
@@ -443,7 +443,7 @@ f(x_*) &= c - \frac{b^2}{4a} \tag{Minimum}
 If we expand the MSE expression into this form: 
 
 $$\begin{align*}
-\text{MSE}(\hat{\mu}_{\alpha}) &= \mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n} \\
+\MSE(\hat{\mu}_{\alpha}) &= \mu^2(1-\alpha)^2 + \frac{\alpha^2\sigma^2}{n} \\
 &= \mu^2 - 2\mu^2\alpha + \mu^2\alpha^2 + \frac{\alpha^2\sigma^2}{n} \\
 &= \underbrace{\left(\mu^2 + \frac{\sigma^2}{n}\right)}_a\alpha^2 -\underbrace{2\mu^2}_b \alpha + \underbrace{\mu^2}_c
 \end{align*}$$
@@ -451,7 +451,7 @@ $$\begin{align*}
 so we have a minimum possible MSE of: 
 
 $$\begin{align*}
-\text{MSE}^* &= c - \frac{b^2}{4a}  \\
+\MSE^* &= c - \frac{b^2}{4a}  \\
 &= \mu^2 - \frac{(-2\mu^2)^2}{4\left(\mu^2 + \frac{\sigma^2}{n}\right)} \\
 &= \mu^2 - \frac{4\mu^4}{4(\mu^2 + \sigma^2/n)} \\
 &= \mu^2 - \frac{\mu^4}{\mu^2 + \sigma^2/n} \\

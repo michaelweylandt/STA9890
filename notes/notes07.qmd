@@ -462,9 +462,9 @@ To make an actual prediction, we take the *highest* score of each of these
 classifiers. *E.g.*, if $K=3$ for categories "Red", "Green" and "Blue", we
 might predict: 
 
-- $\mathbb{P}(\text{Red}) = 0.8$ and $\mathbb{P}(\text{Not Red}) = 0.2$
-- $\mathbb{P}(\text{Green}) = 0.4$ and $\mathbb{P}(\text{Not Red}) = 0.6$
-- $\mathbb{P}(\text{Blue}) = 0.2$ and $\mathbb{P}(\text{Not Red}) = 0.8$
+- $\P(\text{Red}) = 0.8$ and $\P(\text{Not Red}) = 0.2$
+- $\P(\text{Green}) = 0.4$ and $\P(\text{Not Red}) = 0.6$
+- $\P(\text{Blue}) = 0.2$ and $\P(\text{Not Red}) = 0.8$
 
 Our final prediction would then be the maximizer, "Red."
 
@@ -525,7 +525,7 @@ named instances.
 Recall from [STA 9715](https://michael-weylandt.com/STA9715) that
 a (discrete) mixture model is a distribution of the form: 
 
-$$X \sim \begin{cases} X_1 & Z = 1 \\ X_2 & Z = 2 \\ \dots \\ X_K & Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \mathcal{P}_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)$$
+$$X \sim \begin{cases} X_1 & Z = 1 \\ X_2 & Z = 2 \\ \dots \\ X_K & Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \Pcal_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)$$
 
 That's quite a bit to unpack, so let's take it piece by piece: the
 random variable $X$ has a $K$-component *mixture* distribution if
@@ -535,9 +535,9 @@ selecting one of them at random.
 
 Let's look at a concrete version of this: suppose we have
 a population of male and female basset hounds that is 60\% female.
-The weight of male basset hounds follows a $\mathcal{N}(65, 10)$
+The weight of male basset hounds follows a $\Ncal(65, 10)$
 distribution while females have weight distributed as 
-$\mathcal{N}(55, 10)$. The weight of a randomly selected basset
+$\Ncal(55, 10)$. The weight of a randomly selected basset
 can be sampled as
 
 ```{r}
@@ -564,7 +564,7 @@ written  more compactly using a 'convex combination' notation:
 (*e.g.*, if the two means are very close together), but a mixture
 of normals is a common model for multimodal data.
 
-$$\text{Basset} \sim \frac{2}{5}\mathcal{N}(65, 10) + \frac{3}{5}\mathcal{N}(55, 10)$$
+$$\text{Basset} \sim \frac{2}{5}\Ncal(65, 10) + \frac{3}{5}\Ncal(55, 10)$$
 
 The above notation can be interpreted as specifying a draw from 
 the first distribution with probability $2/5 = 40\%$ and from
@@ -628,18 +628,18 @@ essentially are just different ways of estimating the population
 Let's formalize our approach for a two-class classifier though
 the extension to multi-class is simple enough. Given a training set
 
-$$\mathcal{D}_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$$ 
+$$\Dcal_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$$ 
 
 we assume $\bX$ follows a two-component mixture where $Y$ is the 
 mixing variable:
 
-$$\bX | Y=0 \sim \mathcal{P}_0 \text{ and } \bX | Y=1 \sim \mathcal{P}_1$$
+$$\bX | Y=0 \sim \Pcal_0 \text{ and } \bX | Y=1 \sim \Pcal_1$$
 
 Clearly to fully specify this distribution, we need three things: 
 
 - To know the distribution of $Y$
-- To know the distribution $\mathcal{P}_0$
-- To know the distribution $\mathcal{P}_1$
+- To know the distribution $\Pcal_0$
+- To know the distribution $\Pcal_1$
 
 The distribution of $Y$ is relatively straightforward: since it only
 takes values $\{0, 1\}$ it _must_ have a Bernoulli distribution and hence
@@ -653,14 +653,14 @@ contains patients who self-reported some disease, it may be more appropriate to
 estimate $p$ based on the population-wide prevalance of the disease. These concerns
 are typically rather problem specific. 
 
-Estimation of $\mathcal{P}_0, \mathcal{P}_1$ may be more difficult. If the 
+Estimation of $\Pcal_0, \Pcal_1$ may be more difficult. If the 
 training data is _extremely_ large, we may use a *non-parametric* estimator, 
 *e.g.*, a multivariate histogram, but in general we will need to use some sort
 of restrictive (parametric) model. The most commonly used generative classifiers
 assume some sort of multivariate normal structure, but you can create 'custom'
 classifiers appropriate to specific domains. 
 
-For now, let us assume $\mathcal{P}_{0}, \mathcal{P}_1$ have been estimated
+For now, let us assume $\Pcal_{0}, \Pcal_1$ have been estimated
 and that they have PDFs $p_0(\cdot), p_1(\cdot)$. Applying Bayes' rule as before, 
 with prior (baseline) probabilities $\pi_0, \pi_1 = 1-\pi_0$, we get the following
 probabilities
@@ -687,7 +687,7 @@ That's basically it!
 
 As mentioned above, the 'popular' generative classifiers are essentially 
 defined by specific multivariate normality assumptions on 
-$\mathcal{P}_0, \mathcal{P}_1$. Let us review these in ascending order of
+$\Pcal_0, \Pcal_1$. Let us review these in ascending order of
 complexity. 
 
 Recall that a multivariate normal distribution is uniquely identified by its
@@ -709,20 +709,20 @@ subject: if you want dig further into it, the
 
 ### Naive Bayes
 
-In Naive Bayes, we assume $\mathcal{P}_0, \mathcal{P}_1$ are multivariate normal
+In Naive Bayes, we assume $\Pcal_0, \Pcal_1$ are multivariate normal
 distributions with no correlation among the features and a common covariance
 across classes.[^isotropic] This *significantly* simplifies the covariance 
 estimation problem, since we now have all $n$ samples available to estimate only
 $p$ variances. Our estimates are given as follows: 
 
-$$\hat{\mu}_0 = \frac{1}{|\mathcal{C}_0|} \sum_{i \in \mathcal{C}_0} \bx_i$$
+$$\hat{\mu}_0 = \frac{1}{|\Ccal_0|} \sum_{i \in \Ccal_0} \bx_i$$
 
-where $\mathcal{C}_0$ is the set of observations from class 0 and 
+where $\Ccal_0$ is the set of observations from class 0 and 
 
-$$\hat{\mu}_1 = \frac{1}{|\mathcal{C}_1|} \sum_{i \in \mathcal{C}_1} \bx_i.$$
+$$\hat{\mu}_1 = \frac{1}{|\Ccal_1|} \sum_{i \in \Ccal_1} \bx_i.$$
 The variance estimates are a bit trickier: 
 
-$$\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\mathcal{C}_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\mathcal{C}_1} (x_{ji} - \hat{\mu}_{1i})^2\right)$$
+$$\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\Ccal_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\Ccal_1} (x_{ji} - \hat{\mu}_{1i})^2\right)$$
 This looks a bit nasty, but it's not too hard: we take the standard 
 'average squared difference' estimator of the variance, but instead of using
 the overall mean, we subtract the estimated mean from the relevant class. Note

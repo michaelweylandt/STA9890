@@ -19,8 +19,8 @@ to perform DR as this will help us design suitable loss functions.
 
 For now, let's take DR 'literally' and assume that we're trying to 
 find a _lower-dimensional_ representation: that is, given data points
-$\bx_i \in \R^P$, we want to find $\bx_i \in \R^p$ for some $p \ll P$.[^man] Typically, $P$ may be $\mathcal{O}(1000-10000)$ and $p$
-will be $\mathcal{O}(1-10)$. To identify the goals of DR, let's think
+$\bx_i \in \R^P$, we want to find $\bx_i \in \R^p$ for some $p \ll P$.[^man] Typically, $P$ may be $\Ocal(1000-10000)$ and $p$
+will be $\Ocal(1-10)$. To identify the goals of DR, let's think
 about the problems associated with large $P$: 
 
 - Difficult data exploration and visualization
@@ -174,11 +174,11 @@ anyways. If we expand our our loss, we get the following:
 $$\begin{align*}
  \left\|\bX - \bX\bv\bv^{\top}\right\|_F^2 &= \left\|\bX\right\|_F^2 - 2 \langle \bX, \bX\bv\bv^{\top}\rangle + \left\|\bX\bv\bv^{\top}\right\|_F^2\\
  &= \left\|\bX\right\|_F^2 - 2 \langle \bX, \bX\bv\bv^{\top}\rangle + \langle\bX\bv\bv^{\top}, \bX\bv\bv^{\top}\rangle\\
- &= \left\|\bX\right\|_F^2 - 2 \text{Tr}(\bX^{\top}\bX\bv\bv^{\top})+ \text{Tr}((\bX\bv\bv^{\top})^{\top}(\bX\bv\bv^{\top})) \\
- &= \left\|\bX\right\|_F^2 - 2 \text{Tr}(\bv^{\top}\bX^{\top}\bX\bv)+ \text{Tr}(\bv\bv^{\top}\bX^{\top}\bX\bv\bv^{\top}) \\
- &= \left\|\bX\right\|_F^2 - 2 \text{Tr}(\bv^{\top}\bX^{\top}\bX\bv)+ \text{Tr}(\bv^{\top}\bX^{\top}\bX\bv\underbrace{\bv^{\top}\bv}_{=\|\bv\|^2=1}) \\
- &= \left\|\bX\right\|_F^2 - 2 \text{Tr}(\bv^{\top}\bX^{\top}\bX\bv)+ \text{Tr}(\bv^{\top}\bX^{\top}\bX\bv) \\
- &= \left\|\bX\right\|_F^2 - \text{Tr}(\bv^{\top}\bX^{\top}\bX\bv) \\
+ &= \left\|\bX\right\|_F^2 - 2 \Tr(\bX^{\top}\bX\bv\bv^{\top})+ \Tr((\bX\bv\bv^{\top})^{\top}(\bX\bv\bv^{\top})) \\
+ &= \left\|\bX\right\|_F^2 - 2 \Tr(\bv^{\top}\bX^{\top}\bX\bv)+ \Tr(\bv\bv^{\top}\bX^{\top}\bX\bv\bv^{\top}) \\
+ &= \left\|\bX\right\|_F^2 - 2 \Tr(\bv^{\top}\bX^{\top}\bX\bv)+ \Tr(\bv^{\top}\bX^{\top}\bX\bv\underbrace{\bv^{\top}\bv}_{=\|\bv\|^2=1}) \\
+ &= \left\|\bX\right\|_F^2 - 2 \Tr(\bv^{\top}\bX^{\top}\bX\bv)+ \Tr(\bv^{\top}\bX^{\top}\bX\bv) \\
+ &= \left\|\bX\right\|_F^2 - \Tr(\bv^{\top}\bX^{\top}\bX\bv) \\
  &= \left\|\bX\right\|_F^2 - \bv^{\top}\bX^{\top}\bX\bv
 \end{align*}$$
 Because $\|\bX\|_F^2$ doesn't change as a function of $\bv$, this means our problem 

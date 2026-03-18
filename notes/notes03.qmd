@@ -83,40 +83,40 @@ f_* &= \text{True Regression Function - Fixed} \\
 \hat{f} &= \text{Actual Guess Given Limited Data - Random}
 \end{align*}$$
 
-Note that, in average over training sets, $\mathbb{E}[\hat{f}] = \tilde{f}$, but  $\mathbb{E}[\hat{f}] \neq f_*$. The systematic error between $f_*$ and 
+Note that, in average over training sets, $\E[\hat{f}] = \tilde{f}$, but  $\E[\hat{f}] \neq f_*$. The systematic error between $f_*$ and 
 $\tilde{f}$ is not due to data-randomness. 
 
-Working these all out, we need to look into the expected error taking expectation over the (random) training data $\mathcal{D}$ and the random noise in the test observation, $\epsilon$: 
+Working these all out, we need to look into the expected error taking expectation over the (random) training data $\Dcal$ and the random noise in the test observation, $\epsilon$: 
 
 $$\begin{align*}
-\mathbb{E}_{\mathcal{D}, \epsilon}[(Y - \hat{Y})^2] &= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) + \epsilon - \hat{f}(x))^2] \\
-&= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x) + \epsilon)^2] \\
-&= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x))^2 + 2\epsilon(f(x) - \hat{f}(x))+ \epsilon^2] \\ \\
-&= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x))^2] + 2\mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon(f(x) - \hat{f}(x))]+ \mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon^2] \\ \\
-&= \underbrace{\mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2]}_{\text{No Dependence on $\epsilon$}} + 2\underbrace{\mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon(f(x) - \hat{f}(x))]}_{\text{Product of Two Independent Terms}}+ \underbrace{\mathbb{E}_{ \epsilon}[\epsilon^2]}_{\text{No Dependence on $\mathcal{D}$}} \\ 
-&= \mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] + 2\underbrace{\mathbb{E}_{\epsilon}[\epsilon]}_{\text{No Dependence on $\mathcal{D}$}} * \underbrace{\mathbb{E}_{\mathcal{D}}(f(x) - \hat{f}(x))]}_{\text{No Dependence on $\epsilon$}}+ \mathbb{E}_{ \epsilon}[\epsilon^2] \\ 
-&= \mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] + 2 * 0 *\mathbb{E}_{\mathcal{D}}(f(x) - \hat{f}(x))]+ \underbrace{\sigma^2}_{\text{Irreducible Error}} \\ 
+\E_{\Dcal, \epsilon}[(Y - \hat{Y})^2] &= \E_{\Dcal, \epsilon}[(f(x) + \epsilon - \hat{f}(x))^2] \\
+&= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x) + \epsilon)^2] \\
+&= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x))^2 + 2\epsilon(f(x) - \hat{f}(x))+ \epsilon^2] \\ \\
+&= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x))^2] + 2\E_{\Dcal, \epsilon}[\epsilon(f(x) - \hat{f}(x))]+ \E_{\Dcal, \epsilon}[\epsilon^2] \\ \\
+&= \underbrace{\E_{\Dcal}[(f(x) - \hat{f}(x))^2]}_{\text{No Dependence on $\epsilon$}} + 2\underbrace{\E_{\Dcal, \epsilon}[\epsilon(f(x) - \hat{f}(x))]}_{\text{Product of Two Independent Terms}}+ \underbrace{\E_{ \epsilon}[\epsilon^2]}_{\text{No Dependence on $\Dcal$}} \\ 
+&= \E_{\Dcal}[(f(x) - \hat{f}(x))^2] + 2\underbrace{\E_{\epsilon}[\epsilon]}_{\text{No Dependence on $\Dcal$}} * \underbrace{\E_{\Dcal}(f(x) - \hat{f}(x))]}_{\text{No Dependence on $\epsilon$}}+ \E_{ \epsilon}[\epsilon^2] \\ 
+&= \E_{\Dcal}[(f(x) - \hat{f}(x))^2] + 2 * 0 *\E_{\Dcal}(f(x) - \hat{f}(x))]+ \underbrace{\sigma^2}_{\text{Irreducible Error}} \\ 
 \end{align*}$$
 
 So now let's just take apart that first term. Note that, per above, the only random thing left is $\hat{f}$:
 
 $$\begin{align*}
-\mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] &= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x) + \tilde{f}(x) - \hat{f}(x))^2] \\
-&= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x))^2 +2(f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))  +(\tilde{f}(x) - \hat{f}(x))^2]  \\
-&= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x))^2]+2\mathbb{E}_{\mathcal{D}}[((f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))]  +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))\mathbb{E}_{\mathcal{D}}[(\tilde{f}(x) - \hat{f}(x))]  +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))(\hat{f}(x) - \hat{f}(x)) +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x)) * 0 +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\hat{f}(x) - \tilde{f}(x))^2]  \\
-&= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\hat{f}(x) - \mathbb{E}[\hat{f}](x))^2]  \\
+\E_{\Dcal}[(f(x) - \hat{f}(x))^2] &= \E_{\Dcal}[(f(x) - \tilde{f}(x) + \tilde{f}(x) - \hat{f}(x))^2] \\
+&= \E_{\Dcal}[(f(x) - \tilde{f}(x))^2 +2(f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))  +(\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= \E_{\Dcal}[(f(x) - \tilde{f}(x))^2]+2\E_{\Dcal}[((f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))]  +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))\E_{\Dcal}[(\tilde{f}(x) - \hat{f}(x))]  +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))(\hat{f}(x) - \hat{f}(x)) +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x)) * 0 +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\hat{f}(x) - \tilde{f}(x))^2]  \\
+&= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\hat{f}(x) - \E[\hat{f}](x))^2]  \\
 &= \text{Bias}^2 + \text{Variance}
 \end{align*}$$
 
 Putting everything together, we have
 
 $$\begin{align*}
-\mathbb{E}_{\mathcal{D}, \epsilon}[(Y - \hat{Y})^2] = \text{Bias}^2 + \text{Variance} + \sigma^2\end{align*}$$
+\E_{\Dcal, \epsilon}[(Y - \hat{Y})^2] = \text{Bias}^2 + \text{Variance} + \sigma^2\end{align*}$$
 
 So the 'two term' formula is just the second derivation for the MSE of $f - \hat{f}$, while the three-term formula is a combination of the two and gives the MSE for $Y - \hat{Y}$ .
 

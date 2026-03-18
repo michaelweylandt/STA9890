@@ -59,7 +59,7 @@ a name or notation for the "combo pack" $\R^2 \cup \R^3 \cup \R^4$.
 
 Conventionally, vectors are written in bold (if on a computer) or with a
 little arrow on top (hand written): so a vector called "x" would be
-denoted $\mathbf{x}$ or $\vec{x}$. The elements of $\bx$ are denoted by 
+denoted $\bx$ or $\vec{x}$. The elements of $\bx$ are denoted by 
 subscripts $\bx = (x_1, x_2, \dots, x_n)$. 
 
 ### Vector Arithmetic
@@ -154,7 +154,7 @@ got carried forward into the observational (un-designed) setting. You may also
 hear it called the 'data matrix'. 
 
 Suppose we have a design matrix $\bX \in \R^{n \times p}$ and a vector of 
-regression coefficients $\mathbf{\beta} \in \R^p$. We can use _matrix_
+regression coefficients $\bbeta \in \R^p$. We can use _matrix_
 multiplication to make predictions about all observations simultaneously. 
 
 Specifically, recall that the standard (multivariate) linear model looks like: 
@@ -237,9 +237,9 @@ a _linear_ operator. Note that, in this context, _linear_ is maybe a bit more
 restrictive than the 'middle school' definition. Our properties require "zero-in/
 zero-out": if we take $\alpha = 0$ in the scalar multiplication rule, we have: 
 
-$$\bA(0 \, \bw) = 0\, (\bA \bw) \implies \mathbf{0}_n = \bA \mathbf{0}_m$$
+$$\bA(0 \, \bw) = 0\, (\bA \bw) \implies \bzero_n = \bA \bzero_m$$
 
-where $\mathbf{0}_{m}, \mathbf{0}_n$ are the all-zero vectors of length $m, n$
+where $\bzero_{m}, \bzero_n$ are the all-zero vectors of length $m, n$
 respectively. As such, a 'linear' function you might have seen before like
 
 $y = 2x + 3$ 
@@ -295,7 +295,7 @@ vector operation:
 $$(\alpha\, \bA)_{ij} = \alpha\, \bA_{ij}$$
 
 With these, we can define the (additive) identity: that is, the matrix which, 
-when added to another doesn't change the value, by $\mathbf{0}_{m \times n}$, 
+when added to another doesn't change the value, by $\bzero_{m \times n}$, 
 the $m \times n$ matrix of all zeros. The additive inverse (the matrix that
 you add to get back to the additive identity) is just 
 
@@ -478,10 +478,10 @@ can be broken up into "rotate -> stretch -> rotate" is actually quite remarkable
 ### SVDs of Important Matrices
 
 Let's talk through the SVD of different matrices: if we start with the all
-zeros matrix ($\mathbf{0}_{m \times n}$), it's clear that the 'stretch factors'
+zeros matrix ($\bzero_{m \times n}$), it's clear that the 'stretch factors'
 should all be zero, since the zero matrix sends _everything_ to zero. Hence
 
-$$\mathbf{0}_{m \times n} = \bU \mathbf{0}_{m \times n} \bV^{\top}$$
+$$\bzero_{m \times n} = \bU \bzero_{m \times n} \bV^{\top}$$
 
 where any orthogonal $\bU, \bV$ will work (so the SVD is not unique). 
 
@@ -541,8 +541,8 @@ Thinking about this SVD/inverse formula using our
 An important class of matrices we will consider are _symmetric_ matrices, which
 are just what the name sounds like. These come up in several key places in
 statistics, none more important than the _covariance_ matrix, typically denoted
-$\Sigma$. Recall that the covariance operator $\mathbb{C}$ is symmetric
-($\mathbb{C}[X, Y] = \mathbb{C}[Y, X]$) so the covariance matrix of a random
+$\Sigma$. Recall that the covariance operator $\C$ is symmetric
+($\C[X, Y] = \C[Y, X]$) so the covariance matrix of a random
 vector turns out to be symmetric as well. 
 
 Another common source of symmetric matrices is when a matrix is multiplied by
@@ -568,7 +568,7 @@ computationally, but the reason is actually more fundamental: given a
 random variable $Z$, suppose we want to minimize the $(Z - \mu)$ for 
 some $\mu$: it can be shown that
 
-$$ \E[Z] = \text{argmin}_{\mu \in \R} \E[(Z - \mu)^2]$$
+$$ \E[Z] = \argmin_{\mu \in \R} \E[(Z - \mu)^2]$$
 
 
 ::: {.callout-note title="Pause to Reflect" collapse="true"}
@@ -583,23 +583,23 @@ That is, the quantity that minimizes the MSE is the mean. So when we
 fit a line to some data by OLS, we are implicitly trying to fit to
 $\E[y]$ - a very reasonable thing to do!
 
-Specifically, given training data $\mathcal{D} = \{(\bx_i, y_i)\}_{i=1}^n$ where each $\bx_i \in \R^p$, OLS finds $\bbeta \in \R^p$ such that
-$$ \hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \sum_{j=1}^p \beta_jx_j\right)^2 = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2$$
+Specifically, given training data $\Dcal = \{(\bx_i, y_i)\}_{i=1}^n$ where each $\bx_i \in \R^p$, OLS finds $\bbeta \in \R^p$ such that
+$$ \hat{\bbeta} = \argmin_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \sum_{j=1}^p \beta_jx_j\right)^2 = \argmin_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2$$
 
 Some possibly new notation here: 
 
   - $\bx^{\top}\bbeta$ is the (inner) product of two vectors: defined as the sum of their elementwise products. 
   - Optimization problems: 
-    - $$\hat{x} = \text{argmin}_{x \in \mathcal{C}} f(x)$$
-    - $$f_* = \text{min}_{x \in \mathcal{C}} f(x)$$
+    - $$\hat{x} = \argmin_{x \in \Ccal} f(x)$$
+    - $$f_* = \text{min}_{x \in \Ccal} f(x)$$
      
     These problems say: find the value of $x$ in the set 
-    $\mathcal{C}$ that minimizes the function $f$. $\text{argmin}$ 
+    $\Ccal$ that minimizes the function $f$. $\argmin$ 
     says 'give me the minimizer' while $\min$ says
     give me the minimum value'. These are related by 
     $f_* = f(\hat{x})$
     
-    The function $f$ is called the *objective*; the set $\mathcal{C}$ 
+    The function $f$ is called the *objective*; the set $\Ccal$ 
     is called the *constraint set*.
     
 *Ordinary Least Squares* refers to the use of an MSE objective
@@ -635,7 +635,7 @@ up with ML methods.
 :::
 
 So far we've set up OLS as 
-$$ \hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2$$
+$$ \hat{\bbeta} = \argmin_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2$$
 
 We can clean this up to make additional analysis easier: 
 
@@ -644,7 +644,7 @@ We can clean this up to make additional analysis easier:
 - Next look at our predictions: 
   $$\hat{\by} = \begin{pmatrix} \bx_1^{\top}\bbeta \\ \bx_2^{\top}\bbeta \\ \vdots \\ \bx_n^{\top}\bbeta \end{pmatrix} = \begin{pmatrix} \bx_1^{\top} \\ \bx_2^{\top} \\ \vdots \\ \bx_n^{\top} \end{pmatrix}\bbeta = \bX\bbeta$$
   
-Hence, OLS is just $$\hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2$$ Here $\|\cdot\|_2^2$ is the (squared Euclidean or $L_2$) norm of a vector: defined by $\|\bz\|_2^2 = \sum z_i^2$
+Hence, OLS is just $$\hat{\bbeta} = \argmin_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2$$ Here $\|\cdot\|_2^2$ is the (squared Euclidean or $L_2$) norm of a vector: defined by $\|\bz\|_2^2 = \sum z_i^2$
 
 
 ::: {.callout-note title="Pause to Reflect" collapse="true"}
@@ -657,9 +657,9 @@ Hence, OLS is just $$\hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n} 
 :::
 
 We've formulated OLS as 
-$$\hat{\beta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2.$$ 
+$$\hat{\beta} = \argmin_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2.$$ 
 In order to solve this, it will be useful to modify it slightly to
-$$\hat{\beta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{2} \|\by - \bX\bbeta\|_2^2$$ 
+$$\hat{\beta} = \argmin_{\bbeta \in \R^p} \frac{1}{2} \|\by - \bX\bbeta\|_2^2$$ 
 
 ::: {.callout-note title="Pause to Reflect" collapse="true"}
 
@@ -703,41 +703,41 @@ cited several times.
 The in-sample MSE is given by: 
 
 $$\begin{align*}
-\text{MSE} &= \frac{1}{n}\|\by - \hat{\by}\|_2^2 \\
+\MSE &= \frac{1}{n}\|\by - \hat{\by}\|_2^2 \\
            &= \frac{1}{n}\left\|\by - \bH\by\right\|_2^2 \\
            &= \frac{1}{n}(\by - \bH\by)^{\top}(\by - \bH\by) \\
            &= \frac{1}{n}(\by^{\top} - \by^{\top}\bH)(\by - \bH\by) \\
            &= \frac{\by^{\top}\by - \by^{\top}\bH\by - \by^{\top}\bH\by + \by^{\top}\bH\bH\by}{n} \\
            &= \frac{\by^{\top}\by - \by^{\top}\bH\by}{n} \\
            &= \frac{\by^{\top}(\bI - \bH)\by}{n} \\
-\implies \E[\text{MSE}] &= \E\left[\frac{\by^{\top}(\bI - \bH)\by}{n}\right] \\
+\implies \E[\MSE] &= \E\left[\frac{\by^{\top}(\bI - \bH)\by}{n}\right] \\
 &= \frac{1}{n}\E\left[\by^{\top}(\bI - \bH)\by\right]
 \end{align*}$$
 
 To finish this, we need to know that the [expectation of a symmetric quadratic 
 form](https://en.wikipedia.org/wiki/Quadratic_form_(statistics)) satisfies 
 
-$$\bx \sim (\mu, \Sigma) \implies \E[\bx^{\top}\bA\bx] = \text{Tr}(\bA\Sigma) + \mu^{\top}\bA\mu$$
+$$\bx \sim (\mu, \Sigma) \implies \E[\bx^{\top}\bA\bx] = \Tr(\bA\Sigma) + \mu^{\top}\bA\mu$$
 
 for any random vector $\bx$ with mean $\mu$ and covariance matrix $\Sigma$. 
 
 To apply this above, we note $\by \sim (\bX\beta_*, \sigma^2 \bI)$, so we get
 
 $$\begin{align*}
-\E\left[\by^{\top}(\bI - \bH)\by\right] &= \text{Tr}((\bI - \bH) \sigma^2 \bI) + (\bX\bbeta_*)^{\top}(\bI - \bH)(\bX\bbeta_*) \\
-&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}\bX^{\top}(\bI - \bH)\bX\bbeta_* \\
-&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bH\bX)\bbeta_* \\ 
-&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX(\bX^{\top}\bX)^{-1}\bX^{\top}\bX)\bbeta_* \\ 
-&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX)\bbeta_* \\ 
-&= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top} \mathbf{0}\bbeta_* \\
-&= \sigma^2 \text{Tr}(\bI - \bH) \\
-&= \sigma^2 (\text{Tr}(\bI) - \text{Tr}(\bH))
+\E\left[\by^{\top}(\bI - \bH)\by\right] &= \Tr((\bI - \bH) \sigma^2 \bI) + (\bX\bbeta_*)^{\top}(\bI - \bH)(\bX\bbeta_*) \\
+&= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}\bX^{\top}(\bI - \bH)\bX\bbeta_* \\
+&= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bH\bX)\bbeta_* \\ 
+&= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX(\bX^{\top}\bX)^{-1}\bX^{\top}\bX)\bbeta_* \\ 
+&= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX)\bbeta_* \\ 
+&= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top} \bzero\bbeta_* \\
+&= \sigma^2 \Tr(\bI - \bH) \\
+&= \sigma^2 (\Tr(\bI) - \Tr(\bH))
 \end{align*}$$
 
 Recall that the trace is simply the sum of the eigenvalues, so this last term
 becomes $\sigma^2(n - p)$, finally giving us: 
 
-$$\E[\text{MSE}] = \frac{\sigma^2(n-p)}{n}  = \sigma^2\left(1 - \frac{p}{n}\right)$$
+$$\E[\MSE] = \frac{\sigma^2(n-p)}{n}  = \sigma^2\left(1 - \frac{p}{n}\right)$$
 
 Whew! That was a lot of work! But can you imagine how much more work this would
 have been without all of these matrix tools? 
@@ -755,7 +755,7 @@ times in this course.
 In [Report #01](../reports/repot01.html), you will show that, under MSE
 loss, our expected test error can be decomposed as
 
-$$\text{MSE} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}$$
+$$\MSE = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}$$
 
 Let's show how we can analyze these quantities for a KNN *regression* problem. Here, we're using the 'regression' version of KNN since it
 plays nicely with MSE.[^tradeoff]
@@ -775,8 +775,8 @@ We also need a 'true' function which we're trying to estimate.
 Let's use the following model:
 
 $$\begin{align*}
-X &\sim \mathcal{U}([0, 1]) \\
-Y &\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
+X &\sim \Ucal([0, 1]) \\
+Y &\sim \Ncal(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 \end{align*}$$
 
 That is, $X$ is uniform on the unit interval and $Y$ is a non-linear
@@ -1004,7 +1004,7 @@ So, now that we have a good sense of (average) test error, can we verify our MSE
 
 Recall
 $$\begin{align*}
-\E[\text{MSE}] &= \text{Bias}^2 + \text{Variance} + \text{Irreducible Error} \\
+\E[\MSE] &= \text{Bias}^2 + \text{Variance} + \text{Irreducible Error} \\
 \text{ where } \text{Bias}^2 &= \E\left[\left(\E[\hat{y}] - \E[y]\right)^2\right] \\
 &= \left(\E[\hat{y}] - \E[y]\right)^2 \text{ (Why can I drop the outer expectation?)} \\
 \text{Variance} &= \E\left[\left(\hat{y} - \E[\hat{y}]\right)^2\right] \\
@@ -1054,7 +1054,7 @@ bias term: this is what we expect with a very flexible (high variance
 + low bias) model like $1$-NN.
 
 Finally, irreducible error is just 0.25 everywhere (recall 
-$y \sim \mathcal{N}(\E[y], 0.25)$). 
+$y \sim \Ncal(\E[y], 0.25)$). 
 
 ```{r}
 KNN_IE <- rowMeans(replicate(500, {
@@ -1140,7 +1140,7 @@ $$ \frac{\partial f}{\partial \bx} = \bA\bx + \bb$$
 We set this to zero and find a crticial point at: 
 
 $$\begin{align*}
-\mathbf{0} &= \bA\bx + \bb \\
+\bzero &= \bA\bx + \bb \\
 - \bb &= \bA\bx \\
 \implies \bx &= -\bA^{-1}\bb
 \end{align*}$$
@@ -1225,10 +1225,10 @@ points(xl, fxl, col="blue4", cex=2, pch=16)
   (2nd derivative matrix) is positive semi-definite. 
   
 - A *convex* set is one that allows us to look "between" points. 
-  Specifically, a set $\mathcal{C} \subseteq \R^p$ is convex if 
-  $$\bx, \by \in \mathcal{C} \implies \lambda \bx + (1-\lambda)\by \in \mathcal{C}$$
+  Specifically, a set $\Ccal \subseteq \R^p$ is convex if 
+  $$\bx, \by \in \Ccal \implies \lambda \bx + (1-\lambda)\by \in \Ccal$$
   
-  for all $\bx, \by \in \mathcal{C}$ and any $\lambda \in [0, 1]$. 
+  for all $\bx, \by \in \Ccal$ and any $\lambda \in [0, 1]$. 
   
 Clearly these are related by the idea of looking "between" two points: 
 
@@ -1242,7 +1242,7 @@ convex set.
 
 For optimization purposes, these two properties imply a rather remarkable fact: 
 
-If $\bx_0$ is a *local* minimum of $$\min_{\bx \in \mathcal{C}} f(\bx)$$, then it
+If $\bx_0$ is a *local* minimum of $$\min_{\bx \in \Ccal} f(\bx)$$, then it
 is a *global* minimum. 
 
 This is quite shocking: if we find a point where we can't improve by going in 

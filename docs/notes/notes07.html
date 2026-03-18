@@ -241,7 +241,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\Hcal}{\mathcal{H}} \newcommand{\Ncal}{\mathcal{N}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Ocal}{\mathcal{O}} \newcommand{\Pcal}{\mathcal{P}} \newcommand{\Ucal}{\mathcal{U}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bf}{\mathbf{f}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Tr}{\text{Tr}}\]</span></p>
 <p>Having (temporarily) finished our discussion of regression, we now turn our focus to <em>classification</em>.</p>
 <section id="a-taxonomy-of-classification" class="level2"><h2 class="anchored" data-anchor-id="a-taxonomy-of-classification">A Taxonomy of Classification</h2>
 <p>Recall from before that we defined <em>regression</em> as the subset of supervised learning where the response (<span class="math inline">\(\by\)</span>) was a continuous variable, or at least one that is appropriate to model as such.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> By contrast, <em>classification</em> considers <span class="math inline">\(\by\)</span> to take values in a discrete set. Though this restriction may feel limiting, it is actually quite powerful. We consider several different forms of classification, based on the <em>support</em> of <span class="math inline">\(\by\)</span>:</p>
@@ -463,12 +463,12 @@ Warning
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co"># Example from ?roc_curve</span></span>
-<span><span class="fu"><a href="https://yardstick.tidymodels.org/reference/roc_curve.html">roc_curve</a></span><span class="op">(</span><span class="va">two_class_example</span>, <span class="va">truth</span>, <span class="va">Class1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">specificity</span>, y <span class="op">=</span> <span class="va">sensitivity</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span>lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/yardstick/man/roc_curve.html">roc_curve</a></span><span class="op">(</span><span class="va">two_class_example</span>, <span class="va">truth</span>, <span class="va">Class1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">specificity</span>, y <span class="op">=</span> <span class="va">sensitivity</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_path</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_abline.html">geom_abline</a></span><span class="op">(</span>lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="notes07_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
@@ -517,13 +517,13 @@ Warning
 <p>To make an actual prediction, we take the <em>highest</em> score of each of these classifiers. <em>E.g.</em>, if <span class="math inline">\(K=3\)</span> for categories “Red”, “Green” and “Blue”, we might predict:</p>
 <ul>
 <li>
-<span class="math inline">\(\mathbb{P}(\text{Red}) = 0.8\)</span> and <span class="math inline">\(\mathbb{P}(\text{Not Red}) = 0.2\)</span>
+<span class="math inline">\(\P(\text{Red}) = 0.8\)</span> and <span class="math inline">\(\P(\text{Not Red}) = 0.2\)</span>
 </li>
 <li>
-<span class="math inline">\(\mathbb{P}(\text{Green}) = 0.4\)</span> and <span class="math inline">\(\mathbb{P}(\text{Not Red}) = 0.6\)</span>
+<span class="math inline">\(\P(\text{Green}) = 0.4\)</span> and <span class="math inline">\(\P(\text{Not Red}) = 0.6\)</span>
 </li>
 <li>
-<span class="math inline">\(\mathbb{P}(\text{Blue}) = 0.2\)</span> and <span class="math inline">\(\mathbb{P}(\text{Not Red}) = 0.8\)</span>
+<span class="math inline">\(\P(\text{Blue}) = 0.2\)</span> and <span class="math inline">\(\P(\text{Not Red}) = 0.8\)</span>
 </li>
 </ul>
 <p>Our final prediction would then be the maximizer, “Red.”</p>
@@ -550,9 +550,9 @@ Warning
 <p>We begin our study of classifiers with an analysis of <em>generative</em> classifiers. While many generative classifiers have appeared in the literature, they can essentially all be derived from a standard formula. We will discuss this standard formula first and then turn our attention to specific named instances.</p>
 <section id="mixture-models" class="level3"><h3 class="anchored" data-anchor-id="mixture-models">Mixture Models</h3>
 <p>Recall from <a href="https://michael-weylandt.com/STA9715">STA 9715</a> that a (discrete) mixture model is a distribution of the form:</p>
-<p><span class="math display">\[X \sim \begin{cases} X_1 &amp; Z = 1 \\ X_2 &amp; Z = 2 \\ \dots \\ X_K &amp; Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \mathcal{P}_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)\]</span></p>
+<p><span class="math display">\[X \sim \begin{cases} X_1 &amp; Z = 1 \\ X_2 &amp; Z = 2 \\ \dots \\ X_K &amp; Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \Pcal_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)\]</span></p>
 <p>That’s quite a bit to unpack, so let’s take it piece by piece: the random variable <span class="math inline">\(X\)</span> has a <span class="math inline">\(K\)</span>-component <em>mixture</em> distribution if we can sample <span class="math inline">\(X\)</span> by generating <span class="math inline">\(K\)</span> independent random variables <span class="math inline">\(\{X_1, \dots, X_K\}\)</span> (with <em>different</em> distributions) and then selecting one of them at random.</p>
-<p>Let’s look at a concrete version of this: suppose we have a population of male and female basset hounds that is 60% female. The weight of male basset hounds follows a <span class="math inline">\(\mathcal{N}(65, 10)\)</span> distribution while females have weight distributed as <span class="math inline">\(\mathcal{N}(55, 10)\)</span>. The weight of a randomly selected basset can be sampled as</p>
+<p>Let’s look at a concrete version of this: suppose we have a population of male and female basset hounds that is 60% female. The weight of male basset hounds follows a <span class="math inline">\(\Ncal(65, 10)\)</span> distribution while females have weight distributed as <span class="math inline">\(\Ncal(55, 10)\)</span>. The weight of a randomly selected basset can be sampled as</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rbasset</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n</span>, size<span class="op">=</span><span class="fl">1</span>, prob<span class="op">=</span><span class="fl">0.6</span><span class="op">)</span> <span class="co"># Z=1 &lt;- Female</span></span>
@@ -561,7 +561,7 @@ Warning
 <span><span class="op">}</span></span>
 <span><span class="fu">rbasset</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 65.77403</code></pre>
+<pre><code>[1] 66.57136</code></pre>
 </div>
 </div>
 <p>If we collect the weights of many basset hounds, we see that the resulting distribution is not normally distributed:</p>
@@ -575,7 +575,7 @@ Warning
 </div>
 </div>
 <p>In fact, this is a <em>bimodal</em> distribution with each ‘lump’ representing males or females.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Distributions of this form can often be written more compactly using a ‘convex combination’ notation:</p>
-<p><span class="math display">\[\text{Basset} \sim \frac{2}{5}\mathcal{N}(65, 10) + \frac{3}{5}\mathcal{N}(55, 10)\]</span></p>
+<p><span class="math display">\[\text{Basset} \sim \frac{2}{5}\Ncal(65, 10) + \frac{3}{5}\Ncal(55, 10)\]</span></p>
 <p>The above notation can be interpreted as specifying a draw from the first distribution with probability <span class="math inline">\(2/5 = 40\%\)</span> and from the second with probability <span class="math inline">\(3/5 = 60\%\)</span>; that is, it’s a particular 2-component mixture of normals.</p>
 <p>In specifying this mixture, the probabilities of each component must be non-negative and must sum to 1; these are exactly the same restrictions we put on a convex combination of points earlier in the course. In fact, the set of mixture distributions can be consider the ‘convex set’ containing all of its individual components.</p>
 </section><section id="inference-from-a-mixture-distribution" class="level3"><h3 class="anchored" data-anchor-id="inference-from-a-mixture-distribution">Inference from a Mixture Distribution</h3>
@@ -603,21 +603,21 @@ Warning
 <p>What have we done here? We have <em>built</em> a basset-sex classifier from a combination of the population distribution and Bayes’ rule. This is the essence of generative classifiers - <em>if</em> we know the distribution, accurate probabilistic classification is a straightforward application of Bayes’ rule. In practice, we don’t know the distribution <em>a priori</em> and it must be estimated from data. Different generative classifiers essentially are just different ways of estimating the population (mixture) distribution.</p>
 </section></section><section id="building-generative-classifiers" class="level2"><h2 class="anchored" data-anchor-id="building-generative-classifiers">Building Generative Classifiers</h2>
 <p>Let’s formalize our approach for a two-class classifier though the extension to multi-class is simple enough. Given a training set</p>
-<p><span class="math display">\[\mathcal{D}_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\]</span></p>
+<p><span class="math display">\[\Dcal_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}\]</span></p>
 <p>we assume <span class="math inline">\(\bX\)</span> follows a two-component mixture where <span class="math inline">\(Y\)</span> is the mixing variable:</p>
-<p><span class="math display">\[\bX | Y=0 \sim \mathcal{P}_0 \text{ and } \bX | Y=1 \sim \mathcal{P}_1\]</span></p>
+<p><span class="math display">\[\bX | Y=0 \sim \Pcal_0 \text{ and } \bX | Y=1 \sim \Pcal_1\]</span></p>
 <p>Clearly to fully specify this distribution, we need three things:</p>
 <ul>
 <li>To know the distribution of <span class="math inline">\(Y\)</span>
 </li>
-<li>To know the distribution <span class="math inline">\(\mathcal{P}_0\)</span>
+<li>To know the distribution <span class="math inline">\(\Pcal_0\)</span>
 </li>
-<li>To know the distribution <span class="math inline">\(\mathcal{P}_1\)</span>
+<li>To know the distribution <span class="math inline">\(\Pcal_1\)</span>
 </li>
 </ul>
 <p>The distribution of <span class="math inline">\(Y\)</span> is relatively straightforward: since it only takes values <span class="math inline">\(\{0, 1\}\)</span> it <em>must</em> have a Bernoulli distribution and hence the only thing we need to estimate is the probability, <span class="math inline">\(\pi_1\)</span>, that <span class="math inline">\(Y=1\)</span>. The simplest approach to estimating the Bernoulli probability is to simply take the empirical probability from the training data set, <em>i.e.</em>, the fraction of observations where <span class="math inline">\(Y=1\)</span>, but this can also be estimated using knowledge of a broader data set or a different population than the training data. For instance, if a data set is known to overindex on <span class="math inline">\(Y=1\)</span>, <em>e.g.</em>, because it contains patients who self-reported some disease, it may be more appropriate to estimate <span class="math inline">\(p\)</span> based on the population-wide prevalance of the disease. These concerns are typically rather problem specific.</p>
-<p>Estimation of <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> may be more difficult. If the training data is <em>extremely</em> large, we may use a <em>non-parametric</em> estimator, <em>e.g.</em>, a multivariate histogram, but in general we will need to use some sort of restrictive (parametric) model. The most commonly used generative classifiers assume some sort of multivariate normal structure, but you can create ‘custom’ classifiers appropriate to specific domains.</p>
-<p>For now, let us assume <span class="math inline">\(\mathcal{P}_{0}, \mathcal{P}_1\)</span> have been estimated and that they have PDFs <span class="math inline">\(p_0(\cdot), p_1(\cdot)\)</span>. Applying Bayes’ rule as before, with prior (baseline) probabilities <span class="math inline">\(\pi_0, \pi_1 = 1-\pi_0\)</span>, we get the following probabilities</p>
+<p>Estimation of <span class="math inline">\(\Pcal_0, \Pcal_1\)</span> may be more difficult. If the training data is <em>extremely</em> large, we may use a <em>non-parametric</em> estimator, <em>e.g.</em>, a multivariate histogram, but in general we will need to use some sort of restrictive (parametric) model. The most commonly used generative classifiers assume some sort of multivariate normal structure, but you can create ‘custom’ classifiers appropriate to specific domains.</p>
+<p>For now, let us assume <span class="math inline">\(\Pcal_{0}, \Pcal_1\)</span> have been estimated and that they have PDFs <span class="math inline">\(p_0(\cdot), p_1(\cdot)\)</span>. Applying Bayes’ rule as before, with prior (baseline) probabilities <span class="math inline">\(\pi_0, \pi_1 = 1-\pi_0\)</span>, we get the following probabilities</p>
 <p><span class="math display">\[\begin{align*}
 \P(Y = 1 | \bx) &amp;= \frac{\P(\bx | Y = 1)\P(Y=1)}{\P(\bx | Y = 0)\P(Y=0)+\P(\bx | Y = 1)\P(Y=1)} \\
 &amp;= \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1}
@@ -627,7 +627,7 @@ Warning
 <p><span class="math inline">\(\overline{p}\)</span> can be chosen to optimize a relevant performance metric (if you practice good sample splitting hygiene) or via a full decision theoretic analysis, as discussed last week.</p>
 <p>That’s basically it!</p>
 </section><section id="named-generative-classifiers" class="level2"><h2 class="anchored" data-anchor-id="named-generative-classifiers">Named Generative Classifiers</h2>
-<p>As mentioned above, the ‘popular’ generative classifiers are essentially defined by specific multivariate normality assumptions on <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span>. Let us review these in ascending order of complexity.</p>
+<p>As mentioned above, the ‘popular’ generative classifiers are essentially defined by specific multivariate normality assumptions on <span class="math inline">\(\Pcal_0, \Pcal_1\)</span>. Let us review these in ascending order of complexity.</p>
 <p>Recall that a multivariate normal distribution is uniquely identified by its <em>mean</em> and <em>(co)variance (matrix)</em>, just like a standard univariate normal distribution. When estimating means, we will simply use the class means for each classifier, though James-Stein time estimators could be used for a (likely imperceptible) improvement. Estimation of variances is a harder task: to estimate the full covariance matrix of <span class="math inline">\(p\)</span> random variables (or a random <span class="math inline">\(p\)</span>-vector), we must estimate:</p>
 <ol type="i">
 <li>
@@ -637,11 +637,11 @@ Warning
 </ol>
 <p>Making this even harder, we have to deal with the fact that the “variance of the variance”, <em>i.e.</em>, the kurtosis, is typically quite large. While we do not focus on high-dimensional covariance estimation in these notes, it is quite a rich subject: if you want dig further into it, the <a href="http://www.ledoit.net/honey.pdf">Ledoit-Wolf</a> estimator is a good place to start.</p>
 <section id="naive-bayes" class="level3"><h3 class="anchored" data-anchor-id="naive-bayes">Naive Bayes</h3>
-<p>In Naive Bayes, we assume <span class="math inline">\(\mathcal{P}_0, \mathcal{P}_1\)</span> are multivariate normal distributions with no correlation among the features and a common covariance across classes.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> This <em>significantly</em> simplifies the covariance estimation problem, since we now have all <span class="math inline">\(n\)</span> samples available to estimate only <span class="math inline">\(p\)</span> variances. Our estimates are given as follows:</p>
-<p><span class="math display">\[\hat{\mu}_0 = \frac{1}{|\mathcal{C}_0|} \sum_{i \in \mathcal{C}_0} \bx_i\]</span></p>
-<p>where <span class="math inline">\(\mathcal{C}_0\)</span> is the set of observations from class 0 and</p>
-<p><span class="math display">\[\hat{\mu}_1 = \frac{1}{|\mathcal{C}_1|} \sum_{i \in \mathcal{C}_1} \bx_i.\]</span> The variance estimates are a bit trickier:</p>
-<p><span class="math display">\[\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\mathcal{C}_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\mathcal{C}_1} (x_{ji} - \hat{\mu}_{1i})^2\right)\]</span> This looks a bit nasty, but it’s not too hard: we take the standard ‘average squared difference’ estimator of the variance, but instead of using the overall mean, we subtract the estimated mean from the relevant class. Note that here we are only estimating <span class="math inline">\(\Sigma_{ii}\)</span>, the diagonal elements, and not a full matrix <span class="math inline">\(\Sigma\)</span>.</p>
+<p>In Naive Bayes, we assume <span class="math inline">\(\Pcal_0, \Pcal_1\)</span> are multivariate normal distributions with no correlation among the features and a common covariance across classes.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> This <em>significantly</em> simplifies the covariance estimation problem, since we now have all <span class="math inline">\(n\)</span> samples available to estimate only <span class="math inline">\(p\)</span> variances. Our estimates are given as follows:</p>
+<p><span class="math display">\[\hat{\mu}_0 = \frac{1}{|\Ccal_0|} \sum_{i \in \Ccal_0} \bx_i\]</span></p>
+<p>where <span class="math inline">\(\Ccal_0\)</span> is the set of observations from class 0 and</p>
+<p><span class="math display">\[\hat{\mu}_1 = \frac{1}{|\Ccal_1|} \sum_{i \in \Ccal_1} \bx_i.\]</span> The variance estimates are a bit trickier:</p>
+<p><span class="math display">\[\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\Ccal_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\Ccal_1} (x_{ji} - \hat{\mu}_{1i})^2\right)\]</span> This looks a bit nasty, but it’s not too hard: we take the standard ‘average squared difference’ estimator of the variance, but instead of using the overall mean, we subtract the estimated mean from the relevant class. Note that here we are only estimating <span class="math inline">\(\Sigma_{ii}\)</span>, the diagonal elements, and not a full matrix <span class="math inline">\(\Sigma\)</span>.</p>
 <p>Naive Bayes classifiers are particularly important to the history of ML as they were used for one of the first and most influential spam filters.</p>
 </section><section id="linear-discriminant-analysis" class="level3"><h3 class="anchored" data-anchor-id="linear-discriminant-analysis">Linear Discriminant Analysis,</h3>
 <p>Generalizing a bit, we can relax the assumption that the covariance matrix <span class="math inline">\(\Sigma\)</span> is diagonal and only assume that it is constant across the two classes. Here,</p>

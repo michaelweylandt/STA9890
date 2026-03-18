@@ -204,7 +204,7 @@ window.Quarto = {
   <li><a href="#svm-the-geometric-viewpoint" id="toc-svm-the-geometric-viewpoint" class="nav-link" data-scroll-target="#svm-the-geometric-viewpoint">SVM: The Geometric Viewpoint</a></li>
   </ul>
 </li>
-  <li><a href="#non-linear-regression" id="toc-non-linear-regression" class="nav-link" data-scroll-target="#non-linear-regression">Non-Linear Regression</a></li>
+  <li><a href="#non-linear-methods" id="toc-non-linear-methods" class="nav-link" data-scroll-target="#non-linear-methods">Non-Linear Methods</a></li>
   <li>
 <a href="#non-linearity-via-linear-combination-of-non-linear-parts" id="toc-non-linearity-via-linear-combination-of-non-linear-parts" class="nav-link" data-scroll-target="#non-linearity-via-linear-combination-of-non-linear-parts">Non-Linearity via Linear Combination of Non-Linear Parts</a>
   <ul class="collapse">
@@ -260,7 +260,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\Hcal}{\mathcal{H}} \newcommand{\Ncal}{\mathcal{N}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Ocal}{\mathcal{O}} \newcommand{\Pcal}{\mathcal{P}} \newcommand{\Ucal}{\mathcal{U}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bf}{\mathbf{f}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Tr}{\text{Tr}}\]</span></p>
 <section id="discriminative-classifiers" class="level2"><h2 class="anchored" data-anchor-id="discriminative-classifiers">Discriminative Classifiers</h2>
 <p>This week we begin to examine <em>discriminative</em> classifiers. Unlike generative classifiers, which attempt to model <span class="math inline">\(\bx\)</span> as a function of <span class="math inline">\(y\)</span> and then use Bayes’ rule to <em>invert</em> that model, discriminative classifiers take the more standard approach of directly modeling <span class="math inline">\(y\)</span> as a function of <span class="math inline">\(\bx\)</span>. This is the approach you have already seen in our various variants of OLS.</p>
 <section id="why-not-accuracy-maximization" class="level3"><h3 class="anchored" data-anchor-id="why-not-accuracy-maximization">Why Not Accuracy Maximization?</h3>
@@ -308,11 +308,11 @@ window.Quarto = {
 <p>Returning to our default sigmoid, we now have the model <span class="math display">\[ y | \bx \sim \text{Bernoulli}\left(\frac{1}{1+e^{-\bx^{\top}\bbeta}}\right)\]</span> This model is well-posed (in the sense that the distribution ‘fits’ the data and we are guaranteed never to put invalid parameters in) but we don’t yet have a way to use it as a loss function.</p>
 <section id="from-model-to-loss-function" class="level3"><h3 class="anchored" data-anchor-id="from-model-to-loss-function">From Model to Loss Function</h3>
 <p>We can build a loss-function by relying on the <em>maximum likelihood</em> principle. The maximum likelihood principle is a core idea of statistics - and one you will explore in much greater detail in other courses - but, in essence, it posits that we should use the (negative) PMF or PDF as our loss function. Specifically, the ML principle says that, if many models could fit our data, we should pick the one that makes our data <em>most probable</em> (as determined by the PMF/PDF).</p>
-<p>Before we work out the ML estimator (MLE) for our classification model, let’s take a brief detour and look at the MLE for (Gaussian) regression. Specifically, if we assume a model <span class="math display">\[y \sim \mathcal{N}(\bx^{\top}\bbeta, \sigma^2)\]</span> for known <span class="math display">\[\sigma^2\]</span>, the PDF of the training point <span class="math inline">\((\bx_1, y_1)\)</span> is</p>
+<p>Before we work out the ML estimator (MLE) for our classification model, let’s take a brief detour and look at the MLE for (Gaussian) regression. Specifically, if we assume a model <span class="math display">\[y \sim \Ncal(\bx^{\top}\bbeta, \sigma^2)\]</span> for known <span class="math display">\[\sigma^2\]</span>, the PDF of the training point <span class="math inline">\((\bx_1, y_1)\)</span> is</p>
 <p><span class="math display">\[p(y_1 | \bx_1) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_1 - \bx_1^{\top}\bbeta\|_2^2}{2\sigma^2}\right\}\]</span></p>
 <p>If we have a set of <span class="math inline">\(n\)</span> IID training data points, the joint PDF can be obtained by multiplying together PDFs (IID is great!) to get</p>
 <p><span class="math display">\[\begin{align*}
-p(\mathcal{D}_{\text{train}}) &amp;= \prod_{i=1}^n p(y_i | \bx_i) \\
+p(\Dcal_{\text{train}}) &amp;= \prod_{i=1}^n p(y_i | \bx_i) \\
 &amp;= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_i - \bx_i^{\top}\bbeta\|_2^2}{2\sigma^2}\right\} \\
 &amp;= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|y_i - \bx_i^{\top}\bbeta\|_2^2\right\} \\
 &amp;= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2\right\} \\
@@ -323,8 +323,8 @@ p(\mathcal{D}_{\text{train}}) &amp;= \prod_{i=1}^n p(y_i | \bx_i) \\
 <li>By convention, we like to <em>minimize</em> more than <em>maximize</em>, specifically when dealing with convex approaches, so we will introduce a sign flip.</li>
 </ol>
 <p><span class="math display">\[\begin{align*}
-\hat{\bbeta} &amp;= \argmax_{\bbeta} p(\mathcal{D}_{\text{train}}) \\
-             &amp;= \argmax_{\bbeta} \log p(\mathcal{D}_{\text{train}}) \\
+\hat{\bbeta} &amp;= \argmax_{\bbeta} p(\Dcal_{\text{train}}) \\
+             &amp;= \argmax_{\bbeta} \log p(\Dcal_{\text{train}}) \\
              &amp;= \argmax_{\bbeta} \log\left( (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|\by - \bX\bbeta\|_2^2\right\}\right) \\
              &amp;= \argmax_{\bbeta} -\frac{n}{2}\log(2\pi\sigma^2) -\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
              &amp;= \argmin_{\bbeta} \frac{n}{2}\log(2\pi\sigma^2) + \frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
@@ -388,11 +388,11 @@ Attaching package: 'CVXR'</code></pre>
 
     power</code></pre>
 </div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Variable-class.html">Variable</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Variable-class.html">Variable</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span><span class="va">eta</span>  <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span></span>
 <span></span>
-<span><span class="va">objective</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">eta</span> <span class="op">+</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/logistic.html">logistic</a></span><span class="op">(</span><span class="va">eta</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">problem</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">objective</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">eta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/logistic.html">logistic</a></span><span class="op">(</span><span class="va">eta</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">problem</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">problem</span><span class="op">)</span><span class="op">$</span><span class="fu">getValue</span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -404,19 +404,19 @@ Attaching package: 'CVXR'</code></pre>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">0.8519181</td>
+<td style="text-align: right;">1.0325356</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1.7769173</td>
+<td style="text-align: right;">2.1793484</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2.8098149</td>
+<td style="text-align: right;">3.0161457</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">-0.2796373</td>
+<td style="text-align: right;">-0.0857759</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">0.0841412</td>
+<td style="text-align: right;">-0.2758691</td>
 </tr>
 </tbody>
 </table>
@@ -432,19 +432,19 @@ glm(formula = y ~ X + 0, family = binomial)
 
 Coefficients:
    Estimate Std. Error z value Pr(&gt;|z|)    
-X1  0.85192    0.14814   5.751 8.88e-09 ***
-X2  1.77692    0.20814   8.537  &lt; 2e-16 ***
-X3  2.80981    0.27402  10.254  &lt; 2e-16 ***
-X4 -0.27964    0.13797  -2.027   0.0427 *  
-X5  0.08414    0.13505   0.623   0.5333    
+X1  1.03254    0.16129   6.402 1.54e-10 ***
+X2  2.17935    0.23030   9.463  &lt; 2e-16 ***
+X3  3.01615    0.29303  10.293  &lt; 2e-16 ***
+X4 -0.08578    0.15175  -0.565   0.5719    
+X5 -0.27587    0.14054  -1.963   0.0497 *  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
     Null deviance: 693.15  on 500  degrees of freedom
-Residual deviance: 345.18  on 495  degrees of freedom
-AIC: 355.18
+Residual deviance: 294.76  on 495  degrees of freedom
+AIC: 304.76
 
 Number of Fisher Scoring iterations: 6</code></pre>
 </div>
@@ -458,33 +458,33 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_hat</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.826</code></pre>
+<pre><code>[1] 0.884</code></pre>
 </div>
 </div>
 <p>Now that we have this toolkit built up, we can also easily apply ridge and lasso penalization:</p>
 <div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penalty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">lasso_problem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span> <span class="op">+</span> <span class="fl">9</span> <span class="op">*</span> <span class="va">penalty</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">lasso_problem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span> <span class="op">+</span> <span class="fl">9</span> <span class="op">*</span> <span class="va">penalty</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">beta_hat_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">lasso_problem</span><span class="op">)</span><span class="op">$</span><span class="fu">getValue</span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small"><tbody>
 <tr class="odd">
-<td style="text-align: right;">0.5400921</td>
+<td style="text-align: right;">0.6505892</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1.1934817</td>
+<td style="text-align: right;">1.4994013</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2.0219363</td>
+<td style="text-align: right;">2.0969206</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">-0.0928926</td>
-</tr>
-<tr class="odd">
 <td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.0727027</td>
 </tr>
 </tbody></table>
 </div>
@@ -579,11 +579,11 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://cvxr.rbind.io">CVXR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Variable-class.html">Variable</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Variable-class.html">Variable</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span><span class="va">eta</span>  <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta</span></span>
 <span></span>
-<span><span class="va">objective</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/pos.html">pos</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">eta</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/norm2.html">norm2</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
-<span><span class="va">problem</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://www.cvxgrp.org/CVXR/reference/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">objective</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/pos.html">pos</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">eta</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/norm2.html">norm2</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="va">problem</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Problem-class.html">Problem</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/CVXR/man/Minimize-class.html">Minimize</a></span><span class="op">(</span><span class="va">objective</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">beta_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="va">problem</span><span class="op">)</span><span class="op">$</span><span class="fu">getValue</span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -591,7 +591,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">beta_hat</span><span class="op">)</span> <span class="op">==</span> <span class="va">y</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.876</code></pre>
+<pre><code>[1] 0.848</code></pre>
 </div>
 </div>
 <p>This is comparable to what we got for logistic regression even though:</p>
@@ -602,9 +602,9 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>So, all in all, pretty impressive.</p>
 <p>SVMs are a remarkably powerful and general classification technology. Before we move past them, we will now take a second perspective focusing on the <em>geometry</em> of SVMs.</p>
 </section><section id="svm-the-geometric-viewpoint" class="level3"><h3 class="anchored" data-anchor-id="svm-the-geometric-viewpoint">SVM: The Geometric Viewpoint</h3>
-</section></section><section id="non-linear-regression" class="level2"><h2 class="anchored" data-anchor-id="non-linear-regression">Non-Linear Regression</h2>
+</section></section><section id="non-linear-methods" class="level2"><h2 class="anchored" data-anchor-id="non-linear-methods">Non-Linear Methods</h2>
 <p>We have now developed a variety of tools for linear regression and for linear classification. These work well - particularly in low SNR (high dimension / low sample size) scenarios - but they have a necessarily limited capacity. When we have lots of training data, how can we go further? By using <em>non-linear</em> methods of course!</p>
-<p>In this section we introduce several methods for non-linear regression. We also pause to consider <em>when</em> non-linear methods can actually be expected to outperform linear methods.</p>
+<p>In this section we introduce several methods for non-linear regression. These techniques can all be easily adapted to classification, but we’ll develop them for regression as the math is a bit simpler. We also pause to consider <em>when</em> non-linear methods can actually be expected to outperform linear methods.</p>
 <p>Also note that we are arguably being a bit ‘sloppy’ about what we mean by ‘linear’ methods. For purposes of these notes, we define a ‘linear’ method as one where the fitted model has a linear response to changes in the inputs; formally, one where</p>
 <p><span class="math display">\[\frac{\partial y}{\partial x_i} = \beta_i \text{ (a constant) for all } i \in \{1, \dots, p\}\]</span></p>
 <p>This definition includes things like best-subsets and lasso regression, which are not linear functions of <span class="math inline">\(\by\)</span>, but excludes things like polynomial regression.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> In the above definition, each <span class="math inline">\(\beta_i\)</span> is essentially a regression coefficient, and values of <span class="math inline">\(i\)</span> where <span class="math inline">\(\beta_i = 0\)</span> are non-selected variables if we are using a sparse method.</p>
@@ -613,7 +613,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p><span class="math display">\[ \E[y | \bx] \approx \langle \bx, \hat{\bbeta} \rangle = \sum_{i=1}^p x_i \hat{\beta}_i\]</span></p>
 <p>For situations where the relationship is nearly (or even truly) linear, this approximation can be quite useful and good estimates of the <span class="math inline">\(\beta_i\)</span> coefficients can lead to accurate estimates of <span class="math inline">\(\E[y | \bx]\)</span>, and ultimately accurate prediction of test set response <span class="math inline">\(\by\)</span>. Using the bias-variance decomposition, we have seen that it is often worthwhile to accept a bit of bias in estimation of each <span class="math inline">\(\beta_i\)</span> if it is compensated by a worthwhile reduction in the variance of <span class="math inline">\(\beta_i\)</span>.</p>
 <p>We can further refine this equality by decomposing bias a bit further:</p>
-<p><span class="math display">\[\text{MSE} = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2\]</span></p>
+<p><span class="math display">\[\MSE = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2\]</span></p>
 <p>Here, we have decomposed <span class="math inline">\(\text{Bias}^2\)</span> into two terms:</p>
 <ul>
 <li>
@@ -634,11 +634,11 @@ f(\bx) &amp;\approx f(\overline{\bx}) + \sum_{i=1}^p \left. \frac{\partial f}{\p
 &amp;= \underbrace{\left(f(\overline{\bx}) - \sum_{i=1}^p \left.\frac{\partial f}{\partial x_i}\right|_{x_i=\overline{x}_i}\overline{x}_i\right)}_{=\beta_0} + \sum_{i=1}^p \underbrace{\left.\frac{\partial f}{\partial x_i}\right|_{x_i=\overline{x}_i}}_{=\beta_i} x_i\\
 &amp;= \beta_0 + \sum_{i=1}^p x_i \beta_i
 \end{align*}\]</span></p>
-<p>so we see that the regression coefficients are more-or-less the (suitably-averaged) partial derivatives of <span class="math inline">\(f\)</span> while the intercept is the value of <span class="math inline">\(f\)</span> at the center of our expansion (<span class="math inline">\(f(\overline{\bx})\)</span>) plus some differential adjustments. Note that, if the variables <span class="math inline">\(\bX\)</span> are centered so that <span class="math inline">\(\E[\bX] = \mathbf{0}\)</span>, the intercept is exactly the average value of <span class="math inline">\(f\)</span>, as we would expect.</p>
+<p>so we see that the regression coefficients are more-or-less the (suitably-averaged) partial derivatives of <span class="math inline">\(f\)</span> while the intercept is the value of <span class="math inline">\(f\)</span> at the center of our expansion (<span class="math inline">\(f(\overline{\bx})\)</span>) plus some differential adjustments. Note that, if the variables <span class="math inline">\(\bX\)</span> are centered so that <span class="math inline">\(\E[\bX] = \bzero\)</span>, the intercept is exactly the average value of <span class="math inline">\(f\)</span>, as we would expect.</p>
 <p>Clearly, this linear approximation will do better in the situations where Taylor expansions generally perform better: when i) the derivative of <span class="math inline">\(f\)</span> is roughly constant and ii) the higher order terms are small. This makes sense: if <span class="math inline">\(f\)</span> is very-close-to-linear, there is minimal loss from fitting a linear approximation to <span class="math inline">\(f\)</span>; if <span class="math inline">\(f\)</span> is very non-linear, however, a linear approximation can only be be so good, and we are saddled with significant model bias.</p>
-<p>If we want to mitigate some of that model bias, we can choose to use a higher-order Taylor series. If we examine a second order Taylor series, we get a similar approximation as before, where <span class="math inline">\(\mathcal{H}\)</span> denotes the <em>Hessian</em> matrix of second derivatives:</p>
+<p>If we want to mitigate some of that model bias, we can choose to use a higher-order Taylor series. If we examine a second order Taylor series, we get a similar approximation as before, where <span class="math inline">\(\Hcal\)</span> denotes the <em>Hessian</em> matrix of second derivatives:</p>
 <p><span class="math display">\[\begin{align*}
-f(\bx) &amp;\approx f(\overline{\bx}) + \nabla_f(\bx_0)^{\top}(\bx - \overline{\bx}) + \frac{1}{2}(\bx - \overline{\bx})^{\top}\mathcal{H}_f(\overline{\bx})(\bx - \overline{\bx})^{\top}
+f(\bx) &amp;\approx f(\overline{\bx}) + \nabla_f(\bx_0)^{\top}(\bx - \overline{\bx}) + \frac{1}{2}(\bx - \overline{\bx})^{\top}\Hcal_f(\overline{\bx})(\bx - \overline{\bx})^{\top}
 \end{align*}\]</span></p>
 <p>After some rearrangement this becomes:</p>
 <p><span class="math display">\[f(\bx) \approx \beta_0 + \sum_{i=1}^p \frac{\partial f}{\partial x_i} x_i +\sum_{i=1}^p \frac{\partial^2 f}{\partial x_i^2} x_i^2 +  \sum_{\substack{i, j = 1 \\i \neq j}}^p \frac{\partial^2 f}{\partial x_i \partial x_j} x_ix_j\]</span></p>
@@ -815,9 +815,9 @@ locfit(formula = y ~ lp(x))
 Number of data points:  25 
 Independent variables:  x 
 Evaluation structure: Rectangular Tree 
-Number of evaluation points:  7 
+Number of evaluation points:  5 
 Degree of fit:  2 
-Fitted Degrees of Freedom:  5.155 </code></pre>
+Fitted Degrees of Freedom:  4.848 </code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
@@ -848,9 +848,9 @@ locfit(formula = y ~ lp(x, deg = 4))
 Number of data points:  25 
 Independent variables:  x 
 Evaluation structure: Rectangular Tree 
-Number of evaluation points:  7 
+Number of evaluation points:  5 
 Degree of fit:  4 
-Fitted Degrees of Freedom:  6.946 </code></pre>
+Fitted Degrees of Freedom:  6.469 </code></pre>
 </div>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
@@ -876,9 +876,9 @@ locfit(formula = y ~ lp(x, nn = 0.2, deg = 4))
 Number of data points:  25 
 Independent variables:  x 
 Evaluation structure: Rectangular Tree 
-Number of evaluation points:  24 
+Number of evaluation points:  28 
 Degree of fit:  4 
-Fitted Degrees of Freedom:  18.18 </code></pre>
+Fitted Degrees of Freedom:  21.586 </code></pre>
 </div>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_grid</span>, <span class="va">Ey_grid</span><span class="op">)</span></span>
@@ -902,9 +902,9 @@ Fitted Degrees of Freedom:  18.18 </code></pre>
 loess(formula = y ~ x)
 
 Number of Observations: 25 
-Equivalent Number of Parameters: 4.82 
-Residual Standard Error: 3.38 
-Trace of smoother matrix: 5.3  (exact)
+Equivalent Number of Parameters: 4.41 
+Residual Standard Error: 2.846 
+Trace of smoother matrix: 4.84  (exact)
 
 Control settings:
   span     :  0.75 
@@ -929,7 +929,7 @@ drop.square:  FALSE </code></pre>
 </section><section id="spline-regression-additive-models" class="level3"><h3 class="anchored" data-anchor-id="spline-regression-additive-models">Spline Regression (Additive Models)</h3>
 </section><section id="splines" class="level3"><h3 class="anchored" data-anchor-id="splines">Splines</h3>
 <p>We can generalize this idea a bit using splines. Splines are functions that solve a penalized approximation problem:</p>
-<p><span class="math display">\[\hat{f} = \text{arg min}_{f} \frac{1}{2n} \|y - f(x)\|_2^2 + \lambda \int |f''(x)|^2 \text{d}x\]</span></p>
+<p><span class="math display">\[\hat{f} = \argmin_{f} \frac{1}{2n} \|y - f(x)\|_2^2 + \lambda \int |f''(x)|^2 \text{d}x\]</span></p>
 <p>Here we are saying we’ll take <em>any function</em> (not just a polynomial) that achieves the optimal trade-off between data fit (first / loss term) and not being too rough (second / penalty term).</p>
 <p>Why is this the right penalty to use? In essence, we are trying to penalize ‘deviation from linearity’ and since linear functions have second derivative 0 (by definition) the integral of the second derivative gives us a measure of non-linearity.</p>
 <p>In some remarkable work, <a href="https://en.wikipedia.org/wiki/Grace_Wahba">Grace Wahba</a> and co-authors showed that the solutions to that optimization problem are piecewise polynomials with a few additional constraints - these functions are <em>splines</em>. In addition to piecewise polynomialness, splines also guarantee:</p>
@@ -1065,18 +1065,18 @@ y ~ s(x)
 
 Parametric coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  -1.9341     0.4725  -4.093 0.000706 ***
+(Intercept)  -4.2915     0.4823  -8.898 4.78e-08 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Approximate significance of smooth terms:
-      edf Ref.df     F p-value    
-s(x) 6.33   7.42 101.9  &lt;2e-16 ***
+       edf Ref.df     F p-value    
+s(x) 5.808  6.925 121.4  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-R-sq.(adj) =  0.969   Deviance explained = 97.8%
-GCV = 7.8977  Scale est. = 5.5822    n = 25</code></pre>
+R-sq.(adj) =  0.972   Deviance explained = 97.9%
+GCV = 7.9909  Scale est. = 5.8149    n = 25</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1124,12 +1124,12 @@ GCV = 7.8977  Scale est. = 5.5822    n = 25</code></pre>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">beta_hat_ridge</span>, <span class="va">beta_hat_ridge_alt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            [,1]        [,2]
-[1,]  1.18446568  1.18446568
-[2,] -0.38728736 -0.38728736
-[3,]  0.22174487  0.22174487
-[4,]  0.01735201  0.01735201
-[5,]  0.38681774  0.38681774</code></pre>
+<pre><code>           [,1]       [,2]
+[1,]  1.1679876  1.1679876
+[2,]  0.2056050  0.2056050
+[3,]  0.7831282  0.7831282
+[4,]  0.5725460  0.5725460
+[5,] -0.1197009 -0.1197009</code></pre>
 </div>
 </div>
 <p>So they are the same! But why did we do this?</p>
@@ -1195,14 +1195,14 @@ Attaching package: 'kernlab'</code></pre>
 <span><span class="va">krr_MSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fu">krr</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">krr_MSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4917154</code></pre>
+<pre><code>[1] 0.4680494</code></pre>
 </div>
 </div>
 <p>This is <em>better</em> than the OLS MSE:</p>
 <div class="cell">
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4929981</code></pre>
+<pre><code>[1] 0.4151421</code></pre>
 </div>
 </div>
 <p>Why? How is this not a contradiction of everything said before.</p>
@@ -1247,7 +1247,7 @@ Attaching package: 'kernlab'</code></pre>
 <p>If we compute distances this way for a given <span class="math inline">\(\kappa\)</span>, we get kernel KNN. This is particularly nice when we have kernels that capture specific behaviors (<em>e.g.</em>, periodic or embedded categorical) that we can’t really treat as Euclidean.</p>
 </section></section><section id="trade-offs-between-linear-and-non-linear-methods" class="level2"><h2 class="anchored" data-anchor-id="trade-offs-between-linear-and-non-linear-methods">Trade-Offs between Linear and Non-Linear Methods</h2>
 <p>Having developed some tools for non-linear regression, let’s step back and ask whether they are worthwhile. Recall our error decomposition:</p>
-<p><span class="math display">\[\text{MSE} = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2\]</span></p>
+<p><span class="math display">\[\MSE = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2\]</span></p>
 <p>We have already discussed how tools like ridge and lasso let us remove variance at the cost of (estimation) bias.</p>
 <p>We argued that this was a worthwhile trade when the problem had a lot of ‘innate’ variance, either from having large noise variance (<span class="math inline">\(\V[\epsilon] \gg 0\)</span>) or from having many features. In particular, use of some sort of shrinkage (ridge or lasso penalization) was essential in the ‘high-dimensional’ case (<span class="math inline">\(p &gt; n\)</span>) where OLS had so much variance that it was not even uniquely defined. We also argued that, as we got more and more data (<span class="math inline">\(n \to \infty\)</span>), the variance took care of itself in the usual statistical way.</p>
 <p>These lessons generalize to the non-linear vs linear debate as well. Choosing to use a linear model is itself a variance reducing choice - there are ‘more’ curves than lines in some sense. If we restrict our attention to linear models only, we are potentially accepting some Model Bias, again with a hope of reducing variance to get overall better performance. As such, the same intuition as above applies: linear models are preferred when variance is the primary concern, either from noisy data or from small data; as we get more data, variance decreases naturally, so going to non-linear models reduces bias, giving overall smaller error.</p>

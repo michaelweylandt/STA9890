@@ -152,7 +152,7 @@ by the PMF/PDF).
 Before we work out the ML estimator (MLE) for our classification 
 model,  let's take a brief detour and look at the MLE for 
 (Gaussian) regression. Specifically, if we assume a model 
-$$y \sim \mathcal{N}(\bx^{\top}\bbeta, \sigma^2)$$ for known 
+$$y \sim \Ncal(\bx^{\top}\bbeta, \sigma^2)$$ for known 
 $$\sigma^2$$, the PDF of the training point $(\bx_1, y_1)$ is
 
 $$p(y_1 | \bx_1) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_1 - \bx_1^{\top}\bbeta\|_2^2}{2\sigma^2}\right\}$$
@@ -161,7 +161,7 @@ If we have a set of $n$ IID training data points, the joint PDF can
 be obtained by multiplying together PDFs (IID is great!) to get
 
 $$\begin{align*}
-p(\mathcal{D}_{\text{train}}) &= \prod_{i=1}^n p(y_i | \bx_i) \\
+p(\Dcal_{\text{train}}) &= \prod_{i=1}^n p(y_i | \bx_i) \\
 &= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_i - \bx_i^{\top}\bbeta\|_2^2}{2\sigma^2}\right\} \\
 &= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|y_i - \bx_i^{\top}\bbeta\|_2^2\right\} \\
 &= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2\right\} \\
@@ -180,8 +180,8 @@ ii) By convention, we like to _minimize_ more than _maximize_,
     will introduce a sign flip.
     
 $$\begin{align*}
-\hat{\bbeta} &= \argmax_{\bbeta} p(\mathcal{D}_{\text{train}}) \\
-             &= \argmax_{\bbeta} \log p(\mathcal{D}_{\text{train}}) \\
+\hat{\bbeta} &= \argmax_{\bbeta} p(\Dcal_{\text{train}}) \\
+             &= \argmax_{\bbeta} \log p(\Dcal_{\text{train}}) \\
              &= \argmax_{\bbeta} \log\left( (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|\by - \bX\bbeta\|_2^2\right\}\right) \\
              &= \argmax_{\bbeta} -\frac{n}{2}\log(2\pi\sigma^2) -\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
              &= \argmin_{\bbeta} \frac{n}{2}\log(2\pi\sigma^2) + \frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
@@ -511,7 +511,7 @@ TRUE # To ensure knitr activates
 ```
 
 
-## Non-Linear Regression
+## Non-Linear Methods
 
 We have now developed a variety of tools for linear regression and
 for linear classification. These work well - particularly in
@@ -519,9 +519,10 @@ low SNR (high dimension / low sample size) scenarios - but they
 have a necessarily limited capacity. When we have lots of training
 data, how can we go further? By using _non-linear_ methods of course!
 
-In this section we introduce several methods for non-linear regression. 
-We also pause to consider _when_ non-linear methods can actually be
-expected to outperform linear methods. 
+In this section we introduce several methods for non-linear regression. These
+techniques can all be easily adapted to classification, but we'll develop them
+for regression as the math is a bit simpler. We also pause to consider _when_ 
+non-linear methods can actually be expected to outperform linear methods. 
 
 Also note that we are arguably being a bit 'sloppy' about 
 what we mean by 'linear' methods. For purposes of these notes,
@@ -565,7 +566,7 @@ a worthwhile reduction in the variance of $\beta_i$.
 
 We can further refine this equality by decomposing bias a bit further: 
 
-$$\text{MSE} = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2$$
+$$\MSE = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2$$
 
 Here, we have decomposed $\text{Bias}^2$ into two terms: 
 
@@ -609,7 +610,7 @@ so we see that the regression coefficients are more-or-less the
 (suitably-averaged) partial derivatives of $f$ while the intercept
 is the value of $f$ at the center of our expansion ($f(\overline{\bx})$)
 plus some differential adjustments. Note that, if the variables $\bX$ are
-centered so that $\E[\bX] = \mathbf{0}$, the intercept is exactly the
+centered so that $\E[\bX] = \bzero$, the intercept is exactly the
 average value of $f$, as we would expect.
 
 Clearly, this linear approximation will do better in the situations
@@ -622,11 +623,11 @@ significant model bias.
 
 If we want to mitigate some of that model bias, we can choose to use
 a higher-order Taylor series. If we examine a second order Taylor series, 
-we get a similar approximation as before, where $\mathcal{H}$ denotes the _Hessian_
+we get a similar approximation as before, where $\Hcal$ denotes the _Hessian_
 matrix of second derivatives: 
 
 $$\begin{align*}
-f(\bx) &\approx f(\overline{\bx}) + \nabla_f(\bx_0)^{\top}(\bx - \overline{\bx}) + \frac{1}{2}(\bx - \overline{\bx})^{\top}\mathcal{H}_f(\overline{\bx})(\bx - \overline{\bx})^{\top}
+f(\bx) &\approx f(\overline{\bx}) + \nabla_f(\bx_0)^{\top}(\bx - \overline{\bx}) + \frac{1}{2}(\bx - \overline{\bx})^{\top}\Hcal_f(\overline{\bx})(\bx - \overline{\bx})^{\top}
 \end{align*}$$
 
 After some rearrangement this becomes: 
@@ -897,7 +898,7 @@ lines(x_grid, y_hat, col="red4")
 
 We can generalize this idea a bit using splines. Splines are functions that solve a penalized approximation problem: 
 
-$$\hat{f} = \text{arg min}_{f} \frac{1}{2n} \|y - f(x)\|_2^2 + \lambda \int |f''(x)|^2 \text{d}x$$
+$$\hat{f} = \argmin_{f} \frac{1}{2n} \|y - f(x)\|_2^2 + \lambda \int |f''(x)|^2 \text{d}x$$
 
 Here we are saying we'll take _any function_ (not just a polynomial) 
 that achieves the optimal trade-off between data fit (first / loss term)
@@ -1227,7 +1228,7 @@ Euclidean.
 Having developed some tools for non-linear regression, let's step back and ask
 whether they are worthwhile. Recall our error decomposition: 
 
-$$\text{MSE} = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2$$
+$$\MSE = \text{Irreducible Error} + \text{Variance} + \text{Model Bias}^2 + \text{Estimation Bias}^2$$
 
 We have already discussed how tools like ridge and lasso let us remove variance
 at the cost of (estimation) bias. 

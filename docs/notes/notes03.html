@@ -179,7 +179,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\bbeta}{\mathbb{\beta}} \newcommand{\bone}{\mathbb{1}} \newcommand{\bzero}{\mathbb{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbb{C}} \newcommand{\bD}{\mathbb{D}} \newcommand{\bU}{\mathbb{U}} \newcommand{\bV}{\mathbb{V}} \newcommand{\bI}{\mathbb{I}} \newcommand{\bH}{\mathbb{H}} \newcommand{\bW}{\mathbb{W}} \newcommand{\bK}{\mathbb{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\Hcal}{\mathcal{H}} \newcommand{\Ncal}{\mathcal{N}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Ocal}{\mathcal{O}} \newcommand{\Pcal}{\mathcal{P}} \newcommand{\Ucal}{\mathcal{U}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bf}{\mathbf{f}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Tr}{\text{Tr}}\]</span></p>
 <p>Today:</p>
 <ul>
 <li>OLS via ERM
@@ -273,33 +273,33 @@ f_* &amp;= \text{True Regression Function - Fixed} \\
 \tilde{f} &amp;= \text{Best Possible Guess - Fixed} \\
 \hat{f} &amp;= \text{Actual Guess Given Limited Data - Random}
 \end{align*}\]</span></p>
-<p>Note that, in average over training sets, <span class="math inline">\(\mathbb{E}[\hat{f}] = \tilde{f}\)</span>, but <span class="math inline">\(\mathbb{E}[\hat{f}] \neq f_*\)</span>. The systematic error between <span class="math inline">\(f_*\)</span> and <span class="math inline">\(\tilde{f}\)</span> is not due to data-randomness.</p>
-<p>Working these all out, we need to look into the expected error taking expectation over the (random) training data <span class="math inline">\(\mathcal{D}\)</span> and the random noise in the test observation, <span class="math inline">\(\epsilon\)</span>:</p>
+<p>Note that, in average over training sets, <span class="math inline">\(\E[\hat{f}] = \tilde{f}\)</span>, but <span class="math inline">\(\E[\hat{f}] \neq f_*\)</span>. The systematic error between <span class="math inline">\(f_*\)</span> and <span class="math inline">\(\tilde{f}\)</span> is not due to data-randomness.</p>
+<p>Working these all out, we need to look into the expected error taking expectation over the (random) training data <span class="math inline">\(\Dcal\)</span> and the random noise in the test observation, <span class="math inline">\(\epsilon\)</span>:</p>
 <p><span class="math display">\[\begin{align*}
-\mathbb{E}_{\mathcal{D}, \epsilon}[(Y - \hat{Y})^2] &amp;= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) + \epsilon - \hat{f}(x))^2] \\
-&amp;= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x) + \epsilon)^2] \\
-&amp;= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x))^2 + 2\epsilon(f(x) - \hat{f}(x))+ \epsilon^2] \\ \\
-&amp;= \mathbb{E}_{\mathcal{D}, \epsilon}[(f(x) - \hat{f}(x))^2] + 2\mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon(f(x) - \hat{f}(x))]+ \mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon^2] \\ \\
-&amp;= \underbrace{\mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2]}_{\text{No Dependence on $\epsilon$}} + 2\underbrace{\mathbb{E}_{\mathcal{D}, \epsilon}[\epsilon(f(x) - \hat{f}(x))]}_{\text{Product of Two Independent Terms}}+ \underbrace{\mathbb{E}_{ \epsilon}[\epsilon^2]}_{\text{No Dependence on $\mathcal{D}$}} \\
-&amp;= \mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] + 2\underbrace{\mathbb{E}_{\epsilon}[\epsilon]}_{\text{No Dependence on $\mathcal{D}$}} * \underbrace{\mathbb{E}_{\mathcal{D}}(f(x) - \hat{f}(x))]}_{\text{No Dependence on $\epsilon$}}+ \mathbb{E}_{ \epsilon}[\epsilon^2] \\
-&amp;= \mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] + 2 * 0 *\mathbb{E}_{\mathcal{D}}(f(x) - \hat{f}(x))]+ \underbrace{\sigma^2}_{\text{Irreducible Error}} \\
+\E_{\Dcal, \epsilon}[(Y - \hat{Y})^2] &amp;= \E_{\Dcal, \epsilon}[(f(x) + \epsilon - \hat{f}(x))^2] \\
+&amp;= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x) + \epsilon)^2] \\
+&amp;= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x))^2 + 2\epsilon(f(x) - \hat{f}(x))+ \epsilon^2] \\ \\
+&amp;= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x))^2] + 2\E_{\Dcal, \epsilon}[\epsilon(f(x) - \hat{f}(x))]+ \E_{\Dcal, \epsilon}[\epsilon^2] \\ \\
+&amp;= \underbrace{\E_{\Dcal}[(f(x) - \hat{f}(x))^2]}_{\text{No Dependence on $\epsilon$}} + 2\underbrace{\E_{\Dcal, \epsilon}[\epsilon(f(x) - \hat{f}(x))]}_{\text{Product of Two Independent Terms}}+ \underbrace{\E_{ \epsilon}[\epsilon^2]}_{\text{No Dependence on $\Dcal$}} \\
+&amp;= \E_{\Dcal}[(f(x) - \hat{f}(x))^2] + 2\underbrace{\E_{\epsilon}[\epsilon]}_{\text{No Dependence on $\Dcal$}} * \underbrace{\E_{\Dcal}(f(x) - \hat{f}(x))]}_{\text{No Dependence on $\epsilon$}}+ \E_{ \epsilon}[\epsilon^2] \\
+&amp;= \E_{\Dcal}[(f(x) - \hat{f}(x))^2] + 2 * 0 *\E_{\Dcal}(f(x) - \hat{f}(x))]+ \underbrace{\sigma^2}_{\text{Irreducible Error}} \\
 \end{align*}\]</span></p>
 <p>So now let’s just take apart that first term. Note that, per above, the only random thing left is <span class="math inline">\(\hat{f}\)</span>:</p>
 <p><span class="math display">\[\begin{align*}
-\mathbb{E}_{\mathcal{D}}[(f(x) - \hat{f}(x))^2] &amp;= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x) + \tilde{f}(x) - \hat{f}(x))^2] \\
-&amp;= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x))^2 +2(f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))  +(\tilde{f}(x) - \hat{f}(x))^2]  \\
-&amp;= \mathbb{E}_{\mathcal{D}}[(f(x) - \tilde{f}(x))^2]+2\mathbb{E}_{\mathcal{D}}[((f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))]  +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))\mathbb{E}_{\mathcal{D}}[(\tilde{f}(x) - \hat{f}(x))]  +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))(\hat{f}(x) - \hat{f}(x)) +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x)) * 0 +\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&amp;= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
-&amp;= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\hat{f}(x) - \tilde{f}(x))^2]  \\
-&amp;= (f(x) - \tilde{f}(x))^2+\mathbb{E}_{\mathcal{D}}[((\hat{f}(x) - \mathbb{E}[\hat{f}](x))^2]  \\
+\E_{\Dcal}[(f(x) - \hat{f}(x))^2] &amp;= \E_{\Dcal}[(f(x) - \tilde{f}(x) + \tilde{f}(x) - \hat{f}(x))^2] \\
+&amp;= \E_{\Dcal}[(f(x) - \tilde{f}(x))^2 +2(f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))  +(\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= \E_{\Dcal}[(f(x) - \tilde{f}(x))^2]+2\E_{\Dcal}[((f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))]  +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))\E_{\Dcal}[(\tilde{f}(x) - \hat{f}(x))]  +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))(\hat{f}(x) - \hat{f}(x)) +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x)) * 0 +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\hat{f}(x) - \tilde{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\hat{f}(x) - \E[\hat{f}](x))^2]  \\
 &amp;= \text{Bias}^2 + \text{Variance}
 \end{align*}\]</span></p>
 <p>Putting everything together, we have</p>
 <p><span class="math display">\[\begin{align*}
-\mathbb{E}_{\mathcal{D}, \epsilon}[(Y - \hat{Y})^2] = \text{Bias}^2 + \text{Variance} + \sigma^2\end{align*}\]</span></p>
+\E_{\Dcal, \epsilon}[(Y - \hat{Y})^2] = \text{Bias}^2 + \text{Variance} + \sigma^2\end{align*}\]</span></p>
 <p>So the ‘two term’ formula is just the second derivation for the MSE of <span class="math inline">\(f - \hat{f}\)</span>, while the three-term formula is a combination of the two and gives the MSE for <span class="math inline">\(Y - \hat{Y}\)</span> .</p>
 
 
