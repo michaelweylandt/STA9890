@@ -4,7 +4,7 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\bX}{\mathbf{X}}\newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\P}{\mathbb{P}}\newcommand{\R}{\mathbb{R}} \newcommand{\by}{\mathbf{y}}\newcommand{\argmax}{\text{arg\,max}}\newcommand{\argmin}{\text{arg\,min}}$$
+{{< include _latex_defines.qmd >}}
 
 This week we begin to examine _discriminative_ classifiers. Unlike
 generative classifiers, which attempt to model $\bx$ as a function
@@ -12,31 +12,222 @@ of $y$ and then use Bayes' rule to _invert_ that model,
 discriminative classifiers take the more standard approach of 
 directly modeling $y$ as a function of $\bx$. This is the
 approach you have already seen in our various variants of OLS. 
+Having (temporarily) finished our discussion of regression, we now turn our 
+focus to *classification*. 
+
+## A Taxonomy of Classification
+
+Recall from before that we defined _regression_ as the subset of supervised
+learning where the response ($\by$) was a continuous variable, or at least one
+that is appropriate to model as such.[^effective_cont] By contrast, 
+*classification* considers $\by$ to take values in a discrete set. Though this
+restriction may feel limiting, it is actually quite powerful. We consider several
+different forms of classification, based on the *support* of $\by$: 
+
+[^effective_cont]: Consider, *e.g.*, predicting someone's annual tax liability.
+*Technically*, this is *discrete* since tax liabilities are rounded to the nearest
+dollar, but functionally it may as well be continuous. 
+
+- *Binary* classification: in this simplest case, $\by$ takes one of two values,
+  which we conventionally code as $\{0, 1\}$ or $\{-1, +1\}$, depending on which
+  makes the math easier. Note that the actual response need not be these numbers;
+  they are simply a mathematical convenience. 
+  
+  Examples of binary classification include: 
+  
+  - Does an incoming student graduate within the next 6 years or no?
+  - Does a patient have a given disease? 
+  - Is there a dog present in an image? 
+  - Is this applicant qualified for a job? 
+  
+  Note that, in at least two of these, the underlying question is (arguably)
+  not quite so binary, but we may choose to treat it as such. In particular,
+  when assessing onset of a disease, the actual impairment to the patient is 
+  continuous, but it is common in medical practice to "binarize" the outcome. 
+  Any of you with aging family members know that cognitive decline occurs long
+  before it's 'officially' Alzheimer's. Similarly, qualification for a job
+  is perhaps best understood as a continuous (or even purely comparative)
+  quantity "Is A more qualified than B?" but we chooes to binarize it when
+  deciding to whom a job offer should be made. 
+  
+  Recalling your probability theory, there is (essentially) only one distribution
+  on $\{0, 1\}$, the Bernoulli, so this scenario typically has the cleanest and
+  simplest mathematics. 
+  
+- *Multiclass* classification: in this case, $\by$ takes values in a set of 
+  finite and known, but potentially large, set of outcomes, which we will
+  call $\Ycal$. Before about 20 years ago, multiclass problems took 
+  $|\Ycal|$ to be not much larger than 2, *e.g.*, which blood type does
+  a sample match or what language is a text sample written in, but much of the 
+  modern practical success of machine learning comes from the ability to treat 
+  *very large* outcome sets $\Ycal$. 
+  
+  For instance, modern computer vision (CV) has moved beyond far simple binary
+  classification: 
+  
+  {{< video https://www.youtube.com/watch?v=ACmydtFDTGs >}}
+  
+  The famed[`ImageNet`](https://en.wikipedia.org/wiki/ImageNet) benchmark data
+  set has over 20,000 classes (arranged with additional structure) and modern
+  data sets include even more. This can be contrasted with the older 
+  [`MNIST`](https://en.wikipedia.org/wiki/MNIST_database) data set which 
+  collects only ten handwritten digits.
+  
+  Beyond CV, large multiclass classification has also revolutionized text modeling: 
+  when a chatbot generates text, it selects the next word from a large but finite
+  set of English words. 
+  
+  Just like binary classification is rooted in the Bernoulli distribution, 
+  multiclass classification is rooted in the [categorical
+  distribution](https://en.wikipedia.org/wiki/Categorical_distribution). When
+  applied to a large class of outcomes, the categorical distribution becomes a
+  [multinomial](https://en.wikipedia.org/wiki/Multinomial_distribution), 
+  *cf* Bernoulli to binomial, so multiclass classification is also frequently
+  called *multinomial* classification. 
+  
+While our main focus is on *binary* and *multiclass* problems, it is worth noting
+some additional "modes" of classification. 
+
+- *Ordinal* classification: in this case, $\Ycal$ is an _ordered_ set. The most
+  common form of ordinal classification is the ubiquitous 
+  [*Likert scale*](https://en.wikipedia.org/wiki/Likert_scale) which
+  you have certainly encountered any time you have filled out a customer survey:
+  
+  - *Strongly Agree*
+  - *Agree*
+  - *Neutral*
+  - *Disagree*
+  - *Strongly Disagree*
+  
+  In this case, the categories clearly have an order and a ranking, but we can't
+  quite treat them as 'numerical' in the usual sense: *Strongly Agree* is not
+  just *Agree* + *Disagree*. 
+  
+  Proper analysis of *ordinal* data is tricky and often poorly done. 
+  Complexities include the inappropriateness of statisticians' most beloved tool,
+  averaging[^set], and a fundamental 'subjectiveness.' 
+  Another common ordinal classification problem is the assignment of grades
+  (A > B > C ...). In this case, students and professors may agree that 
+  one piece of work may be better than another, but a student may feel their
+  assignment deserves an A while the professor may judge it B work. It is
+  quite difficult to infer each individual's personal threshold for each category
+  without extensive analysis. 
+  
+  We will not discuss ordinal data much in this course as it requires specialized
+  methods. Typically ordinal data is modeled by treating the response as a rounded
+  version of some underlying continuous variable: *e.g.*, when grading hurricanes
+  the classes (Category 1, Category 2, ...) are derived from the underlying
+  continuous variable of wind speed. This 'hidden regression' structure makes
+  analysis of ordinal classification much closer to regression than binary
+  classification. 
+
+[^set]: Even though it doesn't make sense to average ordinal data, University
+administrators are *notorious* for averaging Likert data to evaluate faculty. 
+This is a nigh-universal grievance of numerically-minded faculty, but getting
+universities to change their established procedures to something statistically
+reasonable is only slightly less impossible than drawing blood from a turnip.
+  
+- *Probabilistic* classification: we noted above that binary classification can
+  be thought of as modeling a Bernoulli random variable. If we shift our focus
+  to modeling the Bernoulli parameter (the probability $p \in [0, 1]$) than
+  the outcome ($y \in \{0, 1\}$), we have the paradigm of *probabilistic*
+  classification. 
+  
+  As a general rule, *statistically*-grounded classification methods have
+  a natural probabilistic output built-in while methods coming from the CS 
+  tradition are not inherently probabilistic. Because probabilistic estimates
+  are often quite useful, there exist several [useful
+  methods](https://en.wikipedia.org/wiki/Platt_scaling) to 'bolt-on' 
+  probabilistic outputs to pure binary classifiers. 
+  
+## Metrics of Classification Accuracy
+
+In the regression context, we had a relatively small number of loss functions: 
+
+- Mean Squared Error (MSE): mathematically convenient, easy interpretation, 
+  natural for OLS, optimizes for mean
+- Mean Absolute Error (MAE): mathematically a bit tricky, most practical in many
+  circumstances, gives rise to *robust* regression, optimizes for median
+- Mean Absolute Percent Error (MAPE)
+- Checkmark/Pinball Loss: gives rise to *quantile* estimation
+- Huber loss: interpolates MSE and MAE
+
+By contrast, in the classification context, we have *many* loss functions to 
+work with. To get into them, it's worth thinking back to the formalism of
+*statistical hypothesis testing*. Recall that, in hypothesis testing, we have
+a 2-by-2 table of possible outcomes: 
+
++--------------+----------------+-----------------+
+|              | **Truth**                        |
++==============+:==============:+:===============:+
+| **Decision** | **Null**       | **Alternative** |
++==============+================+=================+
+| **Retain**   | True           | False Negative  |
+| **Null**     | Negative       | (Type II Error) |
++--------------+----------------+-----------------+
+| **Reject**   | False          | True Positive   |
+| **Null**     | Positive       |                 |
+|              | (Type I Error) |                 |
++--------------+----------------+-----------------+
+
+: Hypothesis Testing Table
+
+Suppose that we have a large number ($n$) of binary classification points. If we
+let $\hat{y}_i$ be our prediction and $y^*_i$ be the actual outcome, we can
+construct a similar table: 
+
++----------------+-----------------+--------------------------+
+|                | **Truth** (Second index)                   |
++================+:===============:+:========================:+
+| **Prediction** | $y_i^* = 0$     | $y_i^* = 1$              |
+| (First Index)  |                 |                          |
++================+=================+==========================+
+| $\hat{y}_i=0$  | $n_{00}$ True   | $n_{01}$ False Negative  |
+|                | Negatives       | (Type II Errors)         |
++----------------+-----------------+--------------------------+
+| $\hat{y}_i=1$  | $n_{10}$ False  | $n_{11}$ True Positives  |
+|                | Positives       |                          |
+|                | (Type I Errors) |                          |
++----------------+-----------------+--------------------------+
+
+: Classification Outcome Table
 
 
-## Why Not Accuracy Maximization? 
+From this structure, we get several useful ideas: 
 
-As we saw in our regression unit, we can pose many interesting
-estimators as _loss minimization_ problems. For least squares, we
-primarily focused on mean squared error (MSE) as a loss function,
-though we also briefly touched on MAE, MAPE, and 'check' losses.
-There is not a single 'canonical' loss for the classification
-setting and different choices of loss will yield different
-classifiers. 
+- A *confusion matrix* is a 2x2 (or $K$-by-$K$ for $K$-multiclass problems)
+  table comparing the right answer (here "Truth" on the columns) with our guess
+  (here "Decision" on the rows). A good classifier will have large values 
+  "on diagonal" ($n_{00} + n_{11}$) and small values "off diagonal" 
+  ($n_{01} + n_{10}$)
+- The notion of *true/false* *positive/negatives*. These can be a bit tricky
+  to remember, but the convention is: 
+  
+  - The *noun* (positive/negative) captures the *prediction*
+  - The *adjective* (true/false) assesses the prediction
+  
+  So a "false positive" means that we guessed the positive (+1) class, but that
+  we were wrong and the truth was the negative (-1 or 0) class.
+  
+From this simple count table, we can create _many_ different ratios. I find the
+statistical terminology a bit more intuitive than the ML terminology: 
 
-Before we build our actual first loss, it is worth asking
-why we can't use something like classification accuracy as our loss
-function. Specifically, define
-$$\text{Acc}(y, \hat{y}) = \begin{cases} 1 & y = \text{sign}(\hat{y}) \\ 0 & y \neq \text{sign}(\hat{y}) \end{cases}$$
-Here we consider the case where $\hat{y}$ may be real-valued 
-as a (slight) generalization of probabilistic classification and
-we use the $\pm 1$ convention for the two classes. 
+- True Positive Rate: Of the actual positives ($y^*=1$), what fraction are
+  predicted correctly (truly) positives ($\hat{y} = 1$)? 
+  $\text{TPR} = n_{11}/(n_{01} + n_{11})$
+- False Negative Rate: Of the actual positives ($y^*=1$), what fraction are
+  predicted incorrectly (falsely) as negatives ($\hat{y} = 0$)? 
+  $\text{FNR} = n_{01}/(n_{01} + n_{11})$
+- True Negative Rate: Of the actual negatives ($y^*=0$), what fraction are
+  predicted correctly (truly) as negatives ($\hat{y} = 0$)?  
+  $\text{FNR} = n_{00}/(n_{00} + n_{10})$
+- False Positive Rate: Of the actual negatives ($y^*=0$), what fraction are
+  predicted incorrectly (falsely) as positives ($\hat{y} = 1$)? 
+  $\text{FPR} = n_{10} / (n_{00} + n_{10})$
+  
+These clearly satisfy some useful relationships: 
 
-Fixing $y = 1$, $\text{Acc}$ has the following shape: 
-
-```{r}
-y_hat <- seq(-3, 3, length.out=201)
-acc <- function(y_hat, y=1) sign(y_hat) == sign(y)
+$$\text{TPR} = 1 - \text{FNR} \Leftrightarrow \text{FNR} = 1 - \text{TPR}$$
 
 plot(y_hat, acc(y_hat), type="l",
      xlab=expression(hat(y)),
@@ -109,395 +300,527 @@ to estimating $\bbeta$. Where can we get such a function?
 
 The most common choice is $$\mu(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}$$, which is known as the _logistic_ or
 _sigmoid_ function due to its 's-like' shape: 
+and 
 
-```{r}
-z <- seq(-5, 5, length.out=201)
-plot(z, 1/(1+exp(-z)), type="l", main="Sigmoid Mapping")
-```
-More generally, we can use essentially the CDF of any random
-variable supported on the real line as a choice of $\mu$: since
-CDFs map the support onto the $[0, 1]$ range they are perfect 
-for this choice. Unfortunately, most CDFs are a bit unwieldy
-so this approach, while theoretically satisfying, is not too widely
-used in practice. If you see it, the most common choice is 
-$\mu(z) = \Phi(z)$, the normal CDF, resulting in a method known as
-"probit" regression (after 'probability integral transform,' an
-old-fashioned name for the CDF) or 
-$$\mu(z) = \frac{\tan^{-1}(z)}{\pi} + \frac{1}{2}$$
-which gives a method known as "cauchit" regression, since
-this is the CDF of the standard Cauchy distribution. These
-choices are far less common than the default sigmoid we used
-above. Generally, they are only _slightly_ different in practice
-and far more computationally burdensome and just aren't really worth
-it. 
+$$\text{FPR} = 1 - \text{TNR} \Leftrightarrow \text{TNR} = 1 - \text{FPR}$$
 
-Returning to our default sigmoid, we now have the model 
-$$ y | \bx \sim \text{Bernoulli}\left(\frac{1}{1+e^{-\bx^{\top}\bbeta}}\right)$$
-This model is well-posed (in the sense that the distribution 'fits'
-the data and we are guaranteed never to put invalid parameters in)
-but we don't yet have a way to use it as a loss function. 
+In this scenario, we recognize the *false positive rate* as the *size* (or 
+*level*) associated with a statistical test (5% for a 95% confidence test) and
+the true positive rate as the *power*. Again, the statistical definitions can
+help us navigate the confusing terminology here: the confidence of a test,
+and therefore its false positive rate, are defined _assuming the null_ (*i.e.*,
+in a "true" negative scenario). 
 
-## From Model to Loss Function
+The "other direction" of rates -- where we condition on the prediction 
+instead of the truth -- are less common, except for the *false discovery rate*: 
 
-We can build a loss-function by relying on the _maximum likelihood_
-principle. The maximum likelihood principle is a core idea of
-statistics - and one you will explore in much greater detail in other
-courses - but, in essence, it posits that we should use the
-(negative) PMF or PDF as our loss function. Specifically, the ML
-principle says that, if many models could fit our data, we should
-pick the one that makes our data _most probable_ (as determined
-by the PMF/PDF). 
+$$\text{FDR} = \frac{n_{10}}{n_{10} + n_{11}}$$
 
-Before we work out the ML estimator (MLE) for our classification 
-model,  let's take a brief detour and look at the MLE for 
-(Gaussian) regression. Specifically, if we assume a model 
-$$y \sim \mathcal{N}(\bx^{\top}\bbeta, \sigma^2)$$ for known 
-$$\sigma^2$$, the PDF of the training point $(\bx_1, y_1)$ is
+The FDR is commonly used in scientific settings and it answers this question: 
+if a scientist makes $K$ discoveries, what fraction _of those claimed 
+discoveries_ are correct? 
 
-$$p(y_1 | \bx_1) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_1 - \bx_1^{\top}\bbeta\|_2^2}{2\sigma^2}\right\}$$
+::: {.callout-warning} 
 
-If we have a set of $n$ IID training data points, the joint PDF can
-be obtained by multiplying together PDFs (IID is great!) to get
+Note that the convention used to define *rates* can be quite confusing
+and is perhaps opposite the convention used to define *counts*. 
 
-$$\begin{align*}
-p(\mathcal{D}_{\text{train}}) &= \prod_{i=1}^n p(y_i | \bx_i) \\
-&= \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{\|y_i - \bx_i^{\top}\bbeta\|_2^2}{2\sigma^2}\right\} \\
-&= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|y_i - \bx_i^{\top}\bbeta\|_2^2\right\} \\
-&= (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2\right\} \\
-\end{align*}$$
+To compute the number of *true positives*, we look at predicted 
+positives and count the number of "truths", while to compute
+the *true positive rate*, our denominator is the number of 
+_actual_ positives and we count the fraction of correct predictions. 
 
-We could maximize this, but a few minor tweaks make the problem
-much easier: 
+To me, the FDR is actually the most clearly named rate; I try to remember
+the definition of FDR and 'work backwards' to FPR since it must be something
+different than FDR.
 
-i) Since all of the action is in an exponential, we might as well
-   maximize the _log_ of the PDF instead of the raw PDF. Since 
-   logarithms are a monotonic transformation, this won't change
-   our minimizer. Similarly, we will also strategically drop
-   some constant terms as they also do not change the minimizer. 
-ii) By convention, we like to _minimize_ more than _maximize_, 
-    specifically when dealing with convex approaches, so we 
-    will introduce a sign flip.
-    
-$$\begin{align*}
-\hat{\bbeta} &= \argmax_{\bbeta} p(\mathcal{D}_{\text{train}}) \\
-             &= \argmax_{\bbeta} \log p(\mathcal{D}_{\text{train}}) \\
-             &= \argmax_{\bbeta} \log\left( (2\pi\sigma^2)^{-n/2}\exp\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n \|\by - \bX\bbeta\|_2^2\right\}\right) \\
-             &= \argmax_{\bbeta} -\frac{n}{2}\log(2\pi\sigma^2) -\frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
-             &= \argmin_{\bbeta} \frac{n}{2}\log(2\pi\sigma^2) + \frac{1}{2\sigma^2} \|\by - \bX\bbeta\|_2^2 \\
-             &= \argmin_{\bbeta} \frac{1}{2}\|\by - \bX\bbeta\|_2^2
-\end{align*}$$
+:::
 
-Why were we able to do the simplifications in the last line? (You
-might also recognize the _penultimate_ line as a term used in the AIC
-of a linear model.)
+In ML context, you will commonly hear reference to *precision* and *recall*. 
+With our definitions above, we have
 
-This is quite cool! If we assume $\by$ follows a particular 
-Gaussian, we get OLS by applying the general MLE approach. Deeper
-statistical theory tells us that the MLE is (essentially) optimal,
-so if our data is not too 'un-Gaussian' it makes sense that the 
-Gaussian MLE (OLS) will perform reasonably well. Since many things
-in this world are Gaussian-ish, OLS is optimal-ish for a large
-class of interesting problems. 
+- Precision = $1 - \text{FDR}$
+- Recall = $\text{FNR} = 1 - \text{TPR}$
 
-Returning to our classification problem, we see that if our 
-training data is IID, the MLE can be obtained by minimizing
-the negative sum of the log PDFs. For space, we often start from 
-this point instead of doing the full set of manipulations from scratch.
+so, by maximizing precision, we ensure that all of our predicted positives are
+true positives and, by maximizing recall, we ensure that we have no false 
+negatives (that is, we truly identify all of the real positives). 
 
-So what is the Bernoulli log PMF? Recall that if $B \sim \text{Bernoulli}(p)$, its PMF is given by: 
+In the medical context, you may encounter alternative metrics of 
 
-$$\P(B=k) = \begin{cases} p & k=1 \\ 1-p & k = 0 \end{cases}$$
+- Sensitivity, equal to TPR
+- Specificity, equal to TNR
 
-or more compactly, 
+This zoo of terms is admittedly quite confusing, but the Wikipedia article
+on [Precision and Recall](https://en.wikipedia.org/wiki/Precision_and_recall#Definition)
+has an excellent table. 
 
-$$\P(B = k) = p^k(1-p)^(1-k)$$
+### Combining Metrics
 
-Taking logarithms, we have
+If you look at the 2x2 table above, you can convince yourself that it has 
+two "degrees of freedom:" having a high TPR implies nothing about the TNR 
+(or equivalent metrics). That is, it is possible to have a classifier with
+arbitrarily good TPR (equivalently, small FNR) and terrible TNR (equivalently,
+small FPR). 
 
-$$\log \P(B = k) = k \log p + (1-k) \log(1-p)$$
+In fact, we can construct one trivially: 
 
-and hence the negative log-likelihood: 
+$$\hat{f}(\cdot) = 1$$ 
 
-$$-\log \P(B = k) = -k \log p -(1-k) \log(1-p)$$
+That is, the function that predicts $1$ _always_. This classifier has zero false
+negatives, because it has no negatives whatsoever, but it necessarily has many
+false positives.[^rate] 
 
+Conversely, 
 
-From our working model, we take $p = 1/(1+e^{-\bx^{\top}\bbeta})$ so our joint
-MLE is given by: 
+$$\hat{f}(\cdot) = 0$$ 
 
-$$\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n -y_i \log\left(1/(1+e^{-\bx_i^{\top}\bbeta})\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right)$$
+has no false positives, but many false negatives. 
 
-This is still quite hairy, so let's simplify it. In the first term, we note
-that $-\log(1/x) = \log x$ to get: 
+[^rate]: In this case, the FPR is exactly equal to the negative rate in the 
+population. 
 
-$$\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right)$$
+Clearly, we need a 'combination' metric that combines both degrees of freedom
+into a single score. Popular choices include: 
 
-For the second term, note that
+- Accuracy: the fraction of correct predictions ($(n_{00}+n_{11})/n$)
+- Balanced Accuracy: $\frac{\text{TPR} + \text{TNR}}{2}$
+- $F_1$ Score: $2 *(1 - \text{FDR}) / (\text{TPR} - \text{FDR} +1)$
 
-$$1-\frac{1}{1+e^{-z}} = \frac{1+e^{-z} - 1}{1+e^{-z}} = \frac{e^{-z}}{1+e^{-z}} \implies \log\left(1-\frac{1}{1+e^{-z}}\right) = -z - \log(1 + e^{-z})$$
+While these choices are popular, none of them are actually all that suitable
+for a real application. To properly evaluate a classifier, we need to know
+the real cost of false positives and false negatives, as well as the population
+base rates, and balance things accordingly. 
 
-so we get: 
+For instance, if we are designing a 'baseline' medical diagnostic to be used
+as part of annual physicals, we need to think about what happens with false
+negatives and false positives. 
 
-$$\begin{align*}
-\hat{\bbeta} &=  \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\log\left(1 - 1/(1+e^{-\bx_i^{\top}\bbeta})\right) \\
-&= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) - (1-y_i)\left[-\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] \\
-&= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) + (1-y_i)\left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] \\
-&= \argmin_{\bbeta} \sum_{i=1}^n y_i \log\left(1+e^{-\bx_i^{\top}\bbeta}\right) + \left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right] -y_i\left[\bx_i^{\top}\bbeta + \log\left(1+e^{-\bx_i^{\top}\bbeta}\right)\right]\\
-&= \argmin_{\bbeta} \sum_{i=1}^n-y_i \bx_i^{\top}\bbeta + \bx_i^{\top}\bbeta + \log\left(1-e^{-\bx_i^{\top}\bbeta}\right)
-\end{align*}$$
-
-We could work in this form, but it turns out to actually be a bit nicer to 
-'invert' some of the work we did above to get rid of a term. In particular, 
-note
-
-$$z + \log(1-e^{-z}) = \log(e^z) + \log(1-e^{-z}) = \log(e^z + e^{z-z}) = \log(1 + e^z)$$
-
-which gives us: 
-
-$$\hat{\bbeta} = \argmin_{\bbeta} \sum_{i=1}^n-y_i \bx_i^{\top}\bbeta  + \log\left(1+e^{\bx_i^{\top}\bbeta}\right)$$
-
-Wow! Long derivation. And we still can't actually solve this!
-
-Unlike OLS, where we could obtain a closed-form solution, we *have to use* 
-an iterative algorithm here. While we could use _gradient_ descent, we can
-get to an answer far more rapidly if we use more advanced approaches. Since
-this is not an optimization course, we'll instead use some software to solve
-for us: 
-
-```{r}
-# Generate data from the logistic model
-n <- 500
-p <- 5
-X    <- matrix(rnorm(n * p), ncol=p)
-beta <- c(1, 2, 3, 0, 0)
-
-P <- 1/(1+exp(-X %*% beta))
-y <- rbinom(n, size=1, prob=P)
-
-# Use optimization software
-# See https://cvxr.rbind.io/cvxr_examples/cvxr_logistic-regression/ for details
-library(CVXR)
-
-beta <- Variable(p)
-eta  <- X %*% beta
-
-objective <- sum(- y * eta + logistic(eta))
-problem   <- Problem(Minimize(objective))
-
-beta_hat <- solve(problem)$getValue(beta)
-```
-
-```{r}
-#| echo: false
-knitr::kable(beta_hat, col.names="beta_hat")
-```
-
-Not too bad, if we compare this to `R`'s built-in logistic regression function, 
-we see our results basically match: 
-
-```{r}
-summary(glm(y ~ X + 0, family=binomial))
-```
-Good match! 
-
-Note that, in the above, we had to use the `logistic` function built into `CVX`.
-If we used `log(1+exp(eta))`, the solver would not be able to prove that it is
-convex and would refuse to try to solve. See the `CVX` documentation for more 
-details.
-
-We can compute accuracy after defining a 'decision rule'. Here, let's
-just round the predicted probability
-
-```{r}
-p_hat <- 1/(1 + exp(-X %*% beta_hat))
-y_hat <- round(p_hat)
-
-mean(y_hat == y)
-```
-
-Now that we have this toolkit built up, we can also easily apply ridge and lasso
-penalization: 
-
-```{r}
-penalty <- sum(abs(beta))
-
-lasso_problem <- Problem(Minimize(objective + 9 * penalty))
-beta_hat_lasso <- solve(lasso_problem)$getValue(beta)
-```
-
-```{r}
-#| echo: false
-knitr::kable(beta_hat_lasso)
-```
-
-We got some sparsity, as we would expect with $\ell_1$ penalization. 
-
-## Generalized Linear Models
-
-The approach we took here is a special case of a _generalized linear model_: 
-generalized linear models (GLMs) consist of three parts: 
-
-- A linear model for the 'core predictor' $\eta = \bX\bbeta$; 
-- A sampling distribution for the data $y \sim \text{Dist}$; and
-- An 'adaptor' function[^link], $\mu$, that maps $\eta \in \R$ to the parameter 
-  space of $y$: specifically, we need $\E[y | \bx] = \mu(\bx^{\top}\bbeta)$.
+- If we give a false positive, patients will undergo a better test that costs
+  \$1,000 but gives an accurate answer in all circumstances (a "gold standard").
+- If we give a false negative, patients will leave a condition untreated until
+  it becomes far worse, requiring expensive surgery costing \$50,000. 
   
-The adaptor function needs to be smooth (for nice optimization properties) and
-monotonic (or else the interpretation gets too weird), but we otherwise have some
-flexibility. As noted above, if we pick $\mu$ to be the normal or Cauchy CDFs, we
-get alternative 'Bernoulli Regressions' (probit and cauchit). 
+In this case, we might desire a classifier that minimizes $$n_{10} + 50 n_{01}$$,
+not any of the of the 'standard' metrics. Note also that the particular FPR, FNR
+of this classifier will depend on the rate of the condition in the population,
+so we can't actually find the best procedure by looking at FPR, FNR in isolation.
 
-We can generalize the model for $\eta$ by allowing it to be an additive (spline)
-model or a kernel method. To fit splines, you can use the `gam` function
-from the `mgcv` function. 
+While this *decision-theoretic* approach is optimal, it is often quite difficult
+to characterize in practice. In the example above, for instance, we made the
+choice to only minimize cost, without seeking to minimize suffering. (What if
+the untreated condition is _incredibly_ painful? Should we intervene more often?)
+This sort of decision-making is ultimately very problem-specific and too often
+ignored in the academic literature. In practice, designing (and optimizing)
+the correct loss function is far more relevant to business outcomes than
+finding the best classifier to optimize an irrelevant cost function. 
+procedure requires 
 
-Finally, we also have choices in the sampling distribution. While normal and
-Bernoulli are the most common, you will also sometimes see Poisson and Gamma
-in the wild. For both of these, the mean is a positive value, so we require
-an adaptor that maps $\R$ to $\R \geq 0$ and we typically take $\mu(z) = e^z$. 
+### Trade-Off of Recall and Precision
 
-A good exercise is to repeat the above analysis for Poisson regression and compare
-your result (obtained with `CVXR`) to the Poisson regression built into `R`. 
+Our discussion of 'trivial' classifiers that focus on one metric while completely
+ignoring the other may remind you of the way this is typically solved in
+statistical testing procedures. We specify a maximum acceptable false positive
+rate (level or 1 - confidence) and then minimize the false negative rate
+subject to that constraint; in statistical speak, we seek a test with 
+_maximal power_. 
 
-## Loss Functions for Classification
-
-We now have a workable loss function for discriminative classification.
-Returning to our example from above 
-(changed to $\{0, 1\}$ convention briefly). Let us set 
-$\alpha = y\hat{y}$ and investigate our loss functions as a property
-of $\alpha$: 
-
-```{r}
-alpha <- seq(-3, 3, length.out=201)
-acc     <- function(alpha) ifelse(alpha < 0, 1, 0)
-lr_loss <- function(alpha) log(1 + exp(-2*alpha))
-
-plot(alpha, acc(alpha), type="l",
-     xlab=expression(alpha),
-     ylab="Loss", 
-     main="Classification Losses", 
-     ylim=c(0, 5))
-lines(alpha, lr_loss(alpha), col="red4")
-legend("topright", 
-       col=c("black", "red4"), 
-       lwd=2, 
-       legend=c("Accuracy", "Logistic Regression"))
-```
-
-We see here that the logistic loss defines a _convex surrogate_ of the 
-underlying accuracy. Just like we used $\ell_1$ as a tractable
-approximation for best squares, logistic regression can be considered
-a tractable approximation for accuracy minimization.[^persp]
-
-Other useful loss functions can be created using this perspective, 
-perhaps none less important than the *hinge loss*, which gives rise
-to a classifier known as the *support vector machine* (SVM). 
-
-## Support Vector Machines
-
-In this section, we go back to $\{\pm 1\}$ convention. 
-
-Instead of using a logistic loss, consider a hinge loss of the form
-
-$$H(y, \hat{y}) = (1 - y\hat{y})_+$$
-
-When $y = \hat{y}=1$ or $y = \hat{y} = 0$, this is clearly 0 as we
-would expect from a good loss. What happens for cases where our 
-prediction is wrong or not 'full force', say $\hat{y} = 1/2$. 
-
-Looking ahead, we will use a linear combination of features to create
-$\hat{y} = \bx^{\top}\bbeta$ yielding:
-
-$$H(\bbeta) = (1 - y \bx^{\top}\bbeta)_+$$
-
-If $y=1$, we get zero loss so long as $\bx^{\top}\bbeta > 1$ and a 
-small loss for $0 < \bx^{\top}\bbeta < 1$. As $\bx^{\top}\bbeta$
-crosses zero and goes negative, the loss grows linearly without
-bound. (Reverse all of this for the case $y = -1$.) This is an
-interesting loss function: we cannot make our loss decrease
-as our predictions become 'more right', but our loss continues
-to increase as our prediction becomes 'more wrong'.
-
-Visually, we can draw this on our plot from above: 
+As we have seen with ridge and lasso regression, there is typically a 'knob'
+(hyperparameter) we can pick to tune a particular classifier. It is common to
+apply the classifier at all values of this knob, measure the TPR and TNR at all
+levels, and plot them in a trade-off curve. This curve is, for historical 
+reasons, known as the receiver operating characteristic (ROC)[^roc] curve and
+it looks something like: 
 
 ```{r}
-alpha <- seq(-3, 3, length.out=201)
-acc     <- function(alpha) ifelse(alpha < 0, 1, 0)
-lr_loss <- function(alpha) log(1 + exp(-2*alpha))
-hinge_loss <- function(alpha) pmax(0, 1-alpha)
-
-plot(alpha, acc(alpha), type="l",
-     xlab=expression(alpha),
-     ylab="Loss", 
-     main="Classification Losses", 
-     ylim=c(0, 5))
-lines(alpha, lr_loss(alpha), col="red4")
-lines(alpha, hinge_loss(alpha), col="green4")
-legend("topright", 
-       col=c("black", "red4", "green4"), 
-       lwd=2, 
-       legend=c("Accuracy", "Logistic Regression", "Hinge Loss"))
+#| message: false
+library(yardstick)
+library(ggplot2)
+library(dplyr)
+library(ggplot2)
+library(dplyr)
+# Example from ?roc_curve
+roc_curve(two_class_example, truth, Class1) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_path() +
+  geom_abline(lty = 3) +
+  coord_equal() +
+  theme_bw()
 ```
 
-This is also a pretty nice surrogate loss. In this case, let's just
-go 'straight at it' to construct a classifier: 
+Here we see that, for this particular classifier, increased specificity is
+associated with decreased sensitivity or, in the alternative terms, increased TNR
+is associated with decreased TPR. As illustrated by our example of constant
+predictors above, this is a quite typical trade-off. 
 
-$$\hat{\bbeta} = \argmin \sum_{i=1}^n (1-y_i \bx_i^{\top}\bbeta)_+$$
+Curves like this can be used in a few ways, none of which are fully satisfying: 
 
-This classifier is not uniquely defined for many problems (because of
-the long flat part of the loss), so it is conventional to add a 
-_regularization_ term to the SVM: 
+- If we have two curves, we can plot their ROCs on the same set of axes. If one
+  classifier is _uniformly_ above the other, it is said to _dominate_ the other
+  and is better for all applications. Sadly, this is rarely the case. 
+- If we have two curves and plot their ROCs, but the ROCs cross, we don't have
+  strong guidance on which model to prefer, but if one is _almost always_ above
+  the other, we will likely still use it. 
 
-$$\hat{\bbeta} = \argmin \sum_{i=1}^n (1-y_i \bx_i^{\top}\bbeta)_+ + \lambda \|\bbeta\|_2^2$$
+A commonly reported metric is the _area under the ROC curve_ (AUC), which ranges
+from 0.0 to 1.0, with higher values being better. This is a bit unsatisfying
+compared to the decision theoretic analysis, but it is an improvement over
+some other metrics as it at least addresses the fact there is a tradeoff. 
 
-We can solve this directly using CVX as follows: 
+::: {.callout-info title="Pause for Reflection"}
 
-```{r}
-# Generate data from the logistic model and fit an SVM
-n <- 500
-p <- 5
-X    <- matrix(rnorm(n * p), ncol=p)
-beta <- c(1, 2, 3, 0, 0)
+What does an AUC less than 0.5 imply? If you get an AUC less than 0.5, what 
+should you do? Why is AUC near 0 actually a good thing?
 
-P <- 1/(1+exp(-X %*% beta))
-y <- rbinom(n, size=1, prob=P)
-## Convert to +/-1 convention
-y <- 2 * y - 1
+:::
 
-library(CVXR)
+[^roc]: Don't confuse this with _Rate of Change_. 
 
-beta <- Variable(p)
-eta  <- X %*% beta
+While the ROC is typically motivated by presence of a 'tuning knob', even
+methods like logistic regression (which have no obvious knobs) have an implicit
+knob we can choose to tune: the _classification threshold_. There is no law of
+nature that says that a predicted probability of 55\% has to correspond to
+a prediction of the positive class. If false positives are very expensive, we
+may want to reduce the fraction of positives predicted and only predict 
+the positive class when the estimated probability is over 80\%. Similarly, 
+if false negatives are very bad, we may want to predict positive even when
+the probability of a positive is in the 40\% range: this is particularly 
+common in medical contexts where the impact of a missed diagnosis is quite
+substantial, so doctors order extra diagnostic work 'just to be sure' even
+if the test does not strongly suggest a disease. 
 
-objective <- sum(pos(1 - y * eta)) + 0.5 * norm2(beta)^2
-problem   <- Problem(Minimize(objective))
+### Scoring Functions
 
-beta_hat <- solve(problem)$getValue(beta)
-```
+_Scoring_ functions are loss functions particularly suited for evaluation of 
+probabilistic classifiers. Unlike our confusion-matrix set of metrics, it's less
+clear how we should evaluate probabilistic classifiers. 
 
-Using the decision rule $\hat{y} = \text{sign}(\bx^{\top}\bbeta)$, this
-gives us good accuracy: 
+It is clear that, if we predict something with 80% probability and it doesn't
+happen, this is a 'worse' mistake than if we only had a 51% probability, but
+how can we measure this formally? 
 
-```{r}
-mean(sign(X %*% beta_hat) == y)
-```
+- Calibration and Tightness
+- Log Scores
 
-This is comparable to what we got for logistic regression even
-though: 
+## Types of Classification Methods
 
-i) the loss function is 'wrong' (doesn't model the DGP)
-ii) we did no tuning of the ridge parameter
+In this course, we will consider two main types of classifiers: 
 
-So, all in all, pretty impressive. 
+i) Generative classifiers, which attempt to jointly model $(\bX, \by)$ and use
+   probabilistic mathematics (mainly Bayes' Rule) to infer $\by | \bX$ from
+   the joint model. 
+   
+ii) Discriminative classifiers, which directly attempt to estimate the 'boundary'
+    between the classes. 
 
-SVMs are a remarkably powerful and general classification technology.
-Before we move past them, we will now take a second perspective
-focusing on the _geometry_ of SVMs. 
+As you will see, the terminology around these methods is _particularly_ terrible. 
 
-## SVM: The Geometric Viewpoint
+## Building Mutliclass Classifiers from Binary Classifiers
   
-[^link]: For historical reasons, this is known as the _inverse link_, but I prefer
-to simply think of it as an adaptor and to never use the (forward) link. 
+As we introduce methods, we will typically derive them for the binary
+classification task. If we want to apply them to the multiclass task, how can 
+we extend them? It would be quite cumbersome if we needed _brand new_ methods
+each time. 
 
-[^persp]: This 'surrogate loss' perspective was first discussed in: 
-P.L. Barlett, M.I. Jordan, and J.D. McAuliffe. "Convexity, Classification, and Risk Bounds". *Journal of the American Statistical
-Association* **101(473)**, pp.138-156. 2006. DOI:[10.1198/016214505000000907](https://dx.doi.org/10.1198/016214505000000907)
+In general, there are two main strategies we might use: 
+
+- One vs Rest
+- Each vs Each
+
+For simplicity, assume we are predicting $K$ classes. In the "one-vs-rest"
+strategy, we will build $K$ binary classifiers, of the form: 
+
+- Class 1 vs Not Class 1 (*i.e.*, Class 2, 3, 4, $\dots$, $K$)
+- Class 2 vs Not Class 2 (*i.e.*, Class 1, 3, 4, $\dots$, $K$)
+- *etc.*
+- Class $K$ vs Not Class $K$ (*i.e.*, Class 1, 2, 3, $\dots$, $K-1$)
+
+To make an actual prediction, we take the *highest* score of each of these
+classifiers. *E.g.*, if $K=3$ for categories "Red", "Green" and "Blue", we
+might predict: 
+
+- $\P(\text{Red}) = 0.8$ and $\P(\text{Not Red}) = 0.2$
+- $\P(\text{Green}) = 0.4$ and $\P(\text{Not Red}) = 0.6$
+- $\P(\text{Blue}) = 0.2$ and $\P(\text{Not Red}) = 0.8$
+
+Our final prediction would then be the maximizer, "Red."
+
+This strategy is relatively simple and intuitive, but for very large $K$, 
+the maximum can be far less than 50%, so it may feel a bit funny. (Why is 
+this not an issue for $K=2$?)
+
+Conversely, in the "each vs each" (sometimes called "one vs one") setting, 
+we train $\binom{K}{2} = K(K-1)/2$ classifiers for every possible _pair_ of
+classes. To get the prediction, we then take a 'majority vote' of the classifiers. 
+
+In our $K=3$ example above, we would have three classifiers: 
+
+- Red vs Blue, which we fit after throwing out the "Green" points
+- Red vs Green, which we fit after throwing out the "Blue" points
+- Green vs Blue, which we fit after throwing out the "Red" points
+
+If we make predictions for a single point, our binary classifications might be
+
+- Red vs Blue: Red
+- Red vs Green: Red
+- Green vs Blue: Blue
+
+In this case, we would take a majority vote to get "Red" as our final prediction.
+
+I find this strategy a bit counterintuitive, but it is sometimes faster than
+the one-vs-rest strategy since each individual model is fit to a subset
+of the entire data set.
+
+Certain modern ML strategies, in particular deep neural networks, predict
+the probability of all $K$ classes from a single model. In this case, we 
+typically select the single most probable class as our prediction. 
+
+In applications where there are multiple contenders and the difference
+between them is small, it is common to randomly select a class in
+proportion to its predicted probability. This strategy is one of the things
+that gives ChatGPT its randomness; it usually predicts the *most likely* next
+word, but sometimes it does something a little bit weird.)
+
+Note that it is actually usually pretty hard to make a model that predicts
+a large set of probabilities simultaneously: in particular, it's hard to get
+a vector that sums to one (like probabilities should). To address this, a
+[softmax](https://en.wikipedia.org/wiki/Softmax_function) normalization is
+applied. This is essentially nothing more than i) making sure each predicted
+value is positive; and ii) dividing them all by the sum so they add to 1. 
+
+## Generative Classifiers
+
+We begin our study of classifiers with an analysis
+of *generative* classifiers. While many generative
+classifiers have appeared in the literature, they can 
+essentially all be derived from a standard formula. We will discuss
+this standard formula first and then turn our attention to specific
+named instances. 
+
+### Mixture Models
+
+Recall from [STA 9715](https://michael-weylandt.com/STA9715) that
+a (discrete) mixture model is a distribution of the form: 
+
+$$X \sim \begin{cases} X_1 & Z = 1 \\ X_2 & Z = 2 \\ \dots \\ X_K & Z=K \end{cases} \text{ where } \textsf{supp}(Z) = \{1,\dots, K\} \text{ and } X_i \sim \Pcal_i \text{ for all $i$ and } Z \perp X_i, X_i \perp X_j\, (i\neq j)$$
+
+That's quite a bit to unpack, so let's take it piece by piece: the
+random variable $X$ has a $K$-component *mixture* distribution if
+we can sample $X$ by generating $K$ independent random variables
+$\{X_1, \dots, X_K\}$ (with *different* distributions) and then
+selecting one of them at random. 
+
+Let's look at a concrete version of this: suppose we have
+a population of male and female basset hounds that is 60\% female.
+The weight of male basset hounds follows a $\Ncal(65, 10)$
+distribution while females have weight distributed as 
+$\Ncal(55, 10)$. The weight of a randomly selected basset
+can be sampled as
+
+```{r}
+rbasset <- function(n){
+    Z <- rbinom(n, size=1, prob=0.6) # Z=1 <- Female
+    ifelse(Z, rnorm(n, mean=55, sd=sqrt(10)), 
+              rnorm(n, mean=65, sd=sqrt(10)))
+}
+rbasset(1)
+```
+
+If we collect the weights of many basset hounds, we see that
+the resulting distribution is not normally distributed: 
+
+```{r}
+hist(rbasset(10000), breaks=50, main="Distribution of Basset Hound Weights")
+```
+
+In fact, this is a *bimodal* distribution with each 'lump' representing
+males or females.[^bimodal] Distributions of this form can often be
+written  more compactly using a 'convex combination' notation: 
+
+[^bimodal]: Note that a mixture of normals is not *always* multimodal
+(*e.g.*, if the two means are very close together), but a mixture
+of normals is a common model for multimodal data.
+
+$$\text{Basset} \sim \frac{2}{5}\Ncal(65, 10) + \frac{3}{5}\Ncal(55, 10)$$
+
+The above notation can be interpreted as specifying a draw from 
+the first distribution with probability $2/5 = 40\%$ and from
+the second with probability $3/5 = 60\%$; that is, it's a particular
+2-component mixture of normals. 
+
+In specifying this mixture, the probabilities of each component must
+be non-negative and must sum to 1; these are exactly the same
+restrictions we put on a convex combination of points earlier in
+the course. In fact, the set of mixture distributions can be 
+consider the 'convex set' containing all of its individual 
+components. 
+
+### Inference from a Mixture Distribution
+
+Now suppose you are on a walk and you meet a very friendly 62 
+pound basset hound. You of course want to pet this marvelous dog, but
+you need to ask the owner's permission first: in doing so, should
+you ask "may I pet him?" or "may I pet her?"
+
+While the basset hound won't care if you misgender, you recall
+that you can use [*Bayes'
+Rule*](https://en.wikipedia.org/wiki/Bayes%27_theorem) to 'invert'
+the mixture distribution. That is, while the mixture distribution
+normally goes from sex to weight, Bayes' rule will let us go from
+weight back to sex. 
+
+Specifically, in this case, Bayes' rule tells us: 
+
+$$\P(\text{Female}|\text{Weight=62}) = \frac{\P(\text{Weight=62}|\text{Female})\P(\text{Female})}{\P(\text{Weight=62}|\text{Female})\P(\text{Female}+\P(\text{Weight=62}|\text{Male})\P(\text{Male}))}$$
+
+The math here is a bit nasty numerically, but we can do it in `R` quite
+simply: 
+
+```{r}
+p_female <- 0.6
+p_male <- 1-p_female
+
+p_62_female <- dnorm(62, mean=55, sd=sqrt(10))
+p_62_male   <- dnorm(62, mean=65, sd=sqrt(10))
+
+p_female_62 <- (p_62_female * p_female) / (p_62_female * p_female +
+                                           p_62_male * p_male)
+
+paste0("There is a ", round(p_female_62 * 100, 2), "% chance that basset is a female.")
+```
+Given that calculation, you take a chance and ask whether you 
+can pet *him*. 
+
+What have we done here? We have *built* a basset-sex classifier from
+a combination of the population distribution and Bayes' rule. This is
+the essence of generative classifiers - *if* we know the distribution,
+accurate probabilistic classification is a straightforward application
+of Bayes' rule. In practice, we don't know the distribution *a priori*
+and it must be estimated from data. Different generative classifiers
+essentially are just different ways of estimating the population
+(mixture) distribution. 
+
+## Building Generative Classifiers
+
+Let's formalize our approach for a two-class classifier though
+the extension to multi-class is simple enough. Given a training set
+
+$$\Dcal_{\text{Train}} = \{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$$ 
+
+we assume $\bX$ follows a two-component mixture where $Y$ is the 
+mixing variable:
+
+$$\bX | Y=0 \sim \Pcal_0 \text{ and } \bX | Y=1 \sim \Pcal_1$$
+
+Clearly to fully specify this distribution, we need three things: 
+
+- To know the distribution of $Y$
+- To know the distribution $\Pcal_0$
+- To know the distribution $\Pcal_1$
+
+The distribution of $Y$ is relatively straightforward: since it only
+takes values $\{0, 1\}$ it _must_ have a Bernoulli distribution and hence
+the only thing we need to estimate is the probability, $\pi_1$, that $Y=1$. 
+The simplest approach to estimating the Bernoulli probability is to simply
+take the empirical probability from the training data set, *i.e.*, the fraction
+of observations where $Y=1$, but this can also be estimated using knowledge of
+a broader data set or a different population than the training data. 
+For instance, if a data set is known to overindex on $Y=1$, *e.g.*, because it
+contains patients who self-reported some disease, it may be more appropriate to
+estimate $p$ based on the population-wide prevalance of the disease. These concerns
+are typically rather problem specific. 
+
+Estimation of $\Pcal_0, \Pcal_1$ may be more difficult. If the 
+training data is _extremely_ large, we may use a *non-parametric* estimator, 
+*e.g.*, a multivariate histogram, but in general we will need to use some sort
+of restrictive (parametric) model. The most commonly used generative classifiers
+assume some sort of multivariate normal structure, but you can create 'custom'
+classifiers appropriate to specific domains. 
+
+For now, let us assume $\Pcal_{0}, \Pcal_1$ have been estimated
+and that they have PDFs $p_0(\cdot), p_1(\cdot)$. Applying Bayes' rule as before, 
+with prior (baseline) probabilities $\pi_0, \pi_1 = 1-\pi_0$, we get the following
+probabilities
+
+$$\begin{align*}
+\P(Y = 1 | \bx) &= \frac{\P(\bx | Y = 1)\P(Y=1)}{\P(\bx | Y = 0)\P(Y=0)+\P(\bx | Y = 1)\P(Y=1)} \\
+&= \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1}
+\end{align*}$$
+
+If we are happy with a *probabilistic* classifier, we are essentially done. If
+we want a true binary classifier, *i.e.*, a $\{0, 1\}$ valued 'point predictor', 
+we also need to set a classification threshold, $\overline{p}$, to obtain: 
+
+$$\delta(\bx) = \begin{cases} 0 & \frac{p_1(\bx)\pi_1}{p_0(\bx)\pi_0 + p_1(\bx)\pi_1} < \overline{p} \\ 1 & \text{ otherwise} \end{cases}$$
+
+$\overline{p}$ can be chosen to optimize a relevant performance metric (if you 
+practice good sample splitting hygiene) or via a full decision theoretic analysis,
+as discussed last week. 
+
+That's basically it! 
+
+
+## Named Generative Classifiers
+
+As mentioned above, the 'popular' generative classifiers are essentially 
+defined by specific multivariate normality assumptions on 
+$\Pcal_0, \Pcal_1$. Let us review these in ascending order of
+complexity. 
+
+Recall that a multivariate normal distribution is uniquely identified by its
+*mean* and *(co)variance (matrix)*, just like a standard univariate normal 
+distribution. When estimating means, we will simply use the class means for 
+each classifier, though James-Stein time estimators could be used for a 
+(likely imperceptible) improvement. Estimation of variances is a harder task: 
+to estimate the full covariance matrix of $p$ random variables (or a random
+$p$-vector), we must estimate: 
+
+i) $p$ (marginal) variances and $\frac{p^2-3p}{2}$ correlations; or 
+ii) $\binom{p}{2} = \frac{p(p-1)}{2}$ covariances
+
+Making this even harder, we have to deal with the fact that the "variance of the
+variance", *i.e.*, the kurtosis, is typically quite large. While we do not focus
+on high-dimensional covariance estimation in these notes, it is quite a rich
+subject: if you want dig further into it, the
+[Ledoit-Wolf](http://www.ledoit.net/honey.pdf) estimator is a good place to start.
+
+### Naive Bayes
+
+In Naive Bayes, we assume $\Pcal_0, \Pcal_1$ are multivariate normal
+distributions with no correlation among the features and a common covariance
+across classes.[^isotropic] This *significantly* simplifies the covariance 
+estimation problem, since we now have all $n$ samples available to estimate only
+$p$ variances. Our estimates are given as follows: 
+
+$$\hat{\mu}_0 = \frac{1}{|\Ccal_0|} \sum_{i \in \Ccal_0} \bx_i$$
+
+where $\Ccal_0$ is the set of observations from class 0 and 
+
+$$\hat{\mu}_1 = \frac{1}{|\Ccal_1|} \sum_{i \in \Ccal_1} \bx_i.$$
+The variance estimates are a bit trickier: 
+
+$$\hat{\Sigma}_{ii} = \frac{1}{n}\left(\sum_{j\in\Ccal_0} (x_{ji} - \hat{\mu}_{0i})^2 + \sum_{j\in\Ccal_1} (x_{ji} - \hat{\mu}_{1i})^2\right)$$
+This looks a bit nasty, but it's not too hard: we take the standard 
+'average squared difference' estimator of the variance, but instead of using
+the overall mean, we subtract the estimated mean from the relevant class. Note
+that here we are only estimating $\Sigma_{ii}$, the diagonal elements, and not
+a full matrix $\Sigma$. 
+
+Naive Bayes classifiers are particularly important to the history of ML as
+they were used for one of the first and most influential spam filters. 
+
+
+
+[^isotropic]: Sometimes, we go further and assume the standard deviations of 
+each feature are the same: this assumption is typically not made explicitly as 
+such but is done 'off-camera' by pre-standardizing features.)
+
+### Linear Discriminant Analysis, 
+
+Generalizing a bit, we can relax the assumption that the covariance matrix 
+$\Sigma$ is diagonal and only assume that it is constant across the two classes.
+Here, 
+
+## Quadratic Discriminant Analysis
+
+## A Non-Standard Example

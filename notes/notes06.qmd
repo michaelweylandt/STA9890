@@ -4,8 +4,7 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-
-$$\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\V}{\mathbb{V}} \newcommand{\argmin}{\text{arg min}} \newcommand{\K}{\mathbb{K}} \newcommand{\bzero}{\mathbf{0}}$$
+{{< include _latex_defines.qmd >}}
 
 ## Ridge Regression
 
@@ -147,7 +146,7 @@ There are several important things to note about this expression:
   $$\begin{align*}
   \frac{1}{2}\|\by - \bX\bbeta_1\|_2^2 + \frac{\lambda}{2}\|\bbeta_1\|_2^2 & \leq \frac{1}{2}\|\by - \bX\bbeta_2\|_2^2 + \frac{\lambda}{2}\|\bbeta_2\|_2^2 \\
   \|\by - \bX\bbeta_1\|_2^2 - \|\by - \bX\bbeta_2\|_2^2 & \leq \lambda(\|\bbeta_2\|_2^2 - \|\bbeta_1\|_2^2) \\
-  \Delta \text{MSE} &\leq \lambda \Delta \text{$\ell_2^2$-Norm}
+  \Delta \MSE &\leq \lambda \Delta \text{$\ell_2^2$-Norm}
   \end{align*}$$
   
   That is, we will take a solution with a MSE that is $\lambda$ lower if that lowers

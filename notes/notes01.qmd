@@ -4,6 +4,8 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
+{{< include _latex_defines.qmd >}}
+
 ```{r}
 #| echo: false
 set.seed(100)
@@ -301,7 +303,7 @@ the generalization gap of plain linear regression (OLS). It is not hard to show
 (and we might show in class next week) that, if the OLS model is true, the
 expected training MSE is: 
 
-$$\mathbb{E}[\text{Training MSE}] = \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n(y_i - \sum_{j=1}^p x_{ij}\hat{\beta}_j)^2\right] = \frac{\sigma^2(n-p)}{n} = \sigma^2\left(1-\frac{p}{n}\right)$$
+$$\E[\text{Training MSE}] = \E\left[\frac{1}{n}\sum_{i=1}^n(y_i - \sum_{j=1}^p x_{ij}\hat{\beta}_j)^2\right] = \frac{\sigma^2(n-p)}{n} = \sigma^2\left(1-\frac{p}{n}\right)$$
 
 Here $\sigma^2$ is the 'noise variance' of the OLS model. (We will review the OLS
 model in much more detail next week.) 

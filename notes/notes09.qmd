@@ -4,7 +4,7 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-$$\newcommand{\bx}{\mathbf{x}} \newcommand{\bb}{\mathbf{b}}\newcommand{\by}{\mathbf{y}}$$
+{{< include _latex_defines.qmd >}}
 
 To this point, we have created individual models for regression and
 classification tasks. We have covered regression-type models for
@@ -75,7 +75,7 @@ two *statistically independent* predictors $\hat{Y}_1, \hat{Y}_2$: if
 is simply
 
 $$\begin{align*}
-\text{MSE}_{\hat{Y}_i} &= \E_{Y, \hat{Y}_i}[(Y - \hat{Y}_i)^2] \\
+\MSE_{\hat{Y}_i} &= \E_{Y, \hat{Y}_i}[(Y - \hat{Y}_i)^2] \\
                        &= \E_{Y, \hat{Y}_i}[(Y - \E[Y] + \E[Y] - \hat{Y}_i)^2] \\
                        &= \E_{Y, \hat{Y}_i}[(Y - \E[Y])^2 +2(Y - \E[Y])(\E[Y] - \hat{Y}_i)+(\E[Y] - \hat{Y}_i)^2] \\
                        &= \E_{Y}[(Y - \E[Y])^2 +2\E_{Y, \hat{Y}_i}[(Y - \E[Y])(\E[Y] - \hat{Y}_i)]+\E_{\hat{Y}_i}[(\E[Y] - \hat{Y}_i)^2] \\
@@ -93,8 +93,8 @@ if we can do better using a *combination* of the two of them than we can with
 either separately. Indeed, if we let $\widehat{Y} = \frac{1}{2}(\hat{Y}_1 + \hat{Y}_2)$, the above analysis tells us: 
 
 $$\begin{align*}
-\text{MSE}_{\widehat{Y}} &= \sigma_Y^2 + \sigma_{\widehat{Y}}^2 \\
-&= \sigma_Y^2 + \mathbb{V}\left[\frac{\hat{Y}_1 + \hat{Y}_2}{2}\right] \\
+\MSE_{\widehat{Y}} &= \sigma_Y^2 + \sigma_{\widehat{Y}}^2 \\
+&= \sigma_Y^2 + \V\left[\frac{\hat{Y}_1 + \hat{Y}_2}{2}\right] \\
 &= \sigma_Y^2 + \sigma_{\hat{Y}_1}^2/4 + \sigma_{\hat{Y}_2}^2/4
 \end{align*}$$
 
@@ -106,9 +106,9 @@ better than the other, say $\sigma_{\hat{Y}_1}^2 = 400 \sigma_{\hat{Y}_2}^2$,
 then we have
 
 $$\begin{align*}
-\text{MSE}_{\hat{Y}_1} &= \sigma_Y^2 + 400 \sigma_{\hat{Y}_2}^2 \\
-\text{MSE}_{\hat{Y}_2} &= \sigma_Y^2 + \sigma_{\hat{Y}_2}^2 \\
-\text{MSE}_{\widehat{Y}} &= \sigma_Y^2 + 100.25 \sigma_{\hat{Y}_2}^2 \\
+\MSE_{\hat{Y}_1} &= \sigma_Y^2 + 400 \sigma_{\hat{Y}_2}^2 \\
+\MSE_{\hat{Y}_2} &= \sigma_Y^2 + \sigma_{\hat{Y}_2}^2 \\
+\MSE_{\widehat{Y}} &= \sigma_Y^2 + 100.25 \sigma_{\hat{Y}_2}^2 \\
 \end{align*}$$
 
 So we don't beat the superior predictor ($Y_2$), but we comfortably beat the
@@ -173,12 +173,12 @@ Perhaps the simplest rule is the 'majority vote' rule: if $\hat{f}_{\text{LR}}(\
 This approach is quite easy to implement, but it treats all the inputs as
 equally reliable. While this isn't the _worst_ assumption, we can do better.
 In particular, what if we _learned_ an optimal set of weights. Specifically, 
-we want to learn a vector of weights $\bw \in \mathbb{R}^3$ to maximize
+we want to learn a vector of weights $\bw \in \R^3$ to maximize
 predictive accuracy of the linear combination $w_1 \hat{f}_{\text{LR}} + w_2 \hat{f}_{\text{LDA}} + w_3 \hat{f}_{\text{SVM}}$. This gives us another
 classification problem, so let's use logistic regression to determine the weights:
 
-$$\hat{\bw} = \text{arg min}_{\bw} \sum_{i=1}^n -y_i \bw^{\top}\hat{\mathbf{f}} + \log(1 + e^{\bw^{\top}\hat{\mathbf{f}}})$$
-where $\hat{\mathbf{f}}$ is a vector of the three base learner predictions.
+$$\hat{\bw} = \argmin_{\bw} \sum_{i=1}^n -y_i \bw^{\top}\hat{\bf} + \log(1 + e^{\bw^{\top}\hat{\bf}})$$
+where $\hat{\bf}$ is a vector of the three base learner predictions.
 
 The solution to this problem, $\hat{\bw}$, gives the _stacking weights_
 for our three base learners. Once we have $\hat{\bw}$, we can make
@@ -207,7 +207,7 @@ We note a few practical points here:
 2. Nothing actually requires us to use the binarized predictions. For models
    that provide soft labels (class probabilities), we can and should use those
    in the ensemble process (both in training the ensemble weights and in
-   constructing the predictor vectors $\hat{\mathbf{f}}$). Dropping the
+   constructing the predictor vectors $\hat{\bf}$). Dropping the
    probabilities is really just throwing away data. 
 3. We motivated stacking by weighted averages. As such it is common to add
    additional constraints to the stacking problem to make it look more like
@@ -311,9 +311,9 @@ We can use a similar strategy to generate 'new' training data for our base
 learners: 
 
 - Repeat $b=1, \dots, B$ times: 
-  - Sample from the training data $\mathcal{D}_{\text{train}}$ $n$ times 
-    *with replacement* to get a bootstrap set $\tilde{\mathcal{D}_b}$
-  - Train a base learner $\hat{f}_b$ on $\tilde{\mathcal{D}_b}$
+  - Sample from the training data $\Dcal_{\text{train}}$ $n$ times 
+    *with replacement* to get a bootstrap set $\tilde{\Dcal_b}$
+  - Train a base learner $\hat{f}_b$ on $\tilde{\Dcal_b}$
 - Create the ensemble predictor: 
   $$\hat{f}(\bx) = \frac{1}{B}\sum_{b=1}^B \hat{f}_b(\bx)$$
   
@@ -327,7 +327,7 @@ probability exercise:
 ::: {.callout-tip title="Probability of a Given Sample Being in a Bootstrap Data Set"}
 
 In our scenario above, what is the chance that $\bx_1$ is in
-$\tilde{\mathcal{D}}_b$? 
+$\tilde{\Dcal}_b$? 
 
 For each sample, there is a $1/n$ chance that we select $\bx_1$, and hence
 a $1-1/n$ chance that we don't. If we repeat this process $n$ times, there is
@@ -421,7 +421,7 @@ fashion.
 
 We showed that the MSE associated with a bagged ensemble of size $B$ is: 
 
-$$\text{MSE}_{\text{Bagging}} = \text{Bias}^2_{\text{Base Learner}} +\underbrace{\rho\sigma^2 + \frac{1}{B}(1-\rho)\sigma^2}_{\text{Variance}} + \text{Irreducible Error}$$
+$$\MSE_{\text{Bagging}} = \text{Bias}^2_{\text{Base Learner}} +\underbrace{\rho\sigma^2 + \frac{1}{B}(1-\rho)\sigma^2}_{\text{Variance}} + \text{Irreducible Error}$$
 
 and noted that, by sending $B \to 0$, we reduce the 'bootstrapping variance'
 to 0 but that some 'inherent variance' remains from the training
@@ -434,7 +434,7 @@ search for the optimal base learner should do three things:
   term
   
 If we can find something that does all of these, we will have a (near)
-optimal predictor ($\text{MSE} \approx \text{Irreducible Error}$). This
+optimal predictor ($\MSE \approx \text{Irreducible Error}$). This
 is our primary goal for the day. 
 
 [^training_variance]: There is randomness in our selection / acquisition of
@@ -471,18 +471,18 @@ test error of the entire ensemble, but it is a useful quantity nevertheless.
 Formally, we obtain the bagged ensemble and associated OOB error as follows: 
 
 - **Inputs**:
-  - Base learner family $\mathcal{F}$
-  - Training set of size $n$: $\mathcal{D}=\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$
+  - Base learner family $\Fcal$
+  - Training set of size $n$: $\Dcal=\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$
   - Number of bootstrap samples $B$
 - For $b=1, \dots, B$:
-  - Create bootstrap training set $\mathcal{D}_b = \{(\bx_1^{(b)}, y_1^{(b)}), (\bx_2^{(b)}, y_2^{(b)}), \dots, (\bx_n^{(b)}, y_n^{(b)})\}$
-  - Fit base learner $\hat{f}_b$ to $\mathcal{D}_b$
+  - Create bootstrap training set $\Dcal_b = \{(\bx_1^{(b)}, y_1^{(b)}), (\bx_2^{(b)}, y_2^{(b)}), \dots, (\bx_n^{(b)}, y_n^{(b)})\}$
+  - Fit base learner $\hat{f}_b$ to $\Dcal_b$
 - Build ensemble $\hat{f}(\bx) = B^{-1}\sum_{b=1}^B \hat{f}_b(\bx)$
 - For $i=1, \dots, n$: 
   - Let $b_i^c = 0$ be the number of bootstrap samples not containing $i$
   - Let $y_i^c = 0$ be the average prediction of bootstrapped learners not trained on $i$
   - For $b = 1, \dots, B$: 
-    - If $i \notin \mathcal{D}_b$: 
+    - If $i \notin \Dcal_b$: 
       - $b_i^c := b_i^c+1$
       - $y_i^c := y_i^c + \hat{f}_i(\bx_i)$
   - Let $\hat{y}_i^c = y_i^c / b_i^c$ (or majority vote if classifying)
@@ -592,8 +592,8 @@ Some other notes on trees:
   but most folks will know the term "decision trees" so I just use that. 
 - Trees extend _very naturally_ to categorical variables and do not require
   numeric encoding: we simply have to adapt the decision rule from 
-  $x \leq y$ to $x \in \mathcal{Y}$ where $x$ is now a categorical feature
-  and $\mathcal{Y}$ is a set of lables. 
+  $x \leq y$ to $x \in \Ycal$ where $x$ is now a categorical feature
+  and $\Ycal$ is a set of lables. 
 - Trees also handle missing values nicely: we can simply treat `NA` as
   _very high_ or _very low_ or use an explicit `is.na` decision rule
 - Trees are rather robust to outliers: if a data point has an extreme

@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-02-11">
+<meta name="dcterms.date" content="2026-03-18">
 <title>STA 9890 - Fundamentals of ML: II. Linear Algebra Foundations – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -221,7 +221,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 11, 2026</p>
+      <p class="date">March 18, 2026</p>
     </div>
   </div>
   
@@ -230,7 +230,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bD}{\mathbf{D}}\]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\Hcal}{\mathcal{H}} \newcommand{\Ncal}{\mathcal{N}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Ocal}{\mathcal{O}} \newcommand{\Pcal}{\mathcal{P}} \newcommand{\Ucal}{\mathcal{U}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bf}{\mathbf{f}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Tr}{\text{Tr}}\]</span></p>
 <section id="linear-algebra-review" class="level2"><h2 class="anchored" data-anchor-id="linear-algebra-review">Linear Algebra Review</h2>
 <p>In mathematics, a <em>vector</em> - random or otherwise - is a fixed-length <em>ordered</em> collection of numbers. When we want to be precise about the size of a vector, we often call it a “tuple”, <em>e.g.</em>, a length-three vector is a “triple”, a length-four vector is a “4-tuple”, a length-five vector is a “5-tuple” <em>etc.</em>.</p>
 <p>So, these are all vectors:</p>
@@ -252,7 +252,7 @@ window.Quarto = {
 <li><span class="math inline">\(|A^k| = |A|^k\)</span></li>
 </ul>
 <p>The most common set of vectors we use are those where each element is an arbitrary real number. The set of vectors of length <span class="math inline">\(n\)</span> (<span class="math inline">\(n\)</span>-tuples) is thus <span class="math inline">\(\R^n\)</span>. We rarely mix vectors of different lengths, so we don’t really have a name or notation for the “combo pack” <span class="math inline">\(\R^2 \cup \R^3 \cup \R^4\)</span>.</p>
-<p>Conventionally, vectors are written in bold (if on a computer) or with a little arrow on top (hand written): so a vector called “x” would be denoted <span class="math inline">\(\mathbf{x}\)</span> or <span class="math inline">\(\vec{x}\)</span>. The elements of <span class="math inline">\(\bx\)</span> are denoted by subscripts <span class="math inline">\(\bx = (x_1, x_2, \dots, x_n)\)</span>.</p>
+<p>Conventionally, vectors are written in bold (if on a computer) or with a little arrow on top (hand written): so a vector called “x” would be denoted <span class="math inline">\(\bx\)</span> or <span class="math inline">\(\vec{x}\)</span>. The elements of <span class="math inline">\(\bx\)</span> are denoted by subscripts <span class="math inline">\(\bx = (x_1, x_2, \dots, x_n)\)</span>.</p>
 <section id="vector-arithmetic" class="level3"><h3 class="anchored" data-anchor-id="vector-arithmetic">Vector Arithmetic</h3>
 <p>We have three arithmetic operations we can perform on general vectors. The simplest is <em>scalar multiplication</em>. A <em>scalar</em> is a non-vector number, <em>i.e.</em>, a ‘regular’ number. Scalar multiplication consists of applying the scalar independently to each element of a vector.</p>
 <p><span class="math display">\[\alpha\, \bx = \alpha\, (x_1, x_2, \dots, x_n) = (\alpha x_1, \alpha x_2, \dots, \alpha x_n)\]</span></p>
@@ -291,7 +291,7 @@ window.Quarto = {
 <li>To specify and manipulate linear models</li>
 </ol>
 <p>Specifically, if we have <span class="math inline">\(n\)</span> training samples, each of <span class="math inline">\(p\)</span> covariates (predictors), we will arrange them in a matrix traditionally called <span class="math inline">\(\bX \in \R^{n \times p}\)</span>. Here, each <em>row</em> of <span class="math inline">\(\bX\)</span> corresponds to an observation. Statisticians tend to call this matrix a <em>design</em> matrix because (historically) it was something designed as part of an experiment; the name got carried forward into the observational (un-designed) setting. You may also hear it called the ‘data matrix’.</p>
-<p>Suppose we have a design matrix <span class="math inline">\(\bX \in \R^{n \times p}\)</span> and a vector of regression coefficients <span class="math inline">\(\mathbf{\beta} \in \R^p\)</span>. We can use <em>matrix</em> multiplication to make predictions about all observations simultaneously.</p>
+<p>Suppose we have a design matrix <span class="math inline">\(\bX \in \R^{n \times p}\)</span> and a vector of regression coefficients <span class="math inline">\(\bbeta \in \R^p\)</span>. We can use <em>matrix</em> multiplication to make predictions about all observations simultaneously.</p>
 <p>Specifically, recall that the standard (multivariate) linear model looks like:</p>
 <p><span class="math display">\[\hat{y} = \sum_{i=1}^p x_i\beta_i\]</span></p>
 <p>For a single observation, this can be written in vector notation as</p>
@@ -332,8 +332,8 @@ window.Quarto = {
 </li>
 </ul>
 <p>Taken together, we say that these properties make <span class="math inline">\(\bA\)</span> a <em>linear</em> function or a <em>linear</em> operator. Note that, in this context, <em>linear</em> is maybe a bit more restrictive than the ‘middle school’ definition. Our properties require “zero-in/ zero-out”: if we take <span class="math inline">\(\alpha = 0\)</span> in the scalar multiplication rule, we have:</p>
-<p><span class="math display">\[\bA(0 \, \bw) = 0\, (\bA \bw) \implies \mathbf{0}_n = \bA \mathbf{0}_m\]</span></p>
-<p>where <span class="math inline">\(\mathbf{0}_{m}, \mathbf{0}_n\)</span> are the all-zero vectors of length <span class="math inline">\(m, n\)</span> respectively. As such, a ‘linear’ function you might have seen before like</p>
+<p><span class="math display">\[\bA(0 \, \bw) = 0\, (\bA \bw) \implies \bzero_n = \bA \bzero_m\]</span></p>
+<p>where <span class="math inline">\(\bzero_{m}, \bzero_n\)</span> are the all-zero vectors of length <span class="math inline">\(m, n\)</span> respectively. As such, a ‘linear’ function you might have seen before like</p>
 <p><span class="math inline">\(y = 2x + 3\)</span></p>
 <p>is not linear in our sense because it maps <span class="math inline">\(0\)</span> to <span class="math inline">\(3\)</span>, not back to <span class="math inline">\(0\)</span> Linear + constant is called “affine” in advanced mathematics, so middle school ‘linear functions’ are really affine.</p>
 <p>This might feel like a limitation, but true (non-affine) linearity is incredibly useful in mathematical modeling as it <em>guarantees</em> us that rules like “double the input, double the output” or “negate the input, negate the output” will always hold. These types of relationships are so powerful and ubiquituous that this slightly-restrictive is definitely worth using.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
@@ -345,7 +345,7 @@ window.Quarto = {
 <p>This follows from the idea that a matrix is just a set of vectors “squished together” and our rule for vector addition.</p>
 <p>Scalar multiplication again is straightforward and follows from the corresponding vector operation:</p>
 <p><span class="math display">\[(\alpha\, \bA)_{ij} = \alpha\, \bA_{ij}\]</span></p>
-<p>With these, we can define the (additive) identity: that is, the matrix which, when added to another doesn’t change the value, by <span class="math inline">\(\mathbf{0}_{m \times n}\)</span>, the <span class="math inline">\(m \times n\)</span> matrix of all zeros. The additive inverse (the matrix that you add to get back to the additive identity) is just</p>
+<p>With these, we can define the (additive) identity: that is, the matrix which, when added to another doesn’t change the value, by <span class="math inline">\(\bzero_{m \times n}\)</span>, the <span class="math inline">\(m \times n\)</span> matrix of all zeros. The additive inverse (the matrix that you add to get back to the additive identity) is just</p>
 <p><span class="math display">\[(-\bA)_{ij} = -(\bA_{ij})\]</span></p>
 <p><em>i.e.</em>, elementwise negation.</p>
 <p>Multiplication is trickier: recall that a matrix <span class="math inline">\(\bA\)</span> also defines a function $f_{}. If we want matrix multiplication to follow normal associativity rules, we need to ensure</p>
@@ -494,8 +494,8 @@ window.Quarto = {
 <p>The non-zero elements of <span class="math inline">\(\bD\)</span> are known as the <em>singular values</em> of the matrix, hence the name SVD and they are roughly analogous to the absolute value of a standard number (except there are more of them!). In particular, they are non-negative and, when they are zero, we have an issue around division as we discuss below.</p>
 <p>The SVD is a super useful way to ‘break a matrix’ into very simple pieces: multiplication by orthogonal matrices (roughly equivalent to multiplying by 1) two times and multiplying by a non-negative diagonal matrix (essentially, just stretching a vector). The fact that <em>any</em> matrix and hence any linear function can be broken up into “rotate -&gt; stretch -&gt; rotate” is actually quite remarkable.</p>
 </section><section id="svds-of-important-matrices" class="level3"><h3 class="anchored" data-anchor-id="svds-of-important-matrices">SVDs of Important Matrices</h3>
-<p>Let’s talk through the SVD of different matrices: if we start with the all zeros matrix (<span class="math inline">\(\mathbf{0}_{m \times n}\)</span>), it’s clear that the ‘stretch factors’ should all be zero, since the zero matrix sends <em>everything</em> to zero. Hence</p>
-<p><span class="math display">\[\mathbf{0}_{m \times n} = \bU \mathbf{0}_{m \times n} \bV^{\top}\]</span></p>
+<p>Let’s talk through the SVD of different matrices: if we start with the all zeros matrix (<span class="math inline">\(\bzero_{m \times n}\)</span>), it’s clear that the ‘stretch factors’ should all be zero, since the zero matrix sends <em>everything</em> to zero. Hence</p>
+<p><span class="math display">\[\bzero_{m \times n} = \bU \bzero_{m \times n} \bV^{\top}\]</span></p>
 <p>where any orthogonal <span class="math inline">\(\bU, \bV\)</span> will work (so the SVD is not unique).</p>
 <p>Similarly, we can look at the SVD of <span class="math inline">\(\bI\)</span>. In this case, we have a square matrix so <span class="math inline">\(\bU, \bV\)</span> must both be <span class="math inline">\(n \times n\)</span> matrices. Since the identity matrix doesn’t change its inputs, its ‘stretch factors’ must all be 1 (no stretching or shrinking) so we get:</p>
 <p><span class="math display">\[\bI = \bU \bI \bV^{\top}\]</span></p>
@@ -514,13 +514,13 @@ window.Quarto = {
 <p>where <span class="math inline">\(\bD^{-1}\)</span> is found by taking elementwise inverses of <span class="math inline">\(\bD\)</span> on the diagonal and leaving zeros elsewhere. This recipe is quite powerful - and it actually shows us exactly the way in which a matrix can fail to have an inverse. If one or more of the singular values are 0, we have a “divide by zero” problem if we try to compute <span class="math inline">\(\bA^{-1}\)</span> using the SVD of <span class="math inline">\(\bA\)</span>. This is basically the <em>only</em> way that a square matrix can fail to have an inverse: other characterizations you’ll see (zero determinant, degenerate spectrum, <em>etc</em>) are just other ways of saying the same thing.</p>
 <p>Thinking about this SVD/inverse formula using our</p>
 </section><section id="spectral-properties-of-symmetric-matrices" class="level3"><h3 class="anchored" data-anchor-id="spectral-properties-of-symmetric-matrices">Spectral Properties of Symmetric Matrices</h3>
-<p>An important class of matrices we will consider are <em>symmetric</em> matrices, which are just what the name sounds like. These come up in several key places in statistics, none more important than the <em>covariance</em> matrix, typically denoted <span class="math inline">\(\Sigma\)</span>. Recall that the covariance operator <span class="math inline">\(\mathbb{C}\)</span> is symmetric (<span class="math inline">\(\mathbb{C}[X, Y] = \mathbb{C}[Y, X]\)</span>) so the covariance matrix of a random vector turns out to be symmetric as well.</p>
+<p>An important class of matrices we will consider are <em>symmetric</em> matrices, which are just what the name sounds like. These come up in several key places in statistics, none more important than the <em>covariance</em> matrix, typically denoted <span class="math inline">\(\Sigma\)</span>. Recall that the covariance operator <span class="math inline">\(\C\)</span> is symmetric (<span class="math inline">\(\C[X, Y] = \C[Y, X]\)</span>) so the covariance matrix of a random vector turns out to be symmetric as well.</p>
 <p>Another common source of symmetric matrices is when a matrix is multiplied by its transpose: you should convince yourself that <span class="math inline">\(\bX^{\top}\bX \in \R^{p \times p}\)</span> is a symmetric matrix.</p>
 </section></section><section id="ordinary-least-squares" class="level2"><h2 class="anchored" data-anchor-id="ordinary-least-squares">Ordinary Least Squares</h2>
 <p>Suppose we want to fit a linear model to a given data set (for any of the reasons we discuss in more detail below): how can we choose which line to fit? (There are infinitely many!)</p>
 <p>Since our goal is minimizing test error, and we hope training error is at least a somewhat helpful proxy for training error, we can pick the line that <em>minimizes training error</em>. To do this, we need to commit to a specific measure of error. As the name <em>Ordinary Least Squares</em> suggests, OLS uses (mean) squared error as its target.</p>
 <p>Why is MSE the right choice here? It turns out that MSE is very nice computationally, but the reason is actually more fundamental: given a random variable <span class="math inline">\(Z\)</span>, suppose we want to minimize the <span class="math inline">\((Z - \mu)\)</span> for some <span class="math inline">\(\mu\)</span>: it can be shown that</p>
-<p><span class="math display">\[ \E[Z] = \text{argmin}_{\mu \in \R} \E[(Z - \mu)^2]\]</span></p>
+<p><span class="math display">\[ \E[Z] = \argmin_{\mu \in \R} \E[(Z - \mu)^2]\]</span></p>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -539,18 +539,18 @@ Pause to Reflect
 </div>
 </div>
 <p>That is, the quantity that minimizes the MSE is the mean. So when we fit a line to some data by OLS, we are implicitly trying to fit to <span class="math inline">\(\E[y]\)</span> - a very reasonable thing to do!</p>
-<p>Specifically, given training data <span class="math inline">\(\mathcal{D} = \{(\bx_i, y_i)\}_{i=1}^n\)</span> where each <span class="math inline">\(\bx_i \in \R^p\)</span>, OLS finds <span class="math inline">\(\bbeta \in \R^p\)</span> such that <span class="math display">\[ \hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \sum_{j=1}^p \beta_jx_j\right)^2 = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2\]</span></p>
+<p>Specifically, given training data <span class="math inline">\(\Dcal = \{(\bx_i, y_i)\}_{i=1}^n\)</span> where each <span class="math inline">\(\bx_i \in \R^p\)</span>, OLS finds <span class="math inline">\(\bbeta \in \R^p\)</span> such that <span class="math display">\[ \hat{\bbeta} = \argmin_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \sum_{j=1}^p \beta_jx_j\right)^2 = \argmin_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2\]</span></p>
 <p>Some possibly new notation here:</p>
 <ul>
 <li><p><span class="math inline">\(\bx^{\top}\bbeta\)</span> is the (inner) product of two vectors: defined as the sum of their elementwise products.</p></li>
 <li>
 <p>Optimization problems:</p>
 <ul>
-<li><span class="math display">\[\hat{x} = \text{argmin}_{x \in \mathcal{C}} f(x)\]</span></li>
-<li><span class="math display">\[f_* = \text{min}_{x \in \mathcal{C}} f(x)\]</span></li>
+<li><span class="math display">\[\hat{x} = \argmin_{x \in \Ccal} f(x)\]</span></li>
+<li><span class="math display">\[f_* = \text{min}_{x \in \Ccal} f(x)\]</span></li>
 </ul>
-<p>These problems say: find the value of <span class="math inline">\(x\)</span> in the set <span class="math inline">\(\mathcal{C}\)</span> that minimizes the function <span class="math inline">\(f\)</span>. <span class="math inline">\(\text{argmin}\)</span> says ‘give me the minimizer’ while <span class="math inline">\(\min\)</span> says give me the minimum value’. These are related by <span class="math inline">\(f_* = f(\hat{x})\)</span></p>
-<p>The function <span class="math inline">\(f\)</span> is called the <em>objective</em>; the set <span class="math inline">\(\mathcal{C}\)</span> is called the <em>constraint set</em>.</p>
+<p>These problems say: find the value of <span class="math inline">\(x\)</span> in the set <span class="math inline">\(\Ccal\)</span> that minimizes the function <span class="math inline">\(f\)</span>. <span class="math inline">\(\argmin\)</span> says ‘give me the minimizer’ while <span class="math inline">\(\min\)</span> says give me the minimum value’. These are related by <span class="math inline">\(f_* = f(\hat{x})\)</span></p>
+<p>The function <span class="math inline">\(f\)</span> is called the <em>objective</em>; the set <span class="math inline">\(\Ccal\)</span> is called the <em>constraint set</em>.</p>
 </li>
 </ul>
 <p><em>Ordinary Least Squares</em> refers to the use of an MSE objective without any additional constraints.</p>
@@ -587,14 +587,14 @@ Pause to Reflect
 </div>
 </div>
 </div>
-<p>So far we’ve set up OLS as <span class="math display">\[ \hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2\]</span></p>
+<p>So far we’ve set up OLS as <span class="math display">\[ \hat{\bbeta} = \argmin_{\bbeta \in \R^p} \frac{1}{n}\sum_{i=1}^n \left(y_i - \bx^{\top}\bbeta\right)^2\]</span></p>
 <p>We can clean this up to make additional analysis easier:</p>
 <ul>
 <li>Let <span class="math display">\[\by = \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{pmatrix}\]</span> be the (vertically stacked) vector of responses.</li>
 <li>Next look at our predictions: <span class="math display">\[\hat{\by} = \begin{pmatrix} \bx_1^{\top}\bbeta \\ \bx_2^{\top}\bbeta \\ \vdots \\ \bx_n^{\top}\bbeta \end{pmatrix} = \begin{pmatrix} \bx_1^{\top} \\ \bx_2^{\top} \\ \vdots \\ \bx_n^{\top} \end{pmatrix}\bbeta = \bX\bbeta\]</span>
 </li>
 </ul>
-<p>Hence, OLS is just <span class="math display">\[\hat{\bbeta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2\]</span> Here <span class="math inline">\(\|\cdot\|_2^2\)</span> is the (squared Euclidean or <span class="math inline">\(L_2\)</span>) norm of a vector: defined by <span class="math inline">\(\|\bz\|_2^2 = \sum z_i^2\)</span></p>
+<p>Hence, OLS is just <span class="math display">\[\hat{\bbeta} = \argmin_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2\]</span> Here <span class="math inline">\(\|\cdot\|_2^2\)</span> is the (squared Euclidean or <span class="math inline">\(L_2\)</span>) norm of a vector: defined by <span class="math inline">\(\|\bz\|_2^2 = \sum z_i^2\)</span></p>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -614,7 +614,7 @@ Pause to Reflect
 </div>
 </div>
 </div>
-<p>We’ve formulated OLS as <span class="math display">\[\hat{\beta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2.\]</span> In order to solve this, it will be useful to modify it slightly to <span class="math display">\[\hat{\beta} = \text{argmin}_{\bbeta \in \R^p} \frac{1}{2} \|\by - \bX\bbeta\|_2^2\]</span></p>
+<p>We’ve formulated OLS as <span class="math display">\[\hat{\beta} = \argmin_{\bbeta \in \R^p} \frac{1}{n} \|\by - \bX\bbeta\|_2^2.\]</span> In order to solve this, it will be useful to modify it slightly to <span class="math display">\[\hat{\beta} = \argmin_{\bbeta \in \R^p} \frac{1}{2} \|\by - \bX\bbeta\|_2^2\]</span></p>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -658,32 +658,32 @@ Pause to Reflect
 <p>This in turn implies that it is <em>idempotent</em>, meaning <span class="math inline">\(\bH^2 = \bH\bH = \bH\)</span>. (To show this, simply express <span class="math inline">\(\bH\)</span> in terms of its eigendecomposition.) We can use this property to finally justify the in-sample MSE of OLS we have cited several times.</p>
 <p>The in-sample MSE is given by:</p>
 <p><span class="math display">\[\begin{align*}
-\text{MSE} &amp;= \frac{1}{n}\|\by - \hat{\by}\|_2^2 \\
+\MSE &amp;= \frac{1}{n}\|\by - \hat{\by}\|_2^2 \\
            &amp;= \frac{1}{n}\left\|\by - \bH\by\right\|_2^2 \\
            &amp;= \frac{1}{n}(\by - \bH\by)^{\top}(\by - \bH\by) \\
            &amp;= \frac{1}{n}(\by^{\top} - \by^{\top}\bH)(\by - \bH\by) \\
            &amp;= \frac{\by^{\top}\by - \by^{\top}\bH\by - \by^{\top}\bH\by + \by^{\top}\bH\bH\by}{n} \\
            &amp;= \frac{\by^{\top}\by - \by^{\top}\bH\by}{n} \\
            &amp;= \frac{\by^{\top}(\bI - \bH)\by}{n} \\
-\implies \E[\text{MSE}] &amp;= \E\left[\frac{\by^{\top}(\bI - \bH)\by}{n}\right] \\
+\implies \E[\MSE] &amp;= \E\left[\frac{\by^{\top}(\bI - \bH)\by}{n}\right] \\
 &amp;= \frac{1}{n}\E\left[\by^{\top}(\bI - \bH)\by\right]
 \end{align*}\]</span></p>
 <p>To finish this, we need to know that the <a href="https://en.wikipedia.org/wiki/Quadratic_form_(statistics)">expectation of a symmetric quadratic form</a> satisfies</p>
-<p><span class="math display">\[\bx \sim (\mu, \Sigma) \implies \E[\bx^{\top}\bA\bx] = \text{Tr}(\bA\Sigma) + \mu^{\top}\bA\mu\]</span></p>
+<p><span class="math display">\[\bx \sim (\mu, \Sigma) \implies \E[\bx^{\top}\bA\bx] = \Tr(\bA\Sigma) + \mu^{\top}\bA\mu\]</span></p>
 <p>for any random vector <span class="math inline">\(\bx\)</span> with mean <span class="math inline">\(\mu\)</span> and covariance matrix <span class="math inline">\(\Sigma\)</span>.</p>
 <p>To apply this above, we note <span class="math inline">\(\by \sim (\bX\beta_*, \sigma^2 \bI)\)</span>, so we get</p>
 <p><span class="math display">\[\begin{align*}
-\E\left[\by^{\top}(\bI - \bH)\by\right] &amp;= \text{Tr}((\bI - \bH) \sigma^2 \bI) + (\bX\bbeta_*)^{\top}(\bI - \bH)(\bX\bbeta_*) \\
-&amp;= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}\bX^{\top}(\bI - \bH)\bX\bbeta_* \\
-&amp;= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bH\bX)\bbeta_* \\
-&amp;= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX(\bX^{\top}\bX)^{-1}\bX^{\top}\bX)\bbeta_* \\
-&amp;= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX)\bbeta_* \\
-&amp;= \sigma^2 \text{Tr}(\bI - \bH) + \bbeta_*^{\top} \mathbf{0}\bbeta_* \\
-&amp;= \sigma^2 \text{Tr}(\bI - \bH) \\
-&amp;= \sigma^2 (\text{Tr}(\bI) - \text{Tr}(\bH))
+\E\left[\by^{\top}(\bI - \bH)\by\right] &amp;= \Tr((\bI - \bH) \sigma^2 \bI) + (\bX\bbeta_*)^{\top}(\bI - \bH)(\bX\bbeta_*) \\
+&amp;= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}\bX^{\top}(\bI - \bH)\bX\bbeta_* \\
+&amp;= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bH\bX)\bbeta_* \\
+&amp;= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX(\bX^{\top}\bX)^{-1}\bX^{\top}\bX)\bbeta_* \\
+&amp;= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top}(\bX^{\top}\bX - \bX^{\top}\bX)\bbeta_* \\
+&amp;= \sigma^2 \Tr(\bI - \bH) + \bbeta_*^{\top} \bzero\bbeta_* \\
+&amp;= \sigma^2 \Tr(\bI - \bH) \\
+&amp;= \sigma^2 (\Tr(\bI) - \Tr(\bH))
 \end{align*}\]</span></p>
 <p>Recall that the trace is simply the sum of the eigenvalues, so this last term becomes <span class="math inline">\(\sigma^2(n - p)\)</span>, finally giving us:</p>
-<p><span class="math display">\[\E[\text{MSE}] = \frac{\sigma^2(n-p)}{n}  = \sigma^2\left(1 - \frac{p}{n}\right)\]</span></p>
+<p><span class="math display">\[\E[\MSE] = \frac{\sigma^2(n-p)}{n}  = \sigma^2\left(1 - \frac{p}{n}\right)\]</span></p>
 <p>Whew! That was a lot of work! But can you imagine how much more work this would have been without all of these matrix tools?</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Pause to Reflect">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
@@ -703,7 +703,7 @@ Pause to Reflect
 </div>
 </section><section id="bias-variance-decomposition" class="level2"><h2 class="anchored" data-anchor-id="bias-variance-decomposition">Bias-Variance Decomposition</h2>
 <p>In <a href="../reports/repot01.html">Report #01</a>, you will show that, under MSE loss, our expected test error can be decomposed as</p>
-<p><span class="math display">\[\text{MSE} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}\]</span></p>
+<p><span class="math display">\[\MSE = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}\]</span></p>
 <p>Let’s show how we can analyze these quantities for a KNN <em>regression</em> problem. Here, we’re using the ‘regression’ version of KNN since it plays nicely with MSE.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <div class="cell">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Don't attach the package to avoid weird aliasing issues</span></span>
@@ -717,8 +717,8 @@ NULL</code></pre>
 </div>
 <p>We also need a ‘true’ function which we’re trying to estimate. Let’s use the following model:</p>
 <p><span class="math display">\[\begin{align*}
-X &amp;\sim \mathcal{U}([0, 1]) \\
-Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
+X &amp;\sim \Ucal([0, 1]) \\
+Y &amp;\sim \Ncal(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 \end{align*}\]</span></p>
 <p>That is, <span class="math inline">\(X\)</span> is uniform on the unit interval and <span class="math inline">\(Y\)</span> is a non-linear function of <span class="math inline">\(X\)</span> plus some Gaussian noise.</p>
 <p>First let’s plot <span class="math inline">\(X\)</span> vs <span class="math inline">\(\E[X]\)</span> - under MSE loss this is our ‘best’ (Bayes-optimal) possible guess.</p>
@@ -945,7 +945,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>Also - is <span class="math inline">\(K=10\)</span> really the optimal choice here? What would happen if we changed <span class="math inline">\(n\)</span>?</p>
 <p>So, now that we have a good sense of (average) test error, can we verify our MSE decomposition?</p>
 <p>Recall <span class="math display">\[\begin{align*}
-\E[\text{MSE}] &amp;= \text{Bias}^2 + \text{Variance} + \text{Irreducible Error} \\
+\E[\MSE] &amp;= \text{Bias}^2 + \text{Variance} + \text{Irreducible Error} \\
 \text{ where } \text{Bias}^2 &amp;= \E\left[\left(\E[\hat{y}] - \E[y]\right)^2\right] \\
 &amp;= \left(\E[\hat{y}] - \E[y]\right)^2 \text{ (Why can I drop the outer expectation?)} \\
 \text{Variance} &amp;= \E\left[\left(\hat{y} - \E[\hat{y}]\right)^2\right] \\
@@ -992,7 +992,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 </div>
 </div>
 <p>For this data at least, the variance term is generally larger than the bias term: this is what we expect with a very flexible (high variance + low bias) model like <span class="math inline">\(1\)</span>-NN.</p>
-<p>Finally, irreducible error is just 0.25 everywhere (recall <span class="math inline">\(y \sim \mathcal{N}(\E[y], 0.25)\)</span>).</p>
+<p>Finally, irreducible error is just 0.25 everywhere (recall <span class="math inline">\(y \sim \Ncal(\E[y], 0.25)\)</span>).</p>
 <div class="cell">
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">KNN_IE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">500</span>, <span class="op">{</span></span>
 <span>    <span class="va">sample_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">101</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -1034,23 +1034,23 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <span>   KNN_K1_VARIANCE<span class="op">=</span><span class="va">KNN_VARIANCE_K1</span>, </span>
 <span>   KNN_K1_IE <span class="op">=</span> <span class="va">KNN_IE</span>, </span>
 <span>   KNN_K1_MSE <span class="op">=</span> <span class="va">KNN_K1_MSE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">sample_grid</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Error<span class="op">=</span><span class="va">value</span>,</span>
-<span>          Type<span class="op">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html">case_when</a></span><span class="op">(</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">sample_grid</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>Error<span class="op">=</span><span class="va">value</span>,</span>
+<span>          Type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/case-and-replace-when.html">case_when</a></span><span class="op">(</span></span>
 <span>            <span class="va">name</span><span class="op">==</span><span class="st">"KNN_K1_BIAS2"</span> <span class="op">~</span> <span class="st">"Bias^2"</span>, </span>
 <span>            <span class="va">name</span><span class="op">==</span><span class="st">"KNN_K1_IE"</span> <span class="op">~</span> <span class="st">"Irreducible Error"</span>, </span>
 <span>            <span class="va">name</span><span class="op">==</span><span class="st">"KNN_K1_VARIANCE"</span> <span class="op">~</span> <span class="st">"Variance"</span>, </span>
 <span>            <span class="va">name</span><span class="op">==</span><span class="st">"KNN_K1_MSE"</span> <span class="op">~</span> <span class="st">"Total Error"</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">DECOMP_DATA</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">!=</span> <span class="st">"Total Error"</span><span class="op">)</span>, </span>
-<span>           mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">sample_grid</span>, y<span class="op">=</span><span class="va">Error</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span>, </span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_bar.html">geom_bar</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">DECOMP_DATA</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">!=</span> <span class="st">"Total Error"</span><span class="op">)</span>, </span>
+<span>           mapping<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">sample_grid</span>, y<span class="op">=</span><span class="va">Error</span>, color<span class="op">=</span><span class="va">Type</span><span class="op">)</span>, </span>
 <span>           stat<span class="op">=</span><span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">DECOMP_DATA</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">==</span> <span class="st">"Total Error"</span><span class="op">)</span>, </span>
-<span>            mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">sample_grid</span>, y<span class="op">=</span><span class="va">Error</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_path.html">geom_line</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">DECOMP_DATA</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">==</span> <span class="st">"Total Error"</span><span class="op">)</span>, </span>
+<span>            mapping<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">sample_grid</span>, y<span class="op">=</span><span class="va">Error</span><span class="op">)</span>, </span>
 <span>            color<span class="op">=</span><span class="st">"red4"</span>, linewidth<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Test Error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">xlab</a></span><span class="op">(</span><span class="st">"X"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Test Error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><img src="notes02_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
@@ -1068,7 +1068,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p><span class="math display">\[ \frac{\partial f}{\partial \bx} = \bA\bx + \bb\]</span></p>
 <p>We set this to zero and find a crticial point at:</p>
 <p><span class="math display">\[\begin{align*}
-\mathbf{0} &amp;= \bA\bx + \bb \\
+\bzero &amp;= \bA\bx + \bb \\
 - \bb &amp;= \bA\bx \\
 \implies \bx &amp;= -\bA^{-1}\bb
 \end{align*}\]</span></p>
@@ -1098,8 +1098,8 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 <p>An alternative definition is that if <span class="math inline">\(f\)</span> is twice-differentiable, its Hessian (2nd derivative matrix) is positive semi-definite.</p>
 <ul>
 <li>
-<p>A <em>convex</em> set is one that allows us to look “between” points. Specifically, a set <span class="math inline">\(\mathcal{C} \subseteq \R^p\)</span> is convex if <span class="math display">\[\bx, \by \in \mathcal{C} \implies \lambda \bx + (1-\lambda)\by \in \mathcal{C}\]</span></p>
-<p>for all <span class="math inline">\(\bx, \by \in \mathcal{C}\)</span> and any <span class="math inline">\(\lambda \in [0, 1]\)</span>.</p>
+<p>A <em>convex</em> set is one that allows us to look “between” points. Specifically, a set <span class="math inline">\(\Ccal \subseteq \R^p\)</span> is convex if <span class="math display">\[\bx, \by \in \Ccal \implies \lambda \bx + (1-\lambda)\by \in \Ccal\]</span></p>
+<p>for all <span class="math inline">\(\bx, \by \in \Ccal\)</span> and any <span class="math inline">\(\lambda \in [0, 1]\)</span>.</p>
 </li>
 </ul>
 <p>Clearly these are related by the idea of looking “between” two points:</p>
@@ -1109,7 +1109,7 @@ Y &amp;\sim \mathcal{N}(4\sqrt{X} + 0.5 * \sin(4\pi * X), 0.25)
 </ol>
 <p>To tie these together, note another alternative characterization of a <em>convex function</em>: one whose epigraph (the area above the curve in the plot) is a convex set.</p>
 <p>For optimization purposes, these two properties imply a rather remarkable fact:</p>
-<p>If <span class="math inline">\(\bx_0\)</span> is a <em>local</em> minimum of <span class="math display">\[\min_{\bx \in \mathcal{C}} f(\bx)\]</span>, then it is a <em>global</em> minimum.</p>
+<p>If <span class="math inline">\(\bx_0\)</span> is a <em>local</em> minimum of <span class="math display">\[\min_{\bx \in \Ccal} f(\bx)\]</span>, then it is a <em>global</em> minimum.</p>
 <p>This is quite shocking: if we find a point where we can’t improve by going in any direction, we are guaranteed to have found a global minimum and no point could be better. (It is possible to have <em>multiple</em> minimizers however: consider <span class="math inline">\(f(\bx) = 0\)</span>. Any choice of <span class="math inline">\(\bx\)</span> is <em>a</em> global minimizer.) This lets us turn the “global” search problem into a “local” one.</p>
 <p>Of course, this only helps us <em>if</em> we can find a local minimizer of <span class="math inline">\(f\)</span>. How might we do so? Let’s recall a basic calculus idea: the gradient of a function is a vector that points in the direction of greatest increase (the “steepest” uphill). So if we go in the opposite direction of the gradient, we actually will go “downhill”. In fact, this is basically all we need to start applying <em>gradient descent</em>.</p>
 <p><strong>Gradient Descent</strong>: Given a convex function <span class="math inline">\(f\)</span>:</p>

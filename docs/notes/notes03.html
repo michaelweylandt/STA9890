@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.33">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-03-04">
+<meta name="dcterms.date" content="2026-03-18">
 <title>STA 9890 - Fundamentals of ML: III. Accuracy and Loss in ML – STA 9890</title>
 <style>
 code{white-space: pre-wrap;}
@@ -144,8 +144,12 @@ window.Quarto = {
     </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#bias-variance-decomposition" id="toc-bias-variance-decomposition" class="nav-link active" data-scroll-target="#bias-variance-decomposition">Bias-Variance Decomposition</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes03.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes03.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
@@ -166,7 +170,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 4, 2026</p>
+      <p class="date">March 18, 2026</p>
     </div>
   </div>
   
@@ -175,7 +179,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\E}{\mathbb{E}} \newcommand{\R}{\mathbb{R}} \newcommand{\bx}{\mathbf{x}}\newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bX}{\mathbf{X}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bI}{\mathbf{I}} \newcommand{\V}{\mathbb{V}} \newcommand{\argmin}{\text{arg min}}\]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\Hcal}{\mathcal{H}} \newcommand{\Ncal}{\mathcal{N}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Ocal}{\mathcal{O}} \newcommand{\Pcal}{\mathcal{P}} \newcommand{\Ucal}{\mathcal{U}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bf}{\mathbf{f}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Tr}{\text{Tr}}\]</span></p>
 <p>Today:</p>
 <ul>
 <li>OLS via ERM
@@ -262,10 +266,44 @@ window.Quarto = {
 </ul>
 <p>OLS is the natural and unique algorithm to use. This was a special case of <em>empirical risk minimization</em>: minimizing our loss on the training data. This gives us a general principle for building ML systems: once we define the loss, we can just throw it at a sufficiently interesting set of functions and pick the minimizer as our predictor. (We will return to the set of functions at a later point.)</p>
 <p>This suggests that it’s worth spending some time thinking about what makes a <em>good</em> loss function.</p>
+<section id="bias-variance-decomposition" class="level2"><h2 class="anchored" data-anchor-id="bias-variance-decomposition">Bias-Variance Decomposition</h2>
+<p>Mathematically, we have observations of the form <span class="math inline">\(Y = f_*(X) + \epsilon\)</span> where <span class="math inline">\(f_*\)</span> is some unknown function (the “true regression function”). Since we are estimating the best approximant in a set of functions (<em>e.g.</em>, the best possible line), let’s call that <span class="math inline">\(\tilde{f}\)</span> and our estimate thereof as <span class="math inline">\(\hat{f}\)</span>. To summarize:</p>
+<p><span class="math display">\[\begin{align*}
+f_* &amp;= \text{True Regression Function - Fixed} \\
+\tilde{f} &amp;= \text{Best Possible Guess - Fixed} \\
+\hat{f} &amp;= \text{Actual Guess Given Limited Data - Random}
+\end{align*}\]</span></p>
+<p>Note that, in average over training sets, <span class="math inline">\(\E[\hat{f}] = \tilde{f}\)</span>, but <span class="math inline">\(\E[\hat{f}] \neq f_*\)</span>. The systematic error between <span class="math inline">\(f_*\)</span> and <span class="math inline">\(\tilde{f}\)</span> is not due to data-randomness.</p>
+<p>Working these all out, we need to look into the expected error taking expectation over the (random) training data <span class="math inline">\(\Dcal\)</span> and the random noise in the test observation, <span class="math inline">\(\epsilon\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+\E_{\Dcal, \epsilon}[(Y - \hat{Y})^2] &amp;= \E_{\Dcal, \epsilon}[(f(x) + \epsilon - \hat{f}(x))^2] \\
+&amp;= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x) + \epsilon)^2] \\
+&amp;= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x))^2 + 2\epsilon(f(x) - \hat{f}(x))+ \epsilon^2] \\ \\
+&amp;= \E_{\Dcal, \epsilon}[(f(x) - \hat{f}(x))^2] + 2\E_{\Dcal, \epsilon}[\epsilon(f(x) - \hat{f}(x))]+ \E_{\Dcal, \epsilon}[\epsilon^2] \\ \\
+&amp;= \underbrace{\E_{\Dcal}[(f(x) - \hat{f}(x))^2]}_{\text{No Dependence on $\epsilon$}} + 2\underbrace{\E_{\Dcal, \epsilon}[\epsilon(f(x) - \hat{f}(x))]}_{\text{Product of Two Independent Terms}}+ \underbrace{\E_{ \epsilon}[\epsilon^2]}_{\text{No Dependence on $\Dcal$}} \\
+&amp;= \E_{\Dcal}[(f(x) - \hat{f}(x))^2] + 2\underbrace{\E_{\epsilon}[\epsilon]}_{\text{No Dependence on $\Dcal$}} * \underbrace{\E_{\Dcal}(f(x) - \hat{f}(x))]}_{\text{No Dependence on $\epsilon$}}+ \E_{ \epsilon}[\epsilon^2] \\
+&amp;= \E_{\Dcal}[(f(x) - \hat{f}(x))^2] + 2 * 0 *\E_{\Dcal}(f(x) - \hat{f}(x))]+ \underbrace{\sigma^2}_{\text{Irreducible Error}} \\
+\end{align*}\]</span></p>
+<p>So now let’s just take apart that first term. Note that, per above, the only random thing left is <span class="math inline">\(\hat{f}\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+\E_{\Dcal}[(f(x) - \hat{f}(x))^2] &amp;= \E_{\Dcal}[(f(x) - \tilde{f}(x) + \tilde{f}(x) - \hat{f}(x))^2] \\
+&amp;= \E_{\Dcal}[(f(x) - \tilde{f}(x))^2 +2(f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))  +(\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= \E_{\Dcal}[(f(x) - \tilde{f}(x))^2]+2\E_{\Dcal}[((f(x) - \tilde{f}(x))(\tilde{f}(x) - \hat{f}(x))]  +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))\E_{\Dcal}[(\tilde{f}(x) - \hat{f}(x))]  +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x))(\hat{f}(x) - \hat{f}(x)) +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+2((f(x) - \tilde{f}(x)) * 0 +\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\tilde{f}(x) - \hat{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\hat{f}(x) - \tilde{f}(x))^2]  \\
+&amp;= (f(x) - \tilde{f}(x))^2+\E_{\Dcal}[((\hat{f}(x) - \E[\hat{f}](x))^2]  \\
+&amp;= \text{Bias}^2 + \text{Variance}
+\end{align*}\]</span></p>
+<p>Putting everything together, we have</p>
+<p><span class="math display">\[\begin{align*}
+\E_{\Dcal, \epsilon}[(Y - \hat{Y})^2] = \text{Bias}^2 + \text{Variance} + \sigma^2\end{align*}\]</span></p>
+<p>So the ‘two term’ formula is just the second derivation for the MSE of <span class="math inline">\(f - \hat{f}\)</span>, while the three-term formula is a combination of the two and gives the MSE for <span class="math inline">\(Y - \hat{Y}\)</span> .</p>
 
 
-
-</main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -668,4 +706,4 @@ window.Quarto = {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes03.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes03.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes03.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes03.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
