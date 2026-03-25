@@ -126,7 +126,8 @@ This example - simple as it is - gets at the core insight of stacking: if we
 have several 'good enough' models, we can do better - sometimes much better -
 by using a combination of them. This is not guaranteed - if $\hat{Y}_2$ is 
 always the 'lower variance' model, adding in some $\hat{Y}_1$ pretty much
-always hurts - but we do not expect to have a single 'dominant' model. In 
+always hurts - but we do not expect to have a single 'dominant' model. 
+(See earlier discussion of the *No Free Lunch* Theorem.) In 
 practice, we typically find ourselves armed with models of similar-enough
 performance (logistic regression, linear SVMs, RBF Kernel SVMs, RBF Kernel 
 logistic regression) and find that different models perform better on different
@@ -138,7 +139,7 @@ decision boundary.
 So what can we take away from this discussion? 
 
 > Low correlation among predictors is helpful. If our base learners give
-  the same predictions at every point, there's nothing to be gained by 
+  the exact same predictions at every point, there's nothing to be gained by 
   combining and comparing them. 
 
 Put another way, ensemble learning benefits from a *diverse* set of base 
@@ -174,8 +175,9 @@ This approach is quite easy to implement, but it treats all the inputs as
 equally reliable. While this isn't the _worst_ assumption, we can do better.
 In particular, what if we _learned_ an optimal set of weights. Specifically, 
 we want to learn a vector of weights $\bw \in \R^3$ to maximize
-predictive accuracy of the linear combination $w_1 \hat{f}_{\text{LR}} + w_2 \hat{f}_{\text{LDA}} + w_3 \hat{f}_{\text{SVM}}$. This gives us another
-classification problem, so let's use logistic regression to determine the weights:
+predictive accuracy of the linear combination $w_1 \hat{f}_{\text{LR}} + w_2 \hat{f}_{\text{LDA}} + w_3 \hat{f}_{\text{SVM}}$. This gives us *another*
+classification problem, so let's use logistic regression to determine the 
+combination weights:
 
 $$\hat{\bw} = \argmin_{\bw} \sum_{i=1}^n -y_i \bw^{\top}\hat{\bf} + \log(1 + e^{\bw^{\top}\hat{\bf}})$$
 where $\hat{\bf}$ is a vector of the three base learner predictions.
@@ -202,26 +204,28 @@ We note a few practical points here:
    called either a query or validation set, but I tend to describe it as an
    'ensembling' set to make its purpose clear. Regardless, it serves to 
    give us a new data set to fit our new ensemble model. (If we use the
-   training set used to train each $\hat{f}_i$, the base learners will look
+   training set used to train each $\hat{f}_i$, the base learners may look
    'too good' to the ensemble learning process.)
 2. Nothing actually requires us to use the binarized predictions. For models
    that provide soft labels (class probabilities), we can and should use those
    in the ensemble process (both in training the ensemble weights and in
    constructing the predictor vectors $\hat{\bf}$). Dropping the
    probabilities is really just throwing away data. 
-3. We motivated stacking by weighted averages. As such it is common to add
+3. We motivated stacking by weighted averages. As such, it is common to add
    additional constraints to the stacking problem to make it look more like
    averaging. For example, you will often see: 
    - $\bw \geq 0$: The stacking weights are non-negative. This makes sense
-     if you assume each predictor is generally reasonable. 
+     if you assume each predictor is generally reasonable. (If you have a 
+     prediction that is *anti-correlated* with your response, you should probably
+     pause and look into that further first.) 
    - $\sum w_i = 1$: The stacking weights sum to 1. Again, a natural
      generalization of averaging. 
 4. When fitting *large* ensembles (like any large model), it is not uncommon
-   to see ridge or lasso penalties. These are particularly important in ensemble
-   building since the base learners are generally highly correlated. 
+   to see ridge or lasso penalties. These are *particularly important* in ensemble
+   building since the base learners are generally *highly correlated*. 
 5. Suitably tuned (and that's a big assumption!) stacking should never do worse
    than any individual predictor because we can always pick $\bw = (1, 0, 0)$ 
-   if the first base learner dominates the others. 
+   if the first base learner strictly dominates the others. 
    
 Stacking creates a 'model of models' - the turducken of machine learning - and 
 all of the ML tricks we have learned to date can be used in creating this
@@ -229,12 +233,32 @@ meta-model. Like any modeling step, we have to practice good data hygiene
 (splitting and hold outs) to make sure we don't overfit and to generate a good
 estimate of predictive accuracy, but otherwise it is particularly straightforward.
 
-Stacking can only take us so far: the value-added of stacking comes from 
-differences between the base learners and, when trained on the same data set,
-we don't expect too much diversity among the base learners. In practical settings,
-stacking is particularly useful when we are given 'standard' or 'baseline' models
-for a task that we want to combine without changing the individual models, but
-we may want to modify our pipeline to explicitly generate more diversity. 
+An interesting fact about stacking is that it treats each of the base learners
+$\hat{f}_i$ as black boxes and doesn't really need to know what is inside them
+or where they came from. This lets us use stacking as a 'work-around' for certain
+types of practical problems: 
+
+- the models are all pre-trained and we don't have the ability to alter
+  them (*e.g.*, building an ensemble that 'averages' out the advice from ChatGPT,
+  Google Gemini, and Anthropic)
+- we are unable to move the data from a restricted setting for privacy
+  reasons (data trained on patient records held by different medical providers)
+  
+Stacking can also be used as a form of 'post-processing' to introduce additional
+desiderata that the original model training process was not aware of. I have
+[explored this in the fairness context](https://arxiv.org/abs/2206.00074) with 
+some collaborators. Here, we consider a situation in which the base learners
+are learned to only maximize accuracy, but we include fairness constraints in
+the stacking process, effectively eliminating models that are highly predictive,
+but whose predictive power comes from systemtic biases. 
+
+Despite these strengths, stacking can only take us so far: the value-added of 
+stacking comes from differences between the base learners and, when trained on 
+the same data set, we don't expect too much diversity among the base learners. 
+In practical settings, stacking is particularly useful when we are given 
+'standard' or 'baseline' models for a task that we want to combine without 
+changing the individual models, but for real improvements we may want to modify
+our pipeline to explicitly generate more diversity. 
 
 This brings us to our next family of ensembling techniques - resampling methods,
 the most famous of which is *bootstrap aggregation* or bagging. 
@@ -250,41 +274,42 @@ the data.
 So how can we get more variance? We could further split our training data, using
 a small chunk for each model, but this seems likely to bring about variance
 problems. If we want to fit large ensembles of 10, 20, or even 100 models, we
-might wind up using less than 1% of the overal data to train a single model,
-which is clearly subpar. 
+might wind up using less than 1% of the overall data to train a single model,
+which is clearly subpar. Stacking might give us some power at the margin, but
+it's hard to make up for the weakness associated with using such a small portion
+of our data. 
 
 We can get around this problem using _sampling_ or _resampling_ techniques.
 We can train our esnemble members on randomly selected subsets of our data 
 (or subsets of the features). Because these models have different training sets,
-they will be more varied. (Typically, this sort of 'data randomization' induces
-more variance than just changing hyperparamters or model families.) 
+they will be more varied. Typically, this sort of 'data randomization' induces
+more variance than just changing hyperparamters or model families.)
 
 These randomization schemes have different names: 
 
-- Minibatching: training on random subsets of samples (rows)
+- Minibatching: training on random subsets of samples (rows)[^mb]
 - Random Subspace Method: training on random subsets of features (columns)
 - Minipatching: training on random subsets of samples and features 
   (row and columns)
   
+[^mb]: Most of these methods were actually designed to speed up 
+training/fitting and that remains the main use case for minibatching today
+(*cf.* *stochastic* gradient descent or certain dropout schemes). We won't 
+focus too much on implications for speed today, but it certainly is nice when a 
+technique invented to solve one problem turns out to be useful in other scenarios. 
+  
 If the model is not too sensitive to the sample size (or if we use a high
-sampling rate), these strategies can work well.[^sampling] But we have a bit
+sampling rate), these strategies can work well. But we have a bit
 of a bind here: if we want to use large training sets for each learner, we go
 back to the overlapping training scenario we were trying to avoid. 
 
 Can we be a bit more creative on our sampling? We want to minimize overlap
 but also get 'full sized' training sets. 
 
-[^sampling]: Most of these methods were actually designed to speed up 
-training/fitting and that remains the main use case for minibatching today
-(in *stochastic gradient descent*). We won't focus too much on implications for
-speed today. 
-
-
 ### Bootstrapping
 
 To get around this problem, we rely on a key idea of late 20th century 
-statistics: **the bootstrap.**[^bootstrap] 
-Recall the core idea of bootstrapping: 
+statistics: **the bootstrap.**[^bootstrap] Recall the core idea of bootstrapping: 
 
 - We have samples $\{(\bx_1, y_1), (\bx_2, y_2), \dots, (\bx_n, y_n)\}$ from
   an unknown distribution. 
@@ -293,17 +318,33 @@ Recall the core idea of bootstrapping:
 - If our data set is large, we expect that the _empirical distribution_
   $\hat{\P}_n$ will be close to the 'real' distribution $\P$. Formally, the law
   of large numbers (and its fancy variants like Glivenko-Cantelli) guarantees
-  us that $\hat{P}_n \to \P \text{ as } n \to \infty$. 
+  us that $\hat{P}_n \to \P \text{ as } n \to \infty$.[^lln]
 - Sampling from $\hat{P}_n$ is 'close' to sampling from $\P$
+
+[^lln]: The Law of Large Numbers gives us a pointwise convergence here, while
+Glivenko-Cantelli is needed to give us *uniform* convergence guarantees. The 
+distinction matters, but we're not going to use it here. 
 
 So how can we sample from the empirical distribution $\hat{P}_n$? We sample
 _with replacement_. That is, we pick one of the training points $n$ times 
 **independently** (with no regard for prior selections). Intuitively, this
 captures the idea of IID sampling - it's also necessary so we don't just 
-reproduce the (shuffled) training data. 
+reproduce the (shuffled) training data.[^replacement]
+
+[^replacement]: If this seems weird, step back from thinking of resampling data
+and just think about sampling from a distribution. If you are sampling from a
+$\text{Binomial}(n=5, p=0.5)$ distribution, you will get *several* `3`s in a 
+data set of reasonable size. That's just a fact of life with discrete 
+distributions (it's a "probablility zero" event in the continuous case) and we
+take the empirical distribution $\hat{P}_n$ as a discrete uniform distribution
+supported on the training set. This is why it's so important to think of 
+bootstrapping as sampling from *a distribution* not as sampling from *the data*
+(even though that distribution is estimated from the data). 
 
 This scheme - sampling with replacement - is the essence of 
-**bootstrap sampling**. 
+**bootstrap sampling**. In STA 9719, you will see how it can be used to do
+things like estimate sampling variability of complex statistics. Here, our goal
+is a bit more straightforward: we just want a way to 'shake things up.'
 
 ### Bootstrap Aggregation (Bagging)
 
@@ -338,8 +379,11 @@ $$\lim_{n\to\infty}\left(1-\frac{1}{n}\right)^n = e^{-1} \approx \frac{2}{3}$$
 
 so about $2/3$ of our data is used for each base learner. _Unlike_ straight
 subsampling, however, this process includes repeats, so we have $n$ samples, 
-guaranteeing us repeats. (A more detailed analysis can show that the _number_ 
-of times a sample appears is asymptotically Poisson.)
+guaranteeing us repeats. 
+
+A more detailed analysis can show that the _number_ 
+of times a sample appears is asymptotically Poisson: rare events ($1/n$) and
+large samples ($n \to \infty$) strike again. 
 
 :::
 
@@ -376,17 +420,22 @@ the extremes:
   Practically, we see diminishing returns in the $B\approx 200-500$ range, which
   you will see as the default for most software that has a bagging step. 
 - $\rho \to 1$: As the base learners become more correlated, the variance
-  converges to $\sigma^2$, the variance of a single predictor. (As we would
-  expect since we have no diversity among base learners.)
+  converges to $\sigma^2$, the variance of a single predictor. As we would
+  expect since we have no diversity among base learners when $\rho \to 1$. 
 - $\rho \to 0$: As the base learners become uncorrelated, the variance converges
   to $\sigma^2/B$, the variance of a standard average. (You might ask why not
   take $B \to \infty$ in this case to have no bias: we really can't get an 
-  infinite number of uncorrelated models, no matter how hard we try, if they are
-  modeling the same underlying DGP)
+  infinite number of uncorrelated[^uncor] models, no matter how hard we try, 
+  if they are modeling the same underlying DGP.)
   
-So we see we want a flexible (low-bias) base learner that is also going to give
+[^uncor]: Well, *technically* we can get a bunch of uncorrelated models if we
+are willing to accept models that have no predictive power, *e.g.*, a bunch of
+distinct random number generators. The reasons this is a bad strategy should be
+obvious.
+  
+So we see we want a *flexible* (low-bias) base learner that is also going to give
 us low correlation (and low variance) among the bagged predictors. How can we
-get such a base learner? We'll cover this more next week. 
+get such a base learner? We'll cover this more below. 
 
 [^bootstrap]: If you have seen bootstrapping before, it was likely in the
 context of estimating the sampling variance of an estimator. (If you haven't
@@ -394,21 +443,9 @@ seen this, go look it up - it's awesome!) Here, we're using bootstrap sampling
 to induce some variance, not to estimate variance, but the sampling strategy
 is the same. 
 
-### Out of Bag Error
+## Summary of Bagging
 
-## Boosting
-
-Delayed to next week...
-
-
-```{r}
-#| include: false
-TRUE # To ensure knitr activates
-```
-
-## Review of Bagging
-
-Last week we discussed the ensemble learning technique known as 
+To review: e discussed the ensemble learning technique known as 
 *bagging*. Bagging, a contraction of 'boostrap aggregation' can be used
 to create an ensemble by training $B$ copies of a given base learner on $B$
 distinct bootstrap samples, *i.e.*, 'faux' data sets of $n$ points obtained
@@ -416,7 +453,7 @@ by sampling the original training data $n$ times _with replacement_.
 Because these $B$ trained base learners are essentially interchangeable, 
 it is conventional to create the bagged prediction by a straight average
 (or majority vote if classification) of the individual base learners, though
-you will occasionally see the bagging base leraners combined in a 'stacked'
+you will occasionally see the bagging base learners combined in a 'stacked'
 fashion. 
 
 We showed that the MSE associated with a bagged ensemble of size $B$ is: 
@@ -492,9 +529,9 @@ Formally, we obtain the bagged ensemble and associated OOB error as follows:
 
 For each training point, we expect it to occur in approximately $B/e$ 
 bootstrap samples and hence we have approximately $1 - B/e \approx B/3$
-base learners used for computing the OOB error. This isn't quite as good
-as the full $B$ samples we would use for a true test point, but since
-variance decreases quadratically in $B$, this isn't really a major 
+bootstrapped base learners that we can use to computing the OOB error. This isn't 
+quite as good as the full $B$ samples we would use for a true test point, but 
+since variance decreases quadratically in $B$, this isn't really a major 
 loss.[^oob_var]
 
 [^oob_var]: Taking a typical choice of $B = 500$, the OOB ensemble of 
@@ -523,10 +560,16 @@ dtree <- rpart(medv ~ . , data=Boston)
 rpart.plot(dtree)
 ```
 
-Here, the tree is evaluated by applying a series of _univariate binary_
+Here, the tree is evaluated by applying a series of _univariate[^ob] binary_
 decision rules 'downwards': that is, at each step, we ask one step about
 one variable and take the left or right branch as appropriate. The final
 terminus (or 'leaf') of the tree is then our prediction.
+
+[^ob]: This model can be generalized to decisions like $3x_1 + 2x_2 < 5$ instead
+of simple univariate rules like $x_1 < 2.5$. These sorts of trees, often called
+*oblique* trees because they have decision boundaries that are not axis-aligned,
+are rather more difficult computationally, so you won't see them used as much,
+but they are popular among theory-minded researchers. 
 
 Decision trees are incredibly popular because they are easy to apply
 'mentally' and suggest natural interpretations. Variables which are
@@ -536,7 +579,7 @@ which is what we would get by stopping the prediction at that point.
 Splits which materially change the intermediate prediction are 
 also more important. 
 
-But how should we actually fit a decision tree to data? This is, like
+But how should we *actually fit* a decision tree to data? This is, like
 bagging and computing OOB error, the sort of thing which is easy to 
 understand intuitively, but comes with a significant amount of bookkeeping
 in practice. 
@@ -610,15 +653,287 @@ will have similar options.
 ## Random Forests
 
 We are now ready to introduce the concept of _random forests_, which are
-_almost_ bagged decision trees. 
+_almost_ bagged decision trees. Recall our big goal for bagging: constructing
+an ensemble of *minimally correlated* *very flexible* base learners. Clearly, 
+'deep' trees, *i.e.*, trees with many splits, can be very flexible. (In the
+limit, sufficiently deep trees can fit the training data perfectly *à la* 
+$1$-nearest neighbor methods.) And row-subsampling (bagging) gives us a good
+source of variance. So "bagged decision trees" are pretty darn good. But can we
+go further? 
+
+Indeed! We have one other knob we can turn: random use of features. When building
+a single tree, we always built our next split by looking for the *best* feature
+to split on out of *all* of our features. But we don't actuallly need to use 
+the best feature at each step. Instead, we can randomly select a subset of
+features at each split, pick the best of those, and go on our merry way. 
+
+Clearly, this is going to give us more variability, but are we concerned it 
+might hurt us? If we (randomly) leave out the most important features, are we 
+just producing a worse tree overall? This is where the true genius of random
+forests comes in: the feature is not *removed from the whole tree*, it is only
+removed from that one split. We can use it (if randomly selected) in later 
+(deeper) splits. That is, if the feature is important early and we happen to 
+miss it, the tree will wind up partially reconstructing it later. 
+
+So that's the key construction of *random forests*: 
+
+- Build a bunch of decision trees; 
+- by randomly subsampling rows (observations) for each tree; and
+- randomly sampling features (columns) *within* each split. 
+
+This basically hits everything we want for ensemble learning: high variance
+flexible learners in the form of deep decision trees that are constructed in 
+a way that gives us lots of tree-to-tree variance (resulting from both our row
+and column sampling) without loss of power in any individual tree (because
+the missing column in split $i$ can reappear in all later splits). 
+
+Additionally, because trees are relatively quick to code and quick to apply 
+(computers are very good at less than/greater than checks and binary logic), 
+random forests are *fast*. Additionally, we note that for any bagging scheme-
+including random forests-the base learners are built and applied in parallel, so
+we can get even more speed by just throwing more compute power at the problem. 
+
+Here, you might ask whether we can combine *stacking* and *random forests*. 
+Instead of using a simple sample average of trees, can we get an optimally 
+weighted average of our trees? These sorts of *optimized* forests definitely
+have been explored, but they don't tend to add too much above random forests. 
+
+As a general rule, random forests are pretty near optimal for applied ML on
+tabular data. They are: 
+
+- easy to apply
+- fit quickly
+- don't have too many *important* tuning parameters[^tuning] 
+- have a built in error metric that can be used to make sure training doesn't go
+  off the rails (OOB error)
+- have great software support in almost every programming environment
+- can fit linear and non-linear relationships quite well
+
+For this reason, random forests are an indispensible part of the ML toolbox. 
+You can throw them at almost any (tabular) problem and they will perform within
+some reasonable percentage of optimality. Being clear here: random forests
+are not *optimal* for every problem -- no method is -- but they do very well
+on almost all problem with minimal analyst effort. It often takes real work
+to beat a good random forest implementation. 
+
+When I face a challenge, *e.g.* in work with scientific collaborators, I often
+start by throwing a simple linear model (possibly with $k$ lasso selected features)
+and a random forest and seeing how the performance compares. If the linear model
+is 80-90% as good as the random forest, I usually just stop there and report back
+"this is as good a linear model as you are likely to get without massive 
+overfitting". If the linear model is 10% as good as the RF, I know there is more
+work to be done and more signal that could be captured. Note that this strategy
+makes sense in my typical context - developing an interpretable model for 
+scientific discovery - but it may not always work for you. 
+
+Due to this usefulness, almost every variation of random forests you can imagine
+has already been explored. We won't explore these as most of them add little
+general purpose value (many are useful in specific scenarios however). 
+
+[^tuning]: Random Forests actually have a *lot* of tuning parameters: *e.g.*, 
+
+    ```{r}
+    #| message: false
+    library(ranger)
+    args(ranger)
+    ```
+    
+    but most of these have pretty marginal impact. 
 
 ## Boosting
 
-### `AdaBoost`
+So "stack-'em-and-bag-'em" is a great pair of techniques for ensemble 
+construction. Can we go further? 
 
-### `LogitBoost`
+In both strategies, we have a set of base learners built more-or-less independently
+and are looking to combine them. This assumes that other learners can 'make up'
+for incorrect answers learned by one base learner. (Either through averaging or
+through a simple majority-vote scheme.) But this requires a bit of luck. 
+Can we instead build an ensemble models that are designed to improve on each
+other? 
 
-### Gradient Boosting
+This is the fundamental idea of *boosting*: given one learner, what if we fit
+another learner whose goal is not to predict $y$ *per se*, but to fix where
+the prior learner went wrong? While boosting can be applied for both classification
+and regression (and was originally developed for classification), I find the 
+math a bit more intuitive in the regression case. 
 
-### `xgboost`
+Suppose we have a set of training data $(\bX, \by)$ and we fit a predictor
+$\hat{f}_1$. We can construct a set of 'first stage' predictions
 
+$$\hat{\by}_1 = \hat{f}_1(\bX)$$ 
+
+and associated residuals
+
+$$\hat{\br}_1 = \by - \hat{\by}_1.$$  *If* we could predict $\hat{\br}_1$ 
+reasonably well, say with another function $\hat{f}_2$, we could get better
+predictions by combining the two models together: 
+
+$$\hat{\by}_{1:2} = \hat{\by}_1 + \hat{\br}_1 = \hat{f}_1(\bX) + \hat{f}_2(\bX)$$
+
+::: {.callout-caution title="Why not Use $\by$?"}
+
+You might ask why note fit $\hat{f}_2$ to take $\hat{\by}_1$ or $\hat{\br}_1$
+as inputs. We can't use anything that depends on $\by$ as inputs to any
+$\hat{f}(\cdot)$  in the test (unknown $\by$) context. 
+
+:::
+
+At this point, your BS alarm should be going off. If it were possible to predict
+$\hat{r}_1$ meaningfully in the first place, why didn't our original $\hat{f}_1$
+do this? After all, we know from the gradient condition from OLS that: 
+
+$$\bX^{\top}(\by - \bX \hat{\bbeta}) = \bzero \implies \bx_j^{\top}\br = 0 \text{ for all } j = 1, \dots, p$$
+
+so OLS leaves no linear relationship "on the table." Many other models have
+similar guarantees, but not all! 
+
+As we have discussed throughout this course, we often pick models that don't 
+"go to the mattresses" and take on their most flexible forms (think $K$-NN with
+$K > 1$: it's not the 'all out' version of $K$-NN). If we pick a base learner
+with minimal fitting ability, it might leave something on the table. 
+
+So what is our laziest base learner? Let's go back to our beloved trees and
+consider a tree with only a single split: 
+
+```{r}
+#| echo: false
+library(rpart)
+library(rpart.plot)
+library(MASS)
+rpart.plot(rpart(medv ~ . , data=Boston, maxdepth=1))
+```
+
+This type of minimal tree is often referred to as a *stump* in the ML
+community.[^stump] Clearly, a stump is a very high-bias (inflexible) 
+low variance learner. Even if we do not go all the way to a stump, shallow
+decision trees still form a good basis for *boosting* or iterative model
+improvement. 
+
+This gives us our basic Boosting-type algorithm: 
+
+- Initialize: $\hat{f}_0(\cdot) = 0$ (constant predictor)
+- For $b = 1, \dots, B$: 
+  - Compute residuals: $\hat{\br}_b = \by - \hat{f}_{b-1}(\bX)$
+  - Build new learner $\tilde{f}_b$ on training data $(\bX, \hat{\br}_b)$
+  - Update ensemble predictor: 
+    $$ \hat{f}_b(\cdot) = \hat{f}_{b-1}(\cdot) + \lambda \tilde{f}_b(\cdot) \Leftrightarrow \hat{f}_b(\cdot) = \sum_{i=1}^b \lambda\tilde{f}_b(\cdot)$$
+    
+Wait? What is this new $\lambda$ term? It's a form of regularization that
+we use to avoid overfitting. Instead of using *all* of the residual 
+predictor we construct, we use a small fraction thereof. $\lambda$ is
+typically chosen to be small, on the order of $\lambda \approx 0.01$. The
+hope is that, by taking such small steps, and not running boosting *ad infinitum*
+we can identify a good boosted predictor. 
+
+::: {.callout-caution title="Boosting and Overfitting"}
+
+In *bagging* scenarios, we can run $B \to \infty$ without risk of overfitting
+because we are resampling data but still only fitting a model of limited 
+capacity. The resampling only exists as a variance taming mechanism. 
+
+In *boosting* scenarios, running $B \to \infty$ is a recipe for overfitting as
+we will continue to fit increasingly more complex models to capture more and more
+residual variance. It is important to have good data hygiene and use some sort
+of hold-out/cross-validation scheme to avoid overfitting. 
+
+:::
+
+At this point, you might recognize a bit of a gradient descent 'flavor' to 
+boosting: we take small steps in a direction that further reduces our loss. 
+This is not just a coincidence: as noted above, regression residuals are intimately
+tied to the gradient at a particular $\hat{\beta}$. If we want to extend boosting
+to classification contexts, where residuals are not well-defined, one commonly
+used strategy (not surprisingly called *gradient boosting*) fits each successive
+base learner to the *gradient* of the loss function at each training point: that
+is, we fit the new base learner so that it pushes us "just a bit" in a direction
+that further minimizes the loss. 
+
+While other forms of boosting exist (`AdaBoost`, `LogitBoost`), gradient boosting
+is the most commonly used today. In particular, a software framework known as
+[`xgboost`](https://xgboost.ai) dominates the boosting landscape. 
+`xgboost` - with the `x` standing for e**X**treme - is not just the 
+blue-raspberry flavor of machine learning. It uses small decision trees as the
+base learner, additionally using a random-forest feature randomization step to
+get some additional variability. The authors of `xgboost` have put significant
+effort into `xgboost` to make it as efficient as possible on a variety of
+computer architectures and have added many additionally useful features like
+automatic feature selection, a penalization scheme to downweight certain trees,
+and a Newton-like step instead of a simple gradient step for constructing the
+ensemble. See the [official documentation](https://xgboost.readthedocs.io/en/stable/tutorials/model.html)
+for a more detailed discussion of these and the other powerful features of the 
+`xgboost` library. 
+
+Like random forests, `xgboost` is also a widely used "nearly optimal" tool of
+choice for much applied predictive modeling and you are highly encouraged to
+familiarize yourself with it and add it to your toolbox. 
+
+Below, I demonstrate both random forests and xgboost to predict the `price` feature
+in the `diamonds` data you might have seen used to demonstrate `ggplto2`: 
+
+```{r}
+library(rsample)
+library(tidyverse)
+library(ranger) # Provides random forest
+library(xgboost) # Provides xgboost
+
+
+set.seed(9890)
+split <- initial_split(diamonds, prop = 0.8)
+train_diamonds <- training(split)
+test_diamonds  <- testing(split)
+
+diamonds_lm <- lm(price ~ ., data=train_diamonds)
+diamonds_rf <- ranger(price ~ ., data=train_diamonds)
+# No formula interface
+diamonds_xg <- xgboost(x = model.matrix(diamonds_lm), y=train_diamonds$price)
+
+y_hat_lm <- predict(diamonds_lm, newdata=test_diamonds)
+y_hat_rf <- predict(diamonds_rf, data=test_diamonds)$predictions
+
+## Some awful magic to process test_diamonds into the expected format
+## Ignore this!
+diamonds_lm_terms <- diamonds_lm |> terms() |> delete.response()
+m <- model.frame(diamonds_lm_terms, test_diamonds, xlev = diamonds_lm$xlevels)
+diamonds_lm_X_test <- model.matrix(diamonds_lm_terms, m, contrasts.arg = diamonds_lm$contrasts)
+
+y_hat_xg <- predict(diamonds_xg, newdata=diamonds_lm_X_test)
+
+list(y=test_diamonds$price, 
+     y_hat_lm=y_hat_lm, 
+     y_hat_rf=y_hat_rf, 
+     y_hat_xg=y_hat_xg) |> 
+  bind_cols() |> 
+  pivot_longer(cols=starts_with("y_hat"), 
+               names_to="method", 
+               values_to="prediction") |>
+  mutate(method = recode_values(method, 
+    "y_hat_lm" ~ "Linear Regression", 
+    "y_hat_rf" ~ "Random Forest", 
+    "y_hat_xg" ~ "xgBoost")) |> 
+  ggplot(aes(x=y, y=prediction)) + 
+  geom_point(alpha=0.3) + 
+  facet_wrap(~method, ) + 
+  theme_bw() + 
+  xlab("True y") + 
+  ylab("Predicted y") + 
+  geom_abline(slope=1, intercept=0, color="red4", linewidth=2) +
+  scale_x_continuous(labels=scales::dollar) + 
+  scale_y_continuous(labels=scales::dollar)
+```
+
+This is quite clunky - and we didn't even do any tuning. Still, we see that
+a naive application of random forest 
+(RMSE \$`r yardstick::rmse_vec(test_diamonds$price, y_hat_rf) |> round(digits=2)`)
+or xgboost
+(RMSE \$`r yardstick::rmse_vec(test_diamonds$price, y_hat_xg) |> round(digits=2)`)
+gives a real improvement over a linear model
+(RMSE \$`r yardstick::rmse_vec(test_diamonds$price, y_hat_lm) |> round(digits=2)`). 
+For a more fluid UX, I recommend the use of the `tidymodels` package instead. 
+
+TODO: Tidymodels Example
+
+[^stump]: To my eye, this is more like the very sad Charlie Brown Christmas
+tree with one branch than a true *stump*, but if the worlds of statistics
+and ML can barely agree on terminology, what chance is there for botany
+and ML to agree on terms? 
