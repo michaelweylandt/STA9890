@@ -10,3 +10,5 @@ notes/**/*cache/*
 notes/**/*files/*
 
 *syllabus_packet.pdf
+
+**/*.quarto_ipynb
