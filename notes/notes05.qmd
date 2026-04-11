@@ -85,7 +85,19 @@ SIMRES <- map(MU_GRID, compute_mse_sample_mean, n=N) |> list_rbind()
 Our bias is essentially always zero: 
 
 ```{r}
-ggplot(SIMRES, aes(x=mu, y=bias)) + 
+library(patchwork)
+p1 <- ggplot(SIMRES, aes(x=mu, y=bias)) + 
+    geom_point() + 
+    geom_abline(slope=0, 
+                intercept=0, 
+                color="black", 
+                lwd=2, 
+                lty=2) + 
+    xlab(expression("True Parameter:" ~ mu)) + 
+    ylab(expression("Bias")) + 
+    ggtitle("Constant Zero Bias of Sample Mean Estimator") + 
+    theme_bw()
+p2 <- ggplot(SIMRES, aes(x=mu, y=bias^2)) + 
     geom_point() + 
     geom_abline(slope=0, 
                 intercept=0, 
@@ -96,6 +108,8 @@ ggplot(SIMRES, aes(x=mu, y=bias)) +
     ylab(expression("Bias"^2)) + 
     ggtitle("Constant Zero Bias of Sample Mean Estimator") + 
     theme_bw()
+
+p1 + p2
 ```
 
 Similarly, our bias is small, and constant. Specifically, it is around 
@@ -241,8 +255,6 @@ we can't really hold that against $(\overline{X}_n)_+$.
 
 Looking more closely, we can look at the bias of $(\overline{X}_n)_+$: 
 
-
-
 ```{r}
 SIMRES_POSPART |>
     filter(mu >= -0.5, 
@@ -260,7 +272,7 @@ ggplot(aes(x=mu, y=bias)) +
                 lwd=2, 
                 lty=2) + 
     xlab(expression("True Parameter:" ~ mu)) + 
-    ylab(expression("Bias"^2)) + 
+    ylab(expression("Bias")) + 
     ggtitle("Bias of Positive Part Mean Estimator") + 
     theme_bw()
 ```
@@ -297,7 +309,7 @@ SIMRES_POSPART |>
            mu <= 1) |>
     ggplot(aes(x=bias, y=variance)) + 
        geom_point() + 
-       geom_textline(aes(x=bias, y=1/n - bias),
+       geom_textline(aes(x=bias^2, y=1/n - bias^2),
                      lty=2, color="red4", 
                      label="Breakeven") + 
        ylim(c(0, 0.1)) + 
