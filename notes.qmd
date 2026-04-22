@@ -139,6 +139,8 @@ Mid-semester tests and solutions will be posted here *after* the exam.
 #### Test 2: Supervised Learning
 
 - [Formula Sheet](./tests/test02/formula_sheet.pdf)
+- [Exam Packet](./tests/test02/exam_packet.pdf)
+- [Solutions](./tests/test02/solutions.qmd)
 
 ### Additional Materials
 
