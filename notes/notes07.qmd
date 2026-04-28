@@ -6,6 +6,12 @@ date: "Last Updated `r Sys.Date()`"
 
 {{< include _latex_defines.qmd >}}
 
+This week we begin to examine _discriminative_ classifiers. Unlike
+generative classifiers, which attempt to model $\bx$ as a function
+of $y$ and then use Bayes' rule to _invert_ that model, 
+discriminative classifiers take the more standard approach of 
+directly modeling $y$ as a function of $\bx$. This is the
+approach you have already seen in our various variants of OLS. 
 Having (temporarily) finished our discussion of regression, we now turn our 
 focus to *classification*. 
 
@@ -223,6 +229,77 @@ These clearly satisfy some useful relationships:
 
 $$\text{TPR} = 1 - \text{FNR} \Leftrightarrow \text{FNR} = 1 - \text{TPR}$$
 
+plot(y_hat, acc(y_hat), type="l",
+     xlab=expression(hat(y)),
+     ylab=expression(Acc(hat(y), y==1)), 
+     main="Accuracy as a Loss Function")
+```
+This is a terrible loss function! It is both non-convex (can you see
+why?) and just generally unhelpful. Because it is flat almost
+everywhere, we have no access to gradient information (useful for
+fitting) or to any sense of 'sensitivity' to our loss. In this
+scenario, if $y=1$, both $\hat{y}=0.00001$ and $\hat{y}=0.9999$
+have the same accuracy even though the latter is a more 'confident'
+prediction. 
+
+## OLS for Classification?
+
+So if not accuracy, where else might we get a good loss function?
+You might first ask if we an use OLS? It works perfectly well for 
+regression and we know it is well-behaved, so what happens if we
+try it for classification? The answer is ... complicated. 
+
+OLS as a _loss_ function for classification is a bit strange, but
+it turns out to be more-or-less fine. In particular, OLS can be
+used to evaluate _probabilistic_ classifiers, where it is known
+as the _Brier score_. OLS as a _predictor_ can be a bit more 
+problematic: in particular, if we just predict with 
+$\P(y=1) = \bx^{\top}\bbeta$, we have to deal with the fact that
+$\hat{y}$ can be _far_ outside a $[0, 1]$ range we might want
+from a probabilistic classifier. In certain limited circumstances, 
+we can assume away this problem (perhaps by putting specific
+bounds on $\bx$), but these fixes are fragile. Alternatively, 
+we can try to 'patch' this approach and use a classifier
+like 
+
+$$\P(y=1) = \begin{cases} 1 & \bx^{\top}\bbeta > 1 \\ 0 & \bx^{\top}\bbeta < 0 \\ \bx^{\top}{\bbeta} & \text{ otherwise}\end{cases}$$
+
+Even if this feels a bit unsophisticated, this is not awful, 
+but it still struggles from the 'long flat region' problems that
+accuracy encounters. 
+
+At this point, it's hopefully clear that it will be a bit hard to
+'hack together' a suitable loss and that we might benefit from
+approaching the problem with more theoretical grounding. 
+
+## Deriving Logistic Regression
+
+While we argued that OLS is well-grounded in MSE alone, we can
+recall it has additional connections to the Gaussian. These
+"Gaussian vibes" were not essential to making OLS work, but 
+they were useful in _deriving_ OLS as a sensible procedure. 
+Can we do something similar for classification? That is, can we 
+assume a 'working model' to come up with a good loss function
+and then use it, even if we doubt that the model is 'correct'? 
+
+As with all leading questions, the answer is of course a resounding
+yes. We start from the rather banal observation that $y$ must have
+a Bernoulli distribution conditional on $\bx$. After all, the
+Bernoulli is (essentially) the only $\{0, 1\}$ distribution we
+have to work with. So we really just need a way to model
+the $p$ parameter of a Bernoulli as a function of $\bx$. Because
+we love linear models, we may choose to set $p = \bx^{\top}\bbeta$,
+but this gets us back to the range problem we had above. 
+
+Specifically, we require the Bernoulli parameter to take values in
+$[0, 1]$ but our linear predictor $\bx^{\top}\bbeta$ takes values
+in all of $\R$. We can fix this with a simple 'hack': we need a 
+function that 'connects' $\R$ to $[0, 1]$. If we call this function
+$\mu$, we then can specify our whole model as $$y | \bx \sim \text{Bernoulli}(\mu(\bx^{\top}\bbeta))$$ and reduce our problem
+to estimating $\bbeta$. Where can we get such a function? 
+
+The most common choice is $$\mu(z) = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}}$$, which is known as the _logistic_ or
+_sigmoid_ function due to its 's-like' shape: 
 and 
 
 $$\text{FPR} = 1 - \text{TNR} \Leftrightarrow \text{TNR} = 1 - \text{FPR}$$
