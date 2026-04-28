@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-04-22">
+<meta name="dcterms.date" content="2026-04-28">
 <title>STA 9890 - Unsupervised Learning: II. Clustering – STA 9890</title>
 <style>
 /* Default styles provided by pandoc.
@@ -190,7 +190,7 @@ window.Quarto = {
 <a href="#distance-based-clustering" id="toc-distance-based-clustering" class="nav-link active" data-scroll-target="#distance-based-clustering">Distance-Based Clustering</a>
   <ul class="collapse">
 <li><a href="#the-k-means-model" id="toc-the-k-means-model" class="nav-link" data-scroll-target="#the-k-means-model">The <span class="math inline">\(K\)</span>-Means Model</a></li>
-  <li><a href="#an-em-algorithm" id="toc-an-em-algorithm" class="nav-link" data-scroll-target="#an-em-algorithm">An EM Algorithm</a></li>
+  <li><a href="#em-algorithms-for-hard-and-soft-clustering" id="toc-em-algorithms-for-hard-and-soft-clustering" class="nav-link" data-scroll-target="#em-algorithms-for-hard-and-soft-clustering">EM Algorithms for Hard and Soft Clustering</a></li>
   <li><a href="#convex-clustering" id="toc-convex-clustering" class="nav-link" data-scroll-target="#convex-clustering">Convex Clustering</a></li>
   </ul>
 </li>
@@ -219,7 +219,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 22, 2026</p>
+      <p class="date">April 28, 2026</p>
     </div>
   </div>
   
@@ -228,7 +228,7 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\bbeta}{\mathbb{\beta}} \newcommand{\bone}{\mathbb{1}} \newcommand{\bzero}{\mathbb{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\br}{\mathbf{r}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbb{C}} \newcommand{\bD}{\mathbb{D}} \newcommand{\bU}{\mathbb{U}} \newcommand{\bV}{\mathbb{V}} \newcommand{\bI}{\mathbb{I}} \newcommand{\bH}{\mathbb{H}} \newcommand{\bW}{\mathbb{W}} \newcommand{\bK}{\mathbb{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\Ycal}{\mathcal{Y}} \]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\bbeta}{\mathbb{\beta}} \newcommand{\bone}{\mathbb{1}} \newcommand{\bzero}{\mathbb{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\br}{\mathbf{r}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\Ycal}{\mathcal{Y}} \]</span></p>
 <p>For our first topic in unsupervised learning, we turn to <em>clustering</em>, the task of dividing <em>observations</em> into meaningful groups. Before we get to methods, what are some reasons why we might want to perform clustering on a given data set?</p>
 <ul>
 <li>
@@ -604,19 +604,272 @@ window.Quarto = {
 <li>Different groupings, where two points are in the same group in one solution but different groups in a second solution</li>
 </ul>
 <p>The first makes for some annoying book-keeping, but is ultimately harmless. The latter is what we worry about when using <span class="math inline">\(K\)</span>-means.</p>
-<ol type="i">
-<li>If we initialize our centers</li>
-</ol></section><section id="an-em-algorithm" class="level3"><h3 class="anchored" data-anchor-id="an-em-algorithm">An EM Algorithm</h3>
+<p>To get around this, we simply run <span class="math inline">\(K\)</span>-means with a variety of different initial values and select the ‘best’ result. This is feasible because Lloyd’s Algorithm is so fast (means and distance calculations). In this context, <em>best</em> refers to minimizing the clustering objective we started with: distance from each point to its centroid.</p>
+<p>If this feels unsatisfying - and it is a bit unsatisfying - there are some alternate approaches that are more theoretically grounded than “try a lot and pick the best.” Most notable is the “<span class="math inline">\(k\)</span>-means++` strategy of Arthur and Vassilvitskii<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> which uses an alternate initialization and guarantees a result that is”near optimal”. The details can be a bit complicated, but essentially <span class="math inline">\(k\)</span>-means++ just guarantees that the initial centroids are reasonably well spread out across the data. As a practical matter, I recommend using both <span class="math inline">\(k\)</span>-means++ and a set of random initializations and choosing the best.</p>
+</section><section id="em-algorithms-for-hard-and-soft-clustering" class="level3"><h3 class="anchored" data-anchor-id="em-algorithms-for-hard-and-soft-clustering">EM Algorithms for Hard and Soft Clustering</h3>
 </section><section id="convex-clustering" class="level3"><h3 class="anchored" data-anchor-id="convex-clustering">Convex Clustering</h3>
+<p>While greedy approaches (Lloyd’s and EM) work well for clustering, we might still want to explore an analogue to our “best-subsets to lasso” relaxation from the supervised context. Recall that, in the supervised context, we found the “closest convex problem” by relaxing the <span class="math inline">\(\ell_0\)</span> (best subsets) penalty to the <span class="math inline">\(\ell_1\)</span> (lasso) penalty. <em>Convex clustering</em> lets us do something similar for the clustering problem.</p>
+<p>Recall the clustering problem we used to motivate <span class="math inline">\(K\)</span>-means:</p>
+<p><span class="math display">\[\argmin_{\substack{c_1, c_2, \dots, c_n \in \{1, 2, \dots, K}\} \\ C_1, C_2, \dots, C_K \in \R^p} \sum_i \|X_i - C_{c_i}\|_2^2\]</span></p>
+<p>We don’t have a simple <span class="math inline">\(\ell_0 \to \ell_1\)</span> substitution we can perform here, so we need to manipulate the problem a bit. After a bit of work, we can convince ourselves that the appropriate convex problem looks like this:</p>
+<p><span class="math display">\[\argmin_{\bu_1, \bu_2, \dots \bu_n \in \R^p} \sum_i \|\bx_i - \bu_i\|_2^2 + \lambda \sum_{i, j} \|\bu_i - \bu_j\|_2\]</span></p>
+<p>This is quite a shift, so let’s take this one apart as well:</p>
+<ul>
+<li><p>Instead of having <span class="math inline">\(n\)</span> labels and <span class="math inline">\(K\)</span> clusters, we now have <span class="math inline">\(n\)</span> <span class="math inline">\(\bu_i\)</span> variables, one per observation <span class="math inline">\(\bx_i\)</span>. These play the role of the estimated centroids for each observation. That is, instead of mapping each point to its cluster label and then to the centroid of that cluster, we simply map each <span class="math inline">\(\bx_i\)</span> to a new point <span class="math inline">\(\bu_i\)</span></p></li>
+<li><p>We say that <span class="math inline">\(\bx_i\)</span> and <span class="math inline">\(\bx_j\)</span> are in the same cluster if their centroids match. This should be consistent with your impression of clustering so far - if two points are in the same <span class="math inline">\(K\)</span>-means cluster, it means they got assigned to the same centroid. But how do we make that happen? In <span class="math inline">\(K\)</span>-means, we got ‘repeats’ because we only had <span class="math inline">\(K \ll n\)</span> distinct clusters; that is not the case here, we have <span class="math inline">\(n\)</span> individual centroids.</p></li>
+<li>
+<p>To get the ‘repeats’ in the centroids we want, we use a lasso type penalty on the <em>difference</em> of the centroids. Recall that lasso penalties shrink their input to zero, so if <span class="math inline">\(\bu_i - \bu_j \to 0\)</span>, we have <span class="math inline">\(\bu_i \to \bu_j\)</span>, giving us the desired clustering behavior.</p>
+<p>This type of penalty (on the difference of points) is sometimes called a <em>fusion</em> penalty since it serves to make things equal: we saw a bit of this in our discussion of non-linear trend-filtering methods.</p>
+</li>
+<li>
+<p>As always, when given a new penalized optimization problem, we can build intuition by thinking about the <span class="math inline">\(\lambda \to 0\)</span> and <span class="math inline">\(\lambda \to \infty\)</span> limits:</p>
+<ul>
+<li><p>As <span class="math inline">\(\lambda \to 0\)</span>, the penalty goes away and we have no pressure to fuse points together. As such each <span class="math inline">\(\bu_i = \bx_i\)</span> and we have no ties. This represents the “no-clustering” extreme end: each point is its own cluster, and the centroid of that cluster is simply its one point.</p></li>
+<li>
+<p>As <span class="math inline">\(\lambda \to \infty\)</span>, the pressure to fuse points together becomes irresistible and all points get joined to a single point, <span class="math inline">\(\overline{\bu}\)</span>. Our optimization problem essentially simplifies to</p>
+<p><span class="math display">\[\argmin_{\overline{\bu}} \sum_i \|\bx_i - \overline{\bu}\|_2^2\]</span></p>
+<p>But we know this problem! That’s just the definition of the mean: recall all of our OLS motivation - the mean is the point that minimizes <span class="math inline">\(\ell_2\)</span> distance. So we fuse all points together into a single ‘mono-cluster’ at the grand mean.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>These represent reasonable extremes for the clustering problem. We can actually visualize the results of convex clustering at various <span class="math inline">\(\lambda\)</span> using something like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Some of the labels are a bit busy, but we can clearly see the centroids (large points) converging and fusing as <span class="math inline">\(\lambda\)</span> increases to its maximum meaningful value (her scaled to <span class="math inline">\(\lambda_{\max} = 100\%\)</span>).</p>
+<p>Despite this lovely theoretical formulation and my best efforts on the algorithm development front, convex clustering has not yet taken the world by storm. It’s a fun and theoretically-satisfying formulation - the sort of things that many statistics papers are written about - but you are not likely to encounter it in the wild.</p>
 </section></section><section id="spectral-clustering" class="level2"><h2 class="anchored" data-anchor-id="spectral-clustering">Spectral Clustering</h2>
+<p>The distance based clustering we have done so far reflects <em>major</em> patterns in distance: two points are unlikely to be clustered together if they are far apart. We can invert this to motivate a type of ‘nearness’ based clustering, in which we want to preserve <em>local</em> nearness and <em>maximize</em> the chance that each point is clustered with its <em>nearest neighbors</em>.</p>
+<p>To make this rigorous, we need to discuss a <em>graph embedding</em> of a data set. Given a data set, we represent it as a graph where:</p>
+<ul>
+<li>each node in the graph corresponds to an observation in the original data</li>
+<li>two nodes are connected by an edge <em>if and only if</em> the original points were close</li>
+</ul>
+<p>For example, if we have data of the form</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nested_circles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, each<span class="op">=</span><span class="fl">48</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>radius <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">group</span> <span class="op">==</span> <span class="st">"a"</span>, <span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>         group_n <span class="op">=</span> <span class="fu">row_number</span><span class="op">(</span><span class="op">)</span>, </span>
+<span>         group_arg <span class="op">=</span> <span class="va">group_n</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">group_n</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span>, </span>
+<span>         z <span class="op">=</span> <span class="va">radius</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">(</span><span class="fl">0</span> <span class="op">+</span> <span class="fl">1i</span><span class="op">)</span> <span class="op">*</span> <span class="va">group_arg</span><span class="op">)</span>, </span>
+<span>         x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span>, mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/complex.html">Re</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>, </span>
+<span>         y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span>, mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/complex.html">Im</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, sd<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>, </span>
+<span>         .by <span class="op">=</span> <span class="st">"group"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">nested_circles</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Clearly, this data <em>should</em> be clustered into inner and outer rings, but <span class="math inline">\(K\)</span>-means fails:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nested_circles</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>k_means_clust <span class="op">=</span> <span class="fu">pick</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>           <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span>centers<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>           <span class="fu">pluck</span><span class="op">(</span><span class="st">"cluster"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span>, color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">k_means_clust</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">scale_color_brewer</span><span class="op">(</span>type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span>, name<span class="op">=</span><span class="st">"K-Means Estimated Clustering"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Unsurprisingly, since our clusters are not compact Euclidean balls, <span class="math inline">\(K\)</span>-means fails terribly here. Let’s construct a graph where each point is connected to three of its nearest neighbors:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://michaeldorman.github.io/nngeo/">nngeo</a></span><span class="op">)</span></span>
+<span><span class="va">points</span> <span class="op">&lt;-</span> <span class="va">nested_circles</span> <span class="op">|&gt;</span> <span class="fu">select</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># K = 5 because we want three nearest neighbors </span></span>
+<span><span class="co"># (point 1 will be the original point and 4 others will matter)</span></span>
+<span><span class="va">neighbor_indices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://michaeldorman.github.io/nngeo/reference/st_nn.html">st_nn</a></span><span class="op">(</span><span class="va">points</span>, <span class="va">points</span>, k <span class="op">=</span> <span class="fl">5</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">knn_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://michaeldorman.github.io/nngeo/reference/st_connect.html">st_connect</a></span><span class="op">(</span><span class="va">points</span>, <span class="va">points</span>, ids <span class="op">=</span> <span class="va">neighbor_indices</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Calculating nearest IDs
+Calculating lines</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">knn_lines</span>, color <span class="op">=</span> <span class="st">"steelblue"</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">points</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"K-Nearest Neighbor Graph (K=4)"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Clearly, if we were to chop this graph into two parts, <em>i.e.</em>, the two ‘components’ already present in the graph, we would get a much better clustering than <span class="math inline">\(K\)</span>-means. To finish this up, let’s go ahead and construct a proper graph</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/">igraph</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggraph.data-imaginist.com">ggraph</a></span><span class="op">)</span></span>
+<span><span class="fu">imap</span><span class="op">(</span><span class="va">neighbor_indices</span>, </span>
+<span>     \<span class="op">(</span><span class="va">neighbors</span>, <span class="va">origin</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>from<span class="op">=</span><span class="va">origin</span>, to<span class="op">=</span><span class="va">neighbors</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">list_rbind</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">from</span> <span class="op">!=</span> <span class="va">to</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://ggraph.data-imaginist.com/reference/ggraph.html">ggraph</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggraph.data-imaginist.com/reference/geom_node_point.html">geom_node_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggraph.data-imaginist.com/reference/geom_edge_link.html">geom_edge_link</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Abstract Nearest Neighbor Graph of Nested Circles"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The clustering is evident!</p>
+<p>So this idea - embedding points as a nearest neighbor graph - reduces the clustering problem to the “graph cut” problem. Specifically, how can we divide a graph into <span class="math inline">\(K\)</span> components, while cutting the minimal number of edges? This might seem harder than our original clustering task, but this is a well-studied problem in computer science known as <a href="https://en.wikipedia.org/wiki/Graph_partition"><em>graph partitioning</em></a> and we can rely on various methods developed for that problem.</p>
+<p>Perhaps the most common is a clustering based on taking a decomposition of a certain matrix associated with the graph known as its <em>Laplacian</em>, but many other approaches exist. Because the matrix decomposition is related to an eigendecomposition, the resulting method is known as <em>spectral clustering</em>. Other graph partition methods are technically not spectral, but this whole family of graph-based clustering methods is worth knowing.</p>
+<p>One important thing to know about this type of graph-based method is that the graph doesn’t need to actually come from an original Euclidean space. As long as we have some relevant notion of “nearness” we can use to build up a graph, we can apply these methods. This makes graph-based clustering approaches particularly helpful for problems where we need to cluster ‘non-tabular’ data. <em>E.g.</em>, we can construct a graph of Wikipedia pages based on link patterns and then ‘cut’ that graph into pieces to determine major topics.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="https://upload.wikimedia.org/wikipedia/commons/b/b3/Wikipedia_link-graph_clusters_%286070900906%29.jpg" class="img-fluid figure-img"></p>
+<figcaption>Wikipedia Link Graph Clustering</figcaption></figure>
+</div>
+<p>This is not nearly as clean as our little example above, but you can see that meaningful clusters do emerge.</p>
 </section><section id="hierarchical-clustering" class="level2"><h2 class="anchored" data-anchor-id="hierarchical-clustering">Hierarchical Clustering</h2>
 </section><section id="density-based-clustering" class="level2"><h2 class="anchored" data-anchor-id="density-based-clustering">Density Based Clustering</h2>
+<p>One challenge in the clustering methods we have considered so far is that they attempt to cluster <em>every point</em> and hence can be a bit weird when outliers (or just points in low-density parts of the distribution) are present. An alternative clustering philosophy is to find areas of <em>high-density</em>, <em>i.e.</em> modes, in the underlying distribution. Points that lie within these modes are co-clustered and isolated points are not clustered (or are clustered into their own points).</p>
+<p>The basic algorithm for density-based clustering, <code>DBSCAN</code>, is finicky in the details, but quite efficient in practice.</p>
+<ul>
+<li>We first identify ‘modal’ points (sometimes called ‘core’ points), defined as points that have <span class="math inline">\(k\)</span> other points within <span class="math inline">\(\epsilon\)</span> of them. You can think of this as drawing a circle of radius <span class="math inline">\(\epsilon\)</span> around each point and then selecting those circles that have <span class="math inline">\(k\)</span> points in them.</li>
+<li>We then divide the core points into connected components that form the ‘backbone’ of each cluster.</li>
+<li>Now that we have those core points, we find other points that are within <span class="math inline">\(\epsilon\)</span> of a core point. These tend to live on the periphary of identified core points, but we join them with the ‘core’ cluster they belong go.</li>
+<li>Points that aren’t core or core adjacent are left ‘in the wilderness’ and not assigned to a cluster.</li>
+</ul>
+<p>This figure from Wikipedia depicts the process nicely:</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/DBSCAN-Illustration.svg/3840px-DBSCAN-Illustration.svg.png" class="img-fluid"></p>
+<p>The ‘core’ points are in red and each have four points (three neighbors) within each ball. In this case, because the core point ‘balls’ overlap, we only have a single core here. Next, we identify the ‘near core’ points in yellow and they get associated with that cluster. Note that the yellow points couldn’t bridge two clusters: they just give things a little ‘halo’. Finally, the point N in blue doesn’t have any core points in its circle, so it is left solo.</p>
+<p>As always, we should think about the behavior of this algorithm as we adjust our tuning parameters:</p>
+<ul>
+<li>
+<span class="math inline">\(k\)</span>, the number of nearby points needed to be a core point, controls compactness. As <span class="math inline">\(k\)</span> increases, we get smaller more tightly concentrated clusters.</li>
+<li>
+<span class="math inline">\(\epsilon\)</span>, the radius of each cluster is a more standard scaling parameter. Larger <span class="math inline">\(\epsilon\)</span> produces larger clusters and is willing to connect points that are further apart together.</li>
+</ul>
+<p>Notice - interestingly - that we do not select the number of clusters directly for this method. Instead, we parameterize what a cluster needs to contain (how many points in how small a space) and that induces some number of clusters in the data.</p>
+<p>Let’s go ahead and apply this to our nested circles:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mhahsler/dbscan">dbscan</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dbscan'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    as.dendrogram</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">nested_circles</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dbscan/man/dbscan.html">dbscan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu">pick</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>, eps<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span>, </span>
+<span>           noise_point <span class="op">=</span> <span class="op">(</span><span class="va">cluster</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>           cluster <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">noise_point</span>, <span class="st">"N"</span>, <span class="va">LETTERS</span><span class="op">[</span><span class="fu">na_if</span><span class="op">(</span><span class="va">cluster</span>, <span class="fl">0</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span>, color<span class="op">=</span><span class="va">cluster</span>, shape<span class="op">=</span><span class="va">noise_point</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span>, </span>
+<span>          legend.box<span class="op">=</span><span class="st">"vertical"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Estimated Cluster"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span>  </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html">scale_shape_discrete</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Noise Point?"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"DBScan (Moderate Epsilon)"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s probably no surprise that this does well. If we were to increase epsilon for some reason, we could bridge the clusters:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mhahsler/dbscan">dbscan</a></span><span class="op">)</span></span>
+<span><span class="va">nested_circles</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dbscan/man/dbscan.html">dbscan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu">pick</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>, eps<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span>, </span>
+<span>           noise_point <span class="op">=</span> <span class="op">(</span><span class="va">cluster</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>           cluster <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">noise_point</span>, <span class="st">"N"</span>, <span class="va">LETTERS</span><span class="op">[</span><span class="fu">na_if</span><span class="op">(</span><span class="va">cluster</span>, <span class="fl">0</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span>, color<span class="op">=</span><span class="va">cluster</span>, shape<span class="op">=</span><span class="va">noise_point</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span>, </span>
+<span>          legend.box<span class="op">=</span><span class="st">"vertical"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Estimated Cluster"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span>  </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html">scale_shape_discrete</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Noise Point?"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"DBScan (High Epsilon - Larger Clusters"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>which isn’t great. Going the other way, if we make <span class="math inline">\(\epsilon\)</span> quite small, we might be able to ‘break’ our circles.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mhahsler/dbscan">dbscan</a></span><span class="op">)</span></span>
+<span><span class="va">nested_circles</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dbscan/man/dbscan.html">dbscan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu">pick</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>, eps<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span>, </span>
+<span>           noise_point <span class="op">=</span> <span class="op">(</span><span class="va">cluster</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>           cluster <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">noise_point</span>, <span class="st">"N"</span>, <span class="va">LETTERS</span><span class="op">[</span><span class="fu">na_if</span><span class="op">(</span><span class="va">cluster</span>, <span class="fl">0</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span>, color<span class="op">=</span><span class="va">cluster</span>, shape<span class="op">=</span><span class="va">noise_point</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span>, </span>
+<span>          legend.box<span class="op">=</span><span class="st">"vertical"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Estimated Cluster"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span>  </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html">scale_shape_discrete</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Noise Point?"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"DBScan (Low Epsilon - Smaller Clusters, More Noise Points"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this case, the colors might suggest two clusters, but we’ve really found only a single cluster and a whole bunch of noise points. If we take <span class="math inline">\(\epsilon\)</span> even smaller, we can break that inner cluster up:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mhahsler/dbscan">dbscan</a></span><span class="op">)</span></span>
+<span><span class="va">nested_circles</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dbscan/man/dbscan.html">dbscan</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu">pick</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>, eps<span class="op">=</span><span class="fl">0.25</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span>, </span>
+<span>           noise_point <span class="op">=</span> <span class="op">(</span><span class="va">cluster</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>           cluster <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">noise_point</span>, <span class="st">"N"</span>, <span class="va">LETTERS</span><span class="op">[</span><span class="fu">na_if</span><span class="op">(</span><span class="va">cluster</span>, <span class="fl">0</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span>, color<span class="op">=</span><span class="va">cluster</span>, shape<span class="op">=</span><span class="va">noise_point</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span>, </span>
+<span>          legend.box<span class="op">=</span><span class="st">"vertical"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Estimated Cluster"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span>  </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_shape.html">scale_shape_discrete</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Noise Point?"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"DBScan (Very Small Epsilon)"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes11_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Tuning DBScan is a bit of an art - as it is for all clustering methods at the end of the day - but it has a really nice interaction of <em>spatial</em> interpretability (<span class="math inline">\(\epsilon, k\)</span>) while also adapting to interesting cluster sizes.</p>
 </section><section id="validation-of-cluster-results" class="level2"><h2 class="anchored" data-anchor-id="validation-of-cluster-results">Validation of Cluster Results</h2>
 
 
 </section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 <ol>
 <li id="fn1"><p>You might ask whether it is fair to swap “distance from point A to point B” for “distance from A to the midpoint of A, B”. It turns out that, for Euclidean distance, this is basically fine. You might remember an alternate definition of variance we sometimes use for random variables: <span class="math inline">\(\E[(X - X')^2] = 2\sigma^2\)</span> where <span class="math inline">\(X, X'\)</span> are independent samples from a distribution with variance <span class="math inline">\(\sigma^2\)</span>. We’re applying essentially the same argument here.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>D. Arthur and S. Vassilvitskii. “k-means++: the advantages of careful seeding” in <em>SODA ’07: Proceedings of the Eighteenth annual ACM-SIAM Symposium on Discrete Algorithms</em>, pp.&nbsp;1027-1035 (2007). DOI:<a href="https://dl.acm.org/doi/abs/10.5555/1283383.1283494">10.5555/1283383.1283494</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

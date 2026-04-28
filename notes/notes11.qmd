@@ -530,23 +530,374 @@ Note that there are two ways in which the results can differ:
 The first makes for some annoying book-keeping, but is ultimately harmless. The
 latter is what we worry about when using $K$-means. 
 
+To get around this, we simply run $K$-means with a variety of different 
+initial values and select the 'best' result. This is feasible because Lloyd's
+Algorithm is so fast (means and distance calculations). In this context, *best*
+refers to minimizing the clustering objective we started with: distance from
+each point to its centroid. 
 
+If this feels unsatisfying - and it is a bit unsatisfying - there are some 
+alternate approaches that are more theoretically grounded than "try a lot and
+pick the best." Most notable is the "$k$-means++` strategy of Arthur and 
+Vassilvitskii[^av] which uses an alternate initialization and guarantees a result 
+that is "near optimal". The details can be a bit complicated, but essentially
+$k$-means++ just guarantees that the initial centroids are reasonably well
+spread out across the data. As a practical matter, I recommend using both 
+$k$-means++ and a set of random initializations and choosing the best. 
 
-i) If we initialize our centers 
+[^av]: D. Arthur and S. Vassilvitskii. "k-means++: the advantages of careful 
+seeding" in *SODA '07: Proceedings of the Eighteenth annual ACM-SIAM Symposium 
+on Discrete Algorithms*, pp. 1027-1035 (2007).
+DOI:[10.5555/1283383.1283494](https://dl.acm.org/doi/abs/10.5555/1283383.1283494).
 
-### An EM Algorithm
+### EM Algorithms for Hard and Soft Clustering
 
 ### Convex Clustering
 
+While greedy approaches (Lloyd's and EM) work well for clustering, we might 
+still want to explore an analogue to our "best-subsets to lasso" relaxation from
+the supervised context. Recall that, in the supervised context, we found the
+"closest convex problem" by relaxing the $\ell_0$ (best subsets) penalty to the
+$\ell_1$ (lasso) penalty. *Convex clustering* lets us do something similar for
+the clustering problem. 
+
+Recall the clustering problem we used to motivate $K$-means: 
+
+$$\argmin_{\substack{c_1, c_2, \dots, c_n \in \{1, 2, \dots, K}\} \\ C_1, C_2, \dots, C_K \in \R^p} \sum_i \|X_i - C_{c_i}\|_2^2$$
+
+We don't have a simple $\ell_0 \to \ell_1$ substitution we can perform here, so
+we need to manipulate the problem a bit. After a bit of work, we can convince
+ourselves that the appropriate convex problem looks like this: 
+
+$$\argmin_{\bu_1, \bu_2, \dots \bu_n \in \R^p} \sum_i \|\bx_i - \bu_i\|_2^2 + \lambda \sum_{i, j} \|\bu_i - \bu_j\|_2$$
+
+This is quite a shift, so let's take this one apart as well: 
+
+- Instead of having $n$ labels and $K$ clusters, we now have $n$ $\bu_i$ 
+  variables, one per observation $\bx_i$. These play the role of the estimated
+  centroids for each observation. That is, instead of mapping each point to its
+  cluster label and then to the centroid of that cluster, we simply map each 
+  $\bx_i$ to a new point $\bu_i$
+- We say that $\bx_i$ and $\bx_j$ are in the same cluster if their centroids 
+  match. This should be consistent with your impression of clustering so far - 
+  if two points are in the same $K$-means cluster, it means they got assigned
+  to the same centroid. But how do we make that happen? In $K$-means, we got
+  'repeats' because we only had $K \ll n$ distinct clusters; that is not the case
+  here, we have $n$ individual centroids. 
+- To get the 'repeats' in the centroids we want, we use a lasso type penalty
+  on the _difference_ of the centroids. Recall that lasso penalties shrink their
+  input to zero, so if $\bu_i - \bu_j \to 0$, we have $\bu_i \to \bu_j$, giving
+  us the desired clustering behavior. 
+  
+  This type of penalty (on the difference of points) is sometimes called a 
+  _fusion_ penalty since it serves to make things equal: we saw a bit of this
+  in our discussion of non-linear trend-filtering methods. 
+- As always, when given a new penalized optimization problem, we can build 
+  intuition by thinking about the $\lambda \to 0$ and $\lambda \to \infty$ 
+  limits: 
+  
+  - As $\lambda \to 0$, the penalty goes away and we have no pressure to 
+    fuse points together. As such each $\bu_i = \bx_i$ and we have no ties.
+    This represents the "no-clustering" extreme end: each point is its own
+    cluster, and the centroid of that cluster is simply its one point. 
+  - As $\lambda \to \infty$, the pressure to fuse points together becomes 
+    irresistible and all points get joined to a single point, $\overline{\bu}$. 
+    Our optimization problem essentially simplifies to 
+    
+    $$\argmin_{\overline{\bu}} \sum_i \|\bx_i - \overline{\bu}\|_2^2$$
+    
+    But we know this problem! That's just the definition of the mean: recall 
+    all of our OLS motivation - the mean is the point that minimizes $\ell_2$
+    distance. So we fuse all points together into a single 'mono-cluster' at
+    the grand mean. 
+    
+These represent reasonable extremes for the clustering problem. We can actually
+visualize the results of convex clustering at various $\lambda$ using something
+like this: 
+
+```{r}
+#| cache: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 10
+#| fig-height: 30
+library(clustRviz)
+library(patchwork)
+library(purrr)
+carp <- CARP(presidential_speech)
+
+g <- c(0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15, 0.2, 0.5, 0.8, 1)
+map(g, \(g) {
+  G <- plot(carp, type="path", percent=g)
+  G@layers <- G@layers[1:3]
+  G}) |> reduce(`+`) + 
+  plot_layout(ncol=2)
+```
+Some of the labels are a bit busy, but we can clearly see the
+centroids (large points) converging and fusing as $\lambda$ 
+increases to its maximum meaningful value (her scaled to $\lambda_{\max} = 100\%$).
+
+Despite this lovely theoretical formulation and my best efforts on the algorithm
+development front, convex clustering has not yet taken the world by storm. It's
+a fun and theoretically-satisfying formulation - the sort of things that many
+statistics papers are written about - but you are not likely to encounter it in
+the wild. 
+
 ## Spectral Clustering
+
+The distance based clustering we have done so far reflects _major_ patterns
+in distance: two points are unlikely to be clustered together if they are far
+apart. We can invert this to motivate a type of 'nearness' based clustering, in
+which we want to preserve _local_ nearness and _maximize_ the chance that each
+point is clustered with its _nearest neighbors_. 
+
+To make this rigorous, we need to discuss a _graph embedding_ of a data set. 
+Given a data set, we represent it as a graph where: 
+
+- each node in the graph corresponds to an observation in the original data
+- two nodes are connected by an edge _if and only if_ the original points were
+  close
+  
+For example, if we have data of the form 
+
+```{r}
+nested_circles <- data.frame(group = rep(c("a", "b"), each=48)) |>
+  mutate(radius = if_else(group == "a", 4, 1), 
+         group_n = row_number(), 
+         group_arg = group_n / max(group_n) * 2 * pi, 
+         z = radius * exp((0 + 1i) * group_arg), 
+         x = rnorm(n(), mean=Re(z), sd=0.2), 
+         y = rnorm(n(), mean=Im(z), sd=0.2), 
+         .by = "group")
+
+ggplot(nested_circles, aes(x=x, y=y)) + 
+  geom_point() + 
+  theme_bw()
+```
+
+Clearly, this data _should_ be clustered into inner and outer rings, but 
+$K$-means fails: 
+
+```{r}
+nested_circles |> 
+  mutate(k_means_clust = pick(x, y) |> 
+           kmeans(centers=2) |> 
+           pluck("cluster")) |>
+  ggplot(aes(x=x, y=y, color=factor(k_means_clust))) + 
+  geom_point() + 
+  theme_bw() + 
+  scale_color_brewer(type="qual", palette=2, name="K-Means Estimated Clustering")
+```
+
+Unsurprisingly, since our clusters are not compact Euclidean balls, $K$-means
+fails terribly here. Let's construct a graph where each point is connected
+to three of its nearest neighbors: 
+
+```{r}
+#| message: false
+library(sf)
+library(nngeo)
+points <- nested_circles |> select(x, y) |> st_as_sf(coords=c("x", "y"))
+
+# K = 5 because we want three nearest neighbors 
+# (point 1 will be the original point and 4 others will matter)
+neighbor_indices <- st_nn(points, points, k = 5, progress = FALSE)
+knn_lines <- st_connect(points, points, ids = neighbor_indices)
+
+ggplot() +
+    geom_sf(data = knn_lines, color = "steelblue", alpha = 0.5) +
+    geom_sf(data = points, size = 2) +
+    theme_bw() +
+    ggtitle("K-Nearest Neighbor Graph (K=4)")
+```
+
+Clearly, if we were to chop this graph into two parts, *i.e.*, the two
+'components' already present in the graph, we would get a much better clustering
+than $K$-means. To finish this up, let's go ahead and construct a proper graph
+
+```{r}
+#| message: false
+library(igraph)
+library(ggraph)
+imap(neighbor_indices, 
+     \(neighbors, origin) data.frame(from=origin, to=neighbors)) |>
+  list_rbind() |> 
+  filter(from != to) |> 
+  graph_from_data_frame() |> 
+  ggraph() + 
+  geom_node_point() + 
+  geom_edge_link() + 
+  ggtitle("Abstract Nearest Neighbor Graph of Nested Circles")
+```
+
+The clustering is evident!
+
+So this idea - embedding points as a nearest neighbor graph - reduces
+the clustering problem to the "graph cut" problem. Specifically, how
+can we divide a graph into $K$ components, while cutting the minimal
+number of edges? This might seem harder than our original clustering
+task, but this is a well-studied problem in computer science known as
+[_graph partitioning_](https://en.wikipedia.org/wiki/Graph_partition)
+and we can rely on various methods developed for that problem. 
+
+Perhaps the most common is a clustering based on taking a decomposition
+of a certain matrix associated with the graph known as its _Laplacian_,
+but many other approaches exist. Because the matrix decomposition is
+related to an eigendecomposition, the resulting method is known as
+_spectral clustering_. Other graph partition methods are technically
+not spectral, but this whole family of graph-based clustering methods
+is worth knowing. 
+
+One important thing to know about this type of graph-based method is
+that the graph doesn't need to actually come from an original Euclidean
+space. As long as we have some relevant notion of "nearness" we can
+use to build up a graph, we can apply these methods. This makes graph-based
+clustering approaches particularly helpful for problems where we need to 
+cluster 'non-tabular' data. *E.g.*, we can construct a graph of Wikipedia pages
+based on link patterns and then 'cut' that graph into pieces to determine major
+topics. 
+
+![Wikipedia Link Graph Clustering](https://upload.wikimedia.org/wikipedia/commons/b/b3/Wikipedia_link-graph_clusters_%286070900906%29.jpg)
+
+This is not nearly as clean as our little example above, but you can see that
+meaningful clusters do emerge. 
 
 ## Hierarchical Clustering
 
 ## Density Based Clustering
 
-## Validation of Cluster Results
+One challenge in the clustering methods we have considered so far is that they
+attempt to cluster _every point_ and hence can be a bit weird when outliers (or
+just points in low-density parts of the distribution) are present. An alternative
+clustering philosophy is to find areas of _high-density_, *i.e.* modes, in the 
+underlying distribution. Points that lie within these modes are co-clustered
+and isolated points are not clustered (or are clustered into their own points). 
+
+The basic algorithm for density-based clustering, `DBSCAN`, is finicky in the
+details, but quite efficient in practice. 
+
+- We first identify 'modal' points (sometimes called 'core' points), defined as
+  points that have $k$ other points within $\epsilon$ of them. You can think of
+  this as drawing a circle of radius $\epsilon$ around each point and then
+  selecting those circles that have $k$ points in them. 
+- We then divide the core points into connected components that form the 
+  'backbone' of each cluster. 
+- Now that we have those core points, we find other points that are within 
+  $\epsilon$ of a core point. These tend to live on the periphary of identified
+  core points, but we join them with the 'core' cluster they belong go. 
+- Points that aren't core or core adjacent are left 'in the wilderness' and not
+  assigned to a cluster. 
+  
+This figure from Wikipedia depicts the process nicely: 
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/DBSCAN-Illustration.svg/3840px-DBSCAN-Illustration.svg.png)
+
+The 'core' points are in red and each have four points (three neighbors) within
+each ball. In this case, because the core point 'balls' overlap, we only have
+a single core here. Next, we identify the 'near core' points in yellow and they
+get associated with that cluster. Note that the yellow points couldn't bridge
+two clusters: they just give things a little 'halo'. Finally, the point N in
+blue doesn't have any core points in its circle, so it is left solo. 
+
+As always, we should think about the behavior of this algorithm as we adjust 
+our tuning parameters: 
+
+- $k$, the number of nearby points needed to be a core point, controls compactness. 
+  As $k$ increases, we get smaller more tightly concentrated clusters. 
+- $\epsilon$, the radius of each cluster is a more standard scaling parameter.
+  Larger $\epsilon$ produces larger clusters and is willing to connect points
+  that are further apart together. 
+  
+Notice - interestingly - that we do not select the number of clusters directly
+for this method. Instead, we parameterize what a cluster needs to contain (how
+many points in how small a space) and that induces some number of clusters in
+the data. 
+  
+Let's go ahead and apply this to our nested circles: 
 
 ```{r}
-#| include: false
-1+1
+
+library(dbscan)
+nested_circles |> 
+    mutate(cluster = dbscan(as.matrix(pick(x, y)), eps=1.5)$cluster, 
+           noise_point = (cluster == 0),
+           cluster = if_else(noise_point, "N", LETTERS[na_if(cluster, 0)])) |> 
+    ggplot(aes(x=x, y=y, color=cluster, shape=noise_point)) + 
+    geom_point() + 
+    theme_bw() + 
+    theme(legend.position="bottom", 
+          legend.box="vertical") + 
+    scale_color_brewer(name="Estimated Cluster", type="qual", palette=2) +  
+    scale_shape_discrete(name="Noise Point?") + 
+    ggtitle("DBScan (Moderate Epsilon)")
+
 ```
+
+It's probably no surprise that this does well. If we were to
+increase epsilon for some reason, we could bridge the
+clusters: 
+
+```{r}
+library(dbscan)
+nested_circles |> 
+    mutate(cluster = dbscan(as.matrix(pick(x, y)), eps=2.5)$cluster, 
+           noise_point = (cluster == 0),
+           cluster = if_else(noise_point, "N", LETTERS[na_if(cluster, 0)])) |> 
+    ggplot(aes(x=x, y=y, color=cluster, shape=noise_point)) + 
+    geom_point() + 
+    theme_bw() + 
+    theme(legend.position="bottom", 
+          legend.box="vertical") + 
+    scale_color_brewer(name="Estimated Cluster", type="qual", palette=2) +  
+    scale_shape_discrete(name="Noise Point?") + 
+    ggtitle("DBScan (High Epsilon - Larger Clusters")
+```
+
+which isn't great. Going the other way, if we make $\epsilon$
+quite small, we might be able to 'break' our circles. 
+
+```{r}
+library(dbscan)
+nested_circles |> 
+    mutate(cluster = dbscan(as.matrix(pick(x, y)), eps=0.5)$cluster, 
+           noise_point = (cluster == 0),
+           cluster = if_else(noise_point, "N", LETTERS[na_if(cluster, 0)])) |> 
+    ggplot(aes(x=x, y=y, color=cluster, shape=noise_point)) + 
+    geom_point() + 
+    theme_bw() + 
+    theme(legend.position="bottom", 
+          legend.box="vertical") + 
+    scale_color_brewer(name="Estimated Cluster", type="qual", palette=2) +  
+    scale_shape_discrete(name="Noise Point?") + 
+    ggtitle("DBScan (Low Epsilon - Smaller Clusters, More Noise Points")
+```
+
+In this case, the colors might suggest two clusters, but we've
+really found only a single cluster and a whole bunch of noise
+points. If we take $\epsilon$ even smaller, we can break that
+inner cluster up: 
+
+```{r}
+
+library(dbscan)
+nested_circles |> 
+    mutate(cluster = dbscan(as.matrix(pick(x, y)), eps=0.25)$cluster, 
+           noise_point = (cluster == 0),
+           cluster = if_else(noise_point, "N", LETTERS[na_if(cluster, 0)])) |> 
+    ggplot(aes(x=x, y=y, color=cluster, shape=noise_point)) + 
+    geom_point() + 
+    theme_bw() + 
+    theme(legend.position="bottom", 
+          legend.box="vertical") + 
+    scale_color_brewer(name="Estimated Cluster", type="qual", palette=2) +  
+    scale_shape_discrete(name="Noise Point?") + 
+    ggtitle("DBScan (Very Small Epsilon)")
+```
+
+Tuning DBScan is a bit of an art - as it is for all clustering 
+methods at the end of the day - but it has a really nice 
+interaction of _spatial_ interpretability ($\epsilon, k$) while
+also adapting to interesting cluster sizes. 
+
+## Validation of Cluster Results
