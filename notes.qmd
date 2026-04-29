@@ -1,5 +1,8 @@
 ---
 title: "{{< var course.short >}} - Handouts and Additional Notes"
+aliases:
+    - "./notes/index.html"
+    - "./tests/index.html"
 ---
 
 Supplemental course notes and links to useful external resources will be
