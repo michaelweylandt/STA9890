@@ -430,7 +430,9 @@ and presentation that works best for them.
    * - 13
      - `r class_date (13)`
      - `r class_date (13, details=TRUE)`.
-       - TBD
+       - $t$-SNE
+       - UMAP
+       - Variational Auto-Encoders
      - TBD
      - TBD
      

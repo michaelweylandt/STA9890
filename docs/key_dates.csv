@@ -12,8 +12,8 @@ Holiday,1,,2026-04-01,,No Class: Baruch Spring Recess (Week 1 of 2)
 Holiday,2,,2026-04-08,,No Class: Baruch Spring Recess (Week 2 of 2)
 Class Session,10,Instructor,2026-04-15,6:05pm ET,Unsupervised Learning: I. Introduction
 Class Session,11,Instructor,2026-04-22,6:05pm ET,Unsupervised Learning: II. Clustering
-Class Session,12,Instructor,2026-04-29,6:05pm ET,Unsupervised Learning: III. Dimension Reduction & Manifold Learning
-Class Session,13,Instructor,2026-05-06,6:05pm ET,Unsupervised Learning: IV. Generative Models
+Class Session,12,Instructor,2026-04-29,6:05pm ET,Unsupervised Learning: III. Linear Dimension Reduction
+Class Session,13,Instructor,2026-05-06,6:05pm ET,Unsupervised Learning: IV. Nonlinear Dimension Reduction
 Class Session,14,Instructor,2026-05-13,6:05pm ET,Course Wrap-Up
 Exam Period,,,2026-05-20,,Course Competition Final Presentations [Tentative]
 Test,1,Students,2026-02-25,6:15pm ET,Test I: Fundamentals of ML

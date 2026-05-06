@@ -2,12 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-03-18">
-<title>STA 9890 - Unsupervised Learning: IV. Generative Models – STA 9890</title>
+<meta name="dcterms.date" content="2026-05-06">
+<title>STA 9890 - Unsupervised Learning: IV. Nonlinear Dimension Reduction – STA 9890</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -69,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1c47065645911eb62ace0da5c8a22cd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../site_libs/bootstrap/bootstrap-f7b58eee2202a58c8e0dc5967ec053ef.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -98,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -109,7 +112,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -179,12 +182,24 @@ window.Quarto = {
     </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#why-go-beyond-linearity" id="toc-why-go-beyond-linearity" class="nav-link active" data-scroll-target="#why-go-beyond-linearity">Why Go Beyond Linearity?</a></li>
+  <li>
+<a href="#the-tyranny-of-small-distances1" id="toc-the-tyranny-of-small-distances1" class="nav-link" data-scroll-target="#the-tyranny-of-small-distances1">The Tyranny of Small Distances</a>
+  <ul class="collapse">
+<li><a href="#more-on-t-sne" id="toc-more-on-t-sne" class="nav-link" data-scroll-target="#more-on-t-sne">More on t-SNE</a></li>
+  </ul>
+</li>
+  <li><a href="#umap" id="toc-umap" class="nav-link" data-scroll-target="#umap">UMAP</a></li>
+  <li><a href="#variational-autoencoders" id="toc-variational-autoencoders" class="nav-link" data-scroll-target="#variational-autoencoders">Variational Autoencoders</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes13.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes13.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title">STA 9890 - Unsupervised Learning: IV. Generative Models</h1>
+<h1 class="title">STA 9890 - Unsupervised Learning: IV. Nonlinear Dimension Reduction</h1>
 </div>
 
 
@@ -201,7 +216,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 18, 2026</p>
+      <p class="date">May 6, 2026</p>
     </div>
   </div>
   
@@ -210,17 +225,596 @@ window.Quarto = {
   
 
 
-</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\K}{\mathbb{K}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Xcal}{\mathcal{X}} \newcommand{\Ccal}{\mathcal{C}} \newcommand{\Hcal}{\mathcal{H}} \newcommand{\Ncal}{\mathcal{N}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Ocal}{\mathcal{O}} \newcommand{\Pcal}{\mathcal{P}} \newcommand{\Ucal}{\mathcal{U}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\bbeta}{\mathbf{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bf}{\mathbf{f}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bY}{\mathbf{Y}} \newcommand{\bK}{\mathbf{K}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Tr}{\text{Tr}}\]</span></p>
+</header><p><span class="math display">\[\newcommand{\R}{\mathbb{R}} \newcommand{\E}{\mathbb{E}} \newcommand{\V}{\mathbb{V}} \newcommand{\P}{\mathbb{P}} \newcommand{\C}{\mathbb{C}} \newcommand{\bbeta}{\mathbb{\beta}} \newcommand{\bone}{\mathbf{1}} \newcommand{\bzero}{\mathbf{0}} \newcommand{\ba}{\mathbf{a}} \newcommand{\bb}{\mathbf{b}} \newcommand{\bc}{\mathbf{c}} \newcommand{\bv}{\mathbf{v}} \newcommand{\br}{\mathbf{r}} \newcommand{\bw}{\mathbf{w}} \newcommand{\bx}{\mathbf{x}} \newcommand{\by}{\mathbf{y}} \newcommand{\bz}{\mathbf{z}} \newcommand{\bX}{\mathbf{X}} \newcommand{\bA}{\mathbf{A}} \newcommand{\bB}{\mathbf{B}} \newcommand{\bC}{\mathbf{C}} \newcommand{\bD}{\mathbf{D}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bU}{\mathbf{U}} \newcommand{\bV}{\mathbf{V}} \newcommand{\bI}{\mathbf{I}} \newcommand{\bH}{\mathbf{H}} \newcommand{\bW}{\mathbf{W}} \newcommand{\bK}{\mathbf{K}} \newcommand{\bR}{\mathbf{R}} \newcommand{\argmin}{\text{arg\,min}} \newcommand{\argmax}{\text{arg\,max}} \newcommand{\MSE}{\text{MSE}} \newcommand{\Fcal}{\mathcal{F}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\Ycal}{\mathcal{Y}} \newcommand{\Ocal}{\mathcal{O}} \newcommand{\bv}{\mathbf{v}} \newcommand{\Tr}{\text{Tr}}\]</span></p>
+<p>Today, we’re going to continue our study of <em>dimension reduction</em> with a discussion of <em>non-linear</em> DR methods.</p>
+<section id="why-go-beyond-linearity" class="level2"><h2 class="anchored" data-anchor-id="why-go-beyond-linearity">Why Go Beyond Linearity?</h2>
+<p>Before we get started, let’s review a couple of key facts about PCA, our prototypical linear dimension reduction method.</p>
+<ol type="1">
+<li>PCA attempts to preserve Euclidean distances as far as possible.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled" title="Proof">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Proof
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>I’m going to write this out for completeness, but you don’t need to be able to reproduce this argument in detail. To see how PCA preserves distances let’s look at the sum of pairwise distances between all points in the data set:</p>
+<p><span class="math display">\[\begin{align*}
+\sum_{i, j} \|\bx_i - \bx_j\|_2^2 &amp;= \sum_{i, j} \|(\bx_i - \overline{\bx}) - (\bx_j - \overline{\bx})\|_2^2 \\
+&amp;= \sum_{i, j} \|\tilde{\bx_i} - \tilde{\bx_j}\|_2^2 \\
+&amp;= n \sum_i \|\tilde{\bx}_i - \overline{\bx}\|_2^2
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(\overline{\bx}\)</span> is the centroid (average) of all of the data points and <span class="math inline">\(\tilde{\bx}_i = \bx_i - \overline{\bx}\)</span> is the ‘centered’ <span class="math inline">\(\bx_i\)</span>. The passage to the last line is standard in statistics: you have likely seen it several times before in the derivation of sample variance.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>So now let’s write this in matrix form: if we arrange our data into a matrix <span class="math inline">\(\bX\)</span>, we could write this as something like <span class="math inline">\(\|\bX - \overline{\bx}\|_2^2\)</span> except the dimensions don’t quite match (<span class="math inline">\(\bX \in \R^{n \times p}\)</span> while <span class="math inline">\(\overline{\bx} \in \R^p\)</span> is a vector). We really want a ‘broadcasted’ version of <span class="math inline">\(\overline{\bx}\)</span> that is an <span class="math inline">\(\R^{n \times p}\)</span> matrix with <span class="math inline">\(\overline{\bx}\)</span> on each row. A special matrix called the <em>centering</em> matrix <span class="math inline">\(\bH\)</span> will do exactly this for us.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Let</p>
+<p><span class="math display">\[\bH = \bI_{n \times n} - \frac{1}{n}\bone_n\bone^{\top}_n\]</span></p>
+<p>where <span class="math inline">\(\bI_{n \times n}\)</span> is the identity matrix and <span class="math inline">\(\bone_n\)</span> is an <span class="math inline">\(n\)</span>-vector of all ones. If we apply this to <span class="math inline">\(\bX\)</span>, we get</p>
+<p><span class="math display">\[\bH \bX = \left(\bI - \frac{1}{n}\bone_n\bone^{\top}_n\right)\bX = \bX - \bone_n(\bone_n/n)^{\top}\bX = \bX - \bone_n\overline{\bx}\]</span></p>
+<p>as desired. So we can <em>finally</em> express our sums of squared distances as</p>
+<p><span class="math display">\[\sum_{i, j} \|\bx_i - \bx_j\|^2 = n \|\bX - \bone_n \overline{\bx}\|_2^2\]</span></p>
+<p>From here, we’re able to use a bit more linear algebra trickery:</p>
+<p><span class="math display">\[\begin{align*}
+n \|\bX - \bone_n \overline{\bx}\|_2^2 &amp;= n \Tr\left(\|\bX - \bone_n \overline{\bx}\|_2^2\right) \\
+&amp;= n \Tr\left(\|\bH\bX\|_2^2\right) \\
+&amp;= n\Tr\left((\bH\bX)^{\top}\bH\bX\right) \\
+&amp;= n\Tr\left(\overline{\bX}^{\top}\overline{\bX}\right) \\
+&amp;= n\sum_{j} \lambda_j
+\end{align*}\]</span></p>
+<p>And we know by the Eckert-Young theorem that the SVD of of <span class="math inline">\(\overline{\bX}\)</span> gives us the best low-rank approximation.</p>
+</div>
+</div>
+</div>
+<ol start="2" type="1">
+<li><p>Because PCA is focused on the sum of squared distances, it is most interested in large distances and will work ‘harder’ to preserve those rather than small distances. In this respect, PCA is no different than other <span class="math inline">\(\ell_2\)</span>-based methods we’ve seen earlier like OLS.</p></li>
+<li><p>PCA is a <em>linear</em> method, in the sense that the mapping from <span class="math inline">\(\R^P\)</span>, the original high-dimensional space, to <span class="math inline">\(\R^p\)</span>, the target lower-dimensional space is linear.</p></li>
+<li><p>PCA gives us the ability to move ‘back and forth’ between the original and target spaces; it isn’t a one-way trip.</p></li>
+</ol>
+<p>As we discussed last week, these are all good properties for a baseline DR approach, but we might want to relax some of them. In particular, let’s start by reconsidering the focus on Euclidean distance.</p>
+</section><section id="the-tyranny-of-small-distances1" class="level2"><h2 class="anchored" data-anchor-id="the-tyranny-of-small-distances1">The Tyranny of Small Distances<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>
+</h2>
+<p>As we discussed in the clustering context, a focus on <em>large</em> distances is not necessarily the most important aspect of distance to preserve. We may instead care more about ensuring each point remains close to its nearest neighbors than ensuring that long distances are preserved. This is particularly useful if we are using dimension reduction to pre-process for some sort of locality-based next step, <em>e.g.</em>, certain forms of clustering or <span class="math inline">\(K\)</span>-nearest neighbor type models.</p>
+<p>While we didn’t really focus on it, one interpretation of PCA is based on a Gaussian distribution (recall that the Gaussian is basically our <span class="math inline">\(\ell_2\)</span>-distance based distribution). As you recall, the Gaussian is a light-tailed distribution and it falls of quickly as you get far from the mean. Accordingly, any Gaussian-based dimension reduction will try <em>very hard</em> to avoid big changes in distance. But what if we used an approach based on a heavier-tailed distribution? Hopefully, it would be more accepting of changes to large distances.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>This is exactly the idea of a powerful non-linear dimension reduction technique called <span class="math inline">\(t\)</span>-distributed stochastic neighbor embedding or <span class="math inline">\(t\)</span>-SNE for short.</p>
+<p>The probabilistic machinery behind <span class="math inline">\(t\)</span>-SNE is a bit complex, so we’ll just go through it at a high level:</p>
+<ul>
+<li>
+<p>Given <span class="math inline">\(n\)</span> points in <span class="math inline">\(\R^P\)</span>, we can <em>assume</em> a sort of conditional Gaussianity and define conditional probabilities for each pair of observations <span class="math inline">\((i, j)\)</span> as</p>
+<p><span class="math display">\[p_{j | i} \propto e^{-\|\bx_i - \bx_j\|_2^2/2\sigma_i^2}\]</span></p>
+<p>with <span class="math inline">\(p_{i|i} = 0\)</span> and <span class="math inline">\(\sum_j p_{j|i} = 1\)</span>. That is, <span class="math inline">\(p_{j|i}\)</span> is the conditional probability of getting <span class="math inline">\(\bx_j\)</span> from a Gaussian distribution centered at <span class="math inline">\(\bx_i\)</span> conditional on all of the other points in our data. This gives us a sort of “soft” nearest neighbors. The points nearest to <span class="math inline">\(x_i\)</span> will have high <span class="math inline">\(p_{j|i}\)</span> and far away points will have smaller values.</p>
+</li>
+<li>
+<p>Symmetrize these probabilities to construct ‘joint’ probabilities</p>
+<p><span class="math display">\[p_{ij} = \frac{p_{j|i} + p_{i|j}}{2n} = p_{ji}\]</span></p>
+</li>
+<li>
+<p>Next, we construct points <span class="math inline">\(\by_i \in \R^p\)</span> and do the same set-up under a <span class="math inline">\(t\)</span>-distribution. This is almost always a <span class="math inline">\(t\)</span> with one degree of freedom, <em>i.e.</em>, a Cauchy.</p>
+<p><span class="math display">\[q_{j|i} \propto \frac{1}{1+\|\by_i - \by_j\|^2}\]</span></p>
+<p>which we then normalize to get</p>
+<p><span class="math display">\[q_{ij} = q_{ji} = \frac{1/(1+\|\by_i - \by_j\|^2)}{\sum_k \sum_{l \neq k}1/(1 + \|\by_k - \by_l\|^2)}\]</span></p>
+<p>Note that, in the first step the <span class="math inline">\(\bx_i\)</span> were fixed and hence the <span class="math inline">\(p_{ij}\)</span> were fixed. Here, the <span class="math inline">\(q_{ij}\)</span> are a function of the to-be-determined <span class="math inline">\(\by_i\)</span> values.</p>
+</li>
+<li>
+<p>Determine <span class="math inline">\(\by_i\)</span> by <em>minimizing</em> the KL divergence between <span class="math inline">\(P\)</span> and <span class="math inline">\(Q\)</span>:</p>
+<p><span class="math display">\[\argmin_{\by_1, \dots, \by_n \in \R^p} KL(P \| Q) = \sum_{i,j} p_{ij} \log(p_{ij}/q_{ij})\]</span></p>
+<p>where <span class="math inline">\(q_{ij}\)</span> is a function of the <span class="math inline">\(\by_i\)</span> values.</p>
+</li>
+</ul>
+<p>This last bit of optimization is not easy and profoundly non-convex, but gradient descent tends to do a good job.</p>
+<p>This process may seem a bit <em>ad hoc</em> (and it is), but sometimes is works <em>remarkably</em> well. Let’s compare it against PCA on the <code>penguins</code> data:</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">1</span><span class="op">+</span><span class="fl">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_clean</span> <span class="op">&lt;-</span> <span class="va">penguins</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">species</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">year</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">scale</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_mat</span> <span class="op">&lt;-</span> <span class="va">penguins_clean</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">penguins_svd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">penguins_mat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_pca_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">penguins_clean</span>, </span>
+<span>                         <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>u1 <span class="op">=</span> <span class="va">penguins_svd</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
+<span>                                    u2 <span class="op">=</span> <span class="va">penguins_svd</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins_pca_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u1</span>, y<span class="op">=</span><span class="va">u2</span>, color<span class="op">=</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"PC1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"PC2"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Species"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
+</div>
+<p>Here, we created a numeric matrix for the penguins data <code>penguins_mat</code> and applied PCA ‘by hand’. The <code>Rtsne</code> package will implement <span class="math inline">\(t\)</span>-SNE for us:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jkrijthe/Rtsne">Rtsne</a></span><span class="op">)</span></span>
+<span><span class="va">penguins_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Rtsne/man/Rtsne.html">Rtsne</a></span><span class="op">(</span><span class="va">penguins_mat</span>, dims<span class="op">=</span><span class="fl">2</span>, pca<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
+<span><span class="co"># Target R2 for visualization</span></span>
+<span><span class="co"># Don't use a PCA pre-processing</span></span>
+<span></span>
+<span><span class="va">penguins_tsne_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">penguins_clean</span>, </span>
+<span>                          <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>y1<span class="op">=</span><span class="va">penguins_tsne</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
+<span>                                     y2<span class="op">=</span><span class="va">penguins_tsne</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins_tsne_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">y1</span>, y<span class="op">=</span><span class="va">y2</span>, color<span class="op">=</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"tSNE Dimension 1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"tSNE Dimension 2"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Species"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As you see here, the <span class="math inline">\(t\)</span>-SNE outputs tend to be a bit ‘clumpier’ and well-separated. This is a well-known habit of <span class="math inline">\(t\)</span>-SNE: it’s very good at forming visual clusters, even when some arguably shouldn’t exist and you should be careful about reading too much into the results.</p>
+<p>For example, if we take our penguins data and add a crazy outlier, it remains obvious in PCA while <span class="math inline">\(t\)</span>-SNE makes it seem more tightly clustered.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span><span class="va">penguins_outlier</span> <span class="op">&lt;-</span> <span class="va">penguins</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">species</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">year</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">scale</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_outlier</span><span class="op">[</span><span class="fl">37</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Blue Whale"</span></span>
+<span><span class="va">penguins_outlier</span><span class="op">[</span><span class="fl">37</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="op">*</span> <span class="va">penguins_outlier</span><span class="op">[</span><span class="fl">37</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">penguins_outlier_mat</span> <span class="op">&lt;-</span> <span class="va">penguins_outlier</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">penguins_outlier_svd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">penguins_outlier_mat</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_outlier_pca_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">penguins_outlier</span>, </span>
+<span>                                 <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>u1 <span class="op">=</span> <span class="va">penguins_outlier_svd</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
+<span>                                            u2 <span class="op">=</span> <span class="va">penguins_outlier_svd</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_outlier_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins_outlier_pca_df</span>, </span>
+<span>                               <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u1</span>, y<span class="op">=</span><span class="va">u2</span>, color<span class="op">=</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"PC1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"PC2"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Species"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Principal Components Analysis"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_outlier_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Rtsne/man/Rtsne.html">Rtsne</a></span><span class="op">(</span><span class="va">penguins_outlier_mat</span>, dims<span class="op">=</span><span class="fl">2</span>, pca<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_outlier_tsne_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">penguins_outlier</span>, </span>
+<span>                                  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>y1<span class="op">=</span><span class="va">penguins_outlier_tsne</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
+<span>                                             y2<span class="op">=</span><span class="va">penguins_outlier_tsne</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_outlier_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">penguins_outlier_tsne_df</span>, </span>
+<span>                                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">y1</span>, y<span class="op">=</span><span class="va">y2</span>, color<span class="op">=</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"tSNE Dimension 1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"tSNE Dimension 2"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Species"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"t-SNE Analysis"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">penguins_outlier_pca</span> <span class="op">/</span> <span class="va">penguins_outlier_tsne</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, <span class="math inline">\(t\)</span>-SNE forced our outlier point closer to the bulk of the data making its ‘outlierness’ invisible, while PCA left it out in the wilderness. This gets at a somewhat unintuitive property of neighbor-focused methods. Even outliers have <em>nearest</em> neighbors, though they may not be so near. Whether this is useful or harmful is problem specific.</p>
+<p>Returning to <span class="math inline">\(t\)</span>-SNE, we have a few cautions that are worth noting:</p>
+<ol type="i">
+<li>
+<p>Hyperparameters matter. <span class="math inline">\(t\)</span>-SNE has a few hyperparameters to be aware of:</p>
+<ul>
+<li>
+<span class="math inline">\(\eta\)</span> (<code>eta</code>): the learning rate (step size) used in the optimization</li>
+<li>the random seed used for initialization</li>
+<li><code>perplexity</code></li>
+</ul>
+<p>The first two of these are pretty easy - if you re-run from a few initial values you can quickly get a sense of the reliability of your results. The <code>perplexity</code> parameter requires a bit more caution.</p>
+<p><code>perplexity</code> controls the standard deviation of the Gaussians used to create the <span class="math inline">\(p\)</span> weights in the original (pre-projection) space. It has a tricky tradeoff: if we set it very low (corresponding to a low <span class="math inline">\(\sigma\)</span>), the Gaussian will really only pick up relatively close neighbors, and if we set it too high, the Gaussian flattens out and everyone becomes equally close.</p>
+<p>On our penguins:</p>
+</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">50</span>, <span class="fl">110</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/Rtsne/man/Rtsne.html">Rtsne</a></span><span class="op">(</span><span class="va">penguins_mat</span>, perplexity<span class="op">=</span><span class="va">p</span>, pca<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>y1<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, y2<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, Perplexity<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">perplexity</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">penguins_clean</span>, <span class="va">r</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">y1</span>, y<span class="op">=</span><span class="va">y2</span>, color<span class="op">=</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Perplexity</span>, </span>
+<span>               scales<span class="op">=</span><span class="st">"free"</span>, </span>
+<span>               labeller<span class="op">=</span><span class="va">label_both</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"t-SNE Dimension 1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"t-SNE Dimension 2"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Species"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<pre><code>Here, the data is not _too_ hard, so  as long as the perplexity is not too small, we're ok, but for harder data 
+sets this parameter becomes even more important. </code></pre>
+<ol start="2" type="i">
+<li><p>The <em>dimensions</em> in the <span class="math inline">\(t\)</span>-SNE space are meaningless. While PCA attempts to preserve dimensional information, neither cluster size nor cluster distances really mean much in the <span class="math inline">\(t\)</span>-SNE output.</p></li>
+<li><p><span class="math inline">\(t\)</span>-SNE can create clusters out of nothing, especially when given small perplexity. Let’s do the same analysis as before, but now on pure noise:</p></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">50</span> </span>
+<span></span>
+<span><span class="va">PURE_NOISE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">N</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">50</span>, <span class="fl">110</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/Rtsne/man/Rtsne.html">Rtsne</a></span><span class="op">(</span><span class="va">PURE_NOISE</span>, perplexity <span class="op">=</span> <span class="va">p</span>, pca<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>y1<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, y2<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, Perplexity<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">perplexity</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">y1</span>, y<span class="op">=</span><span class="va">y2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Perplexity</span>, </span>
+<span>               scales<span class="op">=</span><span class="st">"free"</span>, </span>
+<span>               labeller<span class="op">=</span><span class="va">label_both</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"t-SNE Dimension 1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"t-SNE Dimension 2"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<pre><code>This is not so bad, except at small perplexity, but if we add some 
+suggestive coloring, we can easily be misled: </code></pre>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">50</span> </span>
+<span></span>
+<span><span class="va">PURE_NOISE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">N</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">50</span>, <span class="fl">110</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/Rtsne/man/Rtsne.html">Rtsne</a></span><span class="op">(</span><span class="va">PURE_NOISE</span>, perplexity <span class="op">=</span> <span class="va">p</span>, pca<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>y1<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
+<span>                        y2<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, </span>
+<span>                        Perplexity<span class="op">=</span><span class="va">r</span><span class="op">$</span><span class="va">perplexity</span>, </span>
+<span>                        color<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Y</span>, centers<span class="op">=</span><span class="fl">26</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html">list_rbind</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">y1</span>, y<span class="op">=</span><span class="va">y2</span>, color<span class="op">=</span><span class="va">color</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">Perplexity</span>, </span>
+<span>               scales<span class="op">=</span><span class="st">"free"</span>, </span>
+<span>               labeller<span class="op">=</span><span class="va">label_both</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"t-SNE Dimension 1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"t-SNE Dimension 2"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<pre><code>This is the exact same simulation as the previous plot, but now we've
+applied $K$-means to the $t$-SNE output and used it to color the points.</code></pre>
+<p>So <span class="math inline">\(t\)</span>-SNE is <em>incredibly</em> powerful, but as with <span class="math inline">\(K\)</span>-means, it will always do its job and find some structure, even if there’s not really anything there. It should be used with caution and care, always making sure to validate results in the downstream context.</p>
+<p>A challenge that <span class="math inline">\(t\)</span>-SNE has for validation - that PCA does not - is that we can’t push new or test points through <span class="math inline">\(t\)</span>-SNE. While PCA defines a mapping we could apply to new data, <span class="math inline">\(t\)</span>-SNE is a ‘one-and-done’ operation, without the ability to apply the same mapping to a new data set.</p>
+<section id="more-on-t-sne" class="level3"><h3 class="anchored" data-anchor-id="more-on-t-sne">More on t-SNE</h3>
+<p>One of inventors of <span class="math inline">\(t\)</span>-SNE gave a great talk at Google a few years back:</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/RJVL80Gg3lA" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section></section><section id="umap" class="level2"><h2 class="anchored" data-anchor-id="umap">UMAP</h2>
+<p><span class="math inline">\(t\)</span>-SNE worked by attempting to retain a simple form of local structure, but the underlying results are somewhat fragile as we have seen. The UMAP technique (“Uniform Manifold Approximation and Projection”) attempts to similarly preserve neighbor structure, but doing so in a way that is more closely based on nearest neighbor connectivity (like we saw with graph embeddings for clustering) than the distributional assumptions of <span class="math inline">\(t\)</span>-SNE. In fact, UMAP goes a few steps beyond what we already saw with graph embeddings and tries to not only keep track of ‘pairwise’ relationships but also triples, quadruples, <em>etc.</em>. The algorithm becomes rather hard to describe, but it’s fast and powerful in practice:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tkonopka/umap">umap</a></span><span class="op">)</span></span>
+<span><span class="va">set_colnames</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">nm</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">nm</span>; <span class="va">x</span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">penguins_mat</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/umap/man/umap.html">umap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="st">"layout"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">set_colnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"y1"</span>, <span class="st">"y2"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span>  <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">penguins_clean</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">y1</span>, y<span class="op">=</span><span class="va">y2</span>, color<span class="op">=</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">'bottom'</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Species"</span>, type<span class="op">=</span><span class="st">"qual"</span>, palette<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"UMAP Dimension 1"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"UMAP Dimension 2"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So far, not so different than <span class="math inline">\(t\)</span>-SNE for this simple data. If we apply our three methods to a more complex data set, we get some interesting findings:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jkrijthe/Rtsne">Rtsne</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tkonopka/umap">umap</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mnist</span> <span class="op">&lt;-</span> <span class="fu">dslabs</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dslabs/man/read_mnist.html">read_mnist</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">mnist_X</span> <span class="op">&lt;-</span> <span class="va">mnist</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"images"</span><span class="op">)</span></span>
+<span><span class="va">mnist_Y</span> <span class="op">&lt;-</span> <span class="va">mnist</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"labels"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mnist_ix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">NROW</a></span><span class="op">(</span><span class="va">mnist_X</span><span class="op">)</span>, <span class="fl">3000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mnist_X</span> <span class="op">&lt;-</span> <span class="va">mnist_X</span><span class="op">[</span><span class="va">mnist_ix</span>,<span class="op">]</span></span>
+<span><span class="va">mnist_Y</span> <span class="op">&lt;-</span> <span class="va">mnist_Y</span><span class="op">[</span><span class="va">mnist_ix</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">pca_mnist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">mnist_X</span>, nu<span class="op">=</span><span class="fl">2</span>, nv<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>u1<span class="op">=</span><span class="va">pca_mnist</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
+<span>                     u2<span class="op">=</span><span class="va">pca_mnist</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, </span>
+<span>                     label<span class="op">=</span><span class="va">mnist_Y</span>, </span>
+<span>                     method<span class="op">=</span><span class="st">"PCA"</span>, </span>
+<span>                     mnist_index<span class="op">=</span><span class="va">mnist_ix</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tsne_mnist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Rtsne/man/Rtsne.html">Rtsne</a></span><span class="op">(</span><span class="va">mnist_X</span>, check_duplicates <span class="op">=</span> <span class="cn">FALSE</span>, pca<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_tsne</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>u1<span class="op">=</span><span class="va">tsne_mnist</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,</span>
+<span>                      u2<span class="op">=</span><span class="va">tsne_mnist</span><span class="op">$</span><span class="va">Y</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>,</span>
+<span>                      label<span class="op">=</span><span class="va">mnist_Y</span>, </span>
+<span>                      method<span class="op">=</span><span class="st">"t-SNE"</span>, </span>
+<span>                     mnist_index<span class="op">=</span><span class="va">mnist_ix</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">umap_mnist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/umap/man/umap.html">umap</a></span><span class="op">(</span><span class="va">mnist_X</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_umap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>u1<span class="op">=</span><span class="va">umap_mnist</span><span class="op">$</span><span class="va">layout</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
+<span>                      u2<span class="op">=</span><span class="va">umap_mnist</span><span class="op">$</span><span class="va">layout</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>,</span>
+<span>                      label<span class="op">=</span><span class="va">mnist_Y</span>, </span>
+<span>                      method<span class="op">=</span><span class="st">"UMAP"</span>, </span>
+<span>                     mnist_index<span class="op">=</span><span class="va">mnist_ix</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">df_pca</span>, <span class="va">df_tsne</span>, <span class="va">df_umap</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">label</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u1</span>, y<span class="op">=</span><span class="va">u2</span>, color<span class="op">=</span><span class="va">label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">method</span>, </span>
+<span>               scales<span class="op">=</span><span class="st">"free"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"none"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"First Dimension [Unitless]"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Second Dimension [Unitless]"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, we have applied all three methods to the famous <code>MNIST</code> data, a set of scanned handwritten digits, originally used to develop a ZIP code sorter for the US Postal Service. We have 10 known clusters here (the ten digits) and the data look something like the following:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">view_mnist</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="co"># Recast into a 28x28 matrix and rotate to get correct alignment</span></span>
+<span>    <span class="va">digit_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">mnist</span><span class="op">$</span><span class="va">train</span><span class="op">$</span><span class="va">images</span><span class="op">[</span><span class="va">n</span>,<span class="op">]</span>, </span>
+<span>                           nrow <span class="op">=</span> <span class="fl">28</span>, </span>
+<span>                           ncol <span class="op">=</span> <span class="fl">28</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">rev</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/image.html">image</a></span><span class="op">(</span><span class="va">digit_matrix</span>, </span>
+<span>          col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/gray.colors.html">grey.colors</a></span><span class="op">(</span><span class="fl">255</span><span class="op">)</span>, </span>
+<span>          main<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"Label:"</span>, <span class="va">mnist</span><span class="op">$</span><span class="va">train</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">n</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>          axes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">view_mnist</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>With this context, it is interesting to think about what the axes identified by our dimension reduction methods might be capturing. To do this, we can see what the 5 highest and lowest points on each axis look like and do some interpretation:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">PCA Interpretation</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><span class="math inline">\(t\)</span>-SNE Interpretation</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">UMAP Interpretation</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>High on PC-1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_pca</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">u1</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Low on PC-1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_pca</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">u1</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>High on PC-2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_pca</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">u2</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Low on PC-2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_pca</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">u2</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>High on <span class="math inline">\(t\)</span>-SNE Dimension 1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_tsne</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">u1</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Low on <span class="math inline">\(t\)</span>-SNE Dimension 1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_tsne</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">u1</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>High on <span class="math inline">\(t\)</span>-SNE Dimension 2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_tsne</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">u2</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Low on <span class="math inline">\(t\)</span>-SNE Dimension 2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_tsne</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">u2</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>High on UMAP Dimension 1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_umap</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">u1</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Low on UMAP Dimension 1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_umap</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">u1</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>High on UMAP Dimension 2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_umap</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">u2</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Low on UMAP Dimension 2:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_umap</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">u2</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">mnist_index</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">walk</a></span><span class="op">(</span><span class="va">view_mnist</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="notes13_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>For details, <a href="https://umap-learn.readthedocs.io/en/latest/how_umap_works.html">read more here</a>.</p>
+</section><section id="variational-autoencoders" class="level2"><h2 class="anchored" data-anchor-id="variational-autoencoders">Variational Autoencoders</h2>
 
 
-
-</main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<ol>
+<li id="fn1">
+<p>In case you haven’t. Suppose we have <span class="math inline">\(n\)</span> scalars <span class="math inline">\(a_i, \dots, a_n\)</span>. Then</p>
+<p><span class="math display">\[\begin{align*}
+\sum_{i, j} (a_i - a_j)^2 &amp;= \sum_{i, j} a_i^2 - 2a_ia_j + a_j^2 \\
+                      &amp;= \left(\sum_{i, j} a_i^2\right) - 2\left(\sum_{i, j} a_ia_j\right) + \left(\sum_{i, j} a_j^2\right) \\
+                      &amp;= \left(n\sum_{i} a_i^2\right) - 2\left(\sum_{i}a_i\right)\left(\sum_j a_j\right) + \left(n\sum_j a_j^2\right) \\
+                      &amp;= \left(n\sum_{i} a_i^2\right) - 2\left(\sum_{i}a_i\right)\left(\sum_i a_i\right) + \left(n\sum_i a_i^2\right) \\
+                      &amp;= 2n\left(\sum_i a_i^2\right) - 2\left(\sum_i a_i\right)^2 \\
+                      &amp;= 2n\left[\sum_i a_i^2 - \frac{1}{n}\left(\sum_i a_i\right)^2\right] \\
+                      &amp;= 2n\left[\sum_i a_i^2 - \frac{2}{n}\left(\sum_i a_i\right)^2 + \frac{1}{n}\left(\sum_i a_i\right)^2\right] \\
+                      &amp;= 2n\left[\sum_i a_i^2 - 2\left(\frac{\sum_i a_i}{n}\right)\left(\sum_i a_i\right) + n\left(\frac{\sum_i a_i}{n}\right)^2\right] \\
+                      &amp;= 2n\left[\sum_i a_i^2 - 2\overline{a})\left(\sum_i a_i\right) + n\overline{a}^2\right] \\
+                      &amp;= 2n \left(\sum_i a_i^2 - 2\overline{a}a_i + \overline{a}^2\right) \\
+                      &amp;= 2n \sum_i (a_i - \overline{a}^2)
+\end{align*}\]</span></p>
+<p>Ok - that was a lot! To confirm your understanding, try to write this out using means and variances instead of sums of squares.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p>
+</li>
+<li id="fn2"><p>Here, <span class="math inline">\(\bH\)</span> is <strong>not</strong> the hat matrix from OLS theory.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><em>Cf.</em> the <a href="https://en.wikipedia.org/wiki/Narcissism_of_small_differences">Narcissim (sometimes Tyranny) of Small Differences</a><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Because we’re always capped at 100% probability, when heavy-tailed distributions put <em>more</em> probability in the tails, they have to put <em>less</em> in the ‘core’ of the distribution. In our context, this means that models will be less willing to make changes to points that are relatively close to each other, preserving neighborhood structure.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -271,13 +865,14 @@ window.Quarto = {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -623,4 +1218,4 @@ window.Quarto = {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes13.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes13.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes13.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes13.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

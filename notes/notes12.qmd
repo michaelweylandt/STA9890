@@ -4,13 +4,7 @@ topic: "`r library(tidyverse); topic <- read_csv('../key_dates.csv', name_repair
 date: "Last Updated `r Sys.Date()`"
 ---
 
-
 {{< include _latex_defines.qmd >}}
-
-```{r}
-#| include: false
-TRUE # To ensure knitr activates
-```
 
 Today, we begin our study of *dimension reduction*, the task of finding
 a simplified representation of your data. Before we begin formalizing
@@ -321,9 +315,8 @@ so we have to help it out a bit.
 For small to medium problems, it is _usually_ a good idea to use built-in
 algorithms like `eigen` or (as we will see below) `svd`. For _very large_ problems,
 it may be better to use the power method (or similar) as it only computes the
-first eigenvector. As you will see in [RR#03](../reports/report03.html), the
-power method is also quite easy to extend if we want to introduce sparsity 
-or similar forms of regularization. 
+first eigenvector. As we will see below, the power method is also quite easy to 
+extend if we want to introduce sparsity or similar forms of regularization. 
 
 ## Additional Principal Components
 
@@ -361,6 +354,11 @@ then on $\bR_1 = \bX(\bI - \bv_1\bv_1^{\top})$, then on $\bR_2 = \bR_1(\bI - \bv
 $$(\bX\bv_1, \bX\bv_2, \dots)$$
 
 We can see this in action visually: 
+
+```{r}
+#| echo: false
+conflicted::conflict_prefer("layout", "plotly")
+```
 
 ```{r}
 #| warning: false
@@ -437,8 +435,10 @@ At this point, we can benefit from introducing another important linear algebra
 concept: _rank_. The _rank_ of a matrix (*i.e.*, of a point cloud) is the 
 number of dimensions it 'actually' occupies. Our original data was rank-3, since
 it used all three dimensions of our data space, but the residuals $\bR_1$ are 
-only rank-2, since we removed one dimension. You can think of rank as the "intrinsic
-dimension" associated with data. 
+only rank-2, since we removed one dimension. You can think of rank as the 
+"intrinsic dimension" associated with data. 
+
+If we repeat this process again, we go down to a rank-1 set of residuals: 
 
 ```{r}
 v1 <- matrix(c(-1/3, 2/3, 2/3), ncol=1)
@@ -463,20 +463,540 @@ X_resid_resid <- X_residuals - X_residuals %*% v2 %*% t(v2)
 # Project again
 # X_residuals %*% (eye(NCOL(X)) - v1 %*% t(v1) - v2 %*% t(v2))
 
-
 plot_ly(x=X_resid_resid[,1], 
         y=X_resid_resid[,2], 
         z=X_resid_resid[,3], 
         type="scatter3d", mode="markers")
 ```
 
+And, while it's a bit unnatural, if we were to go one step further, we would
+be left with residuals that were all 0, so our residuals would live on a 
+'zero dimensional' point at the origin. 
+
+This 'dimension-reduction' is often cited as a key advantage of PCA, but it's
+worth thinking about what it does and does not mean for us: 
+
+- 
+- 
+- 
+- 
 
 
+## PCA Patterns in Observations
+
+So far, we've focused on the patterns in among the features identified by 
+PCA, but just as often, we are interested in patterns in 'observation space'. 
+We find an interesting pattern, but then we want to ask whether it is trending
+upwards or downwards or if any points are very high or very low on than pattern.
+
+We've seen above that we can do this by multiplying each row of $\bX$ and seeing
+by our PC $\bv$. This gave us the `X_pc1` variable above:
+
+```{r}
+plot(X_pc1)
+```
+
+This was a situation where the rows were IID, so the 'fuzzy caterpillar' was 
+not surprising. But let's consider a pattern where there is structure to the
+rows, *e.g.*, a multivariate time series. 
+
+Here I'm going to use the `OpenMeteo` website to pull temperature data from
+NYC, Boston, Philadelphia, Baltimore, and Washington DC for the past 6 months:
+
+```{r}
+library(tidyverse)
+library(httr2)
+eps <- 0.2
+cities <- tribble(
+    ~city, ~lat, ~lon, 
+    "NYC", 40.73, -73.93,
+    "BOS", 42.36, -71.06,
+    "PHL", 39.96, -75.17,
+    "BAL", 39.29, -76.61,
+    "WDC", 38.89, -77.03
+) |> 
+    mutate(lat_p = lat + eps, 
+           lat_n = lat - eps, 
+           lon_p = lon + eps, 
+           lon_n = lon - eps)
+
+resp <- request("https://api.open-meteo.com") |>
+    req_url_path("v1/forecast") |>
+    req_url_query(latitude=paste(cities$lat, collapse=","), 
+                  longitude=paste(cities$lon, collapse=","),
+                  hourly="temperature_2m", 
+                  past_days=60) |>
+    req_perform()
+
+temperature_df <- resp |> 
+    resp_body_json() |> 
+    map(\(r) data.frame(time = r |> pluck("hourly", "time") |> list_c(), 
+                        temperature_2m = r |> pluck("hourly", "temperature_2m") |> list_c(), 
+                        latitude = r |> pluck("latitude"), 
+                        longitude = r |> pluck("longitude"))) |> 
+    list_rbind() |> 
+    mutate(time=ymd_hm(time)) |> 
+    left_join(cities, join_by(between(latitude, lat_n, lat_p), 
+                              between(longitude, lon_n, lon_p))) |> 
+    select(time, temperature_2m, city) |>
+    pivot_wider(names_from=city, 
+                values_from=temperature_2m) |>
+    # Remove baseline temperature
+    mutate(across(-time, \(x) x - mean(x))) 
+
+glimpse(temperature_df)
+```
+
+which gives us data like the following (except with `r NROW(temperature_df)` rows):
+
+```{r}
+#| echo: false
+library(gt)
+temperature_df |> 
+  slice_head(n=5) |>
+  gt(id="tbl_temperatures", 
+     rowname_col="time") 
+```
+
+If we plot this, we can see a clear common temporal pattern with
+the day-night cycle:
+
+```{r}
+#| cache: true
+library(GGally)
+ggpairs(temperature_df)
+```
+
+So let's now apply PCA to the temperature columns in this
+data set: 
+
+```{r}
+#| cache: true
+temperature_mat <- temperature_df |> 
+  select(-time) |> 
+  as.matrix()
+
+temperature_pc1 <- pca_power_method(temperature_mat)
+
+temperature_pc1 |> 
+    pluck("v") |> 
+    as.data.frame() |> 
+    rownames_to_column("city") |> 
+    inner_join(cities, join_by(city)) |> 
+    arrange(desc(lat)) |> 
+    mutate(city = factor(city, levels=city)) |> 
+    ggplot(aes(x=city, y=V1)) + 
+    geom_col(fill="#8B000033", color="red4") + 
+    xlab("City") + 
+    ylab("Principal Component 1") + 
+    theme_bw()
+```
+
+So we see that our PC takes a bit from each city, but is most heavily loaded
+on the southernmost cities in this sample. 
+
+If we return and look at $\bX \bv_1$ or equivalently $\bx_i^{\top}\bv_1$ for
+each observation $i$, we get the following
+
+```{r}
+#| cache: true
+temperature_mat %*% temperature_pc1$v |> 
+  data.frame() |> 
+  rename(pc_row=1) |> 
+  mutate(time = temperature_df$time) |> 
+  ggplot(aes(x=time, y=pc_row)) + 
+  geom_point() + 
+  xlab("Time") + 
+  ylab("X * v")
+```
+
+So there is a time structure! Note that this isn't _quite_ the time series we'd
+get from just an average of the five temperatures--it's a weighted average via
+the columns above--but it's close. 
+
+Let's go ahead and add some cities from the other side of the world to get
+a more interesting pattern: 
+
+```{r}
+#| cache: true
+library(tidyverse)
+library(httr2)
+eps <- 0.2
+cities <- tribble(
+    ~city, ~lat, ~lon, 
+    "NYC", 40.73, -73.93,
+    "BOS", 42.36, -71.06,
+    "PHL", 39.96, -75.17,
+    "SYD", -33.87, 151.21,
+    "MEL", -37.81, 144.97,
+    "BNE", -27.47, 153.03
+) |> 
+    mutate(lat_p = lat + eps, 
+           lat_n = lat - eps, 
+           lon_p = lon + eps, 
+           lon_n = lon - eps) 
+
+resp <- request("https://api.open-meteo.com") |>
+    req_url_path("v1/forecast") |>
+    req_url_query(latitude=paste(cities$lat, collapse=","), 
+                  longitude=paste(cities$lon, collapse=","),
+                  hourly="temperature_2m", 
+                  past_days=60) |>
+    req_perform()
+
+temperature_df2 <- resp |> 
+    resp_body_json() |> 
+    map(\(r) data.frame(time = r |> pluck("hourly", "time") |> list_c(), 
+                        temperature_2m = r |> pluck("hourly", "temperature_2m") |> list_c(), 
+                        latitude = r |> pluck("latitude"), 
+                        longitude = r |> pluck("longitude"))) |> 
+    list_rbind() |> 
+    mutate(time=ymd_hm(time)) |> 
+    left_join(cities, join_by(between(latitude, lat_n, lat_p), 
+                              between(longitude, lon_n, lon_p))) |> 
+    select(time, temperature_2m, city) |> 
+    pivot_wider(names_from=city, 
+                values_from=temperature_2m) |>
+    mutate(across(-time, \(x) x - mean(x))) # Remove baseline temperature
 
 
-## Visualizing PCA
+temperature_mat2 <- temperature_df2 |> 
+    select(-time) |> 
+    as.matrix()
+
+temperature2_pc1 <- pca_power_method(temperature_mat2)
+
+temperature2_pc1 |> 
+    pluck("v") |> 
+    as.data.frame() |> 
+    rownames_to_column("city") |> 
+    inner_join(cities, join_by(city)) |> 
+    arrange(desc(lat)) |> 
+    mutate(city = factor(city, levels=city)) |> 
+    ggplot(aes(x=city, y=V1)) + 
+    geom_col(fill="#8B000033", color="red4") + 
+    xlab("City") + 
+    ylab("Principal Component 1") + 
+    theme_bw()
+```
+
+Here, we've augmented our US cities with the Australian cities of Sydney
+(`SYD`), Brisbane (`BNE`) and Melbourne (`MEL`). These cities are on
+the other side of the world from the US cities we've looked at and their
+temperatures move contrary to the US cities (both their seasonal cycles
+and their day-night cycles) so this isn't too surprising. 
+
+::: {.callout-tip title="Pause for Reflection"}
+
+Modify the example above to include some Northern + Eastern Hemisphere
+cities like Beijing and Kyiv and some Southern + Western cities like
+Sao Paolo and Buenos Aires. What patterns do you find? Does this make sense?
+What does this tell you about weather patterns? What happens if you take
+daily average temperatures instead of hourly data?
+
+:::
+
+As before, the 'time series' that goes with this data is interesting: 
+
+```{r}
+temperature_mat2 %*% temperature2_pc1$v |> 
+  data.frame() |> 
+  rename(pc_row=1) |> 
+  mutate(time = temperature_df2$time) |> 
+  ggplot(aes(x=time, y=pc_row)) + 
+  geom_point() + 
+  xlab("Time") + 
+  ylab("X * v")
+```
+
+It's actually not that different from what we saw above, in part because the
+time patterns are correlated. If we were to put these together, we would expect
+Sydney to move _opposite_ this pattern (zigging when this pattern zags) since it
+has a negative loading. 
 
 ## A Singular Value Approach to PCA
+
+Above, to get the time course, we computed $\bX\bv$, but this is a bit hokey.
+
+It's easier to use the _SVD_-formulation of PCA, which we'll now introduce.
+Given a matrix $\bX \in \R^{n \times p}$, we want to break it up into a sum of
+simple components: for our purposes, these 'simple' components can be expressed
+as rank-1 matrices. That is, our 'simple' components are basically 
+one-dimensional bits (line segments) in a higher-dimensional space. So we're
+looking for something like: 
+
+$$\bX = \bX_1 + \bX_2 + \dots $$
+
+If $\bX$ is rank-$k$, we should expect that we could use a sum of only $k$ 
+rank-1 terms to exactly equal $\bX$. Determining the rank of a matrix is not
+trivial, but an upper bound is $\text{rank}(\bX) \leq \min\{n, p\}$. That is, 
+the rank of a matrix is bounded above by (and, it turns out, is typically equal 
+to) its smaller dimension. So, if $\bX \in \R^{3 \times 5}$, we know the
+rank of $\bX$ - and hence the number of sum terms we will need - is at most
+3. This shouldn't surprise you - if we needed four degrees of freedom to 
+reproduce 3 points, we would clearly be doing something inefficiently. 
+
+So we have our goal: 
+
+$$\bX = \bX_1 + \bX_2 + \dots + \bX_{\text{rank}(\bX)}$$
+
+But these terms $\bX_i$ are not so easy to work with. As noted above, the idea
+of forcing each $\bX_i$ to be rank-1 is not easy, but we have a trick! Any 
+rank-1 matrix can be written as the (outer) product of two vectors: 
+
+$$\bX_i = \bu_i\bv_i^{\top}$$
+
+where $\bu_i \in \R^n$ and $\bv_i \in \R^p$. The fact that this gives a rank-1
+term shouldn't be too surprising: by going through two vectors, we essentially
+create a 'bottleneck' that forces things down to one dimension. 
+
+Obviously, this sort of $\bu_i\bv_i^{\top}$ is not a _unique_ representation of
+a given rank-1 matrix. If $\bA$ were rank-1, we could write it as: 
+
+$$\bA = \bu \bv^{\top} = (\bu/2)(2\bv)^{\top} = (\alpha\bu)(\bv/\alpha)^{\top} \text{ for any } \alpha \neq 0$$
+
+To avoid this, let's force $\bu$ and $\bv$ to be unit vectors and to put any 
+scale factors outside the product: so, we would have something like
+
+$$\bA = d\, \bu\bv^{\top}$$
+
+where $d$ is a scalar and $\bu \in \R^n, \bv \in \R^p$ are unit vectors. We 
+still have a bit of sign ambiguity ($d\bu = (-d)(-\bu)$) but we can fix
+this by setting $d > 0$.[^sign]
+
+So now, we know we want to break up our original data matrix $\bX$ as: 
+
+$$\bX = d_1\bu_1\bv_1^{\top} + d_2\bu_2\bv_2^{\top} + \dots d_k\bu_k\bv_k^{\top}$$
+
+where $k = \text{rank}(\bX)$. This seems so much harder! But we have a trick
+up our sleeves. 
+
+Think back to when we introduced the _singular value decomposition_ of a matrix
+$\bX$. Recall that we had
+
+$$\bX = \bU\bD\bV^{\top}$$
+
+
+where
+
+- $\bD$ is a diagonal matrix with all positive elements on the diagonal
+- $\bU$ and $\bV$ are an orthogonal matrices
+
+At the time, I said not to be too concerned about the exact dimensions of each
+term, but we can now be precise: 
+
+$$\bX = \bU\bD\bV^{\top}$$
+
+for a rank-$k$ matrix where
+
+- $\bD \in \R^{k \times k}$ is a diagonal matrix with all positive values on the
+  diagonal
+- $\bU \in \R^{n \times k}$ is an orthogonal matrix satisfying $\bU^{\top}\bU = \bI_{k \times k}$
+- $\bV \in \R^{p \times k}$ is an orthogonal matrix satisfying $\bV^{\top}\bV = \bI_{k \times k}$
+
+With this precise definition in place, let's start to expand this sum out. Because
+$\bD$ is diagonal, we see that: 
+
+$$\begin{align*}
+\bX &= \bU\bD\bV^{\top} \\
+    &= \begin{pmatrix} \bu_1 \\ \bu_2 \\ \dots \\ \bu_k \end{pmatrix} \begin{pmatrix} d_1 \\  0 & d_2 \\ && \ddots \\ &&& d_k \end{pmatrix} \begin{pmatrix} \bv_1 \\ \bv_2 \\ \dots \\ \bv_k \end{pmatrix}^{\top} \\
+    &= \begin{pmatrix} d_1\bu_1 \\ d_2\bu_2 \\ \dots \\ d_k\bu_k \end{pmatrix} \begin{pmatrix} \bv_1 \\ \bv_2 \\ \dots \\ \bv_k \end{pmatrix}^{\top} \\
+    &= d_1\bu_1\bv_1^{\top} + d_2\bu_2\bv_2^{\top} + \dots + d_k\bu_k\bv_k^{\top}
+\end{align*}$$
+
+So the SVD gives us _exactly_ the PCA decomposition we were looking for.
+If you look inside most PCA software (*e.g.*,
+[`sklearn.PCA`](https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/decomposition/_pca.py#L175) in Python or
+[`stats::prcomp`](https://github.com/wch/r-source/blob/trunk/src/library/stats/R/prcomp.R#L40) in `R`), you will see that it's all just really a wrapper around an SVD. 
+
+In fact, let's just go ahead and use an SVD to do PCA 'by hand': 
+
+```{r}
+temp_svd <- svd(temperature_mat2)
+temp_u1 <- temp_svd$u[,1]
+temp_v1 <- temp_svd$v[,1]
+
+library(patchwork)
+p1 <- data.frame(u = temp_u1, time=temperature_df2$time) |>
+  ggplot(aes(x=time, y=u)) + 
+  geom_line() + 
+  geom_point(alpha=0.2) + 
+  xlab("Time Axis") + 
+  ylab("U-Factor from PC1") + 
+  theme_bw()
+
+p2 <- data.frame(v = temp_v1, city=cities$city) |>
+  ggplot(aes(x=city, y=v)) + 
+  geom_col() + 
+  geom_point() + 
+  xlab("City") + 
+  ylab("V-Factor from PC1") + 
+  theme_bw()
+
+p1 / p2
+```
+
+This is (up to scaling - via that $d$ term) what we saw before!
+
+So the `svd()` gets us everything we want, but it's a bit magic. We can also
+'build-our-own' SVD by returning to our approximation problem. To get the first
+PC, we can write the problem of approximating $\bX$ as: 
+
+$$\argmin_{d, \bu, \bv} \|\bX - d\bu\bv^{\top}\|_2^2$$
+
+Here, we want to pick $d, \bu, \bv$ to approximate $\bX$ as well as possible. 
+After a bit of algebra, we can show this becomes
+
+$$\argmax_{\bu, \bv} \bu^{\top}\bX\bv$$
+
+::: {.callout-tip title="Deriving the SVD Approximation Problem" collapse="true"}
+
+We begin with 
+
+$$\argmin_{d, \bu, \bv} \|\bX - d\bu\bv^{\top}\|_2^2$$
+
+If we expand out the binomial, this becomes: 
+
+$$\begin{align*}
+\|\bX - d\bu\bv^{\top}\|_2^2 &= \Tr\left[(\bX - d\bu\bv^{\top})^{\top}(\bX - d\bu\bv^{\top})\right] \\
+&= \Tr\left[(\bX^{\top} - d\bv\bu^{\top})(\bX - d\bu\bv^{\top})\right] \\
+&= \Tr\left[\bX^{\top}\bX- d\bv\bu^{\top}\bX - d\bX^{\top}\bu\bv^{\top} + d^2\bv\bu^{\top}\bu\bv^{\top}\right] \\
+&= \|\bX\|_2^2 - d\Tr(\bv\bu^{\top}\bX) - d\Tr(\bX^{\top}\bu\bv^{\top}) + d^2\Tr(\bv\bu^{\top}\bu\bv^{\top}) \\
+&= \|\bX\|_2^2 - d\Tr(\bu^{\top}\bX\bv) - d\Tr(\bv^{\top}\bX^{\top}\bu) + d^2\Tr(\bv\|\bu\|_2^2\bv^{\top}) \\
+&= \|\bX\|_2^2 - d\Tr(\bu^{\top}\bX\bv) - d\Tr(\bu^{\top}\bX\bv) + d^2\Tr(\bv^{\top}\bv) \\
+&= \|\bX\|_2^2 - 2d\Tr(\bu^{\top}\bX\bv) + d^2 \\
+&= \|\bX\|_2^2 - 2d(\bu^{\top}\bX\bv) + d^2
+\end{align*}$$
+
+Holding off on finding $\bu, \bv$ for now, let's find an optimal $d$. As always,
+let's take the derivative with respect to $d$ and set it to zero: 
+
+$$ 0 = -2(\bu^{\top}\bX\bv) + 2d \implies d = \bu^{\top}\bX\bv$$
+
+Putting this into above, we have an objective of: 
+
+$$\begin{align*}
+\argmin_{\bu, \bv} \|\bX\|_2^2 - 2d(\bu^{\top}\bX\bv) + d^2 &= \argmin_{\bu, \bv} \|\bX\|_2^2 - (\bu^{\top}\bX\bv)^2
+\end{align*}$$
+
+From here, we note that $\bX$ is unchanging - it's the data we're trying 
+to approximate - so we really just have
+
+$$ \argmin_{\bu, \bv} - (\bu^{\top}\bX\bv)^2$$
+
+which we can rewrite as 
+
+$$ \argmax_{\bu, \bv} \bu^{\top}\bX\bv $$
+
+:::
+
+So what does this problem really mean? We're looking for $\bu, \bv$ that 
+maximize this term. Informally, you can think of this as finding the $\bu, \bv$
+that are best aligned with $\bX$. A bit more rigorously, if we expand $\bX$ out
+with its SVD: 
+
+$$\begin{align*}
+\argmax_{\bu\bv} \bu^{\top}\bX\bv &= \argmax_{\bu\bv} \bu^{\top}\left(\sum d_i \bu_i\bv_i^{\top}\right)\bv \\
+&= \argmax_{\bu\bv} \sum d_i (\bu^{\top}\bu_i)(\bv_i^{\top}\bv
+\end{align*}$$
+
+So our objective is some weighted combination of the $d_i$ values, based on how
+aligned our $\bu$ is with each 'real' $\bu_i$. Since the $d_i$ are ordered, the
+best solution is the one we get when $\bu = \bu_1$ and $\bv = \bv_1$, which is
+exactly what we want!
+
+So now that we've convinced ourselves that
+
+$$\argmax_{\substack{\bu \in \R^n, \bv \in \R^p \\ \|\bu\| = \|\bv\|=1}} \bu^{\top}\bX\bv$$ 
+
+is the problem we want to solve, how do we actually do that? We have two 
+variables and handling them both at the same time is tricky, so let's just do
+one at a time. If we fix $\bv$, it's easy to see that the best $\bu$ is the
+one that is just aligned with $\bX\bv$; similarly, if we fix $\bu$, the best
+$\bv$ is just one aligned with $\bu^{\top}\bX$. We can put these together into 
+an power method algorithm that looks similar to the one we developed above 
+for just $\bv$: 
+
+- Initialize $\bv^{(0)}$ randomly 
+- Repeat the following until convergence:
+  $$ \bu^{(k)} \leftarrow \frac{\bX\bv^{(k)}}{\|\bX\bv^{(k)}\|}$$
+  $$ \bv^{(k+1)} \leftarrow \frac{\bX^{\top}\bu^{(k)}}{\|\bX^{\top}\bu^{(k)}\|}$$
+
+In code, this might look something like: 
+
+```{r}
+pca_power_svd <- function(X, thresh=1e-8){
+    n <- NROW(X); p <- NCOL(X)
+    
+    normalize <- function(x) x / sqrt(sum(x^2))
+    
+    v <- normalize(matrix(rnorm(p), ncol=1))
+    
+    repeat {
+        u <- normalize(X %*% v)
+      
+        v_old <- v
+        v <- normalize(t(X) %*% u)
+        
+        # To fix sign irregularity, force v[1] > 0
+        if(v[1] < 0) v <- -v
+        
+        if(sum(abs(v - v_old)) < thresh){
+            break
+        }
+    }
+    
+    list(u=u, v=v, d=t(u) %*% X %*% v)
+}
+```
+
+which gives us: 
+
+```{r}
+pca_svd_temp <- pca_power_svd(temperature_mat2)
+
+p1 <- data.frame(u=pca_svd_temp$u, time=temperature_df2$time) |>
+  ggplot(aes(x=time, y=u)) + 
+  geom_line() + 
+  geom_point(alpha=0.2) + 
+  xlab("Time Axis") + 
+  ylab("U-Factor from PC1") + 
+  theme_bw()
+
+p2 <- data.frame(v=pca_svd_temp$v, city=cities$city) |>
+  ggplot(aes(x=city, y=v)) + 
+  geom_col() + 
+  geom_point() + 
+  xlab("City") + 
+  ylab("V-Factor from PC1") + 
+  theme_bw()
+
+p1 / p2
+```
+
+which matches what we got doing it with the built-in `svd()`.
+
+[^sign]: You might still notice we have a $\bu\bv^{\top} = (-\bu)(-\bv)^{\top}$
+ambiguity. This actually can't be resolved _uniquely_ and is a bit beyond our
+course, but most software will typically do something meaningless like "make the
+first value of $\bu$ positive" or "make the largest value of $\bu$ positive."
+
+
+
+
+## Making Sense of PCA
+
+The temperature results above are interesting, but not the easiest to interpret. 
+Australia being 'opposite' the US makes sense, but if we want to go deeper in 
+our analysis, what should we do? I like the strategy of using PCs to build an
+'estimated' $\bX$, based on the 'sum of simple' components above. In the 
+easiest case, we can make sense the first PC by looking into 
+
+$$\hat{\bX}_1 = d_1 \bu_1 \bv_1^{\top} \in \R^{n \times p}$$
+
+
+
+
 
 ## Regularized PCA
 
