@@ -280,7 +280,7 @@ problem from four to two dimensions (altitude and time):
 ![](./notes10_images/climate_pca1.png)
 
 We see different responses at the mid-stratosphere (bottom center) and 
-near the Earth's surface (bottom left). As you might expect, volcanic aerosols 
+near the Earth's surface (bottom right). As you might expect, volcanic aerosols 
 in the atmosphere absorb solar radiation (and hence temperature), blocking
 that same radiation from reaching the surface, resulting in a temperature
 *decrease* at the surface. (In reading this plot, you can think of the blue
