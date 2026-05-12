@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>STA 9890 - Additional Resources and Course Policies – STA 9890</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -36,10 +39,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1c47065645911eb62ace0da5c8a22cd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-f7b58eee2202a58c8e0dc5967ec053ef.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -235,7 +238,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Academic integrity is at the core of a college or university education. Faculty assign essays, exams, quizzes, projects, and so on both to extend the learning done in the classroom and as a means of assessing that learning. When students violate the academic integrity policy (i.e., “cheat”), they are committing an act of theft that can cause real harm to themselves and others including, but not limited to, their classmates, their faculty, and the caregivers who may be funding their education. Academic dishonesty confers an unfair advantage over others, which undermines educational equity and fairness. Students who cheat place their college’s accreditation and their own future prospects in jeopardy.</p>
 </blockquote>
 <p>In this course, expectations for academic integrity for in-class graded activities are straightforward: no use of unauthorized materials on weekly quizzes or mid-semester tests. Unless explicitly stated otherwise by the instructor <em>in writing</em>, the only authorized materials allowed during in class assessment are instructor-provided formula sheets.</p>
-<p>The Course Competition is “open peers”, “open book”, “open internet” but you may not use <strong>paid</strong> services or <strong>generative AI</strong> services. You must cite all sources used and include an acknowledgement section listing all peers with whom you collaborated. You do not need to acknowledge the instructor or any Piazza discussions, but you must acknowledge other faculty members or other Baruch students who help you complete your reports, even if they are not enrolled in this course.</p>
+<p>The Course Competition is “open peers”, “open book”, “open internet” but you may not use <strong>paid</strong> services or <strong>any generative AI</strong> services. You must cite all sources used and include an acknowledgement section listing all peers with whom you collaborated. You do not need to acknowledge the instructor or any Piazza discussions, but you must acknowledge other faculty members or other Baruch students who help you complete your reports, even if they are not enrolled in this course.</p>
 <p>Academic sanctions in this class will range from an <strong>F on the Assignment</strong> to an <strong>F in this Course</strong>. A report of suspected academic dishonesty will be sent to the Office of the Dean of Students.</p>
 <p>Students are encouraged to contact the instructor with any questions or concerns related to matters of academic integrity.</p>
 </section>
@@ -403,13 +406,14 @@ ul.task-list li input[type="checkbox"] {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

@@ -114,8 +114,8 @@ mid-semester tests. Unless explicitly stated otherwise by the instructor
 are instructor-provided formula sheets.
 
 The Course Competition is "open peers", "open book", "open internet" but you may
-not use **paid** services or **generative AI** services. You must cite all sources
-used and include an acknowledgement section listing all peers with whom you
+not use **paid** services or **any generative AI** services. You must cite all 
+sources used and include an acknowledgement section listing all peers with whom you
 collaborated. You do not need to acknowledge the instructor or any Piazza
 discussions, but you must acknowledge other faculty members or other Baruch
 students who help you complete your reports, even if they are not enrolled in

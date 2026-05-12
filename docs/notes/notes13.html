@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.9.37">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Michael Weylandt">
-<meta name="dcterms.date" content="2026-05-06">
+<meta name="dcterms.date" content="2026-05-10">
 <title>STA 9890 - Unsupervised Learning: IV. Nonlinear Dimension Reduction – STA 9890</title>
 <style>
 /* Default styles provided by pandoc.
@@ -194,7 +194,7 @@ window.Quarto = {
   </ul>
 </li>
   <li><a href="#umap" id="toc-umap" class="nav-link" data-scroll-target="#umap">UMAP</a></li>
-  <li><a href="#variational-autoencoders" id="toc-variational-autoencoders" class="nav-link" data-scroll-target="#variational-autoencoders">Variational Autoencoders</a></li>
+  <li><a href="#autoencoders" id="toc-autoencoders" class="nav-link" data-scroll-target="#autoencoders">Autoencoders</a></li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/notes/notes13.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/notes/notes13.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -216,7 +216,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 6, 2026</p>
+      <p class="date">May 10, 2026</p>
     </div>
   </div>
   
@@ -532,7 +532,7 @@ applied $K$-means to the $t$-SNE output and used it to color the points.</code><
 <p>One of inventors of <span class="math inline">\(t\)</span>-SNE gave a great talk at Google a few years back:</p>
 <div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/RJVL80Gg3lA" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 </section></section><section id="umap" class="level2"><h2 class="anchored" data-anchor-id="umap">UMAP</h2>
-<p><span class="math inline">\(t\)</span>-SNE worked by attempting to retain a simple form of local structure, but the underlying results are somewhat fragile as we have seen. The UMAP technique (“Uniform Manifold Approximation and Projection”) attempts to similarly preserve neighbor structure, but doing so in a way that is more closely based on nearest neighbor connectivity (like we saw with graph embeddings for clustering) than the distributional assumptions of <span class="math inline">\(t\)</span>-SNE. In fact, UMAP goes a few steps beyond what we already saw with graph embeddings and tries to not only keep track of ‘pairwise’ relationships but also triples, quadruples, <em>etc.</em>. The algorithm becomes rather hard to describe, but it’s fast and powerful in practice:</p>
+<p><span class="math inline">\(t\)</span>-SNE worked by attempting to retain a simple form of local structure, but the underlying results are somewhat fragile as we have seen. The UMAP technique (“Uniform Manifold Approximation and Projection”) attempts to similarly preserve neighbor structure, but doing so in a way that is more closely based on nearest neighbor connectivity (like we saw with graph embeddings for clustering) than the distributional assumptions of <span class="math inline">\(t\)</span>-SNE. In fact, UMAP goes a few steps beyond what we already saw with graph embeddings and tries to not only keep track of ‘pairwise’ relationships but also triples, quadruples, <em>etc.</em>. The algorithm becomes rather hard to describe[^h], but it’s fast and powerful in practice: [^h]: For more details on the mathematical formulation of UMAP, <a href="https://umap-learn.readthedocs.io/en/latest/how_umap_works.html">see here</a>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tkonopka/umap">umap</a></span><span class="op">)</span></span>
 <span><span class="va">set_colnames</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">nm</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">nm</span>; <span class="va">x</span><span class="op">}</span></span>
@@ -788,8 +788,15 @@ applied $K$-means to the $t$-SNE output and used it to color the points.</code><
 </div>
 </div>
 </div>
-<p>For details, <a href="https://umap-learn.readthedocs.io/en/latest/how_umap_works.html">read more here</a>.</p>
-</section><section id="variational-autoencoders" class="level2"><h2 class="anchored" data-anchor-id="variational-autoencoders">Variational Autoencoders</h2>
+<p>While interesting, these interpretations - particularly of <span class="math inline">\(t\)</span>-SNE - are unstable. They do seem to have captured some major patterns though:</p>
+<ul>
+<li>strokes vs circles (typified by 1 vs 0)</li>
+<li>concentrated on the diagonal vs spread out (typified by 1 vs 6)</li>
+<li>jagged vs round (typified by 7 vs 3)</li>
+</ul>
+<p>These also suggest that interesting things might lie <em>between</em> these axes. UMAP, like PCA, has the ability to project new points through the mapping we learned on the original data. Put another way, PCA and UMAP learn functions which can be applied to training and test points, while <span class="math inline">\(t\)</span>-SNE just learns an <em>embedding</em> of a finite set of training points.</p>
+</section><section id="autoencoders" class="level2"><h2 class="anchored" data-anchor-id="autoencoders">Autoencoders</h2>
+<p>While UMAP does a great job of learning structure, it lacks one of the nice properties we liked from PCA: we weren’t able to <em>invert</em> it. We learned a function <span class="math inline">\(\phi_{\text{UMAP}}: \R^P \to \R^p\)</span> though which we could map test points, but we don’t have the ability to do that mapping in reverse.</p>
 
 
 </section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>

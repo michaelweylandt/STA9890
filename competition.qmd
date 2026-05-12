@@ -822,14 +822,15 @@ or
 
 ::: {.callout-note title="AI Usage Statement" collapse="true"}
 
-GitHub Co-Pilot Pro was used via RStudio integration while 
-completing this project. No other generative AI tools were used. 
+GitHub Co-Pilot Pro was used as a coding assistant via RStudio
+integration while completing this project. No generative AI
+tools were used for writing or for idea generation. 
 
 :::
 
 
 Recall that Generative AI **may not** be used for idea generation or writing
-your final report. It may only be used for coding assistance and idea generation.
+your final report. It may only be used for coding assistance.
 
 
 ### Teams
