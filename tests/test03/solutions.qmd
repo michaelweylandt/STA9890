@@ -1,0 +1,534 @@
+---
+title: "{{< var course.short >}} Test 3: Unsupervised Learning"
+format:
+  html:
+    code-link: true
+---
+
+The original test booklet can be found [here](./exam_packet.pdf).
+
+$$\newcommand{\bw}{\mathbf{w}}\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}}\newcommand{\bQ}{\mathbf{Q}}\newcommand{\bU}{\mathbf{U}}\newcommand{\bV}{\mathbf{V}}\newcommand{\bone}{\mathbf{1}}\newcommand{\bY}{\mathbf{Y}}\newcommand{\bA}{\mathbf{A}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\br}{\mathbf{r}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bR}{\mathbf{R}}$$ 
+
+## True or False (24 points - 12 Questions at 2 Points Each)
+
+01. PCA can be applied without standardizing the data first.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **True**. PCA can be applied to any data set, with or 
+    without standard pre-processing like standardization or
+    centering. PCA without centering essentially estimates a
+    particular *low-rank mean* and then subtracts it from the
+    data in estimating later PCs. The question of
+    standardization is trickier: in general, we want to put the
+    data on a comparable scale across features, but this is
+    not always possible. Standardization has the effect of
+    interpreting the *correlation* pattern (instead of the
+    covariance), with the *pro*s and *con*s associated with
+    this simplification.
+   
+    :::
+
+02. Sparse PCA can be used to induce *sparsity* in the
+    rows, in the columns, or in both.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **True.** The specifics depend on the form of sparse PCA
+    used, but see the paper "A Penalized Matrix Decomposition"
+    by Witten, Tibshirani, and Hastie
+    [DOI:10.1093/biostatistics/kxp008](https://doi.org/10.1093/biostatistics/kxp008>)
+    for one popular approach. 
+    
+    :::
+   
+03. The eigenvalues of a real-valued matrix are always non-negative
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. In general, the eigenvalues of a real-valued
+    matrix are not necessarily even real-valued. Symmetric
+    matrices, such as those arising in covariance estimation,
+    always have real-valued eigenvalues; in the specific 
+    form used for covariance matrices, these are non-negative 
+    (and generally all positive). 
+    
+    The correct form of this claim (for our course) is that
+    the *singular values* of a real-valued matrix are always
+    non-negative. 
+    
+    :::
+   
+04. $t$-SNE is a linear dimension reduction technique. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. $t$-SNE is a non-linear dimension reduction
+    technique. 
+    
+    :::
+   
+05. In *consensus clustering*, the cluster centroids are
+    averaged over re-sampling to get a sense of cluster
+    uncertainty.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. *Consensus clustering* estimates the probability
+    that a pair of observations belong in the same cluster and 
+    does so by averaging 'co-clustering indicators', *i.e.*, an
+    $n-\times-n$ matrix where element $(i, j)$ is 1 if observations $i$ and $j$
+    are in the same cluster and zero otherwise. Because we are
+    averaging 0/1 data, the resulting averages are the probabilities we seek.
+   
+    :::
+   
+06. Lloyd's algorithm is not guaranteed to find the optimal clustering, 
+    except when initialized with $K$-means++. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. No simple algorithm is guaranteed to find the optimal clustering,
+    regardless of the initialization strategy used. 
+    
+    :::
+   
+07. DBSCAN (Density-Based Clustering) and Spectral Clustering (via graph 
+    embeddings) can identify clusters of arbitrary (connected) shape. 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **True**. Because both of these methods rely primarily on some sort of 
+    'nearest neighbor' construction, they can recover clusters of arbitrary
+    shape (assuming sufficiently large sample sizes).
+    
+    :::
+   
+08. Complete linkage in hierarchical clustering is prone to a "chaining" effect
+    (long stringy clusters). 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. The chaining effect is associated with _single_ linkage. Because
+    complete linkage requires all points to be close together (by using the 
+    maximum pairwise distance), it tends to produce nice compact clusters. 
+    
+    :::
+   
+09. The "Elbow Plot" method is used to select the number of clusters that 
+    minimizes the within-cluster sum-of-squares.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. With $n$ data points, the WCSS is always minimized at $K=n$ 
+    clusters (each point in its own zero-variance cluster), but this provides us
+    essentially none of the data simplification we seek in clustering. Elbow
+    plots are generally used to identify the point where WCSS stops rapidly
+    decreasing in $K$ and selects that $K$ as the number of clusters. 
+   
+    :::
+   
+10. The sum of the squares of the singular values of a data matrix equals the total variance 
+    in that data.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **True**. When performing SVD-based PCA, we look at the _squared_ singular
+    values (equal to relevant eigenvalues) to determine variance explained. 
+    
+    :::
+
+
+11. UMAP solutions are *nested* in that the $k$-dimensional projection can be 
+    found by taking the first $k$ dimensions of the $k+1$-dimensional projection.
+    
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **False**. The nestedness property is special to PCA (and closely 
+    related methods).  
+    
+    :::
+    
+12. A high silhouette score suggests that a data point is well clustered.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+   
+    **True**. The silhouette score of a point is the difference between: 
+    
+    - the average distance to points in the nearest cluster
+    - the average distance to points in the same cluster
+    
+    so a large silhouette score implies strong cluster identity. 
+    
+    :::
+
+## Short Answer (52 points - 13 questions at 4 points each)
+
+01. Suppose we perform PCA on a data matrix $\bX \in \R^{n \times p}$ using the 
+    SVD of $\bX$. Which of the following are true? Select all that apply.
+
+    - The row patterns are orthogonal to the column patterns: $\bu_i^{\top}\bv_i = 0$ for all $i$
+    - The scale factors $d_i$ may be positive or negative.
+    - The row patterns are orthogonal to each other $\bu_i^{\top}\bu_j = 0$ for $i\neq j$
+    - The row patterns are orthogonal to residual matrix: $\bu_i^{\top}\bX_i = \bzero$ if $\bR_i$ is the PCA residuals after the first $i$ principal components are removed from $\bX$
+    - The units of $\bX$ are comparable to those of the PCA term $\hat{\bX}_i = d_i \bu_i \bv_i^{\top}$ for all $i$
+    - The column patterns are orthogonal to each other $\bv_i^{\top}\bv_j = 0$ for $i \neq j$
+
+    
+    ::: {.callout-tip title="Solution" collapse="true"}
+    The following are true: 
+    
+    - The row patterns are orthogonal to each other $\bu_i^{\top}\bu_j = 0$ for $i\neq j$
+    - The row patterns are orthogonal to residual matrix: $\bu_i^{\top}\bX_i = \bzero$ if $\bR_i$ is the PCA residuals after the first $i$ principal components are removed from $\bX$
+    - The units of $\bX$ are comparable to those of the PCA term $\hat{\bX}_i = d_i \bu_i \bv_i^{\top}$ for all $i$
+    - The column patterns are orthogonal to each other $\bv_i^{\top}\bv_j = 0$ for $i \neq j$
+
+    These two 'properties' are false: 
+    
+    1. The row patterns are orthogonal to the column patterns: $\bu_i^{\top}\bv_i = 0$ for all $i$
+    
+    In fact, the row and column patterns are typically vectors of different
+    lengths ($\R^n, \R^p$) so this expression does not even make sense. 
+    
+    2. The scale factors $d_i$ may be positive or negative.
+    
+    In an SVD, the singular values, which give us PCA scale factors, are always
+    non-negative. 
+    
+    :::
+    
+02. $K$-*medoids* clustering is an analogue of $K$-means clustering, but it uses
+    the *medoid*, a $p$-dimensional generalization of the median, instead of the 
+    mean as the cluster center.
+
+    Give one strength/advantage and one weakness/disadvantage of $K$-medoids as 
+    compared to $K$-means. Explain why these differences arise (you can't just state them).  
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    As a median based method, $K$-medoids is far more robust to outliers than
+    $K$-means. This follows from basic intuition of medians, but we can also
+    note that the medoid, unlike the centroid, is always a point in the original
+    data set, so we cannot get weird outliers that are nowhere near any points
+    in the data. 
+    
+    $K$-medoids is much slower to implement than $K$-means. In particular, while
+    the mean can be computed by coordinate-wise averaging, $K$-medoids requires
+    computing the $\ell_1$ distance between all sets of points to determine the
+    'middle' point; this is usually quick in $\R$ because we can pre-sort the
+    data, but sorting is not well-defined in $\R^p$. 
+    
+    :::
+    
+03. For each of the following unsupervised methods, mark `L`, `G` or `M` to 
+    indicate whether they are principally concerned with local or global 
+    structure or whether they attempt to balance a mixture of the two. 
+    
+    *Hint*: there are 4 `G`, 3 `L`, and 1 `M`.
+    
+    - PCA
+    - $t$-SNE
+    - $K$-means
+    - Clustering via Nearest Neighbor Graph Embedding
+    - Convex Clustering
+    - UMAP
+    - Density-Based Clustering
+    - (Euclidean) Hierarchical Clustering
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    - PCA: `G`
+    - $t$-SNE: `L`
+    - $K$-means: `G`
+    - Clustering via Nearest Neighbor Graph Embedding: `L`
+    - Convex Clustering: `G`
+    - UMAP: `M`
+    - Density-Based Clustering: `L`
+    - (Euclidean) Hierarchical Clustering: `G`
+    
+    :::
+    
+    
+04. Suppose that the following data set $\bX\in \R^{6 \times 3}$ is observed: 
+
+    $$\bX = \begin{pmatrix}
+            22 & 38 & -41\\
+            18 & 42 & -39\\
+            28 & 44 & -32\\
+            -18 & -42 & 39\\
+            -12 & -36 & 48\\
+            -22 & -38 & 41
+     \end{pmatrix} = 
+     \begin{pmatrix} 
+        \sqrt{6}/6 & 0 & 1/2 \\ 
+        \sqrt{6}/6 & 0 & -1/2 \\
+        \sqrt{6}/6 & \sqrt{2}/2 & 0\\ 
+        -\sqrt{6}/6 & 0 & 1/2 \\
+        -\sqrt{6}/6 & \sqrt{2}/2 &  \\
+        -\sqrt{6}/6 & 0 & -1/2 
+      \end{pmatrix}
+      \begin{pmatrix}
+        60\sqrt{6} & 0 & 0\\ 
+        0& 12\sqrt{2} & 0\\ 
+        0 & 0 & 6 
+      \end{pmatrix}
+      \begin{pmatrix} 
+        1/3 & 2/3 & 2/3 \\ 
+        -2/3 & -1/3 & 2/3 \\ 
+        -2/3 & 2/3 & -1/3 
+      \end{pmatrix}^{\top}$$
+      
+    where the decomposition on the right is the *singular value 
+    decomposition* of $\bX$. 
+
+    What is the (marginal) percent of variance explained by the second principal
+    component of $\bX$? You may leave your answer unsimplified in terms of 
+    square roots and fractions.
+    
+    ::: {.callout-tip title="Solution" collapse="true"}
+
+    $$\%VE_{2} = \frac{d_2^2}{\sum_{i=1}^3 d_i^2} = \frac{(12\sqrt{2})^2}{(60\sqrt{6})^2 + (12\sqrt{2})^2 + 6^2} = \frac{288}{21600 + 288 + 36} \approx 1.3\%$$
+
+    :::
+    
+05. Describe how PCA could be used as part of a *data imputation* process.
+    
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    Given a data matrix $\bX$ with missing values, we can use PCA to improve
+    a 'baseline imputation' $\hat{\bX}^{(0)}$ by iterating the following steps: 
+    
+    - Construct a low-rank approximation $\tilde{\bX}^{(k)} = \textsf{PCA-Approximation}(\hat{\bX}^{(k)})$
+    - Impute missing values in $\bX$ with corresponding values from 
+      $\tilde{\bX}^{(k)}$ to get our updated imputation $\hat{\bX}^{(k+1)}$
+      
+    This can continue until a fixed point is reached or for some pre-specified
+    number of iterations. 
+    
+    :::
+    
+06. Write out Lloyd's Algorithm for $K$-means clustering. 
+    (Your answer does not need to be hyper-precise. Basic psuedo-code will suffice.)
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    - *Initialize*: Cluster labels $c_i$ for each point $i=1, \dots, n$ selected
+      uniformly from $\{1, \dots, K\}$
+    - *Repeat*: 
+      - E-Step: Estimate cluster centroids $$\mu_k = \text{Average of all points where $c_i=k$}$$
+      - M-Step: Assign labels based on the nearest centroid: $$c_i = \argmin_k d(\bx_i, \mu_k)$$
+    - *Until*: Labels or centroids stop changing
+    
+    :::
+    
+07. Draw a basic diagram of an *autoencoder* architecture, labeling the main 
+    components and explaining what they each do.
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    This image from Wikipedia is a good example: 
+    
+    ![](https://upload.wikimedia.org/wikipedia/commons/3/37/Autoencoder_schema.png)
+    
+    - The _encoder_ maps points from the original space to the reduced space (code)
+    - The _decoder_ maps points from the reduced space back to the original space
+    - The reduced space ($h$ or the code) provides a lower-dimensional non-linear
+      representation of points from the original space
+      
+    :::
+    
+08. Explain how density-based clustering methods (*e.g.*, DBSCAN) can be used 
+    for outlier detection. 
+
+    
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    The 'noise points' estimated by DBSCAN are candidates for outlier status, 
+    especially when the minimum distance parameter is large and the number of 
+    neighbor points is small, indicating that a noise point is not particularly
+    close to even one or two other points, a strong indicator of outlier status.
+    
+    :::
+    
+09. Why is cross-validation generally **not** a suitable strategy for 
+    validating unsupervised learning results and what strategies could be 
+    used instead? 
+
+    ::: {.callout-tip title="Solution" collapse="true"}
+    
+    CV is not generally used for unsupervised learning because there is not a
+    well-defined pointwise loss we are seeking to minimize (with exceptions). 
+    More generally, sample splitting is simply not appropriate for some 
+    unsupervised tasks (*e.g.*, clustering) and it is not obvious how to 
+    aggregate model output across folds. 
+    
+    In unsupervised tasks, some sort of *stability* strategy - robustness of
+    results to randomization - is used instead. 
+    
+    :::
+    
+
+## Applications of Machine Learning (40 points total)
+
+
+### AML1
+
+In this *issue spotter* question, I will describe a theoretical application of 
+unsupervised machine learning. As described, this application falls short of 
+"best practices" in several regards. Identify *four* places where this pipeline
+could be improved and recommend alternative (superior) practices. [20 points 
+total] For each issue, you will receive: 
+
+- 1 point for identifying a valid issue
+- (Up to) 2 points for explaining what is *wrong* with the described practice
+  and *what impact / bias / error* would be induced
+- (Up to) 2 points for accurately describing an alternative approach
+
+Please note that there are more than four possible issues in this scenario; 
+identify only the four for which you think you can provide the most accurate 
+and insightful analysis.
+
+
+::: {.callout-note title="Prompt" collapse="true"}
+    
+    
+A climate analyst has data on early summer Atlantic sea-surface temperatures 
+(SST) measured *via* 500 ocean buoys (floating measurement devices) over a 
+period of 75 years and wants to see if SST can be used to predict the number of 
+hurricanes that form in the following (late summer) hurricane season. The main 
+goal of this project is developing an easily understood set of characteristics 
+that can be used as an early warning indicator by the general public. As such, 
+interpretability is a major goal of the project and "black-box" methods cannot 
+be used. Hurricane counts are highly noisy, so the analyst first wants to 
+investigate SST data in an unsupervised fashion to see if there are distinct 
+types of SST patterns and then to see if those patterns correlate with hurricane
+counts. 
+
+Because the data is measured at 500 different spatial points, the analyst first 
+performs PCA on the raw data to reduce the dimensionality of the data down to 5 
+PCs. The analyst then discovers that these 5 PCs capture 90\% of the variation 
+in the data, so proceeds assuming that enough signal has been captured. The 
+analyst next performs single-linkage hierarchical clustering on a matrix formed 
+from the 5 $\bu$-vectors (row factors) from PCA and the number of hurricanes
+from each year (6 columns, 75 rows). To determine the cut point of the
+dendrogram (and hence the number of clusters), the analyst selects the number of
+clusters that minimizes the within-cluster sum of squares. Finally, the analyst
+computes the average number of hurricanes for cluster (*i.e.*, the total number
+of hurricanes that occurred in a year assigned to that cluster, divided by the 
+number of points in that cluster) and performs an ANOVA to see if the 
+between-cluster differences in hurricane count are statistically significant. 
+
+Because the ANOVA indicates that the clusters are statistically significant and
+distinct from each other, the analyst believes the PCA derived features can be
+used as an effective set of predictors. He builds an OLS model that takes the
+five predictors as inputs and predicts the number of hurricanes as the output; 
+because he has already seen that the PCs capture differences in hurricane count,
+he does not perform any additional model evaluation or optimization to avoid
+overfitting. Now that the model has been built, the analyst wants to ensure the
+features are as interpretable as possible. Because 5 PCs are hard to interpret,
+he uses $t$-SNE to reduce them to two features. He sees that the first $t$-SNE
+feature is correlated with average temperature across the whole Atlantic, while
+the second $t$-SNE feature seems to capture years in which there are significant
+differences between equatorial and arctic temperatures. Based on this
+information, he reports that a model can be built using these two features and
+that it will have statistically significant predictive power for the number of
+hurricanes in a given year.
+
+:::
+
+
+::: {.callout-tip title="Solution" collapse="true"}
+
+There are **many** issues that could be noted. Possibilities include: 
+
+- Single-linkage hierarchical clustering is a poor choice for highly noisy data
+  like this. It is better to use a method producing more homogeneous clusters
+  like complete linkage and to accept that your pipeline simply won't be able
+  to cluster some points than to have overly diverse clusters.
+- Including the number of hurricanes in the clustering step induces a weird
+  bias in the ANOVA. Because clustering intentionally produces very-different
+  centroids, testing to see if the clustering-produced centroids are distinct 
+  is basically meaningless.
+- Minimizing the WCSS produces far too many clusters. 
+- Validation should be performed on the actual $t$-SNE features used (if $t$-SNE
+  is desired), not on PCA input. Put another way, validate the _entire_ pipeline, 
+  not just random portions. 
+- $t$-SNE cannot be interpreted as distinct axes in the manner suggested. 
+    
+:::
+
+### AML2
+
+For this problem, I will describe a scenario in which unsupervised learning may 
+be useful to achieve one or more practical aims. You should describe, 
+in reasonable detail, how you would approach this problem. Be sure to justify 
+each step (say *why* you are making particular choices). 
+[20 points total, 4 points for each subsection] 
+
+
+::: {.callout-info title="Prompt" collapse="true"}
+    
+You are a data analyst at a startup that sells over 200 flavored varieties of 
+sparkling water over the internet. The marketing team wants to offer a temporary
+discount to certain customers on certain items with the hope that these 
+customers will try additional flavors and, in the long-run, lead to increased 
+purchasing and increased revenues. Specifically, they plan to offer targeted 
+"buy a case of Flavor $X$ and get a case of Flavor $Y$ for free" coupons to 
+customers who have purchased $X$ in the past and who are likely to also enjoy 
+$Y$. You have been asked to help them identify the customers and the flavors on 
+which this promotion should be offered. 
+
+You have two data sets available to you for this task:[^data]
+
+[^data]: You may assume that the universe of flavors and customers did not 
+change over the period in which this data was collected. *I.e.*, you don't have 
+to worry about new flavors being introduced or a brand-new customer.
+
+
+- A $200 \times 30$ table of the 200 flavors your company sells (rows) and the 
+  amount of each of your 30 flavoring agent that goes into each flavor (columns). 
+  Examples of ``flavoring agents''  include vanilla and passionfruit, 
+  which are used to create vanilla, passionfruit, and vanilla-passionfruit 
+  flavors for sale. Flavoring agents not used in a particular flavor are recorded 
+  as 0's. 
+- A $100,000 \times 200$ table of how much each customer (row) has bought of 
+  each flavor (column). Customers who have never bought a flavor are recorded as
+  having purchased 0 cans of that flavor. 
+
+:::
+
+
+::: {.callout-note title="Steps" collapse="true"}
+    
+1. Your first task is to identify at least two groups of flavors to highlight in
+   your advertising promotion. How would you process the first table and what 
+   techniques would you apply? Be careful to justify your choice (including 
+   stating any important assumptions that might need to be checked) and specify 
+   any important pre-processing steps.
+2. Your next task is to identify at least two groups of customers to whom to 
+   target your advertising promotion. How would you process the second table 
+   and what techniques would you apply? Be careful to justify your choice 
+   (including stating any important assumptions that might need to be checked) 
+   and specify any important pre-processing steps.  
+3. Now that you have identified groups of customers and flavors, how would you 
+   decide which flavors to promote to which customers? Describe your process in 
+   moderate detail. (Note that you do not need to advertise to *all* customers 
+   or for *all* flavors. Your goal is to outline a well-supported strategy, not 
+   to burn though as much budget as possible.) 
+4. In order to get sign-off from the higher-ups to launch your advertising 
+   campaign, you need to make sure your clusters have easy *and valid*
+   interpretation. How would you modify your answer to Step 1 or Step 2
+   [your choice] to provide highly-interpretable results and what strategies 
+   could be used to validate that interpretation?
+5. An important part of any advertising campaign is evaluation of results. What 
+   data would you encourage your company to collect to determine the efficacy of
+   the promotion and how would you plan analyze it in six months?
+
+:::
+
+::: {.callout-tip title="Solutions" collapse="true"}
+    
+Many valid strategies exist at each step. Points will be awarded based on how
+well the modeling choices made are justified. 
+
+:::
+

@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>STA 9890 Test 3: Unsupervised Learning – STA 9890</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-f7b58eee2202a58c8e0dc5967ec053ef.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">STA 9890</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../.././syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././notes.html"> 
+<span class="menu-text">Handouts and Additional Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././competition.html"> 
+<span class="menu-text">Course Competition</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././resources.html"> 
+<span class="menu-text">Additional Resources and Policies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../.././objectives.html"> 
+<span class="menu-text">Learning Objectives</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-prior-offerings" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Prior Offerings</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-prior-offerings">    
+        <li class="dropdown-header">Spring 2025</li>
+        <li>
+    <a class="dropdown-item" href="../.././archive/AY-2024-SPRING">
+ <span class="dropdown-text"></span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#true-or-false-24-points---12-questions-at-2-points-each" id="toc-true-or-false-24-points---12-questions-at-2-points-each" class="nav-link active" data-scroll-target="#true-or-false-24-points---12-questions-at-2-points-each">True or False (24 points - 12 Questions at 2 Points Each)</a></li>
+  <li><a href="#short-answer-52-points---13-questions-at-4-points-each" id="toc-short-answer-52-points---13-questions-at-4-points-each" class="nav-link" data-scroll-target="#short-answer-52-points---13-questions-at-4-points-each">Short Answer (52 points - 13 questions at 4 points each)</a></li>
+  <li><a href="#applications-of-machine-learning-40-points-total" id="toc-applications-of-machine-learning-40-points-total" class="nav-link" data-scroll-target="#applications-of-machine-learning-40-points-total">Applications of Machine Learning (40 points total)</a>
+  <ul class="collapse">
+  <li><a href="#aml1" id="toc-aml1" class="nav-link" data-scroll-target="#aml1">AML1</a></li>
+  <li><a href="#aml2" id="toc-aml2" class="nav-link" data-scroll-target="#aml2">AML2</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/tests/test03/solutions.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/tests/test03/solutions.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">STA 9890 Test 3: Unsupervised Learning</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The original test booklet can be found <a href="./exam_packet.pdf">here</a>.</p>
+<p><span class="math display">\[\newcommand{\bw}{\mathbf{w}}\newcommand{\bX}{\mathbf{X}}\newcommand{\by}{\mathbf{y}}\newcommand{\bx}{\mathbf{x}}\newcommand{\R}{\mathbb{R}}\newcommand{\bbeta}{\mathbf{\beta}}\newcommand{\argmin}{\text{arg min}}\newcommand{\bD}{\mathbf{D}}\newcommand{\bzero}{\mathbf{0}}\newcommand{\bI}{\mathbf{I}}\newcommand{\bz}{\mathbf{z}}\newcommand{\bQ}{\mathbf{Q}}\newcommand{\bU}{\mathbf{U}}\newcommand{\bV}{\mathbf{V}}\newcommand{\bone}{\mathbf{1}}\newcommand{\bY}{\mathbf{Y}}\newcommand{\bA}{\mathbf{A}} \newcommand{\Dcal}{\mathcal{D}} \newcommand{\br}{\mathbf{r}} \newcommand{\bu}{\mathbf{u}} \newcommand{\bv}{\mathbf{v}} \newcommand{\bR}{\mathbf{R}}\]</span></p>
+<section id="true-or-false-24-points---12-questions-at-2-points-each" class="level2">
+<h2 class="anchored" data-anchor-id="true-or-false-24-points---12-questions-at-2-points-each">True or False (24 points - 12 Questions at 2 Points Each)</h2>
+<ol type="1">
+<li><p>PCA can be applied without standardizing the data first.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. PCA can be applied to any data set, with or without standard pre-processing like standardization or centering. PCA without centering essentially estimates a particular <em>low-rank mean</em> and then subtracts it from the data in estimating later PCs. The question of standardization is trickier: in general, we want to put the data on a comparable scale across features, but this is not always possible. Standardization has the effect of interpreting the <em>correlation</em> pattern (instead of the covariance), with the <em>pro</em>s and <em>con</em>s associated with this simplification.</p>
+</div>
+</div>
+</div></li>
+<li><p>Sparse PCA can be used to induce <em>sparsity</em> in the rows, in the columns, or in both.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True.</strong> The specifics depend on the form of sparse PCA used, but see the paper “A Penalized Matrix Decomposition” by Witten, Tibshirani, and Hastie <a href="https://doi.org/10.1093/biostatistics/kxp008%3E">DOI:10.1093/biostatistics/kxp008</a> for one popular approach.</p>
+</div>
+</div>
+</div></li>
+<li><p>The eigenvalues of a real-valued matrix are always non-negative</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. In general, the eigenvalues of a real-valued matrix are not necessarily even real-valued. Symmetric matrices, such as those arising in covariance estimation, always have real-valued eigenvalues; in the specific form used for covariance matrices, these are non-negative (and generally all positive).</p>
+<p>The correct form of this claim (for our course) is that the <em>singular values</em> of a real-valued matrix are always non-negative.</p>
+</div>
+</div>
+</div></li>
+<li><p><span class="math inline">\(t\)</span>-SNE is a linear dimension reduction technique.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. <span class="math inline">\(t\)</span>-SNE is a non-linear dimension reduction technique.</p>
+</div>
+</div>
+</div></li>
+<li><p>In <em>consensus clustering</em>, the cluster centroids are averaged over re-sampling to get a sense of cluster uncertainty.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. <em>Consensus clustering</em> estimates the probability that a pair of observations belong in the same cluster and does so by averaging ‘co-clustering indicators’, <em>i.e.</em>, an <span class="math inline">\(n-\times-n\)</span> matrix where element <span class="math inline">\((i, j)\)</span> is 1 if observations <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are in the same cluster and zero otherwise. Because we are averaging 0/1 data, the resulting averages are the probabilities we seek.</p>
+</div>
+</div>
+</div></li>
+<li><p>Lloyd’s algorithm is not guaranteed to find the optimal clustering, except when initialized with <span class="math inline">\(K\)</span>-means++.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. No simple algorithm is guaranteed to find the optimal clustering, regardless of the initialization strategy used.</p>
+</div>
+</div>
+</div></li>
+<li><p>DBSCAN (Density-Based Clustering) and Spectral Clustering (via graph embeddings) can identify clusters of arbitrary (connected) shape.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. Because both of these methods rely primarily on some sort of ‘nearest neighbor’ construction, they can recover clusters of arbitrary shape (assuming sufficiently large sample sizes).</p>
+</div>
+</div>
+</div></li>
+<li><p>Complete linkage in hierarchical clustering is prone to a “chaining” effect (long stringy clusters).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. The chaining effect is associated with <em>single</em> linkage. Because complete linkage requires all points to be close together (by using the maximum pairwise distance), it tends to produce nice compact clusters.</p>
+</div>
+</div>
+</div></li>
+<li><p>The “Elbow Plot” method is used to select the number of clusters that minimizes the within-cluster sum-of-squares.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. With <span class="math inline">\(n\)</span> data points, the WCSS is always minimized at <span class="math inline">\(K=n\)</span> clusters (each point in its own zero-variance cluster), but this provides us essentially none of the data simplification we seek in clustering. Elbow plots are generally used to identify the point where WCSS stops rapidly decreasing in <span class="math inline">\(K\)</span> and selects that <span class="math inline">\(K\)</span> as the number of clusters.</p>
+</div>
+</div>
+</div></li>
+<li><p>The sum of the squares of the singular values of a data matrix equals the total variance in that data.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. When performing SVD-based PCA, we look at the <em>squared</em> singular values (equal to relevant eigenvalues) to determine variance explained.</p>
+</div>
+</div>
+</div></li>
+<li><p>UMAP solutions are <em>nested</em> in that the <span class="math inline">\(k\)</span>-dimensional projection can be found by taking the first <span class="math inline">\(k\)</span> dimensions of the <span class="math inline">\(k+1\)</span>-dimensional projection.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>False</strong>. The nestedness property is special to PCA (and closely related methods).</p>
+</div>
+</div>
+</div></li>
+<li><p>A high silhouette score suggests that a data point is well clustered.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>True</strong>. The silhouette score of a point is the difference between:</p>
+<ul>
+<li>the average distance to points in the nearest cluster</li>
+<li>the average distance to points in the same cluster</li>
+</ul>
+<p>so a large silhouette score implies strong cluster identity.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="short-answer-52-points---13-questions-at-4-points-each" class="level2">
+<h2 class="anchored" data-anchor-id="short-answer-52-points---13-questions-at-4-points-each">Short Answer (52 points - 13 questions at 4 points each)</h2>
+<ol type="1">
+<li><p>Suppose we perform PCA on a data matrix <span class="math inline">\(\bX \in \R^{n \times p}\)</span> using the SVD of <span class="math inline">\(\bX\)</span>. Which of the following are true? Select all that apply.</p>
+<ul>
+<li>The row patterns are orthogonal to the column patterns: <span class="math inline">\(\bu_i^{\top}\bv_i = 0\)</span> for all <span class="math inline">\(i\)</span></li>
+<li>The scale factors <span class="math inline">\(d_i\)</span> may be positive or negative.</li>
+<li>The row patterns are orthogonal to each other <span class="math inline">\(\bu_i^{\top}\bu_j = 0\)</span> for <span class="math inline">\(i\neq j\)</span></li>
+<li>The row patterns are orthogonal to residual matrix: <span class="math inline">\(\bu_i^{\top}\bX_i = \bzero\)</span> if <span class="math inline">\(\bR_i\)</span> is the PCA residuals after the first <span class="math inline">\(i\)</span> principal components are removed from <span class="math inline">\(\bX\)</span></li>
+<li>The units of <span class="math inline">\(\bX\)</span> are comparable to those of the PCA term <span class="math inline">\(\hat{\bX}_i = d_i \bu_i \bv_i^{\top}\)</span> for all <span class="math inline">\(i\)</span></li>
+<li>The column patterns are orthogonal to each other <span class="math inline">\(\bv_i^{\top}\bv_j = 0\)</span> for <span class="math inline">\(i \neq j\)</span></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The following are true:</p>
+<ul>
+<li>The row patterns are orthogonal to each other <span class="math inline">\(\bu_i^{\top}\bu_j = 0\)</span> for <span class="math inline">\(i\neq j\)</span></li>
+<li>The row patterns are orthogonal to residual matrix: <span class="math inline">\(\bu_i^{\top}\bX_i = \bzero\)</span> if <span class="math inline">\(\bR_i\)</span> is the PCA residuals after the first <span class="math inline">\(i\)</span> principal components are removed from <span class="math inline">\(\bX\)</span></li>
+<li>The units of <span class="math inline">\(\bX\)</span> are comparable to those of the PCA term <span class="math inline">\(\hat{\bX}_i = d_i \bu_i \bv_i^{\top}\)</span> for all <span class="math inline">\(i\)</span></li>
+<li>The column patterns are orthogonal to each other <span class="math inline">\(\bv_i^{\top}\bv_j = 0\)</span> for <span class="math inline">\(i \neq j\)</span></li>
+</ul>
+<p>These two ‘properties’ are false:</p>
+<ol type="1">
+<li>The row patterns are orthogonal to the column patterns: <span class="math inline">\(\bu_i^{\top}\bv_i = 0\)</span> for all <span class="math inline">\(i\)</span></li>
+</ol>
+<p>In fact, the row and column patterns are typically vectors of different lengths (<span class="math inline">\(\R^n, \R^p\)</span>) so this expression does not even make sense.</p>
+<ol start="2" type="1">
+<li>The scale factors <span class="math inline">\(d_i\)</span> may be positive or negative.</li>
+</ol>
+<p>In an SVD, the singular values, which give us PCA scale factors, are always non-negative.</p>
+</div>
+</div>
+</div></li>
+<li><p><span class="math inline">\(K\)</span>-<em>medoids</em> clustering is an analogue of <span class="math inline">\(K\)</span>-means clustering, but it uses the <em>medoid</em>, a <span class="math inline">\(p\)</span>-dimensional generalization of the median, instead of the mean as the cluster center.</p>
+<p>Give one strength/advantage and one weakness/disadvantage of <span class="math inline">\(K\)</span>-medoids as compared to <span class="math inline">\(K\)</span>-means. Explain why these differences arise (you can’t just state them).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>As a median based method, <span class="math inline">\(K\)</span>-medoids is far more robust to outliers than <span class="math inline">\(K\)</span>-means. This follows from basic intuition of medians, but we can also note that the medoid, unlike the centroid, is always a point in the original data set, so we cannot get weird outliers that are nowhere near any points in the data.</p>
+<p><span class="math inline">\(K\)</span>-medoids is much slower to implement than <span class="math inline">\(K\)</span>-means. In particular, while the mean can be computed by coordinate-wise averaging, <span class="math inline">\(K\)</span>-medoids requires computing the <span class="math inline">\(\ell_1\)</span> distance between all sets of points to determine the ‘middle’ point; this is usually quick in <span class="math inline">\(\R\)</span> because we can pre-sort the data, but sorting is not well-defined in <span class="math inline">\(\R^p\)</span>.</p>
+</div>
+</div>
+</div></li>
+<li><p>For each of the following unsupervised methods, mark <code>L</code>, <code>G</code> or <code>M</code> to indicate whether they are principally concerned with local or global structure or whether they attempt to balance a mixture of the two.</p>
+<p><em>Hint</em>: there are 4 <code>G</code>, 3 <code>L</code>, and 1 <code>M</code>.</p>
+<ul>
+<li>PCA</li>
+<li><span class="math inline">\(t\)</span>-SNE</li>
+<li><span class="math inline">\(K\)</span>-means</li>
+<li>Clustering via Nearest Neighbor Graph Embedding</li>
+<li>Convex Clustering</li>
+<li>UMAP</li>
+<li>Density-Based Clustering</li>
+<li>(Euclidean) Hierarchical Clustering</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>PCA: <code>G</code></li>
+<li><span class="math inline">\(t\)</span>-SNE: <code>L</code></li>
+<li><span class="math inline">\(K\)</span>-means: <code>G</code></li>
+<li>Clustering via Nearest Neighbor Graph Embedding: <code>L</code></li>
+<li>Convex Clustering: <code>G</code></li>
+<li>UMAP: <code>M</code></li>
+<li>Density-Based Clustering: <code>L</code></li>
+<li>(Euclidean) Hierarchical Clustering: <code>G</code></li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Suppose that the following data set <span class="math inline">\(\bX\in \R^{6 \times 3}\)</span> is observed:</p>
+<p><span class="math display">\[\bX = \begin{pmatrix}
+        22 &amp; 38 &amp; -41\\
+        18 &amp; 42 &amp; -39\\
+        28 &amp; 44 &amp; -32\\
+        -18 &amp; -42 &amp; 39\\
+        -12 &amp; -36 &amp; 48\\
+        -22 &amp; -38 &amp; 41
+\end{pmatrix} =
+\begin{pmatrix}
+    \sqrt{6}/6 &amp; 0 &amp; 1/2 \\
+    \sqrt{6}/6 &amp; 0 &amp; -1/2 \\
+    \sqrt{6}/6 &amp; \sqrt{2}/2 &amp; 0\\
+    -\sqrt{6}/6 &amp; 0 &amp; 1/2 \\
+    -\sqrt{6}/6 &amp; \sqrt{2}/2 &amp;  \\
+    -\sqrt{6}/6 &amp; 0 &amp; -1/2
+  \end{pmatrix}
+  \begin{pmatrix}
+    60\sqrt{6} &amp; 0 &amp; 0\\
+    0&amp; 12\sqrt{2} &amp; 0\\
+    0 &amp; 0 &amp; 6
+  \end{pmatrix}
+  \begin{pmatrix}
+    1/3 &amp; 2/3 &amp; 2/3 \\
+    -2/3 &amp; -1/3 &amp; 2/3 \\
+    -2/3 &amp; 2/3 &amp; -1/3
+  \end{pmatrix}^{\top}\]</span></p>
+<p>where the decomposition on the right is the <em>singular value decomposition</em> of <span class="math inline">\(\bX\)</span>.</p>
+<p>What is the (marginal) percent of variance explained by the second principal component of <span class="math inline">\(\bX\)</span>? You may leave your answer unsimplified in terms of square roots and fractions.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\%VE_{2} = \frac{d_2^2}{\sum_{i=1}^3 d_i^2} = \frac{(12\sqrt{2})^2}{(60\sqrt{6})^2 + (12\sqrt{2})^2 + 6^2} = \frac{288}{21600 + 288 + 36} \approx 1.3\%\]</span></p>
+</div>
+</div>
+</div></li>
+<li><p>Describe how PCA could be used as part of a <em>data imputation</em> process.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Given a data matrix <span class="math inline">\(\bX\)</span> with missing values, we can use PCA to improve a ‘baseline imputation’ <span class="math inline">\(\hat{\bX}^{(0)}\)</span> by iterating the following steps:</p>
+<ul>
+<li>Construct a low-rank approximation <span class="math inline">\(\tilde{\bX}^{(k)} = \textsf{PCA-Approximation}(\hat{\bX}^{(k)})\)</span></li>
+<li>Impute missing values in <span class="math inline">\(\bX\)</span> with corresponding values from <span class="math inline">\(\tilde{\bX}^{(k)}\)</span> to get our updated imputation <span class="math inline">\(\hat{\bX}^{(k+1)}\)</span></li>
+</ul>
+<p>This can continue until a fixed point is reached or for some pre-specified number of iterations.</p>
+</div>
+</div>
+</div></li>
+<li><p>Write out Lloyd’s Algorithm for <span class="math inline">\(K\)</span>-means clustering. (Your answer does not need to be hyper-precise. Basic psuedo-code will suffice.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><em>Initialize</em>: Cluster labels <span class="math inline">\(c_i\)</span> for each point <span class="math inline">\(i=1, \dots, n\)</span> selected uniformly from <span class="math inline">\(\{1, \dots, K\}\)</span></li>
+<li><em>Repeat</em>:
+<ul>
+<li>E-Step: Estimate cluster centroids <span class="math display">\[\mu_k = \text{Average of all points where $c_i=k$}\]</span></li>
+<li>M-Step: Assign labels based on the nearest centroid: <span class="math display">\[c_i = \argmin_k d(\bx_i, \mu_k)\]</span></li>
+</ul></li>
+<li><em>Until</em>: Labels or centroids stop changing</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Draw a basic diagram of an <em>autoencoder</em> architecture, labeling the main components and explaining what they each do.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>This image from Wikipedia is a good example:</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/3/37/Autoencoder_schema.png" class="img-fluid"></p>
+<ul>
+<li>The <em>encoder</em> maps points from the original space to the reduced space (code)</li>
+<li>The <em>decoder</em> maps points from the reduced space back to the original space</li>
+<li>The reduced space (<span class="math inline">\(h\)</span> or the code) provides a lower-dimensional non-linear representation of points from the original space</li>
+</ul>
+</div>
+</div>
+</div></li>
+<li><p>Explain how density-based clustering methods (<em>e.g.</em>, DBSCAN) can be used for outlier detection.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The ‘noise points’ estimated by DBSCAN are candidates for outlier status, especially when the minimum distance parameter is large and the number of neighbor points is small, indicating that a noise point is not particularly close to even one or two other points, a strong indicator of outlier status.</p>
+</div>
+</div>
+</div></li>
+<li><p>Why is cross-validation generally <strong>not</strong> a suitable strategy for validating unsupervised learning results and what strategies could be used instead?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>CV is not generally used for unsupervised learning because there is not a well-defined pointwise loss we are seeking to minimize (with exceptions). More generally, sample splitting is simply not appropriate for some unsupervised tasks (<em>e.g.</em>, clustering) and it is not obvious how to aggregate model output across folds.</p>
+<p>In unsupervised tasks, some sort of <em>stability</em> strategy - robustness of results to randomization - is used instead.</p>
+</div>
+</div>
+</div></li>
+</ol>
+</section>
+<section id="applications-of-machine-learning-40-points-total" class="level2">
+<h2 class="anchored" data-anchor-id="applications-of-machine-learning-40-points-total">Applications of Machine Learning (40 points total)</h2>
+<section id="aml1" class="level3">
+<h3 class="anchored" data-anchor-id="aml1">AML1</h3>
+<p>In this <em>issue spotter</em> question, I will describe a theoretical application of unsupervised machine learning. As described, this application falls short of “best practices” in several regards. Identify <em>four</em> places where this pipeline could be improved and recommend alternative (superior) practices. [20 points total] For each issue, you will receive:</p>
+<ul>
+<li>1 point for identifying a valid issue</li>
+<li>(Up to) 2 points for explaining what is <em>wrong</em> with the described practice and <em>what impact / bias / error</em> would be induced</li>
+<li>(Up to) 2 points for accurately describing an alternative approach</li>
+</ul>
+<p>Please note that there are more than four possible issues in this scenario; identify only the four for which you think you can provide the most accurate and insightful analysis.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Prompt">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Prompt
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>A climate analyst has data on early summer Atlantic sea-surface temperatures (SST) measured <em>via</em> 500 ocean buoys (floating measurement devices) over a period of 75 years and wants to see if SST can be used to predict the number of hurricanes that form in the following (late summer) hurricane season. The main goal of this project is developing an easily understood set of characteristics that can be used as an early warning indicator by the general public. As such, interpretability is a major goal of the project and “black-box” methods cannot be used. Hurricane counts are highly noisy, so the analyst first wants to investigate SST data in an unsupervised fashion to see if there are distinct types of SST patterns and then to see if those patterns correlate with hurricane counts.</p>
+<p>Because the data is measured at 500 different spatial points, the analyst first performs PCA on the raw data to reduce the dimensionality of the data down to 5 PCs. The analyst then discovers that these 5 PCs capture 90% of the variation in the data, so proceeds assuming that enough signal has been captured. The analyst next performs single-linkage hierarchical clustering on a matrix formed from the 5 <span class="math inline">\(\bu\)</span>-vectors (row factors) from PCA and the number of hurricanes from each year (6 columns, 75 rows). To determine the cut point of the dendrogram (and hence the number of clusters), the analyst selects the number of clusters that minimizes the within-cluster sum of squares. Finally, the analyst computes the average number of hurricanes for cluster (<em>i.e.</em>, the total number of hurricanes that occurred in a year assigned to that cluster, divided by the number of points in that cluster) and performs an ANOVA to see if the between-cluster differences in hurricane count are statistically significant.</p>
+<p>Because the ANOVA indicates that the clusters are statistically significant and distinct from each other, the analyst believes the PCA derived features can be used as an effective set of predictors. He builds an OLS model that takes the five predictors as inputs and predicts the number of hurricanes as the output; because he has already seen that the PCs capture differences in hurricane count, he does not perform any additional model evaluation or optimization to avoid overfitting. Now that the model has been built, the analyst wants to ensure the features are as interpretable as possible. Because 5 PCs are hard to interpret, he uses <span class="math inline">\(t\)</span>-SNE to reduce them to two features. He sees that the first <span class="math inline">\(t\)</span>-SNE feature is correlated with average temperature across the whole Atlantic, while the second <span class="math inline">\(t\)</span>-SNE feature seems to capture years in which there are significant differences between equatorial and arctic temperatures. Based on this information, he reports that a model can be built using these two features and that it will have statistically significant predictive power for the number of hurricanes in a given year.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solution">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There are <strong>many</strong> issues that could be noted. Possibilities include:</p>
+<ul>
+<li>Single-linkage hierarchical clustering is a poor choice for highly noisy data like this. It is better to use a method producing more homogeneous clusters like complete linkage and to accept that your pipeline simply won’t be able to cluster some points than to have overly diverse clusters.</li>
+<li>Including the number of hurricanes in the clustering step induces a weird bias in the ANOVA. Because clustering intentionally produces very-different centroids, testing to see if the clustering-produced centroids are distinct is basically meaningless.</li>
+<li>Minimizing the WCSS produces far too many clusters.</li>
+<li>Validation should be performed on the actual <span class="math inline">\(t\)</span>-SNE features used (if <span class="math inline">\(t\)</span>-SNE is desired), not on PCA input. Put another way, validate the <em>entire</em> pipeline, not just random portions.</li>
+<li><span class="math inline">\(t\)</span>-SNE cannot be interpreted as distinct axes in the manner suggested.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="aml2" class="level3">
+<h3 class="anchored" data-anchor-id="aml2">AML2</h3>
+<p>For this problem, I will describe a scenario in which unsupervised learning may be useful to achieve one or more practical aims. You should describe, in reasonable detail, how you would approach this problem. Be sure to justify each step (say <em>why</em> you are making particular choices). [20 points total, 4 points for each subsection]</p>
+<div class="callout-info" title="Prompt" data-collapse="true">
+<p>You are a data analyst at a startup that sells over 200 flavored varieties of sparkling water over the internet. The marketing team wants to offer a temporary discount to certain customers on certain items with the hope that these customers will try additional flavors and, in the long-run, lead to increased purchasing and increased revenues. Specifically, they plan to offer targeted “buy a case of Flavor <span class="math inline">\(X\)</span> and get a case of Flavor <span class="math inline">\(Y\)</span> for free” coupons to customers who have purchased <span class="math inline">\(X\)</span> in the past and who are likely to also enjoy <span class="math inline">\(Y\)</span>. You have been asked to help them identify the customers and the flavors on which this promotion should be offered.</p>
+<p>You have two data sets available to you for this task:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<ul>
+<li>A <span class="math inline">\(200 \times 30\)</span> table of the 200 flavors your company sells (rows) and the amount of each of your 30 flavoring agent that goes into each flavor (columns). Examples of ``flavoring agents’’ include vanilla and passionfruit, which are used to create vanilla, passionfruit, and vanilla-passionfruit flavors for sale. Flavoring agents not used in a particular flavor are recorded as 0’s.</li>
+<li>A <span class="math inline">\(100,000 \times 200\)</span> table of how much each customer (row) has bought of each flavor (column). Customers who have never bought a flavor are recorded as having purchased 0 cans of that flavor.</li>
+</ul>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Steps">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Steps
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Your first task is to identify at least two groups of flavors to highlight in your advertising promotion. How would you process the first table and what techniques would you apply? Be careful to justify your choice (including stating any important assumptions that might need to be checked) and specify any important pre-processing steps.</li>
+<li>Your next task is to identify at least two groups of customers to whom to target your advertising promotion. How would you process the second table and what techniques would you apply? Be careful to justify your choice (including stating any important assumptions that might need to be checked) and specify any important pre-processing steps.<br>
+</li>
+<li>Now that you have identified groups of customers and flavors, how would you decide which flavors to promote to which customers? Describe your process in moderate detail. (Note that you do not need to advertise to <em>all</em> customers or for <em>all</em> flavors. Your goal is to outline a well-supported strategy, not to burn though as much budget as possible.)</li>
+<li>In order to get sign-off from the higher-ups to launch your advertising campaign, you need to make sure your clusters have easy <em>and valid</em> interpretation. How would you modify your answer to Step 1 or Step 2 [your choice] to provide highly-interpretable results and what strategies could be used to validate that interpretation?</li>
+<li>An important part of any advertising campaign is evaluation of results. What data would you encourage your company to collect to determine the efficacy of the promotion and how would you plan analyze it in six months?</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solutions">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solutions
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Many valid strategies exist at each step. Points will be awarded based on how well the modeling choices made are justified.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>You may assume that the universe of flavors and customers did not change over the period in which this data was collected. <em>I.e.</em>, you don’t have to worry about new flavors being introduced or a brand-new customer.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/michael-weylandt\.com\/STA9890\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/michaelweylandt/STA9890/edit/main/tests/test03/solutions.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/michaelweylandt/STA9890/blob/main/tests/test03/solutions.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/michaelweylandt/STA9890/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

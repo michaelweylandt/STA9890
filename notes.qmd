@@ -145,6 +145,14 @@ Mid-semester tests and solutions will be posted here *after* the exam.
 - [Exam Packet](./tests/test02/exam_packet.pdf)
 - [Solutions](./tests/test02/solutions.qmd)
 
+
+#### Test 3: Unsupervised Learning
+
+- [Formula Sheet](./tests/test03/formula_sheet.pdf)
+- [Exam Packet](./tests/test03/exam_packet.pdf)
+- [Solutions](./tests/test03/solutions.qmd)
+
+
 ### Additional Materials
 
 Older notes, homework problems, and exam from prior offerings of this course

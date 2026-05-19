@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://michael-weylandt.com/STA9890/competition.html</loc>
-    <lastmod>2026-02-25T16:14:57.389Z</lastmod>
+    <lastmod>2026-05-10T23:35:39.717Z</lastmod>
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/syllabus.html</loc>
-    <lastmod>2026-04-01T17:09:04.718Z</lastmod>
+    <lastmod>2026-05-06T15:08:50.276Z</lastmod>
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes/notes08.html</loc>
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes/notes10.html</loc>
-    <lastmod>2026-04-15T16:01:35.846Z</lastmod>
+    <lastmod>2026-05-10T23:33:30.989Z</lastmod>
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes/notes03.html</loc>
@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes.html</loc>
-    <lastmod>2026-04-29T19:50:36.950Z</lastmod>
+    <lastmod>2026-05-19T14:47:18.849Z</lastmod>
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/objectives.html</loc>
@@ -58,11 +58,11 @@
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes/notes11.html</loc>
-    <lastmod>2026-04-28T17:32:43.182Z</lastmod>
+    <lastmod>2026-04-29T19:50:34.050Z</lastmod>
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes/notes13.html</loc>
-    <lastmod>2026-05-06T20:38:02.197Z</lastmod>
+    <lastmod>2026-05-06T20:57:39.431Z</lastmod>
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes/notes06.html</loc>
@@ -74,7 +74,7 @@
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/resources.html</loc>
-    <lastmod>2026-01-28T22:46:21.100Z</lastmod>
+    <lastmod>2026-05-10T23:36:36.072Z</lastmod>
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/notes/notes03_old.html</loc>
@@ -102,6 +102,10 @@
   </url>
   <url>
     <loc>https://michael-weylandt.com/STA9890/tests/test02/solutions.html</loc>
-    <lastmod>2026-04-29T18:04:26.049Z</lastmod>
+    <lastmod>2026-04-29T19:50:30.207Z</lastmod>
+  </url>
+  <url>
+    <loc>https://michael-weylandt.com/STA9890/tests/test03/solutions.html</loc>
+    <lastmod>2026-05-12T19:27:50.814Z</lastmod>
   </url>
 </urlset>
